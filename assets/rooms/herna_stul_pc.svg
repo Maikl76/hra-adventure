@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: herní počítač se sám probudil – na obrazovce (x 452–772, y 259–453 v herna_stul.webp) zelený text. -->
+  <defs>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="scr" cx="0.5" cy="0.45" r="0.7"><stop offset="0" stop-color="#0b2a1a"/><stop offset="1" stop-color="#020a06"/></radialGradient>
+  </defs>
+  <rect x="452" y="259" width="320" height="194" fill="url(#scr)"/>
+  <g filter="url(#glow)" font-family="Courier New, monospace" font-size="17" font-weight="bold" fill="#7dffb0">
+    <text x="472" y="298">&gt; JE TU NĚKDO?</text>
+    <text x="472" y="328">&gt; DOKAŽ, ŽE NEJSI</text>
+    <text x="472" y="350">  KOSTRA.</text>
+    <text x="472" y="392" fill="#3fe0ff">[ REFLEX TEST ]</text>
+    <rect x="472" y="420" width="11" height="18"/>
+  </g>
+</svg>

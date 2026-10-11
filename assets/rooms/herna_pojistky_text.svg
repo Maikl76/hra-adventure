@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: nápisy na štítcích pojistkové skříně (autorův obrázek herna_pojistky.webp má štítky
+       prázdné). Vždy viditelná. Mírné rozostření a zvlnění, aby text vypadal vyražený/vybledlý. -->
+  <defs>
+    <filter id="ink" x="-5%" y="-20%" width="110%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+      <feGaussianBlur stdDeviation="0.35"/>
+    </filter>
+    <filter id="tape"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.6"/></filter>
+  </defs>
+  <g filter="url(#ink)" font-family="'Arial Narrow', Arial, sans-serif" font-weight="bold" text-anchor="middle" fill="#2b2117" opacity="0.9">
+    <!-- hlavní jistič -->
+    <text x="833" y="138" font-size="34" letter-spacing="3">HLAVNÍ JISTIČ</text>
+    <text x="833" y="186" font-size="46" letter-spacing="2" fill="#7a1a10">MAX 1000 W</text>
+    <!-- štítky spínačů -->
+    <text x="293" y="736" font-size="25">HERNÍ POČÍTAČ</text>
+    <text x="293" y="783" font-size="40">400 W</text>
+    <text x="573" y="736" font-size="25">TELEVIZOR</text>
+    <text x="573" y="783" font-size="40">120 W</text>
+    <text x="839" y="736" font-size="25">NEONY</text>
+    <text x="839" y="783" font-size="40">60 W</text>
+    <text x="1108" y="736" font-size="25">LEDNICE</text>
+    <text x="1108" y="783" font-size="40">300 W</text>
+    <text x="1375" y="736" font-size="25">MĚŘICÍ STANICE</text>
+    <text x="1375" y="783" font-size="40">150 W</text>
+  </g>
+  <!-- páska přes spínač počítače -->
+  <g transform="rotate(-16 303 470)" filter="url(#tape)">
+    <rect x="198" y="440" width="210" height="54" fill="#e6d66e" opacity="0.93"/>
+    <text x="303" y="476" text-anchor="middle" font-family="'Comic Sans MS', 'Segoe Print', cursive" font-size="23" font-weight="bold" fill="#1a1a1a">NEVYPÍNAT! –D.</text>
+  </g>
+</svg>

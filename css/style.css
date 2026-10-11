@@ -489,6 +489,74 @@ button:focus-visible, input:focus-visible {
   transform: rotate(1deg);
 }
 
+/* Obrazovka počítače, která „píše sama“ (closeup s font: "terminal"). */
+.paper.terminal {
+  width: min(100%, 520px);
+  min-height: 180px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 19px;
+  line-height: 1.5;
+  text-align: left;
+  white-space: pre-wrap;
+  padding: 26px 28px;
+  color: #7dffb0;
+  background: radial-gradient(ellipse at 50% 45%, #0d2418, #030806 75%);
+  border: 2px solid #1d3b2a;
+  border-radius: 14px;
+  text-shadow: 0 0 6px rgba(125, 255, 176, 0.55);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9), 0 10px 30px rgba(0, 0, 0, 0.6);
+  transform: none;
+}
+.paper.terminal .term-caret { display: inline-block; width: 0.6em; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Výpadek jističe: místnost na chvíli plynule zhasne (bez prudkého blikání). */
+.scene.fx-blackout::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #000;
+  pointer-events: none;
+  animation: blackout 2.6s ease both;
+}
+@keyframes blackout {
+  0% { opacity: 0; }
+  18% { opacity: 0.97; }
+  60% { opacity: 0.97; }
+  100% { opacity: 0; }
+}
+
+/* Lekačka: obrázek přes celou obrazovku vyletí k hráči a otřese se. Jedno objevení, žádné
+   opakované blikání (kvůli lidem citlivým na světlo). */
+.scare {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+}
+.scare img { width: 100%; height: 100%; object-fit: cover; transform: scale(0.3); }
+.scare.go img {
+  animation:
+    scare-rush var(--rush, 0.12s) cubic-bezier(0.2, 0.9, 0.3, 1.15) forwards,
+    scare-shake 0.08s linear var(--rush, 0.12s) infinite;
+}
+.scare.out { animation: scare-out 0.2s ease forwards; }
+@keyframes scare-rush {
+  from { transform: scale(0.3); filter: brightness(1.8) contrast(1.3); }
+  to { transform: scale(1.08); filter: none; }
+}
+@keyframes scare-shake {
+  0% { transform: scale(1.08) translate(0, 0); }
+  25% { transform: scale(1.09) translate(-1.1%, 0.7%); }
+  50% { transform: scale(1.08) translate(0.9%, -0.8%); }
+  75% { transform: scale(1.09) translate(-0.6%, -0.5%); }
+  100% { transform: scale(1.08) translate(0, 0); }
+}
+@keyframes scare-out { to { opacity: 0; } }
+
 /* ---------- Kniha ---------- */
 
 .modal-box.book-box { width: min(100%, 1000px); padding: 16px 18px 14px; background: linear-gradient(180deg, #24180e, #170f08); }
@@ -656,6 +724,89 @@ button:focus-visible, input:focus-visible {
 .photo-hint { color: var(--muted); font-style: italic; font-size: 15px; margin: 0 0 24px; }
 
 .fatal-wrap p { color: var(--muted); white-space: pre-line; }
+
+/* ---------- Svět GSPORT: neonové barvy místo zlata ---------- */
+
+body[data-world="gsport"] {
+  --gold: #3fe0ff;
+  --gold-bright: #9ff3ff;
+  --gold-dim: #1d7a92;
+  --panel: #0c1016;
+  --panel-2: #111824;
+  --ink: #e4f2f7;
+  --muted: #8aa3b0;
+}
+
+body[data-world="gsport"] .key {
+  background: linear-gradient(180deg, #16334a, #0d1b28);
+  border-color: #3fe0ff;
+  color: #c9f6ff;
+  box-shadow: inset 0 1px 0 rgba(160, 240, 255, 0.25), 0 2px 0 #071018;
+}
+
+body[data-world="gsport"] .key.ok { background: linear-gradient(180deg, #ff4fd8, #a3238a); color: #fff; border-color: #ff8fe6; }
+body[data-world="gsport"] .lock-display { border-color: #3fe0ff; color: #9ff3ff; text-shadow: 0 0 10px rgba(63, 224, 255, 0.6); }
+body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0.12), 0 20px 60px rgba(0, 0, 0, 0.7); }
+
+/* Karty světů na výběrové obrazovce */
+.track-wrap-card { display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
+.track-wrap-card .track-card { flex: 1; }
+.track-saved { margin-top: 8px !important; color: var(--gold-bright) !important; font-style: italic; }
+.track-again { font-size: 13px; align-self: center; }
+.track-wrap-card.world-gsport .track-card { border-color: #1d7a92; background: linear-gradient(180deg, #111824, #0c1016); }
+.track-wrap-card.world-gsport .track-card:hover { border-color: #3fe0ff; box-shadow: 0 0 24px rgba(63, 224, 255, 0.25); }
+.track-wrap-card.world-gsport h3 { color: #9ff3ff; text-shadow: 0 0 10px rgba(63, 224, 255, 0.5); }
+
+/* ---------- Aktivity: reflex test, dřepy ---------- */
+
+.modal-box.activity-box { width: min(100%, 680px); }
+.modal-box.squat-box { width: min(100%, 900px); }
+.activity-box .muted { color: var(--muted); }
+.activity-box .small { font-size: 13px; }
+.activity-next { display: block; margin: 14px auto 0; }
+
+.reflex-pad {
+  display: block;
+  width: min(70vw, 240px);
+  aspect-ratio: 1;
+  margin: 10px auto;
+  border-radius: 50%;
+  border: 3px solid #2a3a48;
+  background: radial-gradient(circle at 40% 35%, #1a2a38, #0a1018);
+  color: var(--ink);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background 0.08s, border-color 0.08s;
+}
+
+.reflex-pad.wait { background: radial-gradient(circle at 40% 35%, #4a1820, #200a0e); border-color: #803040; color: #f0b0b8; }
+.reflex-pad.go { background: radial-gradient(circle at 40% 35%, #7dffb0, #1f9c58); border-color: #b8ffd4; color: #052a14; font-weight: bold; box-shadow: 0 0 40px rgba(125, 255, 176, 0.6); }
+.reflex-pad.early { background: radial-gradient(circle at 40% 35%, #ff9a5a, #8a3410); color: #2a0c00; }
+.reflex-pad.done { border-color: #3fe0ff; color: #9ff3ff; }
+.reflex-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; padding: 0; list-style-position: inside; color: var(--gold-bright); }
+
+.squat-choice { text-align: center; }
+.squat-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+.btn.primary { border-color: var(--gold); color: var(--gold-bright); }
+.squat-stage { position: relative; background: #000; border: 1px solid #1d3a48; border-radius: 6px; overflow: hidden; }
+.squat-stage canvas { display: block; width: 100%; height: auto; max-height: 56dvh; object-fit: contain; }
+.squat-counter {
+  position: absolute;
+  left: 12px;
+  top: 6px;
+  font-size: clamp(32px, 7vw, 60px);
+  font-family: var(--digits);
+  color: #3fe0ff;
+  text-shadow: 0 0 14px rgba(63, 224, 255, 0.7);
+  pointer-events: none;
+}
+.squat-counter.bump { animation: bump 0.35s ease; }
+@keyframes bump { 50% { transform: scale(1.25); color: #9ff3ff; } }
+.squat-manual { text-align: center; }
+.squat-manual .btn { margin: 0 6px; }
+.squat-clock { font-family: var(--digits); font-size: 42px; color: var(--gold-bright); margin: 6px 0 12px; }
 
 /* ---------- Kalkulačka (plovoucí okno nad hrou i nad zámkem) ---------- */
 

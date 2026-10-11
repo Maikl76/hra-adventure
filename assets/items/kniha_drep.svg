@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: kniha FYZIKA DŘEPU – tmavá vazba se svítící páskou -->
+  <g transform="rotate(-10 32 32)">
+    <rect x="14" y="10" width="38" height="46" rx="2" fill="#e2d6b4"/>
+    <rect x="12" y="8" width="36" height="46" rx="2" fill="#13232a" stroke="#0a1418" stroke-width="1.5"/>
+    <rect x="12" y="8" width="7" height="46" fill="#0d1a20"/>
+    <rect x="14" y="10" width="3" height="42" fill="#3fe0ff" opacity="0.85"/>
+    <rect x="23" y="16" width="20" height="14" fill="none" stroke="#3fe0ff" stroke-width="1.4"/>
+    <path d="M28,27 l3,-6 l3,4 l3,-3" stroke="#9ff3ff" stroke-width="1.4" fill="none"/>
+  </g>
+</svg>

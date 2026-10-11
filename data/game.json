@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.3 – ukázka",
+    "version": "0.5 – ukázka",
     "totalGates": 9
   },
 
@@ -34,6 +34,22 @@
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
       "rooms": ["kabinet"]
+    },
+    {
+      "id": "gsport",
+      "name": "GSPORT",
+      "description": "Hra a pohyb. Levely otevřeš vlastním tělem – a hlavou. Potřebuješ trochu místa a ideálně webkameru. Pozor: obsahuje lekačky (dají se vypnout v Menu).",
+      "rooms": ["herna"],
+      "finish": {
+        "title": "LEVEL 1 splněn",
+        "text": "Za dveřmi je tmavá chodba. Na jejím konci bliká obrazovka LEVEL 2 a pod ní je fixou napsáno: „Díky. Pokračuj. – D.“ Osm levelů zbývá…",
+        "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
+        "stats": [
+          { "label": "Squat Challenge", "value": "{n} dřepů za {t:1} s", "requires": ["n", "t"] },
+          { "label": "Výkon při dřepech", "value": "{=70*9.81*0.4*n/t:0} W", "requires": ["n", "t"] },
+          { "label": "Reflex test – nejlepší", "value": "{reflex_best} ms", "requires": ["reflex_best"] }
+        ]
+      }
     }
   ],
 
@@ -56,6 +72,72 @@
       "closeup": {
         "note": "Závaží: 50 N",
         "caption": "Lísteček z šuplíku"
+      }
+    },
+    "karta": {
+      "name": "Hráčská karta",
+      "icon": "assets/items/hraci_karta.webp",
+      "description": "Plastová karta s čipem: HRÁČ – GSPORT. Zapíná měřicí stanici v herně."
+    },
+    "uv": {
+      "name": "UV svítilna",
+      "icon": "assets/items/uv.svg",
+      "description": "Malá svítilna s ultrafialovým světlem. Ukáže, co je napsané neviditelným inkoustem. Vyber ji a klikni, na co chceš posvítit."
+    },
+    "kniha_drep": {
+      "name": "Fyzika dřepu",
+      "icon": "assets/items/kniha_drep.svg",
+      "description": "Útlá příručka pro hráče GSPORT. Hřbet je přelepený svítící páskou.",
+      "examine": [
+        { "when": { "notFlags": ["kniha_drep_prectena"] }, "do": [
+          { "set": "kniha_drep_prectena" },
+          { "note": "Kniha Fyzika dřepu: práce W = m · g · h · n (J), výkon P = W / t (W); m = 70 kg, g = 9,81 m/s², h ≈ 0,4 m." }
+        ] }
+      ],
+      "book": {
+        "title": "Fyzika dřepu",
+        "pages": [
+          { "type": "title", "blocks": [
+            { "heading": "FYZIKA DŘEPU" },
+            { "p": "příručka pro hráče GSPORT" },
+            { "note": "Patří do laboratoře. Nevynášet! – D." }
+          ] },
+          { "blocks": [
+            { "heading": "1  Práce" },
+            { "p": "Při dřepu těžiště těla klesne a zase stoupne. Když ho svaly zvedají zpátky, konají práci proti tíze těla:" },
+            { "formula": "W = m · g · h" },
+            { "p": "m … hmotnost (kg)\ng ≈ 9,81 m/s²\nh … o kolik se těžiště zvedne (m)\nW … práce v joulech (J)" },
+            { "p": "Za n dřepů je práce n-krát větší:" },
+            { "formula": "W = m · g · h · n" }
+          ] },
+          { "blocks": [
+            { "heading": "2  Výkon" },
+            { "p": "Výkon říká, jak rychle práci konáš – kolik joulů za sekundu:" },
+            { "formula": "P = W / t" },
+            { "p": "t … čas v sekundách (s)\nP … výkon ve wattech (W);  1 W = 1 J/s" },
+            { "note": "Stejná práce rychleji = větší výkon!" }
+          ] },
+          { "blocks": [
+            { "heading": "3  Hodnoty pro hráče GSPORT" },
+            { "image": "assets/book/drep_teziste.svg" },
+            { "p": "m = 70 kg (standardní hráč GSPORT)\ng = 9,81 m/s²\nh ≈ 0,4 m (pokles těžiště při dřepu do 90° v koleni)" }
+          ] },
+          { "blocks": [
+            { "heading": "4  Řešený příklad" },
+            { "p": "Hráčka udělala 10 dřepů za 12 s. Pro příklad počítáme s hmotností 60 kg." },
+            { "formula": "W = 60 · 9,81 · 0,4 · 10 ≈ 2354 J" },
+            { "formula": "P = 2354 J / 12 s ≈ 196 W" },
+            { "note": "Ty počítej se 70 kg a se svým n a t!" }
+          ] },
+          { "blocks": [
+            { "heading": "5  Kolik je to wattů?" },
+            { "p": "Spotřebiče zapojené na jeden jistič se sčítají: herní počítač si vezme asi 400 W, televizor 120 W, lednička 300 W." },
+            { "p": "Svaly přitom spálí asi čtyřikrát víc energie, než kolik vykonají práce – jejich účinnost je jen kolem 25 %. Zbytek je teplo." }
+          ] },
+          { "blocks": [
+            { "note": "Kdo dočetl až sem, ať se nebojí kostry. Ta jen počítá. – D." }
+          ] }
+        ]
       }
     },
     "kalkulacka": {
@@ -198,6 +280,96 @@
       "item": "klic",
       "on": "brana",
       "do": [ { "text": "Na tak velký zámek je klíček moc malý. Hodí se spíš k něčemu menšímu." } ]
+    },
+    {
+      "item": "karta",
+      "on": "stanice",
+      "room": "herna",
+      "when": { "flags": ["stanice_proud"] },
+      "do": [
+        { "set": "karta_vlozena" },
+        { "remove": "karta" },
+        { "sound": "cardInsert" },
+        { "text": "Karta zapadla do čtečky. Stanice se rozsvítila: SQUAT CHALLENGE – PŘIPRAV SE." },
+        { "activity": "drepy" }
+      ]
+    },
+    {
+      "item": "karta",
+      "on": "stanice",
+      "room": "herna",
+      "do": [ { "text": "Čtečka je bez proudu – karta nic neudělá. Stanice potřebuje elektřinu; kabel od ní vede ke dveřím." } ]
+    },
+    {
+      "item": "karta",
+      "on": "dvere_level",
+      "do": [ { "text": "Dveře kartu nechtějí. Číselník na nich žádá číslo – výkon." } ]
+    },
+    {
+      "item": "uv",
+      "on": "kostra",
+      "when": { "notFlags": ["uv_kostra"] },
+      "do": [
+        { "set": "uv_kostra" },
+        { "sound": "uv" },
+        { "text": "Posvítíš UV svítilnou na kostru. Nad lebkou se na stěně rozzáří nápis KOLIK NÁS JE? a od žeber vede svítící šipka – ke dveřím, k pojistkové skříni." },
+        { "note": "UV světlo u kostry: KOLIK NÁS JE? Šipka vede k pojistkové skříni." }
+      ]
+    },
+    {
+      "item": "uv",
+      "on": "kostra",
+      "do": [ { "sound": "uv" }, { "text": "Nápis nad kostrou pořád svítí: KOLIK NÁS JE?" } ]
+    },
+    {
+      "item": "uv",
+      "on": "stitek",
+      "do": [ { "sound": "uv" }, { "text": "Štítek v UV světle nic nového neukáže. Těch 206 kostí je na něm napsáno obyčejně." } ]
+    },
+    {
+      "item": "uv",
+      "on": "pojistky",
+      "do": [ { "sound": "uv" }, { "text": "V UV světle se na dvířkách skříně rozzáří jediné slovo: KOSTRA." } ]
+    },
+    {
+      "item": "uv",
+      "on": "dvere_level",
+      "do": [ { "sound": "uv" }, { "text": "V UV světle se na čalounění dveří rozzáří škrábance. Desítky škrábanců. Jsou na vnitřní straně." } ]
+    },
+    {
+      "item": "uv",
+      "on": "vitrina",
+      "do": [ { "sound": "uv" }, { "text": "Na skle vitríny se rozzáří otisky prstů. Všechny kolem číselného zámku." } ]
+    },
+    {
+      "item": "uv",
+      "on": "stanice",
+      "do": [ { "sound": "uv" }, { "text": "Kolem stanice se na parketách rozzáří stopy. Hodně stop – a všechny bokem ke kameře." } ]
+    },
+    {
+      "item": "uv",
+      "on": "zona",
+      "do": [ { "sound": "uv" }, { "text": "Na pásce se rozzáří šipka a nápis: BOKEM KE KAMEŘE." } ]
+    },
+    {
+      "item": "uv",
+      "on": "pocitac",
+      "do": [ { "sound": "uv" }, { "text": "Na klávesnici se rozzáří otisky prstů. Nejvíc jich je na mezerníku." } ]
+    },
+    {
+      "item": "uv",
+      "on": "zebricek",
+      "do": [ { "sound": "uv" }, { "text": "Obrazovku žebříčku UV světlo nezajímá. Čísla jsou vidět i bez něj." } ]
+    },
+    {
+      "item": "uv",
+      "on": "televizor",
+      "do": [ { "sound": "uv" }, { "text": "Obrazovka televizoru v UV světle jen modravě zešedne." } ]
+    },
+    {
+      "item": "kniha_drep",
+      "on": "dvere_level",
+      "do": [ { "text": "Kniha dveře neotevře. Ale to, co je v ní, ano." } ]
     }
   ],
 
@@ -749,6 +921,671 @@
         "open": [
           { "text": "Brána I je otevřená. Z mezery mezi dveřmi proudí studený vzduch a slabé světlo." },
           { "note": "Brána I: biceps drží závaží silou 500 N – desetkrát víc, než je tíha závaží. Loket je páka 3. druhu." }
+        ]
+      }
+    },
+
+    "herna": {
+      "name": "Stará herna GSPORT",
+      "gateNumber": "I",
+      "gateLabel": "LEVEL 1",
+      "tracks": ["gsport"],
+      "ambience": "herna",
+      "enterText": "Stará herna v suterénu fakulty. Dřevěné obložení, staré stoly a knihovny – a mezi nimi monitory, kabely a neony. Dveře se za tebou tiše zavřely. Cvakl zámek.",
+      "enter": [
+        { "when": { "notFlags": ["herna_vstup"] }, "do": [ { "set": "herna_vstup" }, { "sound": "doorSoft" } ] }
+      ],
+      "startView": "stul",
+      "_pojistky": "Zátěž jističe = 400 (počítač, nejde vypnout) + 120·(1−tv_vyp) + 60·(1−neon_vyp) + 300·(1−lednice_vyp) + 150·stanice_proud; víc než 1000 W = jistič vypadne.",
+
+      "activities": {
+        "reflex": {
+          "type": "reflex",
+          "rounds": 5,
+          "title": "Reflex test",
+          "intro": "„DOKAŽ, ŽE NEJSI KOSTRA.“ Až se kruh rozsvítí, co nejrychleji stiskni MEZERNÍK (nebo klikni do kruhu). Pokusů: 5.",
+          "done": [
+            { "set": "reflex_hotovo" },
+            { "set": "suplik_odemcen" },
+            { "sound": "unlock" },
+            { "text": "Pod deskou stolu tiše cvaklo. Kontrolka na prostředním šuplíku se rozsvítila zeleně." },
+            { "note": "Reflex test: nejlepší {reflex_best} ms, průměr {reflex_avg} ms.", "noteKey": "reflex" },
+            { "closeup": { "note": "ŽIVÝ.\nNEJLEPŠÍ REAKCE: {reflex_best} MS.\n\nŠUPLÍK ODEMČEN.\nHLEDEJ SVĚTLO, KTERÉ NENÍ VIDĚT.", "font": "terminal", "caption": "Obrazovka herního počítače" } }
+          ]
+        },
+        "drepy": {
+          "type": "squats",
+          "count": 15,
+          "threshold": 90,
+          "minSeconds": 15,
+          "title": "Squat Challenge – 15 dřepů",
+          "done": [
+            { "set": "drepy_hotovo" },
+            { "text": "Stanice: {n} dřepů za {t:1} s. Měření je v zápisníku. Od stolu za tvými zády je slyšet tiché ťukání klávesnice… Někdo píše na počítači." },
+            { "note": "Squat Challenge: {n} dřepů za {t:1} s.", "noteKey": "drepy" }
+          ]
+        }
+      },
+
+      "scares": {
+        "_poznamka": "Lekačky: každá proběhne jen jednou za hru. delay = kolik sekund po spuštění (napětí, podkres mezitím ztichne), duration = jak dlouho je obrázek vidět, after = text, který se pak připíše pod místnost. Hráč je může vypnout v Menu.",
+        "odraz": {
+          "image": "assets/scares/odraz.webp",
+          "position": "64% 50%",
+          "sound": "scareHit",
+          "delay": 2.6,
+          "duration": 0.9,
+          "after": "Otočíš se. Nikdo tam není. Kostra stojí u protější stěny – tam, kde byla. Srdce ti buší až v krku."
+        },
+        "tma": {
+          "image": "assets/scares/tma.webp",
+          "sound": "scareHit",
+          "delay": 0.9,
+          "duration": 0.6,
+          "after": "Když se rozsvítilo, kostra stála u své stěny. Ale v té tmě byla přímo před tebou. Určitě."
+        },
+        "televize": {
+          "image": "assets/scares/televize.webp",
+          "sound": "scareStatic",
+          "delay": 1.6,
+          "duration": 1.0,
+          "after": "Televizor vedle vitríny na vteřinu zařval na plný výkon. Nikdo se ho nedotkl."
+        },
+        "chodba": {
+          "image": "assets/scares/chodba.webp",
+          "sound": "scareRush",
+          "delay": 3.4,
+          "duration": 1.1,
+          "rush": 0.3,
+          "after": "Chodba je zase prázdná. Na jejím konci tiše bliká LEVEL 2."
+        }
+      },
+
+      "locks": {
+        "vitrina": {
+          "title": "Zámek vitríny",
+          "openFlag": "vitrina_otevrena",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Cedulka na vitríně: „KÓD = VÝKON POSLEDNÍHO HRÁČE.“",
+              "answer": "142",
+              "wrong": "Kontrolka zablikala červeně. Tohle číslo to není.",
+              "hints": [
+                "Kdo tu hrál naposledy? Takové věci ukazuje žebříček.",
+                "Žebříček visí na stěně vedle dveří LEVEL 1.",
+                "Poslední hráč: DOCENT – 142 W. Kód je 142."
+              ],
+              "success": "Cvak."
+            }
+          ],
+          "open": [
+            { "text": "Dvířka vitríny se se zaskřípáním otevřela. Uvnitř stojí krabice od herních sluchátek." }
+          ]
+        },
+        "pojistky": {
+          "title": "Zámek pojistkové skříně",
+          "openFlag": "pojistky_otevreny",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Číselný zámek na pojistkové skříni – tři číslice. Na dvířkách je fixou napsáno: SVĚTLO UKÁŽE CESTU.",
+              "answer": "206",
+              "wrong": "Kontrolka zablikala červeně.",
+              "hints": [
+                "Jaké světlo se tu dá najít? Zkus na věci v herně posvítit UV svítilnou.",
+                "UV svítilnou posviť na kostru.",
+                "KOLIK NÁS JE? Kolik kostí má dospělý člověk – je to na štítku kostry: 206."
+              ],
+              "success": "Cvak."
+            }
+          ],
+          "open": [
+            { "text": "Dvířka pojistkové skříně odskočila." },
+            { "view": "pojistky" }
+          ]
+        }
+      },
+
+      "views": {
+        "stul": {
+          "name": "Herní stůl",
+          "background": "assets/rooms/herna_stul.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy2.html). Zelený text na monitoru je vrstva herna_stul_pc.svg.",
+          "darkness": 0.6,
+          "left": "dvere",
+          "right": "knihovna",
+          "enterText": "Masivní starý stůl s herním počítačem. Lampa nesvítí – světlo dávají jen monitory a neon.",
+          "lights": [
+            { "x": 36.5, "y": 37.9, "radius": 12, "strength": 0.4, "when": { "notFlags": ["pc_probuzen"] } },
+            { "x": 36.5, "y": 37.9, "radius": 14, "strength": 0.75, "flicker": true, "when": { "flags": ["pc_probuzen"] } },
+            { "x": 81.8, "y": 17.5, "radius": 15, "strength": 0.7, "flicker": true, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 50, "y": 2, "radius": 30, "strength": 0.3, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 73, "y": 43.6, "radius": 8, "strength": 0.55 },
+            { "x": 47.3, "y": 77.8, "radius": 9, "strength": 0.6, "when": { "notFlags": ["lednice_vyp"] } },
+            { "x": 58.7, "y": 61.3, "radius": 2.5, "strength": 0.6 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/herna_stul_pc.svg", "when": { "flags": ["pc_probuzen"] } },
+            { "image": "assets/rooms/herna_stul_bocni.webp", "when": { "flags": ["kalkulacka_nalezena"] }, "animate": "slide" },
+            { "image": "assets/rooms/herna_stul_zamek.webp", "when": { "flags": ["suplik_odemcen"] } },
+            { "image": "assets/rooms/herna_stul_lednice_vyp.webp", "when": { "flags": ["lednice_vyp"] } },
+            { "image": "assets/rooms/herna_stul_suplik.webp", "when": { "flags": ["uv_nalezena"] }, "animate": "slide" }
+          ],
+          "hotspots": [
+            {
+              "id": "hodiny",
+              "name": "Nástěnné hodiny",
+              "area": [8.9, 7.2, 6.1, 24.2],
+              "click": [ { "do": [ { "text": "Staré nástěnné hodiny. Stojí na třech. Ručička sebou občas cukne – ale dál se nepohne." } ] } ]
+            },
+            {
+              "id": "zidle_stara",
+              "name": "Stará židle",
+              "area": [4.5, 47.3, 12.7, 43],
+              "click": [ { "do": [ { "text": "Dřevěná židle ze staré laboratoře. Na opěradle visí herní sluchátka s utrženým kabelem." } ] } ]
+            },
+            {
+              "id": "lampa",
+              "name": "Mosazná lampa",
+              "area": [20.3, 40.2, 6.4, 13.2],
+              "click": [ { "do": [ { "text": "Stará mosazná lampa se zeleným stínítkem. Cvakneš vypínačem – nic. Žárovka je prasklá." } ] } ]
+            },
+            {
+              "id": "suplik_bocni",
+              "name": "Boční šuplíky",
+              "area": [20.6, 58.7, 15.3, 28.5],
+              "click": [
+                { "when": { "notFlags": ["kalkulacka_nalezena"] }, "do": [
+                  { "set": "kalkulacka_nalezena" },
+                  { "sound": "drawer" },
+                  { "text": "Vysuneš horní boční šuplík. Je plný starých protokolů z měření – tep, tlak, výskok, rok 1987. Mezi nimi leží stará školní kalkulačka. Bereš ji." },
+                  { "give": "kalkulacka" }
+                ] },
+                { "do": [ { "sound": "drawer" }, { "text": "V šuplíku zůstaly jen staré protokoly z měření. Tep, tlak, výskok – rok 1987." } ] }
+              ]
+            },
+            {
+              "id": "pocitac",
+              "name": "Herní počítač",
+              "area": [26.6, 26.8, 20, 22.3],
+              "click": [
+                { "when": { "notFlags": ["pc_probuzen"] }, "do": [
+                  { "set": "pc_probuzen" },
+                  { "sound": "powerOn" },
+                  { "text": "Sotva se přiblížíš, monitor se sám rozsvítí. Nikdo nesáhl na klávesnici." },
+                  { "closeup": { "note": "JE TU NĚKDO?\n\nDOKAŽ, ŽE NEJSI KOSTRA.\n\n> SPUSTIT REFLEX TEST", "font": "terminal", "caption": "Obrazovka herního počítače" } }
+                ] },
+                { "when": { "notFlags": ["reflex_hotovo"] }, "do": [
+                  { "text": "Na obrazovce čeká REFLEX TEST." },
+                  { "activity": "reflex" }
+                ] },
+                { "when": { "flags": ["brana_herna_otevrena"] }, "do": [
+                  { "closeup": { "note": "DĚKUJU.\n\nLEVEL 2 TĚ ČEKÁ.\nJÁ TAKY.\n\n– D.", "font": "terminal", "caption": "Obrazovka herního počítače" } }
+                ] },
+                { "when": { "flags": ["drepy_hotovo"] }, "do": [
+                  { "closeup": { "note": "DOBRÝ VÝKON.\n{n} DŘEPŮ ZA {t:1} S.\n\nJÁ UŽ TO NEZVLÁDÁM.\nSPOČÍTEJ TO ZA MĚ\nA OTEVŘI DVEŘE.\n\n– D.\n\n\n\nOTOČ SE.", "font": "terminal", "caption": "Obrazovka herního počítače" } }
+                ] },
+                { "do": [
+                  { "closeup": { "note": "ŽIVÝ.\nŠUPLÍK ODEMČEN.\n\nHLEDEJ SVĚTLO, KTERÉ NENÍ VIDĚT.", "font": "terminal", "caption": "Obrazovka herního počítače" } }
+                ] }
+              ]
+            },
+            {
+              "id": "monitor2",
+              "name": "Druhý monitor",
+              "area": [48.1, 26.8, 19.7, 22.3],
+              "click": [
+                { "when": { "notFlags": ["lekacka_odraz"] }, "do": [
+                  { "text": "Druhý monitor je vypnutý. V černém skle se odráží místnost: stůl, knihovna… a kostra. Počkat. Kostra přece stojí u protější stěny. Tak proč je v odrazu tak blízko?" },
+                  { "scare": "odraz" }
+                ] },
+                { "when": { "flags": ["kostra_otocena"] }, "do": [ { "text": "V černém monitoru se odráží místnost. I kostra na protější stěně. Dívá se sem." } ] },
+                { "do": [ { "text": "Druhý monitor je vypnutý. V černém skle se odráží místnost – a na protější stěně bílá kostra." } ] }
+              ]
+            },
+            {
+              "id": "suplik",
+              "name": "Šuplík s elektronickým zámkem",
+              "area": [36.6, 58.4, 26.2, 6.6],
+              "click": [
+                { "when": { "notFlags": ["suplik_odemcen"] }, "do": [
+                  { "sound": "locked" },
+                  { "text": "Prostřední šuplík má místo klíčové dírky malý panel s červenou kontrolkou: ZAMČENO. Kabel od panelu vede nahoru k počítači." }
+                ] },
+                { "when": { "notFlags": ["uv_nalezena"] }, "do": [
+                  { "set": "uv_nalezena" },
+                  { "sound": "drawer" },
+                  { "text": "Šuplík vyjel. Stará fixa, obaly od žvýkaček – a malá svítilna s fialovým sklem. Na boku má fixou napsáno D." },
+                  { "give": "uv" }
+                ] },
+                { "do": [ { "text": "V šuplíku zůstala jen fixa a obaly od žvýkaček." } ] }
+              ]
+            },
+            {
+              "id": "lednice",
+              "name": "Lednička",
+              "area": [41.3, 67.7, 12.1, 20.2],
+              "click": [
+                { "when": { "flags": ["lednice_vyp"] }, "do": [ { "text": "Lednička je vypnutá. Uvnitř je tma a z dvířek pomalu kape." } ] },
+                { "do": [ { "text": "Lednička plná energetických nápojů. Na dvířkách lísteček: „Cukr není výkon. – D.“" } ] }
+              ]
+            },
+            {
+              "id": "skrin_pc",
+              "name": "Skříň počítače",
+              "area": [68.5, 33.3, 8.8, 20.7],
+              "click": [ { "do": [ { "text": "Skříň herního počítače. Ventilátory svítí a tiše vrní. Na boku nálepka: NEVYPÍNAT! – D." } ] } ]
+            },
+            {
+              "id": "neon_napis",
+              "name": "Neonový nápis",
+              "area": [72.1, 13, 19.6, 9.1],
+              "click": [
+                { "when": { "flags": ["neon_vyp"] }, "do": [ { "text": "Neonový nápis je zhasnutý. Bez něj je tu ještě větší tma." } ] },
+                { "do": [ { "text": "Neonový nápis GSPORT. Občas zabzučí a zakolísá – jako by se nadechoval." } ] }
+              ]
+            },
+            {
+              "id": "kreslo",
+              "name": "Herní křeslo",
+              "area": [81.9, 38.5, 16.1, 53.8],
+              "click": [ { "do": [ { "text": "Herní křeslo je otočené ke dveřím, jako by z něj někdo právě vstal. Sáhneš na opěrku. Je studená." } ] } ]
+            }
+          ]
+        },
+
+        "knihovna": {
+          "name": "Knihovna",
+          "background": "assets/rooms/herna_knihovna.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy.html).",
+          "darkness": 0.6,
+          "left": "stul",
+          "right": "stanice",
+          "enterText": "Stará knihovna, prosklená vitrína ze staré laboratoře a televizor, který tu nikdo nevypnul.",
+          "lights": [
+            { "x": 83.2, "y": 50.8, "radius": 12, "strength": 0.6, "flicker": true, "when": { "notFlags": ["tv_vyp"] } },
+            { "x": 25.7, "y": 6, "radius": 18, "strength": 0.5, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 27.1, "y": 49.3, "radius": 4.5, "strength": 0.65 },
+            { "x": 65.8, "y": 52.4, "radius": 4, "strength": 0.55 },
+            { "x": 58.6, "y": 35, "radius": 8, "strength": 0.35 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/herna_knihovna_tv.svg", "when": { "notFlags": ["tv_vyp"] } },
+            { "image": "assets/rooms/herna_knihovna_mezera.webp", "when": { "flags": ["kniha_drep_vzata"] } },
+            { "image": "assets/rooms/herna_knihovna_vitrina.webp", "when": { "flags": ["vitrina_otevrena"] } },
+            { "image": "assets/rooms/herna_knihovna_krabice.webp", "when": { "flags": ["karta_nalezena"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "knihy",
+              "name": "Knihovna",
+              "area": [5.7, 3.2, 40.5, 86.9],
+              "click": [ { "do": [ { "text": "Staré učebnice fyziologie a anatomie, šanony s protokoly, starý osciloskop. Všechno pod vrstvou prachu – kromě jedné knihy, jejíž hřbet svítí." } ] } ]
+            },
+            {
+              "id": "krabice_her",
+              "name": "Krabice od her",
+              "area": [29.7, 24.7, 12.9, 14.5],
+              "click": [ { "do": [ { "text": "Krabice od her. Všechny prázdné. Na jedné někdo přeškrtl GAME OVER a připsal: MOVE ON." } ] } ]
+            },
+            {
+              "id": "kniha_drep",
+              "name": "Svítící kniha",
+              "area": [25.4, 41.7, 3.5, 15.1],
+              "click": [
+                { "when": { "notFlags": ["kniha_drep_vzata"] }, "do": [
+                  { "set": "kniha_drep_vzata" },
+                  { "sound": "book" },
+                  { "text": "Vytáhneš knihu se svítící páskou na hřbetu: FYZIKA DŘEPU – příručka pro hráče GSPORT. Otevřeš ji kliknutím v inventáři." },
+                  { "give": "kniha_drep" }
+                ] },
+                { "do": [ { "text": "Tady stála kniha Fyzika dřepu. Máš ji v inventáři." } ] }
+              ]
+            },
+            {
+              "id": "vitrina",
+              "name": "Vitrína se zámkem",
+              "area": [49, 13.9, 19.1, 76.5],
+              "click": [
+                { "when": { "flags": ["vitrina_otevrena"], "notFlags": ["karta_nalezena"] }, "do": [
+                  { "set": "karta_nalezena" },
+                  { "sound": "paper" },
+                  { "text": "Otevřeš krabici od herních sluchátek. Sluchátka v ní nejsou – jen plastová karta s čipem: HRÁČ – GSPORT." },
+                  { "give": "karta" },
+                  { "scare": "televize" }
+                ] },
+                { "when": { "flags": ["vitrina_otevrena"] }, "do": [ { "text": "Vitrína je otevřená. Krabice od sluchátek je prázdná." } ] },
+                { "do": [
+                  { "text": "Prosklená vitrína ze staré laboratoře. Za sklem krabice od herních sluchátek. Na dvířkách je přišroubovaný číselný zámek a cedulka: „KÓD = VÝKON POSLEDNÍHO HRÁČE.“" },
+                  { "lock": "vitrina" }
+                ] }
+              ]
+            },
+            {
+              "id": "televizor",
+              "name": "Starý televizor",
+              "area": [72.7, 35.6, 23, 30.8],
+              "click": [
+                { "when": { "flags": ["tv_vyp"] }, "do": [ { "text": "Televizor je vypnutý. V černé obrazovce vidíš jen svůj odraz. Jen svůj." } ] },
+                { "do": [ { "text": "Starý televizor šumí. Když se díváš dlouho, objeví se v šumu silueta – z boku, pomalu dělá dřepy. Pořád dokola." } ] }
+              ]
+            },
+            {
+              "id": "konzole",
+              "name": "Herní konzole",
+              "area": [73.1, 66.4, 22.3, 23.7],
+              "click": [ { "do": [ { "text": "Pod televizorem stará herní konzole. Ovladač má překousnutý kabel." } ] } ]
+            }
+          ]
+        },
+
+        "stanice": {
+          "name": "Kostra a stanice",
+          "background": "assets/rooms/herna_stanice.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy2.html). Hlava zepředu je vsazená z autorova obrázku s jiným záběrem; displej a UV nápis jsou SVG vrstvy.",
+          "darkness": 0.6,
+          "left": "knihovna",
+          "right": "dvere",
+          "enterText": "Kostra na stojanu, starý dřevěný výškoměr a uprostřed moderní měřicí stanice s kamerou.",
+          "enter": [
+            { "when": { "notFlags": ["stanice_videna"] }, "do": [ { "set": "stanice_videna" } ] },
+            { "when": { "flags": ["reflex_hotovo"], "notFlags": ["kostra_otocena"] }, "do": [
+              { "set": "kostra_otocena" },
+              { "sound": "creakSoft" },
+              { "text": "Něco je jinak. Kostra má hlavu otočenou k tobě. Předtím se dívala ke dveřím. Určitě." }
+            ] }
+          ],
+          "lights": [
+            { "x": 20.5, "y": 45, "radius": 11, "strength": 0.3 },
+            { "x": 72.4, "y": 27.8, "radius": 12, "strength": 0.55, "flicker": true, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 85, "y": 35, "radius": 13, "strength": 0.45, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 58.5, "y": 48.4, "radius": 7, "strength": 0.65, "when": { "flags": ["stanice_proud"] } },
+            { "x": 20.6, "y": 7.5, "radius": 12, "strength": 0.5, "when": { "flags": ["uv_kostra"] } }
+          ],
+          "layers": [
+            { "image": "assets/rooms/herna_stanice_hlava.webp", "when": { "flags": ["kostra_otocena"] } },
+            { "image": "assets/rooms/herna_stanice_uv.svg", "when": { "flags": ["uv_kostra"] } },
+            { "image": "assets/rooms/herna_stanice_proud.svg", "when": { "flags": ["stanice_proud"] } },
+            { "image": "assets/rooms/herna_stanice_karta.webp", "when": { "flags": ["karta_vlozena"] } },
+            { "image": "assets/rooms/herna_stanice_pripraveno.svg", "when": { "flags": ["karta_vlozena", "stanice_proud"] } },
+            { "image": "assets/rooms/herna_stanice_hotovo.svg", "when": { "flags": ["drepy_hotovo", "stanice_proud"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "zona",
+              "name": "Značka na podlaze",
+              "area": [41.3, 80.4, 34.1, 14.7],
+              "click": [ { "do": [ { "text": "Páskou vyznačená SQUAT ZONE a dvě stopy – postavené bokem ke kameře stanice." } ] } ]
+            },
+            {
+              "id": "kostra",
+              "name": "Kostra",
+              "area": [14.4, 10.1, 12.3, 73.9],
+              "click": [
+                { "when": { "flags": ["uv_kostra"] }, "do": [ { "text": "Nad kostrou pořád slabě svítí: KOLIK NÁS JE? A šipka míří ke dveřím." } ] },
+                { "when": { "flags": ["kostra_otocena"] }, "do": [ { "text": "Kostra se sluchátky na hlavě. Dívá se na tebe prázdnými důlky. Ze sluchátek tiše šumí." } ] },
+                { "do": [ { "text": "Kostra na stojanu ze staré laboratoře. Někdo jí nasadil herní sluchátka. Hlavu má otočenou ke dveřím, jako by na někoho čekala." } ] }
+              ]
+            },
+            {
+              "id": "stitek",
+              "name": "Štítek na podstavci",
+              "area": [17, 82.4, 7.2, 3.9],
+              "click": [ { "do": [
+                { "text": "Mosazný štítek na podstavci: KOSTRA DOSPĚLÉHO ČLOVĚKA – 206 KOSTÍ." },
+                { "note": "Štítek u kostry: dospělý člověk má 206 kostí." }
+              ] } ]
+            },
+            {
+              "id": "vyskomer",
+              "name": "Dřevěný výškoměr",
+              "area": [32.6, 14.3, 4.6, 71.5],
+              "click": [ { "do": [ { "text": "Starý dřevěný výškoměr s mosazným jezdcem. Jezdec je stažený hodně nízko – jako by se naposledy měřil někdo v dřepu." } ] } ]
+            },
+            {
+              "id": "tabule",
+              "name": "Tabule svalů",
+              "area": [74.9, 9.8, 20.5, 51],
+              "click": [ { "do": [ { "text": "Nástěnná tabule svalů dolní končetiny. Někdo neonovou fixou zakroužkoval čtyřhlavý sval stehna a připsal: TEN DĚLÁ DŘEPY." } ] } ]
+            },
+            {
+              "id": "stanice",
+              "name": "Měřicí stanice",
+              "area": [53.5, 29.8, 10, 62.1],
+              "click": [
+                { "when": { "notFlags": ["stanice_proud"] }, "do": [
+                  { "text": "Měřicí stanice je mrtvá – displej je černý a kamera nesvítí. Napájecí kabel vede po zemi doprava, ke dveřím." }
+                ] },
+                { "when": { "flags": ["drepy_hotovo"] }, "do": [
+                  { "text": "Stanice ukazuje poslední měření: {n} dřepů za {t:1} s. Chceš se změřit znovu? Platit bude nové měření." },
+                  { "activity": "drepy" }
+                ] },
+                { "when": { "flags": ["karta_vlozena"] }, "do": [ { "activity": "drepy" } ] },
+                { "when": { "items": ["karta"] }, "do": [
+                  { "text": "Na displeji svítí: VLOŽ HRÁČSKOU KARTU. Vyber kartu v inventáři a klikni na stanici." }
+                ] },
+                { "do": [ { "text": "Displej stanice svítí: VLOŽ HRÁČSKOU KARTU. Kartu ale zatím nemáš." } ] }
+              ]
+            }
+          ]
+        },
+
+        "dvere": {
+          "name": "Dveře LEVEL 1",
+          "background": "assets/rooms/herna_dvere.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy.html).",
+          "darkness": 0.6,
+          "left": "stanice",
+          "right": "stul",
+          "enterText": "Staré čalouněné dveře – a na nich přišroubovaný neonový číselník. Vedle žebříček hráčů a pojistková skříň.",
+          "lights": [
+            { "x": 50, "y": 6.2, "radius": 11, "strength": 0.65, "flicker": true, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 50, "y": 50, "radius": 24, "strength": 0.35, "when": { "notFlags": ["neon_vyp"] } },
+            { "x": 61.3, "y": 51.2, "radius": 4, "strength": 0.6 },
+            { "x": 19.3, "y": 32.8, "radius": 10, "strength": 0.6 },
+            { "x": 82.8, "y": 50.3, "radius": 3, "strength": 0.4 },
+            { "x": 50, "y": 50, "radius": 22, "strength": 0.85, "when": { "flags": ["brana_herna_otevrena"] } }
+          ],
+          "layers": [
+            { "image": "assets/rooms/herna_dvere_pojistky.webp", "when": { "flags": ["pojistky_otevreny"] } },
+            { "image": "assets/rooms/herna_dvere_otevrene.webp", "when": { "flags": ["brana_herna_otevrena"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "zebricek",
+              "name": "Žebříček",
+              "area": [10.3, 21.3, 18.1, 23.2],
+              "click": [ { "do": [
+                { "text": "Žebříček Squat Challenge. Úplně dole svítí růžově poslední hráč." },
+                { "closeup": { "note": "SQUAT CHALLENGE – ŽEBŘÍČEK\n(15 dřepů, průměrný výkon)\n\n1. NEONFOX      163 W\n2. KR4KEN       151 W\n3. PIXEL_PAJA   128 W\n4. AFK_ADAM      64 W\n\nPOSLEDNÍ HRÁČ:\n   DOCENT       142 W\n   před 3 dny\n\nTvůj výkon? Spočítej ho.", "font": "type", "caption": "Žebříček na obrazovce" } },
+                { "note": "Žebříček: poslední hráč DOCENT – 142 W (před 3 dny)." }
+              ] } ]
+            },
+            {
+              "id": "dvere_level",
+              "name": "Dveře LEVEL 1",
+              "area": [31.5, 9.4, 36.5, 74.1],
+              "click": [
+                { "when": { "flags": ["brana_herna_otevrena"] }, "do": [
+                  { "text": "Dveře jsou otevřené. Za nimi tmavá chodba a na jejím konci bliká LEVEL 2." },
+                  { "leave": true }
+                ] },
+                { "do": [
+                  { "text": "Staré čalouněné dveře. Klika nepovolí. Neonový číselník na nich chce číslo." },
+                  { "openGate": true }
+                ] }
+              ]
+            },
+            {
+              "id": "pojistky",
+              "name": "Pojistková skříň",
+              "area": [71.3, 30.4, 13.4, 30.2],
+              "click": [
+                { "when": { "flags": ["pojistky_otevreny"] }, "do": [ { "view": "pojistky" } ] },
+                { "do": [
+                  { "text": "Stará plechová pojistková skříň. Na dvířkách číselný zámek a fixou napsáno: SVĚTLO UKÁŽE CESTU." },
+                  { "lock": "pojistky" }
+                ] }
+              ]
+            },
+            {
+              "id": "vesak",
+              "name": "Věšák",
+              "area": [86.1, 13.8, 12.6, 70.7],
+              "click": [ { "do": [ { "text": "Na věšáku visí mikina GSPORT a pod ní staré tvídové sako se záplatami na loktech. Kapsy jsou prázdné. Sako je ještě cítit křídou." } ] } ]
+            }
+          ]
+        },
+
+        "pojistky": {
+          "name": "Pojistková skříň",
+          "background": "assets/rooms/herna_pojistky.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy.html). Nápisy na štítcích jsou ve vrstvě herna_pojistky_text.svg.",
+          "darkness": 0.45,
+          "back": "dvere",
+          "enterText": "Řada starých páčkových vypínačů. Páčka nahoře = zapnuto. Nad nimi hlavní jistič.",
+          "enter": [
+            { "when": { "notFlags": ["pojistky_zapsany"] }, "do": [
+              { "set": "pojistky_zapsany" },
+              { "note": "Pojistky: hlavní jistič max. 1000 W. Počítač 400 W, televizor 120 W, neony 60 W, lednice 300 W, měřicí stanice 150 W." }
+            ] }
+          ],
+          "lights": [
+            { "x": 50, "y": 45, "radius": 48, "strength": 0.4 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/herna_pojistky_text.svg" },
+            { "image": "assets/rooms/herna_pojistky_tv.webp", "when": { "flags": ["tv_vyp"] } },
+            { "image": "assets/rooms/herna_pojistky_neony.webp", "when": { "flags": ["neon_vyp"] } },
+            { "image": "assets/rooms/herna_pojistky_lednice.webp", "when": { "flags": ["lednice_vyp"] } },
+            { "image": "assets/rooms/herna_pojistky_stanice.webp", "when": { "flags": ["stanice_proud"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "jistic",
+              "name": "Hlavní jistič",
+              "area": [31.1, 9.9, 43, 11.6],
+              "click": [ { "do": [ { "text": "HLAVNÍ JISTIČ – MAX 1000 W. Když zapnuté spotřebiče potřebují dohromady víc, jistič vypadne a všechno na chvíli zhasne." } ] } ]
+            },
+            {
+              "id": "sw_pc",
+              "name": "Vypínač: herní počítač 400 W",
+              "area": [10, 29.5, 15, 55.7],
+              "click": [ { "do": [ { "text": "Vypínač počítače je přelepený páskou: NEVYPÍNAT! – D. Necháš ho být." } ] } ]
+            },
+            {
+              "id": "sw_tv",
+              "name": "Vypínač: televizor 120 W",
+              "area": [26.9, 29.5, 14.9, 55.7],
+              "click": [
+                { "when": { "flags": ["tv_vyp"], "expr": "400 + 60*(1-neon_vyp) + 300*(1-lednice_vyp) + 150*stanice_proud + 120 > 1000" }, "do": [
+                  { "sound": "breaker" }, { "fx": "blackout" }, { "scare": "tma" },
+                  { "text": "Cvak – jistič vypadl. Herna na chvíli zhasla, pak proud zase naskočil. Páčka televizoru zůstala dole. Na víc než 1000 W hlavní jistič nestačí." }
+                ] },
+                { "when": { "flags": ["tv_vyp"] }, "do": [ { "unset": "tv_vyp" }, { "sound": "switch" }, { "text": "Páčka nahoru. Z knihovny se znovu ozval šum televizoru." } ] },
+                { "do": [ { "set": "tv_vyp" }, { "sound": "switch" }, { "text": "Páčka dolů. Šum televizoru utichl." } ] }
+              ]
+            },
+            {
+              "id": "sw_neon",
+              "name": "Vypínač: neony 60 W",
+              "area": [42.9, 29.5, 14.5, 55.7],
+              "click": [
+                { "when": { "flags": ["neon_vyp"], "expr": "400 + 120*(1-tv_vyp) + 300*(1-lednice_vyp) + 150*stanice_proud + 60 > 1000" }, "do": [
+                  { "sound": "breaker" }, { "fx": "blackout" }, { "scare": "tma" },
+                  { "text": "Cvak – jistič vypadl. Herna na chvíli zhasla, pak proud zase naskočil. Páčka neonů zůstala dole. Na víc než 1000 W hlavní jistič nestačí." }
+                ] },
+                { "when": { "flags": ["neon_vyp"] }, "do": [ { "unset": "neon_vyp" }, { "sound": "switch" }, { "text": "Páčka nahoru. Neony zabzučely a rozsvítily se." } ] },
+                { "do": [ { "set": "neon_vyp" }, { "sound": "switch" }, { "text": "Páčka dolů. Neony zhasly – v herně je teď o dost větší tma." } ] }
+              ]
+            },
+            {
+              "id": "sw_lednice",
+              "name": "Vypínač: lednice 300 W",
+              "area": [59.2, 29.5, 14.2, 55.7],
+              "click": [
+                { "when": { "flags": ["lednice_vyp"], "expr": "400 + 120*(1-tv_vyp) + 60*(1-neon_vyp) + 150*stanice_proud + 300 > 1000" }, "do": [
+                  { "sound": "breaker" }, { "fx": "blackout" }, { "scare": "tma" },
+                  { "text": "Cvak – jistič vypadl. Herna na chvíli zhasla, pak proud zase naskočil. Páčka lednice zůstala dole. Na víc než 1000 W hlavní jistič nestačí." }
+                ] },
+                { "when": { "flags": ["lednice_vyp"] }, "do": [ { "unset": "lednice_vyp" }, { "sound": "switch" }, { "text": "Páčka nahoru. Lednička zase vrní." } ] },
+                { "do": [ { "set": "lednice_vyp" }, { "sound": "switch" }, { "text": "Páčka dolů. Lednička ztichla." } ] }
+              ]
+            },
+            {
+              "id": "sw_stanice",
+              "name": "Vypínač: měřicí stanice 150 W",
+              "area": [75.2, 29.5, 14.2, 55.7],
+              "click": [
+                { "when": { "flags": ["stanice_proud"] }, "do": [ { "unset": "stanice_proud" }, { "sound": "switch" }, { "text": "Páčka dolů. Měřicí stanice zhasla." } ] },
+                { "when": { "expr": "400 + 120*(1-tv_vyp) + 60*(1-neon_vyp) + 300*(1-lednice_vyp) + 150 > 1000" }, "do": [
+                  { "sound": "breaker" }, { "fx": "blackout" }, { "scare": "tma" },
+                  { "text": "Cvak – jistič vypadl! Herna na chvíli úplně zhasla, pak proud zase naskočil. Páčka stanice je zase dole. Všechno zapnuté dohromady je na hlavní jistič moc." }
+                ] },
+                { "do": [
+                  { "set": "stanice_proud" }, { "sound": "powerOn" },
+                  { "text": "Páčka cvakla nahoru – a jistič vydržel. Od kostry se ozvalo pípnutí: měřicí stanice má proud." }
+                ] }
+              ]
+            }
+          ]
+        }
+      },
+
+      "gate": {
+        "title": "Dveře LEVEL 1",
+        "openFlag": "brana_herna_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku dveří svítí: „Jaký průměrný výkon jsi podával při dřepech? Zadej ve wattech.“",
+            "unit": "W",
+            "requiresVars": ["n", "t"],
+            "missingText": "Číselník bliká: NEJDŘÍV SQUAT CHALLENGE. Změř se u stanice vedle kostry.",
+            "answer": "70*9.81*0.4*n/t",
+            "toleranceRel": 0.04,
+            "feedbackFormulas": [
+              { "value": "70*9.81*0.4*n", "text": "To je práce v joulech (W = m · g · h · n). Výkon je práce za jednotku času – vyděl ji svým časem {t:1} s." },
+              { "value": "70*9.81*0.4/t", "text": "Zapomněl jsi na počet dřepů n = {n}." },
+              { "value": "70*0.4*n/t", "text": "Chybí g = 9,81 m/s² – bez něj nemáš tíhovou sílu v newtonech." },
+              { "value": "70*9.81*40*n/t", "text": "Pozor na jednotky: h musí být v metrech (0,4 m), ne v centimetrech." }
+            ],
+            "wrong": "Číselník zablikal červeně. Přepočítej to podle knihy Fyzika dřepu.",
+            "hints": [
+              "Vzorce najdeš v knize Fyzika dřepu – stojí v knihovně a hřbet má svítící. Kalkulačka je v bočním šuplíku herního stolu.",
+              "Nejdřív práce: W = 70 · 9,81 · 0,4 · {n}. Pak výkon: P = W / t, kde t je tvůj čas {t:1} s.",
+              "W = 70 · 9,81 · 0,4 · {n} = {=70*9.81*0.4*n:0} J. Teď ji vyděl časem {t:1} s."
+            ],
+            "success": "Zelená! Číselník píše: VÝKON PŘIJAT. A hned další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Herní počítač spotřebuje asi 400 W. Kolik hráčů by ho svými dřepy napájelo, kdyby každý podával tvůj výkon? Zaokrouhli nahoru na celé hráče.“",
+            "unit": "hráčů",
+            "requiresVars": ["n", "t"],
+            "missingText": "Číselník bliká: NEJDŘÍV SQUAT CHALLENGE.",
+            "answerMin": "ceil(400/(1.04*70*9.81*0.4*n/t))",
+            "answerMax": "ceil(400/(0.96*70*9.81*0.4*n/t))",
+            "feedbackFormulas": [
+              { "value": "400/(70*9.81*0.4*n/t)", "toleranceRel": 0.05, "text": "Skoro! Napájet počítač „kouskem hráče“ nejde – zaokrouhli nahoru na celé hráče." },
+              { "value": "floor(400/(70*9.81*0.4*n/t))", "toleranceRel": 0, "text": "Zaokrouhlil jsi dolů – tolik hráčů by na 400 W nestačilo. Zaokrouhli nahoru." },
+              { "value": "70*9.81*0.4*n/t", "text": "To je tvůj výkon. Kolikrát se vejde do 400 W?" }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Kolikrát se tvůj výkon vejde do 400 W?",
+              "Počet hráčů = 400 W / tvůj výkon – a zaokrouhlit nahoru.",
+              "400 / {=70*9.81*0.4*n/t:0} ≈ {=400/(70*9.81*0.4*n/t):1} → zaokrouhli nahoru."
+            ],
+            "success": "Zámek dveří cvakl. LEVEL 1 SPLNĚN."
+          }
+        ],
+        "open": [
+          { "sound": "levelUp" },
+          { "text": "Staré dveře se pomalu otevřely. Za nimi je tmavá chodba a na jejím konci bliká obrazovka: LEVEL 2." },
+          { "scare": "chodba" },
+          { "note": "LEVEL 1: výkon = práce / čas. Tvůj výkon při dřepech byl asi {=70*9.81*0.4*n/t:0} W – na 400W herní počítač by bylo potřeba {=ceil(400/(70*9.81*0.4*n/t)):0} hráčů. Svaly přitom spálí asi čtyřikrát víc energie, protože jejich účinnost je jen kolem 25 %." }
         ]
       }
     }

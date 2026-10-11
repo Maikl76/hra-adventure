@@ -1,7 +1,7 @@
 # Devět bran k pochopení pohybu
 
 Výuková point-and-click adventura z biomechaniky, zasazená do prostředí Fakulty tělesné výchovy
-a sportu UK – se sekcí pro civilní studium i pro vojenskou tělovýchovu.
+a sportu UK. Má tři světy: civilní studium, vojenskou tělovýchovu a GSPORT (hra a pohyb).
 
 **▶ Hrát: <https://maikl76.github.io/hra-adventure/>**
 
@@ -12,8 +12,25 @@ pochopením biomechanického principu.
 
 ## Stav
 
-- **Brána I – Anatomický kabinet** (moment síly, rovnováha momentů, druhy pák): hotová.
-- Další brány se připravují (laboratoř – výskok a doba letu, pohybové stanoviště GSPORT…).
+Každý svět bude mít vlastních devět bran.
+
+- **Civilní studium – Brána I: Anatomický kabinet** (moment síly, rovnováha momentů, druhy pák):
+  hotová. Vojenská tělovýchova zatím vede do stejné místnosti, vlastní brány se připravují.
+- **GSPORT – LEVEL 1: Stará herna** (práce a výkon při dřepech, sčítání wattů): stará laboratoř
+  v suterénu předělaná na hernu, čtyři strany místnosti a řetěz úkolů – reflex test, UV
+  svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
+  15 dřepů u měřicí stanice a z vlastního času spočítá svůj výkon. Grafiku místnosti
+  i lekaček dodal autor.
+- Další brány se připravují.
+
+## GSPORT: dřepy před webkamerou
+
+- Hráč se postaví 2–3 m od notebooku **bokem ke kameře**. Hra sleduje úhel v koleni a dřep
+  započítá, když úhel klesne pod 90° a hráč se znovu postaví. Každý dřep pípne.
+- **Obraz z kamery se zpracovává jen v prohlížeči hráče** – nic se nenahrává ani neukládá.
+- Bez kamery (nebo když ji hráč nepovolí) jde dřepy udělat i „na poctivost“: hra jen změří čas.
+  Na závěrečné obrazovce je pak uvedeno „Dřepy ověřené kamerou: ne“.
+- Výpočty počítají se standardním hráčem 70 kg, aby hra nepotřebovala osobní údaje.
 
 ## Ovládání
 
@@ -31,8 +48,11 @@ pochopením biomechanického principu.
   [`data/game.json`](data/game.json) – upravuje se bez programování.
 - **Výuka ve třídě:** v `game.json` nastavte `"audio": { "defaultOn": false }` – hra pak začne
   potichu (zvuk si hráči mohou zapnout, nejlépe se sluchátky).
-- Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd – studenti ji
-  vyfotí pro vyhodnocení.
+- Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
+  naměřené dřepy, výkon a reakční dobu) – studenti ji vyfotí pro vyhodnocení.
+- **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
+  s hlasitým zvukem). Hráč je může vypnout v Menu → „Lekačky: zapnuté/vypnuté“. Obraz
+  nebliká opakovaně, ale citlivější studenty je dobré předem upozornit.
 - Pozor: správné odpovědi jsou v `game.json` veřejně čitelné.
 
 ### Spuštění na vlastním počítači
@@ -47,8 +67,13 @@ a otevřete `http://127.0.0.1:8765`.
 
 ## Technika
 
-Čisté HTML, CSS a JavaScript – bez knihoven, bez serveru a bez sestavování. Zvuk se generuje
-přímo v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nahradit nahrávkami.
+Čisté HTML, CSS a JavaScript – bez serveru a bez sestavování. Zvuk se generuje přímo
+v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nahradit nahrávkami.
+
+Jediná knihovna je **MediaPipe Tasks Vision** (Google, licence Apache 2.0) pro odhad polohy
+těla z kamery ve světě GSPORT. Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
+i s modelem, takže hra nestahuje nic z cizích serverů. Načte se, až když hráč zvolí dřepy
+s kamerou.
 
 ## Autor a licence
 
@@ -56,3 +81,4 @@ přímo v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nah
 - **Kód** (`index.html`, `css/`, `js/`): licence [MIT](LICENSE).
 - **Obsah** – obrázky, texty a hádanky (`assets/`, `data/`): licence
   [CC BY 4.0](LICENSE-obsah.md) – volné použití s uvedením autora.
+- **MediaPipe** (`vendor/mediapipe/`): © Google, licence [Apache 2.0](vendor/mediapipe/LICENSE).

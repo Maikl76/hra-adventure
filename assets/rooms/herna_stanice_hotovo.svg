@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: měření dřepů hotové – displej MĚŘENÍ OK. -->
+  <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect x="905" y="415" width="145" height="80" fill="#061420"/>
+  <g filter="url(#glow)" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">
+    <text x="977" y="451" font-size="18" fill="#5dff9a">MĚŘENÍ OK ✓</text>
+    <text x="977" y="475" font-size="12" fill="#9ff3ff">VÝSLEDEK V ZÁPISNÍKU</text>
+  </g>
+</svg>

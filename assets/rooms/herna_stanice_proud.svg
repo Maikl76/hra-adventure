@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: stanice má proud – displej (x 905–1050, y 415–495 v herna_stanice.webp) svítí VLOŽ HRÁČSKOU KARTU. -->
+  <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect x="905" y="415" width="145" height="80" fill="#061420"/>
+  <g filter="url(#glow)" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle" fill="#3fe0ff">
+    <text x="977" y="449" font-size="15">VLOŽ</text>
+    <text x="977" y="472" font-size="14">HRÁČSKOU KARTU</text>
+  </g>
+  <circle cx="1003" cy="294" r="4" fill="#ff3b3b" filter="url(#glow)"/>
+</svg>

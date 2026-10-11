@@ -135,6 +135,18 @@
       }
     }
 
+    /* Napětí před lekačkou: podkres během „seconds“ skoro utichne… */
+    tension(seconds) {
+      if (!this.ctx) return;
+      this.music.gain.setTargetAtTime(0.06, this.ctx.currentTime, Math.max(seconds, 0.2) / 3);
+    }
+
+    /* …a po lekačce se pomalu vrátí. */
+    release() {
+      if (!this.ctx) return;
+      this.music.gain.setTargetAtTime(0.55, this.ctx.currentTime + 0.6, 1.2);
+    }
+
     /* ---------- Podkresy ---------- */
 
     ambience(name) {
@@ -448,6 +460,43 @@
       this.lfo(tone.gain, 0.06, 0.008, t, h);
     },
 
+    /* Stará herna GSPORT: ventilátory, bzučení neonů, temný nejistý akord, občas zapraská
+       dřevo nebo zašumí televizor. Vše tiché a pozvolné – žádné náhlé hlasité zvuky. */
+    herna(group, h) {
+      const t = this.ctx.currentTime;
+      // ventilátory počítačů
+      const fans = this.gain(0.04, group);
+      const lp = this.filter('lowpass', 800, 0.5, fans);
+      h.sources.push(this.noiseSource(lp, t, 0, this.brown, true));
+      // bzučení neonů (síť 50 Hz → 100 Hz), pomalu kolísá
+      const hum = this.gain(0.008, group);
+      h.sources.push(this.osc('sine', 100, hum, t));
+      h.sources.push(this.osc('sine', 200, this.gain(0.4, hum), t));
+      this.lfo(hum.gain, 0.13, 0.004, t, h);
+      // podkres: nízký akord s „nepatřičnou“ malou sekundou, pomalu dýchá
+      const pad = this.gain(0.0001, group);
+      pad.gain.setTargetAtTime(1, t, 3);
+      const plp = this.filter('lowpass', 520, 0.7, pad);
+      [NOTE.A2, 116.54, 130.81, 164.81].forEach((f, i) => {
+        const vg = this.gain(0.013, plp);
+        h.sources.push(this.osc('sawtooth', f, vg, t, 0, i % 2 ? 7 : -7));
+        this.lfo(vg.gain, 0.03 + i * 0.011, 0.011, t, h);
+      });
+      this.lfo(plp.frequency, 0.025, 220, t, h);
+      // staré dřevo
+      this.every(h, 12, 26, (when) => this.creak(group, when, 0.025, 1 + Math.random()));
+      // vzdálený šum televizoru se pozvolna zvedne a zase utichne
+      this.every(h, 18, 34, (when) => {
+        const g = this.gain(0, group);
+        g.gain.setValueAtTime(0.0001, when);
+        g.gain.exponentialRampToValueAtTime(0.018, when + 1.5);
+        g.gain.exponentialRampToValueAtTime(0.0001, when + 4);
+        this.noiseSource(this.filter('bandpass', 3000, 0.6, g), when, when + 4.2);
+      });
+      // vzácné tiché pípnutí z monitorů (nízko, ne vesele)
+      this.every(h, 16, 30, (when) => this.ping(group, pick([880, 698.46]), when, 0.008, 0.4));
+    },
+
     /* Závěrečná obrazovka: klidnější tón. */
     finish(group, h) {
       AMBIENCE.intro.call(this, group, h, { level: 0.5, bells: false });
@@ -464,6 +513,149 @@
     key(dest, t) {
       this.click(dest, 3200, t, 0.2);
       this.ping(dest, 1900, t, 0.02, 0.08);
+    },
+
+    /* Reflex test: signál „teď!“. */
+    reflexGo(dest, t) {
+      this.ping(dest, 1320, t, 0.06, 0.18);
+    },
+
+    /* Započítaný dřep: dva rychlé stoupající tóny. */
+    squatOk(dest, t) {
+      this.ping(dest, 1046.5, t, 0.07, 0.15);
+      this.ping(dest, 1568, t + 0.08, 0.06, 0.2);
+    },
+
+    /* Mělký dřep: krátké nízké bzučení. */
+    squatShallow(dest, t) {
+      const g = this.gain(0, dest);
+      env(g.gain, t, 0.01, 0.05, 0.25);
+      const lp = this.filter('lowpass', 900, 0.5, g);
+      this.osc('square', 140, lp, t, t + 0.3);
+    },
+
+    /* Vložení hráčské karty: cvaknutí a dvě pípnutí. */
+    cardInsert(dest, t) {
+      this.click(dest, 1200, t, 0.25);
+      this.ping(dest, 1760, t + 0.15, 0.04, 0.12);
+      this.ping(dest, 2349, t + 0.28, 0.04, 0.18);
+    },
+
+    /* LEKAČKA: hluboký úder, disonantní „orchestrální“ shluk, skřípot a ostrý šum. */
+    scareHit(dest, t) {
+      this.thump(dest, t, 1.0, 38);
+      this.noiseBurst(dest, t, 0.45, 'highpass', 700, 0.55);
+      const cl = this.gain(0, dest);
+      cl.gain.setValueAtTime(0.0001, t);
+      cl.gain.exponentialRampToValueAtTime(0.5, t + 0.006);
+      cl.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+      const lp = this.filter('lowpass', 3800, 0.6, cl);
+      [207.65, 220, 233.08, 246.94, 415.3, 440, 466.16].forEach((f, i) => {
+        this.osc('sawtooth', f, this.gain(0.12, lp), t, t + 1.7, i % 2 ? 9 : -9);
+      });
+      const sc = this.gain(0, dest);
+      sc.gain.setValueAtTime(0.0001, t);
+      sc.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
+      sc.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+      const bp = this.filter('bandpass', 2200, 1.5, sc);
+      for (const f of [1661, 1760]) {
+        const o = this.osc('sawtooth', f, bp, t, t + 1.2);
+        o.frequency.setValueAtTime(f, t);
+        o.frequency.exponentialRampToValueAtTime(f * 1.5, t + 0.9);
+      }
+    },
+
+    /* LEKAČKA: televizor zařve – hlasitý šum, skřípot a úder. */
+    scareStatic(dest, t) {
+      const g = this.gain(0, dest);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.7, t + 0.01);
+      g.gain.setValueAtTime(0.7, t + 0.8);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+      const chop = this.gain(0.6, g);
+      this.lfo(chop.gain, 31, 0.4, t, null).stop(t + 1.25);
+      this.noiseSource(this.filter('bandpass', 3000, 0.5, chop), t, t + 1.25);
+      SFX.scareHit.call(this, dest, t);
+    },
+
+    /* LEKAČKA: něco se řítí chodbou – rychle sílící svist a pak úder. */
+    scareRush(dest, t) {
+      const g = this.gain(0, dest);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.4, t + 0.28);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+      const bp = this.filter('bandpass', 300, 1.2, g);
+      bp.frequency.setValueAtTime(300, t);
+      bp.frequency.exponentialRampToValueAtTime(3200, t + 0.28);
+      this.noiseSource(bp, t, t + 0.55);
+      SFX.scareHit.call(this, dest, t + 0.26);
+    },
+
+    /* Obrazovka počítače píše: velmi tiché cvaknutí. */
+    termTick(dest, t) {
+      this.click(dest, 2800 + Math.random() * 600, t, 0.025);
+    },
+
+    /* Páčkový vypínač v pojistkové skříni. */
+    switch(dest, t) {
+      this.click(dest, 900, t, 0.3);
+      this.thump(dest, t, 0.2, 120);
+      this.click(dest, 2200, t + 0.02, 0.08);
+    },
+
+    /* Vypadlý jistič: krátké zabzučení, cvak a pozvolné dobíhání (tiché, bez úleku). */
+    breaker(dest, t) {
+      const g = this.gain(0, dest);
+      env(g.gain, t, 0.15, 0.05, 0.5);
+      const lp = this.filter('lowpass', 700, 0.6, g);
+      this.osc('sawtooth', 100, lp, t, t + 0.7);
+      this.click(dest, 800, t + 0.45, 0.25);
+      this.thump(dest, t + 0.45, 0.15, 80);
+      const w = this.gain(0, dest);
+      w.gain.setValueAtTime(0.0001, t + 0.5);
+      w.gain.exponentialRampToValueAtTime(0.025, t + 0.6);
+      w.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+      const o = this.osc('sine', 420, w, t + 0.5, t + 2.3);
+      o.frequency.setValueAtTime(420, t + 0.5);
+      o.frequency.exponentialRampToValueAtTime(60, t + 2.2);
+    },
+
+    /* Naskočení proudu: relé a pozvolné zabzučení. */
+    powerOn(dest, t) {
+      this.click(dest, 1300, t, 0.2);
+      const g = this.gain(0, dest);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.03, t + 0.6);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+      const o = this.osc('sine', 60, g, t, t + 1.9);
+      o.frequency.exponentialRampToValueAtTime(240, t + 1.2);
+      this.ping(dest, 1318.5, t + 1.0, 0.03, 0.3);
+    },
+
+    /* Dveře se za hráčem tiše zavřou a cvakne zámek. */
+    doorSoft(dest, t) {
+      this.creak(dest, t, 0.04, 1.1);
+      this.thump(dest, t + 1.1, 0.18, 60);
+      this.click(dest, 1500, t + 1.5, 0.15);
+      this.click(dest, 900, t + 1.56, 0.12);
+    },
+
+    /* Tiché zaskřípání (kostra pootočila hlavou). */
+    creakSoft(dest, t) {
+      this.creak(dest, t, 0.035, 1.4);
+    },
+
+    /* UV svítilna: cvaknutí a slabé elektrické zabzučení. */
+    uv(dest, t) {
+      this.click(dest, 1600, t, 0.15);
+      const g = this.gain(0, dest);
+      env(g.gain, t + 0.05, 0.1, 0.02, 0.9);
+      this.osc('triangle', 3400, this.filter('bandpass', 3400, 4, g), t + 0.05, t + 1.1);
+    },
+
+    /* Level up: stoupající arpeggio. */
+    levelUp(dest, t) {
+      [NOTE.A4, 554.37, 659.25, NOTE.A5].forEach((f, i) => this.ping(dest, f, t + i * 0.09, 0.05, 0.5));
     },
 
     /* Tlačítko kalkulačky: tiché pípnutí. */

@@ -7,8 +7,9 @@
 (function (global) {
   'use strict';
 
-  const SAVE_KEY = 'brany-biomechaniky-ulozeni';
+  const SAVE_KEY = 'brany-biomechaniky-ulozeni';   // + „-<svět>“: každý svět má vlastní uloženou hru
   const SAVE_VERSION = 1;
+  const saveKey = (trackId) => `${SAVE_KEY}-${trackId}`;
 
   /* Bezpečný přístup k localStorage (v soukromém okně může selhat). */
   const storage = {
@@ -48,10 +49,107 @@
     return String(Math.round(value * 1e6) / 1e6);
   }
 
+  /* Vyhodnocení vzorce z game.json s proměnnými hráče, např. „70*9.81*0.4*n/t“ nebo
+     „ceil(400/P)“. Povolené: čísla, proměnné, + − * / ^, závorky, funkce ceil, floor,
+     round, abs, min, max a porovnání > < >= <= == (výsledek 1 = platí, 0 = neplatí).
+     missingZero: chybějící proměnná = 0 (pro podmínky z příznaků). Vlastní rozbor – žádné eval. */
+  const FUNCS = { ceil: Math.ceil, floor: Math.floor, round: Math.round, abs: Math.abs, min: Math.min, max: Math.max, sqrt: Math.sqrt };
+
+  function evalFormula(expr, vars, missingZero) {
+    if (typeof expr === 'number') return expr;
+    const s = String(expr).replace(/\s+/g, '');
+    let i = 0;
+    const fail = (msg) => { throw new Error(`Vzorec „${expr}“: ${msg}`); };
+    const peek = () => s[i];
+
+    function primary() {
+      const c = peek();
+      if (c === '(') {
+        i++;
+        const v = sum();
+        if (peek() !== ')') fail('chybí závorka');
+        i++;
+        return v;
+      }
+      const num = /^\d+(\.\d+)?/.exec(s.slice(i));
+      if (num) {
+        i += num[0].length;
+        return Number(num[0]);
+      }
+      const id = /^[A-Za-z_][A-Za-z_0-9]*/.exec(s.slice(i));
+      if (id) {
+        i += id[0].length;
+        const name = id[0];
+        if (peek() === '(') {
+          if (!FUNCS[name]) fail(`neznámá funkce ${name}`);
+          i++;
+          const args = [sum()];
+          while (peek() === ',') { i++; args.push(sum()); }
+          if (peek() !== ')') fail('chybí závorka funkce');
+          i++;
+          return FUNCS[name](...args);
+        }
+        if (!(name in vars) || vars[name] === null || vars[name] === undefined) {
+          if (missingZero) return 0;
+          fail(`chybí hodnota ${name}`);
+        }
+        return Number(vars[name]);
+      }
+      return fail('nečekaný znak');
+    }
+    function power() {
+      const base = primary();
+      if (peek() === '^') { i++; return Math.pow(base, unary()); }
+      return base;
+    }
+    function unary() {
+      if (peek() === '-') { i++; return -unary(); }
+      return power();
+    }
+    function product() {
+      let v = unary();
+      while (peek() === '*' || peek() === '/') {
+        const op = s[i++];
+        const r = unary();
+        v = op === '*' ? v * r : v / r;
+      }
+      return v;
+    }
+    function sum() {
+      let v = product();
+      while (peek() === '+' || peek() === '-') {
+        const op = s[i++];
+        const r = product();
+        v = op === '+' ? v + r : v - r;
+      }
+      return v;
+    }
+    function compare() {
+      const l = sum();
+      const op = /^(>=|<=|==|>|<)/.exec(s.slice(i));
+      if (!op) return l;
+      i += op[0].length;
+      const r = sum();
+      const res = { '>': l > r, '<': l < r, '>=': l >= r - 1e-9, '<=': l <= r + 1e-9, '==': Math.abs(l - r) < 1e-9 }[op[0]];
+      return res ? 1 : 0;
+    }
+    const v = compare();
+    if (i !== s.length) fail('nadbytečné znaky');
+    return v;
+  }
+
+  /* Číslo s desetinnou čárkou (pro texty ve hře). */
+  function formatNumber(v, decimals) {
+    if (typeof v !== 'number' || !Number.isFinite(v)) return '–';
+    const d = decimals === undefined ? (Number.isInteger(v) ? 0 : 1) : decimals;
+    return v.toFixed(d).replace('.', ',');
+  }
+
   class Game {
     constructor(data) {
       this.data = data;
       this.state = null;
+      this.lockId = null;   // právě otevřený malý zámek místnosti (null = zámek brány)
     }
 
     /* ---------- Založení, uložení, načtení ---------- */
@@ -67,6 +165,7 @@
         flags: {},
         notes: [],
         gates: {},
+        vars: {},          // naměřené hodnoty hráče (dřepy, čas…) pro „chytré“ zámky
         playMs: 0,
         finished: false,
       };
@@ -74,24 +173,81 @@
       return this.enterRoom();
     }
 
-    static hasSave() {
-      const saved = storage.get(SAVE_KEY);
+    /* Starší verze ukládala jedinou hru pod společný klíč – převést na uložení podle světa. */
+    static migrateSave() {
+      const old = storage.get(SAVE_KEY);
+      if (old && old.trackId) {
+        storage.set(saveKey(old.trackId), old);
+        Game.setSetting('lastTrack', old.trackId);
+      }
+      if (old) storage.remove(SAVE_KEY);
+    }
+
+    /* Je uložená hra pro daný svět (bez udání: pro naposledy hraný svět)? */
+    static hasSave(trackId) {
+      const id = trackId || Game.getSetting('lastTrack', null);
+      if (!id) return false;
+      const saved = storage.get(saveKey(id));
       return Boolean(saved && saved.version === SAVE_VERSION);
     }
 
-    loadSave() {
-      const saved = storage.get(SAVE_KEY);
+    loadSave(trackId) {
+      const id = trackId || Game.getSetting('lastTrack', null);
+      const saved = id ? storage.get(saveKey(id)) : null;
       if (!saved || saved.version !== SAVE_VERSION) return false;
+      if (!saved.vars) saved.vars = {};
       this.state = saved;
+      Game.setSetting('lastTrack', saved.trackId);
       return true;
     }
 
     save() {
-      if (this.state) storage.set(SAVE_KEY, this.state);
+      if (!this.state) return;
+      storage.set(saveKey(this.state.trackId), this.state);
+      Game.setSetting('lastTrack', this.state.trackId);
     }
 
-    static clearSave() {
-      storage.remove(SAVE_KEY);
+    static clearSave(trackId) {
+      const id = trackId || Game.getSetting('lastTrack', null);
+      if (id) storage.remove(saveKey(id));
+    }
+
+    /* ---------- Proměnné hráče a texty se šablonou ---------- */
+
+    setVars(values) {
+      Object.assign(this.state.vars, values);
+      this.save();
+    }
+
+    /* Vzorec s proměnnými hráče → číslo. */
+    evaluate(expr) {
+      return evalFormula(expr, this.state ? this.state.vars : {});
+    }
+
+    /* Podmínka „expr“ (např. součet wattů zapnutých spotřebičů): příznaky jsou 1, chybějící 0. */
+    condition(expr) {
+      const ctx = {};
+      for (const [f, on] of Object.entries(this.state.flags)) if (on) ctx[f] = 1;
+      Object.assign(ctx, this.state.vars);
+      try {
+        return Boolean(evalFormula(expr, ctx, true));
+      } catch (e) {
+        return false;
+      }
+    }
+
+    /* Doplnění hodnot do textu: „{t:1} s“ → „34,2 s“, „{=70*9.81*0.4*n/t:0} W“ → vypočtená hodnota. */
+    fill(text) {
+      if (typeof text !== 'string' || !text.includes('{')) return text;
+      return text.replace(/\{(=?)([^{}:]+)(?::(\d))?\}/g, (whole, isExpr, body, dec) => {
+        try {
+          const v = isExpr ? this.evaluate(body) : this.state.vars[body];
+          if (v === undefined || v === null) return '–';
+          return formatNumber(Number(v), dec === undefined ? undefined : Number(dec));
+        } catch (e) {
+          return '–';
+        }
+      });
     }
 
     /* Drobné nastavení mimo postup hry (např. zda už hráč viděl úvod). */
@@ -143,6 +299,9 @@
       const events = [{ type: 'view', direction }];
       const view = room.views[viewId];
       if (view.enterText) events.push({ type: 'text', text: view.enterText });
+      // účinky při vstupu do pohledu (např. kostra mezitím otočila hlavu)
+      const match = (view.enter || []).find((c) => this.check(c.when));
+      if (match) events.push(...this.run(match.do));
       return events;
     }
 
@@ -168,6 +327,7 @@
       if (when.notFlags && when.notFlags.some((f) => s.flags[f])) return false;
       if (when.items && !when.items.every((i) => s.inventory.includes(i))) return false;
       if (when.notItems && when.notItems.some((i) => s.inventory.includes(i))) return false;
+      if (when.expr && !this.condition(when.expr)) return false;
       return true;
     }
 
@@ -184,8 +344,12 @@
     /* ---------- Akce hráče ---------- */
 
     enterRoom() {
+      this.lockId = null;
       const events = [{ type: 'room' }];
       if (this.room.enterText) events.push({ type: 'text', text: this.room.enterText });
+      // účinky při vstupu do místnosti (např. tiché cvaknutí zámku za hráčem)
+      const match = (this.room.enter || []).find((c) => this.check(c.when));
+      if (match) events.push(...this.run(match.do));
       return events;
     }
 
@@ -234,7 +398,7 @@
       const events = [];
       const s = this.state;
       for (const effect of effects || []) {
-        if ('text' in effect) events.push({ type: 'text', text: effect.text });
+        if ('text' in effect) events.push({ type: 'text', text: this.fill(effect.text) });
         if ('set' in effect) s.flags[effect.set] = true;
         if ('unset' in effect) delete s.flags[effect.unset];
         if ('give' in effect && !s.inventory.includes(effect.give)) {
@@ -245,15 +409,37 @@
           s.inventory = s.inventory.filter((i) => i !== effect.remove);
           events.push({ type: 'itemRemoved', item: effect.remove });
         }
-        if ('note' in effect && !s.notes.includes(effect.note)) {
-          s.notes.push(effect.note);
-          events.push({ type: 'note', text: effect.note });
+        if ('note' in effect) {
+          const note = this.fill(effect.note);
+          // noteKey: nová hodnota nahradí starší zápis téhož měření (např. opakované dřepy)
+          if (effect.noteKey) {
+            if (!s.noteKeys) s.noteKeys = {};
+            const old = s.noteKeys[effect.noteKey];
+            if (old !== undefined) s.notes = s.notes.filter((n) => n !== old);
+            s.noteKeys[effect.noteKey] = note;
+          }
+          if (!s.notes.includes(note)) {
+            s.notes.push(note);
+            events.push({ type: 'note', text: note });
+          }
         }
+        if ('activity' in effect) events.push({ type: 'activity', activity: effect.activity });
         if ('sound' in effect) events.push({ type: 'sound', name: effect.sound });
         if ('closeup' in effect) events.push({ type: 'closeup', closeup: effect.closeup });
         if ('openItem' in effect) events.push({ type: 'openItem', item: effect.openItem });
         if ('view' in effect) events.push(...this.goView(effect.view, 'in'));
-        if ('openGate' in effect) events.push({ type: 'gate' });
+        if ('openGate' in effect) events.push({ type: 'gate', lock: null });
+        if ('lock' in effect) events.push({ type: 'gate', lock: effect.lock });
+        if ('fx' in effect) events.push({ type: 'fx', name: effect.fx });
+        // lekačka z „scares“ místnosti – každá jen jednou za hru
+        if ('scare' in effect) {
+          const def = this.room.scares && this.room.scares[effect.scare];
+          const flag = `lekacka_${effect.scare}`;
+          if (def && !s.flags[flag]) {
+            s.flags[flag] = true;
+            events.push({ type: 'scare', scare: def });
+          }
+        }
         if ('leave' in effect) events.push({ type: 'leave' });
       }
       events.push({ type: 'state' });
@@ -261,18 +447,42 @@
       return events;
     }
 
-    /* ---------- Zámek brány ---------- */
+    /* ---------- Zámek brány a malé zámky místnosti (vitrína, skříň…) ---------- */
+
+    /* Který zámek je otevřený v okně: id z „locks“ místnosti, nebo null = brána. */
+    selectLock(lockId) {
+      this.lockId = lockId && this.room.locks && this.room.locks[lockId] ? lockId : null;
+    }
+
+    lockDef() {
+      return this.lockId ? this.room.locks[this.lockId] : this.room.gate;
+    }
+
+    isGateLock() {
+      return !this.lockId;
+    }
 
     gateState() {
-      const id = this.roomId;
-      if (!this.state.gates[id]) {
-        this.state.gates[id] = { step: 0, errors: 0, hints: [], open: false };
+      // brány v „gates“ (počítají se jako otevřené brány), malé zámky zvlášť v „locks“
+      let store = this.state.gates;
+      let id = this.roomId;
+      if (this.lockId) {
+        if (!this.state.locks) this.state.locks = {};
+        store = this.state.locks;
+        id = `${this.roomId}#${this.lockId}`;
       }
-      return this.state.gates[id];
+      if (!store[id]) store[id] = { step: 0, errors: 0, hints: [], open: false };
+      return store[id];
+    }
+
+    /* Je brána místnosti otevřená? (nezávisle na tom, který zámek je právě v okně) */
+    gateOpen() {
+      const gs = this.state.gates[this.roomId];
+      return Boolean(gs && gs.open);
     }
 
     gateStep() {
-      const gate = this.room.gate;
+      const gate = this.lockDef();
       const gs = this.gateState();
       return gate && !gs.open ? gate.steps[gs.step] : null;
     }
@@ -282,7 +492,7 @@
       const gs = this.gateState();
       const step = this.gateStep();
       if (!step) return [];
-      return (step.hints || []).slice(0, gs.hints[gs.step] || 0);
+      return (step.hints || []).slice(0, gs.hints[gs.step] || 0).map((h) => this.fill(h));
     }
 
     /* Další nápověda (počítá se do statistik). Vrací text, nebo null, když už žádná není. */
@@ -294,7 +504,21 @@
       if (shown >= (step.hints || []).length) return null;
       gs.hints[gs.step] = shown + 1;
       this.save();
-      return step.hints[shown];
+      return this.fill(step.hints[shown]);
+    }
+
+    /* Chybí kroku zámku naměřené hodnoty? (např. dřepy ještě nebyly) – pak text, co udělat dřív. */
+    gateMissing() {
+      const step = this.gateStep();
+      if (!step || !step.requiresVars) return null;
+      const missing = step.requiresVars.some((v) => this.state.vars[v] === undefined || this.state.vars[v] === null);
+      return missing ? (step.missingText || 'Nejdřív musíš něco změřit.') : null;
+    }
+
+    /* Je číslo „blízko“ cíle? (relativní i absolutní tolerance) */
+    near(value, target, step) {
+      const tol = Math.max(step.tolerance || 0, Math.abs(target) * (step.toleranceRel || 0));
+      return Math.abs(value - target) <= tol + 1e-9;
     }
 
     /* Vyhodnocení odpovědi (číslo u kódu, index u výběru). */
@@ -303,13 +527,33 @@
       const gs = this.gateState();
       if (!step) return { ok: false, message: '' };
 
+      const missing = this.gateMissing();
+      if (missing) return { ok: false, message: missing, invalid: true };
+
       let ok = false;
       let feedbackKey = null;
+      let formulaFeedback = null;
       if (step.type === 'code') {
         const value = parseNumber(answer);
         if (Number.isNaN(value)) return { ok: false, message: 'Zadej číslo.', invalid: true };
-        ok = Math.abs(value - step.answer) <= (step.tolerance || 0) + 1e-9;
+        if (step.answerMin !== undefined || step.answerMax !== undefined) {
+          // správně je celé rozmezí (např. zaokrouhlení nahoru z mírně odlišného mezivýsledku)
+          const lo = step.answerMin !== undefined ? this.evaluate(step.answerMin) : -Infinity;
+          const hi = step.answerMax !== undefined ? this.evaluate(step.answerMax) : Infinity;
+          ok = value >= lo - 1e-9 && value <= hi + 1e-9;
+        } else {
+          ok = this.near(value, this.evaluate(step.answer), step);
+        }
         feedbackKey = numberKey(value);
+        // cílená rada podle typické chyby spočítané z hráčových hodnot
+        for (const f of step.feedbackFormulas || []) {
+          let target;
+          try { target = this.evaluate(f.value); } catch (e) { continue; }
+          if (this.near(value, target, { tolerance: f.tolerance || 0, toleranceRel: f.toleranceRel ?? 0.03 })) {
+            formulaFeedback = this.fill(f.text);
+            break;
+          }
+        }
       } else if (step.type === 'choice') {
         ok = Number(answer) === step.correct;
         feedbackKey = String(answer);
@@ -318,20 +562,27 @@
       if (!ok) {
         gs.errors += 1;
         this.save();
-        const specific = step.feedback && step.feedback[feedbackKey];
-        return { ok: false, message: specific || step.wrong || 'Špatně.' };
+        const specific = formulaFeedback || (step.feedback && step.feedback[feedbackKey]);
+        return { ok: false, message: specific || this.fill(step.wrong) || 'Špatně.' };
       }
 
-      const result = { ok: true, message: step.success || '' };
+      const result = { ok: true, message: this.fill(step.success) || '', gate: this.isGateLock() };
+      const def = this.lockDef();
       gs.step += 1;
-      if (gs.step >= this.room.gate.steps.length) {
+      if (gs.step >= def.steps.length) {
         gs.open = true;
-        this.state.flags[this.room.gate.openFlag] = true;
+        if (def.openFlag) this.state.flags[def.openFlag] = true;
         result.opened = true;
-        result.events = this.run(this.room.gate.open);
+        result.events = this.run(def.open);
       }
       this.save();
       return result;
+    }
+
+    /* Dokončená aktivita (reflex test, dřepy): uložit naměřené hodnoty a provést její účinky „done“. */
+    completeActivity(activity, results) {
+      this.setVars(results || {});
+      return this.run(activity.done || []);
     }
 
     /* Přechod do další místnosti sekce; vrací false, když je sekce u konce. */
@@ -354,14 +605,17 @@
 
     stats() {
       const gates = Object.values(this.state.gates);
-      const hintCount = gates.reduce((sum, g) => sum + g.hints.reduce((a, b) => a + (b || 0), 0), 0);
+      const all = gates.concat(Object.values(this.state.locks || {}));   // chyby a nápovědy i u malých zámků
+      const hintCount = all.reduce((sum, g) => sum + g.hints.reduce((a, b) => a + (b || 0), 0), 0);
       return {
         team: this.state.team,
         track: this.track.name,
         playMs: this.state.playMs,
-        errors: gates.reduce((sum, g) => sum + g.errors, 0),
+        errors: all.reduce((sum, g) => sum + g.errors, 0),
         hints: hintCount,
         gatesOpen: gates.filter((g) => g.open).length,
+        // GSPORT: byly dřepy ověřené kamerou? (undefined = svět bez dřepů)
+        camera: this.state.vars.kamera === undefined ? undefined : Boolean(this.state.vars.kamera),
       };
     }
 
@@ -372,14 +626,23 @@
       for (const t of d.tracks) {
         for (const r of t.rooms) if (!d.rooms[r]) problems.push(`Sekce „${t.id}“ odkazuje na neexistující místnost „${r}“.`);
       }
+      let room = null;
       const checkEffects = (effects, where) => {
         for (const e of effects || []) {
           for (const key of ['give', 'remove']) {
             if (key in e && !d.items[e[key]]) problems.push(`${where}: neexistující předmět „${e[key]}“.`);
           }
+          if (room && 'lock' in e && !(room.locks && room.locks[e.lock])) problems.push(`${where}: neexistující zámek „${e.lock}“.`);
+          if (room && 'view' in e && !(room.views && room.views[e.view])) problems.push(`${where}: neexistující pohled „${e.view}“.`);
+          if (room && 'scare' in e && !(room.scares && room.scares[e.scare])) problems.push(`${where}: neexistující lekačka „${e.scare}“.`);
         }
       };
-      for (const [roomId, room] of Object.entries(d.rooms)) {
+      for (const [roomId, r] of Object.entries(d.rooms)) {
+        room = r;
+        for (const c of room.enter || []) checkEffects(c.do, `Místnost „${roomId}“, vstup`);
+        for (const [lockId, lock] of Object.entries(room.locks || {})) checkEffects(lock.open, `Místnost „${roomId}“, zámek „${lockId}“`);
+        if (room.gate) checkEffects(room.gate.open, `Místnost „${roomId}“, brána`);
+        for (const a of Object.values(room.activities || {})) checkEffects(a.done, `Místnost „${roomId}“, aktivita`);
         const views = room.views ? Object.entries(room.views) : [[null, room]];
         for (const [viewId, view] of views) {
           for (const dir of ['left', 'right', 'back']) {
@@ -390,8 +653,10 @@
           for (const h of view.hotspots || []) {
             for (const c of h.click || []) checkEffects(c.do, `Místnost „${roomId}“, objekt „${h.id}“`);
           }
+          for (const c of view.enter || []) checkEffects(c.do, `Místnost „${roomId}“, vstup do pohledu „${viewId}“`);
         }
       }
+      room = null;
       for (const u of d.uses || []) {
         if (!d.items[u.item]) problems.push(`Použití: neexistující předmět „${u.item}“.`);
         checkEffects(u.do, `Použití „${u.item}“ na „${u.on}“`);

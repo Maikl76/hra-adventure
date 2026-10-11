@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: karta vložená a proud zapnutý – displej PŘIPRAVENO, kontrolka kamery zelená. -->
+  <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect x="905" y="415" width="145" height="80" fill="#061420"/>
+  <g filter="url(#glow)" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">
+    <text x="977" y="447" font-size="13" fill="#ff8fe6">SQUAT CHALLENGE</text>
+    <text x="977" y="474" font-size="17" fill="#5dff9a">PŘIPRAVENO</text>
+  </g>
+  <circle cx="1003" cy="294" r="4" fill="#5dff9a" filter="url(#glow)"/>
+</svg>

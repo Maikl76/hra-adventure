@@ -38,6 +38,7 @@
       return;
     }
 
+    Game.migrateSave();   // starší jediné uložení → uložení podle světa
     game = new Game(data);
     const problems = game.validate();
     if (problems.length) console.warn('Problémy v data/game.json:\n' + problems.join('\n'));
@@ -103,7 +104,7 @@
     $('game-subtitle').textContent = data.meta.subtitle || '';
     $('version').textContent = data.meta.version ? `verze ${data.meta.version}` : '';
 
-    $('btn-continue').addEventListener('click', continueGame);
+    $('btn-continue').addEventListener('click', () => continueGame());
     $('btn-new').addEventListener('click', showTrack);
     $('btn-intro').addEventListener('click', () => playIntro(showTitle));
     $('track-back').addEventListener('click', showTitle);
@@ -130,10 +131,16 @@
     });
 
     document.addEventListener('keydown', onKeyDown);
+  }
 
+  /* Karty světů (Civilní / Vojenská / GSPORT); rozehraný svět jde dohrát nebo začít znovu. */
+  function renderTrackCards() {
     const tracks = $('tracks');
     tracks.innerHTML = '';
     for (const track of data.tracks) {
+      const saved = Game.hasSave(track.id);
+      const wrap = document.createElement('div');
+      wrap.className = `track-wrap-card world-${track.id}`;
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'track-card';
@@ -142,8 +149,26 @@
       const p = document.createElement('p');
       p.textContent = track.description || '';
       card.append(h, p);
-      card.addEventListener('click', () => startNewGame(track.id));
-      tracks.appendChild(card);
+      if (saved) {
+        const s = document.createElement('p');
+        s.className = 'track-saved';
+        s.textContent = 'Rozehráno – kliknutím pokračuješ';
+        card.appendChild(s);
+      }
+      card.addEventListener('click', () => (saved ? continueGame(track.id) : startNewGame(track.id)));
+      wrap.appendChild(card);
+      if (saved) {
+        const again = document.createElement('button');
+        again.type = 'button';
+        again.className = 'link track-again';
+        again.textContent = 'Začít tento svět znovu';
+        again.addEventListener('click', () => {
+          Game.clearSave(track.id);
+          startNewGame(track.id);
+        });
+        wrap.appendChild(again);
+      }
+      tracks.appendChild(wrap);
     }
   }
 
@@ -335,13 +360,22 @@
    * Titulní obrazovka, výběr sekce, závěr
    * ==================================================================== */
 
+  /* Barevný styl podle světa (GSPORT = neon); na titulní obrazovce žádný. */
+  function applyWorld(trackId) {
+    if (trackId) document.body.dataset.world = trackId;
+    else delete document.body.dataset.world;
+  }
+
   function showTitle() {
+    applyWorld(null);
     $('btn-continue').hidden = !Game.hasSave();
     showScreen('title');
   }
 
   function showTrack() {
+    applyWorld(null);
     $('team-name').value = '';
+    renderTrackCards();
     showScreen('track');
   }
 
@@ -349,17 +383,19 @@
     selectedItem = null;
     newItems.clear();
     const events = game.newGame(trackId, $('team-name').value);
+    applyWorld(game.state.trackId);
     showScreen('room');
     handleEvents(events);
     maybeRotateHint();
   }
 
-  function continueGame() {
-    if (!game.loadSave()) {
+  function continueGame(trackId) {
+    if (!game.loadSave(trackId)) {
       showTrack();
       return;
     }
     selectedItem = null;
+    applyWorld(game.state.trackId);
     if (game.state.finished) {
       showFinish();
       return;
@@ -371,7 +407,7 @@
 
   function showFinish() {
     const st = game.stats();
-    const fin = data.finish || {};
+    const fin = game.track.finish || data.finish || {};
     $('finish-title').textContent = fin.title || 'Konec';
     $('finish-text').textContent = fin.text || '';
     $('finish-photo').textContent = fin.photoHint || '';
@@ -383,6 +419,12 @@
       ['Použité nápovědy', String(st.hints)],
       ['Otevřené brány', `${st.gatesOpen} z ${data.meta.totalGates || 9}`],
     ];
+    // naměřené hodnoty světa (např. GSPORT: dřepy, výkon, reflex) – řádek jen když hodnota existuje
+    for (const s of fin.stats || []) {
+      if ((s.requires || []).some((v) => game.state.vars[v] === undefined)) continue;
+      rows.push([s.label, game.fill(s.value)]);
+    }
+    if (st.camera !== undefined) rows.push(['Dřepy ověřené kamerou', st.camera ? 'ano' : 'ne']);
     const dl = $('finish-stats');
     dl.innerHTML = '';
     for (const [k, v] of rows) {
@@ -437,7 +479,7 @@
   function renderRoom(direction) {
     const room = game.room;
     const view = game.view;
-    $('hud-gate').textContent = `Brána ${room.gateNumber || ''}`;
+    $('hud-gate').textContent = room.gateLabel || `Brána ${room.gateNumber || ''}`;
     $('hud-room').textContent = view !== room && view.name ? `${room.name} · ${view.name}` : room.name;
     $('scene-bg').src = view.background;
     $('scene-layers').innerHTML = '';
@@ -681,7 +723,16 @@
           modal = () => openCloseup(ev.closeup);
           break;
         case 'gate':
-          modal = openLock;
+          modal = () => openLock(ev.lock);
+          break;
+        case 'fx':
+          sceneEffect(ev.name);
+          break;
+        case 'scare':
+          scheduleScare(ev.scare);
+          break;
+        case 'activity':
+          modal = () => openActivity(ev.activity);
           break;
         case 'leave':
           modal = null;
@@ -699,6 +750,15 @@
   }
 
   function leaveRoom() {
+    // čeká-li ještě lekačka (např. z otevřené chodby), proběhne před odchodem
+    if (scareTimer || scareActive) {
+      scareThen = leaveRoom;
+      if (scareTimer) {
+        clearTimeout(scareTimer);
+        runScare();
+      }
+      return;
+    }
     closeModal();
     const events = game.nextRoom();
     if (events === false) {
@@ -719,8 +779,7 @@
     }
     for (const line of mutedLines || []) appendMessage(line, true);
     // Po otevření brány nabídnout průchod (tlačítko v řádku, aby místnost neposkočila).
-    const gs = game.state && game.room.gate ? game.gateState() : null;
-    if (gs && gs.open) {
+    if (game.state && game.room.gate && game.gateOpen()) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'btn go';
@@ -893,6 +952,11 @@
     $('modal-box').innerHTML = '';
     bookNav = null;
     calc.setLockTarget(null);
+    if (activityCleanup) {
+      activityCleanup();   // zastavit kameru / časovače aktivity
+      activityCleanup = null;
+    }
+    reflexHit = null;
   }
 
   function heading(box, text) {
@@ -916,9 +980,15 @@
         // Krátký vzkaz velkým rukopisem; delší text menším písmem; „type“ = tištěný text (účtenka).
         const paper = document.createElement('div');
         paper.className = 'paper';
-        if (closeup.font === 'type') paper.classList.add('type');
-        else if (closeup.note.length > 30) paper.classList.add('long');
-        paper.textContent = closeup.note;
+        if (closeup.font === 'terminal') {
+          // obrazovka, na které se text sám vypisuje (kliknutím se vypíše celý)
+          paper.classList.add('terminal');
+          typewrite(paper, game.fill(closeup.note));
+        } else {
+          if (closeup.font === 'type') paper.classList.add('type');
+          else if (closeup.note.length > 30) paper.classList.add('long');
+          paper.textContent = game.fill(closeup.note);
+        }
         fig.appendChild(paper);
       }
       if (closeup.caption) {
@@ -928,6 +998,102 @@
       }
       box.appendChild(fig);
     });
+  }
+
+  /* Text vypisovaný po písmenech (obrazovka počítače). Časovač se zastaví při zavření okna. */
+  function typewrite(el, text) {
+    const out = document.createElement('span');
+    const caret = document.createElement('span');
+    caret.className = 'term-caret';
+    caret.textContent = '█';
+    el.append(out, caret);
+    let i = 0;
+    let timer = 0;
+    const step = () => {
+      i += 1;
+      out.textContent = text.slice(0, i);
+      if (i % 3 === 0 && text[i - 1] !== ' ') sound.sfx('termTick');
+      if (i < text.length) timer = setTimeout(step, text[i - 1] === '\n' ? 380 : 42);
+    };
+    timer = setTimeout(step, 500);
+    el.addEventListener('click', () => {
+      clearTimeout(timer);
+      i = text.length;
+      out.textContent = text;
+    });
+    activityCleanup = () => clearTimeout(timer);
+  }
+
+  /* ---------- Lekačky ----------
+     Obrázek přes celou obrazovku, náraz zvuku a otřes. Předtím podkres ztichne (napětí).
+     Jedno krátké objevení, žádné opakované blikání. Vypínají se v Menu. */
+
+  let scareTimer = 0;      // naplánovaná lekačka (čeká se na „delay“)
+  let scareActive = false; // lekačka právě běží
+  let scareCfg = null;
+  let scareThen = null;    // co udělat po skončení (např. odejít z místnosti)
+
+  const scaresOn = () => Game.getSetting('scares', true);
+
+  function scheduleScare(cfg) {
+    if (!scaresOn() || !cfg || !cfg.image) return;
+    clearTimeout(scareTimer);
+    scareCfg = cfg;
+    const delay = (cfg.delay || 0) * 1000;
+    sound.tension(Math.max(delay / 1000, 0.3));
+    // obrázek načíst předem, aby se ukázal přesně se zvukem
+    new Image().src = cfg.image;
+    scareTimer = setTimeout(runScare, delay);
+  }
+
+  function runScare() {
+    scareTimer = 0;
+    const cfg = scareCfg;
+    scareCfg = null;
+    if (!cfg) return;
+    let el = $('scare');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'scare';
+      el.className = 'scare';
+      el.innerHTML = '<img alt="">';
+      document.body.appendChild(el);
+    }
+    const img = el.querySelector('img');
+    img.src = cfg.image;
+    img.style.objectPosition = cfg.position || '50% 50%';   // co má zůstat v záběru na úzkém displeji
+    el.style.setProperty('--rush', `${cfg.rush || 0.12}s`);
+    el.classList.remove('out');
+    el.hidden = false;
+    void el.offsetWidth;
+    el.classList.add('go');
+    scareActive = true;
+    sound.sfx(cfg.sound || 'scareHit');
+    setTimeout(() => {
+      el.classList.add('out');
+      setTimeout(() => {
+        el.hidden = true;
+        el.classList.remove('go', 'out');
+        scareActive = false;
+        sound.release();
+        if (cfg.after) appendMessage(cfg.after);
+        if (scareThen) {
+          const fn = scareThen;
+          scareThen = null;
+          fn();
+        }
+      }, 200);
+    }, (cfg.duration || 0.9) * 1000);
+  }
+
+  /* Efekt přes celou místnost (např. „blackout“ = výpadek proudu). */
+  function sceneEffect(name) {
+    const scene = $('scene');
+    const cls = `fx-${name}`;
+    scene.classList.remove(cls);
+    void scene.offsetWidth;
+    scene.classList.add(cls);
+    setTimeout(() => scene.classList.remove(cls), 2700);
   }
 
   /* ---------- Kniha k listování ---------- */
@@ -1062,6 +1228,224 @@
     });
   }
 
+  /* ---------- Aktivity GSPORT: reflex test, dřepy ---------- */
+
+  let activityCleanup = null;  // zastavení časovačů / kamery při zavření okna
+  let reflexHit = null;        // stisk mezerníku během reflex testu
+
+  function openActivity(ref) {
+    // aktivita zapsaná jménem odkazuje na „activities“ místnosti v game.json
+    const act = typeof ref === 'string' ? (game.room.activities || {})[ref] : ref;
+    if (!act) return;
+    if (act.type === 'reflex') openReflex(act);
+    else if (act.type === 'squats') openSquats(act);
+  }
+
+  function finishActivity(act, results) {
+    closeModal();
+    handleEvents(game.completeActivity(act, results));
+  }
+
+  function para(parent, text, cls) {
+    const p = document.createElement('p');
+    p.textContent = text;
+    if (cls) p.className = cls;
+    parent.appendChild(p);
+    return p;
+  }
+
+  function button(parent, text, cls, onClick) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = cls || 'btn';
+    b.textContent = text;
+    b.addEventListener('click', onClick);
+    parent.appendChild(b);
+    return b;
+  }
+
+  /* Reflex test: až se kruh rozsvítí, co nejrychleji stisknout mezerník nebo kliknout. */
+  function openReflex(act) {
+    const rounds = act.rounds || 5;
+    const times = [];
+    let state = 'idle';
+    let timer = 0;
+    let t0 = 0;
+
+    openModal((box) => {
+      box.classList.add('activity-box');
+      heading(box, act.title || 'Reflex test');
+      para(box, act.intro || `Až se kruh rozsvítí, co nejrychleji stiskni MEZERNÍK (nebo klikni do kruhu). Pokusů: ${rounds}.`, 'question');
+      const pad = document.createElement('button');
+      pad.type = 'button';
+      pad.className = 'reflex-pad idle';
+      pad.textContent = 'Začít';
+      box.appendChild(pad);
+      const list = document.createElement('ol');
+      list.className = 'reflex-list';
+      box.appendChild(list);
+      const result = para(box, '', 'feedback');
+
+      const arm = () => {
+        state = 'wait';
+        pad.className = 'reflex-pad wait';
+        pad.textContent = 'Připrav se…';
+        timer = setTimeout(() => {
+          state = 'go';
+          pad.className = 'reflex-pad go';
+          pad.textContent = 'TEĎ!';
+          t0 = performance.now();
+          sound.sfx('reflexGo');
+        }, 1500 + Math.random() * 2500);
+      };
+
+      const finish = () => {
+        state = 'done';
+        const best = Math.min(...times);
+        const avg = Math.round(times.reduce((a, b) => a + b, 0) / times.length);
+        pad.className = 'reflex-pad done';
+        pad.textContent = 'Hotovo';
+        result.className = 'feedback good';
+        result.textContent = `Nejlepší ${best} ms, průměr ${avg} ms.`;
+        button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { reflex_best: best, reflex_avg: avg }));
+      };
+
+      reflexHit = () => {
+        if (state === 'idle') { arm(); return; }
+        if (state === 'wait') {
+          clearTimeout(timer);
+          state = 'pause';
+          pad.className = 'reflex-pad early';
+          pad.textContent = 'Moc brzy!';
+          sound.sfx('wrong');
+          setTimeout(arm, 1300);
+          return;
+        }
+        if (state === 'go') {
+          const ms = Math.round(performance.now() - t0);
+          times.push(ms);
+          const li = document.createElement('li');
+          li.textContent = `${ms} ms`;
+          list.appendChild(li);
+          sound.sfx('key');
+          if (times.length >= rounds) { finish(); return; }
+          state = 'pause';
+          pad.className = 'reflex-pad pause';
+          pad.textContent = `${ms} ms`;
+          setTimeout(arm, 1100);
+        }
+      };
+      pad.addEventListener('pointerdown', (e) => { e.preventDefault(); reflexHit(); });
+      activityCleanup = () => { clearTimeout(timer); reflexHit = null; };
+    });
+  }
+
+  /* Squat Challenge: dřepy s kamerou (počítá js/squats.js), nebo bez kamery (měří se čas). */
+  function openSquats(act) {
+    const target = act.count || 15;
+    const threshold = act.threshold || 90;
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'squat-box');
+      heading(box, act.title || 'Squat Challenge');
+      para(box, act.intro || `${target} dřepů. Dřep se počítá, když úhel v koleni klesne pod ${threshold}° a znovu se postavíš.`, 'question');
+
+      const choice = document.createElement('div');
+      choice.className = 'squat-choice';
+      box.appendChild(choice);
+      para(choice, 'S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, aby byla vidět celá postava. Každý započítaný dřep pípne.', 'muted');
+      para(choice, 'Obraz z kamery se zpracovává jen v tomto prohlížeči – nic se nenahrává ani neukládá.', 'muted small');
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      choice.appendChild(btns);
+
+      const stage = document.createElement('div');
+      stage.className = 'squat-stage';
+      stage.hidden = true;
+      const canvas = document.createElement('canvas');
+      const counter = document.createElement('div');
+      counter.className = 'squat-counter';
+      counter.textContent = `0 / ${target}`;
+      stage.append(canvas, counter);
+      box.appendChild(stage);
+      const status = para(box, '', 'feedback');
+
+      const setStatus = (text, kind) => {
+        status.textContent = text;
+        status.className = `feedback${kind === 'ok' ? ' good' : kind === 'bad' ? ' bad' : ''}`;
+      };
+
+      const done = (results) => {
+        sound.sfx('levelUp');
+        setStatus(`Hotovo: ${results.n} dřepů za ${results.t.toFixed(1).replace('.', ',')} s.`, 'ok');
+        button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, results));
+      };
+
+      // --- s kamerou ---
+      button(btns, 'S kamerou', 'btn primary', async () => {
+        choice.hidden = true;
+        stage.hidden = false;
+        // zavře-li hráč okno ještě během načítání, kamera se po spuštění hned zase vypne
+        let cancelled = false;
+        activityCleanup = () => { cancelled = true; };
+        try {
+          const mod = await import('./squats.js?v=0.5');
+          const ctrl = await mod.startSquats({
+            canvas, target, threshold,
+            onStatus: setStatus,
+            onCount: (n) => { counter.textContent = `${n} / ${target}`; counter.classList.remove('bump'); void counter.offsetWidth; counter.classList.add('bump'); },
+            onBeep: (kind) => sound.sfx(kind === 'ok' ? 'squatOk' : 'squatShallow'),
+            onDone: (r) => done({ n: r.n, t: r.t, uhel: r.uhel, kamera: 1 }),
+          });
+          if (cancelled) { ctrl.stop(); return; }
+          activityCleanup = () => ctrl.stop();
+        } catch (e) {
+          if (cancelled) return;
+          console.error(e);
+          stage.hidden = true;
+          choice.hidden = false;
+          const msg = e && e.name === 'NotAllowedError' ? 'Přístup ke kameře byl odmítnut.'
+            : e && e.name === 'NotFoundError' ? 'Kamera nebyla nalezena.'
+            : 'Kameru se nepodařilo spustit.';
+          setStatus(`${msg} Můžeš cvičit bez kamery.`, 'bad');
+        }
+      });
+
+      // --- bez kamery: hráč klikne Start a Hotovo, hra změří čas ---
+      button(btns, 'Bez kamery', 'btn', () => {
+        choice.hidden = true;
+        setStatus('');
+        const manual = document.createElement('div');
+        manual.className = 'squat-manual';
+        box.insertBefore(manual, status);
+        para(manual, `Klikni Start, udělej ${target} dřepů (do ${threshold}° v koleni) a klikni Hotovo.`, 'muted');
+        const clock = para(manual, '0,0 s', 'squat-clock');
+        const minSec = act.minSeconds || target;
+        let t0 = 0;
+        let iv = 0;
+        const start = button(manual, 'Start', 'btn primary', () => {
+          t0 = performance.now();
+          start.disabled = true;
+          sound.sfx('reflexGo');
+          iv = setInterval(() => {
+            const s = (performance.now() - t0) / 1000;
+            clock.textContent = `${s.toFixed(1).replace('.', ',')} s`;
+            stop.disabled = s < minSec;
+          }, 100);
+        });
+        const stop = button(manual, 'Hotovo', 'btn', () => {
+          clearInterval(iv);
+          stop.disabled = true;
+          const t = Math.round((performance.now() - t0) / 100) / 10;
+          clock.textContent = `${t.toFixed(1).replace('.', ',')} s`;
+          done({ n: target, t, uhel: null, kamera: 0 });
+        });
+        stop.disabled = true;
+        activityCleanup = () => clearInterval(iv);
+      });
+    });
+  }
+
   function openNotes() {
     openModal((box) => {
       heading(box, 'Zápisník');
@@ -1103,6 +1487,11 @@
         scene.classList.toggle('show-hotspots');
         closeModal();
       });
+      const scaresLabel = () => `Lekačky: ${scaresOn() ? 'zapnuté' : 'vypnuté'}`;
+      const scareBtn = add(scaresLabel(), () => {
+        Game.setSetting('scares', !scaresOn());
+        scareBtn.textContent = scaresLabel();
+      });
       add('Hlavní nabídka', () => { closeModal(); game.save(); showTitle(); });
       const reset = add('Začít znovu (smaže postup)', () => {
         if (reset.dataset.confirm) {
@@ -1121,7 +1510,9 @@
   /* Zámek brány: číselný kód nebo výběr odpovědi, s nápovědami. */
   let lockInput = '';
 
-  function openLock() {
+  /* Zámek brány (lockId = null) nebo malý zámek místnosti („locks“ v game.json). */
+  function openLock(lockId) {
+    game.selectLock(lockId);
     const step = game.gateStep();
     if (!step) return;
     lockInput = '';
@@ -1129,7 +1520,8 @@
   }
 
   function buildLock(box, step, previousSuccess) {
-    heading(box, game.room.gate.title || 'Zámek');
+    heading(box, game.lockDef().title || 'Zámek');
+    if (!game.isGateLock()) box.classList.add('small-lock');
     const lock = document.createElement('div');
     lock.className = 'lock';
 
@@ -1144,8 +1536,17 @@
 
     const q = document.createElement('p');
     q.className = 'question';
-    q.textContent = step.question;
+    q.textContent = game.fill(step.question);
     lock.appendChild(q);
+    const missing = game.gateMissing();
+    if (missing) {
+      // kroku chybí naměřené hodnoty (např. ještě nebyly dřepy) – poradit, co udělat dřív
+      const warn = document.createElement('p');
+      warn.className = 'feedback bad';
+      warn.style.margin = '0 0 12px';
+      warn.textContent = missing;
+      lock.appendChild(warn);
+    }
 
     const feedback = document.createElement('p');
     feedback.className = 'feedback';
@@ -1229,8 +1630,11 @@
       btn.className = 'btn';
       const refresh = () => {
         const shown = game.shownHints().length;
-        btn.textContent = shown >= total ? 'Žádná další nápověda' : `Nápověda (${shown + 1}/${total})`;
-        btn.disabled = shown >= total;
+        // bez naměřených hodnot by další nápovědy byly prázdné (–) – dát jen první
+        const waiting = shown >= 1 && shown < total && game.gateMissing();
+        btn.textContent = shown >= total ? 'Žádná další nápověda'
+          : waiting ? 'Další nápověda až po měření' : `Nápověda (${shown + 1}/${total})`;
+        btn.disabled = shown >= total || Boolean(waiting);
       };
       btn.addEventListener('click', () => {
         const hint = game.takeHint();
@@ -1304,7 +1708,7 @@
     setTimeout(() => {
       if (result.opened) {
         closeModal();
-        sound.sfx('door');
+        sound.sfx(result.gate ? 'door' : 'unlockDrawer');
         handleEvents(result.events || []);
       } else {
         lockInput = '';
@@ -1326,6 +1730,12 @@
       return;
     }
     const modalOpen = !$('modal').hidden;
+    // reflex test: mezerník (bez automatického opakování při držení klávesy)
+    if (modalOpen && reflexHit && (e.key === ' ' || e.code === 'Space')) {
+      e.preventDefault();
+      if (!e.repeat) reflexHit();
+      return;
+    }
     if (modalOpen && $('lock-display')) {
       if (/^[0-9]$/.test(e.key)) { lockKey(e.key); e.preventDefault(); return; }
       if (e.key === ',' || e.key === '.') { lockKey(','); e.preventDefault(); return; }
