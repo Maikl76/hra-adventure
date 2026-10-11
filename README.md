@@ -51,8 +51,12 @@ Každý svět bude mít vlastních devět bran.
 - Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
   naměřené dřepy, výkon a reakční dobu) – studenti ji vyfotí pro vyhodnocení.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
-  s hlasitým zvukem). Hráč je může vypnout v Menu → „Lekačky: zapnuté/vypnuté“. Obraz
-  nebliká opakovaně, ale citlivější studenty je dobré předem upozornit.
+  s hlasitým zvukem). Ve výchozím stavu jsou **vypnuté**; kdo chce, zapne si je v Menu →
+  „Lekačky: zapnuté/vypnuté“. Obraz nebliká opakovaně, ale citlivější studenty je dobré
+  předem upozornit.
+- Při prvním vstupu do hry se ukáže krátká nápověda k tlačítkům vpravo nahoře (znovu: Menu →
+  „Jak ovládat hru“). Místnost je ve výchozím stavu rozsvícená, režim Baterka si hráč zapne
+  tlačítkem.
 - Pozor: správné odpovědi jsou v `game.json` veřejně čitelné.
 
 ### Spuštění na vlastním počítači

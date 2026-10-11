@@ -48,7 +48,7 @@
     sound.setEnabled(Game.getSetting('sound', audioConfig.defaultOn !== false));
     calc = new Calculator({ onKey: () => sound.sfx('beep') });
 
-    flashlightOn = Game.getSetting('flashlight', true);
+    flashlightOn = Game.getSetting('flashlight', false);   // výchozí: Rozsvíceno
     setupStatic();
     setupScene();
     startClock();
@@ -64,6 +64,7 @@
     else {
       stopSceneLoop();
       if (calc) calc.close();
+      if ($('hud-help')) hideHudHelp();
     }
     if (id in SCREEN_AMBIENCE) sound.ambience(SCREEN_AMBIENCE[id]);
   }
@@ -387,6 +388,7 @@
     showScreen('room');
     handleEvents(events);
     maybeRotateHint();
+    maybeHudHelp();
   }
 
   function continueGame(trackId) {
@@ -403,6 +405,86 @@
     showScreen('room');
     handleEvents(game.enterRoom());
     maybeRotateHint();
+    maybeHudHelp();
+  }
+
+  /* ---------- Nápověda k tlačítkům vpravo nahoře ----------
+     Při prvním vstupu do hry (a pak z Menu) se pod tlačítky ukáže panel se šipkou a tlačítka
+     se rozsvítí. Zavře se tlačítkem „Rozumím“ nebo kliknutím kamkoli jinam. */
+
+  function maybeHudHelp() {
+    if (!Game.getSetting('hudHelpSeen', false)) setTimeout(showHudHelp, 900);
+  }
+
+  function showHudHelp() {
+    hideHudHelp();
+    if ($('room').hidden) return;
+    const actions = document.querySelector('.hud-actions');
+    const panel = document.createElement('div');
+    panel.id = 'hud-help';
+    panel.className = 'hud-help';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Tlačítka vpravo nahoře');
+    const h = document.createElement('h3');
+    h.textContent = 'Tlačítka vpravo nahoře';
+    panel.appendChild(h);
+    const rows = [
+      ['Zápisník', 'vše důležité, co najdeš nebo změříš – čísla do výpočtů'],
+      ['Rozsvíceno / Baterka', 'světlo: celá místnost osvětlená, nebo tma a svítilna pod kurzorem'],
+      ['Zvuk / Bez zvuku', 'zapne nebo vypne zvuk'],
+      ['Menu', 'vyznačení klikacích míst, lekačky (zapnout / vypnout), hlavní nabídka'],
+    ];
+    const dl = document.createElement('dl');
+    for (const [name, text] of rows) {
+      const dt = document.createElement('dt');
+      dt.textContent = name;
+      const dd = document.createElement('dd');
+      dd.textContent = text;
+      dl.append(dt, dd);
+    }
+    panel.appendChild(dl);
+    const tip = document.createElement('p');
+    tip.textContent = 'Na věci v místnosti klikej. Šipkami ‹ › po stranách se otáčíš.';
+    panel.appendChild(tip);
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'btn primary';
+    ok.textContent = 'Rozumím';
+    ok.addEventListener('click', hideHudHelp);
+    panel.appendChild(ok);
+    document.body.appendChild(panel);
+    actions.classList.add('coach');
+
+    const place = () => {
+      const r = actions.getBoundingClientRect();
+      panel.style.top = `${Math.round(r.bottom + 12)}px`;
+      panel.style.right = `${Math.max(8, Math.round(window.innerWidth - r.right))}px`;
+      // šipka míří doprostřed skupiny tlačítek
+      const pr = panel.getBoundingClientRect();
+      const arrow = Math.min(Math.max(r.left + r.width / 2 - pr.left, 20), pr.width - 20);
+      panel.style.setProperty('--arrow-x', `${Math.round(arrow)}px`);
+    };
+    place();
+    window.addEventListener('resize', place);
+    // kliknutí mimo panel ho zavře (ať nepřekáží hře)
+    const outside = (e) => { if (!panel.contains(e.target)) hideHudHelp(); };
+    setTimeout(() => document.addEventListener('pointerdown', outside, true), 0);
+    hudHelpCleanup = () => {
+      window.removeEventListener('resize', place);
+      document.removeEventListener('pointerdown', outside, true);
+    };
+  }
+
+  let hudHelpCleanup = null;
+
+  function hideHudHelp() {
+    const panel = $('hud-help');
+    if (!panel) return;
+    panel.remove();
+    const actions = document.querySelector('.hud-actions');
+    if (actions) actions.classList.remove('coach');
+    if (hudHelpCleanup) { hudHelpCleanup(); hudHelpCleanup = null; }
+    Game.setSetting('hudHelpSeen', true);
   }
 
   function showFinish() {
@@ -1033,7 +1115,7 @@
   let scareCfg = null;
   let scareThen = null;    // co udělat po skončení (např. odejít z místnosti)
 
-  const scaresOn = () => Game.getSetting('scares', true);
+  const scaresOn = () => Game.getSetting('scares', false);   // výchozí: vypnuté (zapínají se v Menu)
 
   function scheduleScare(cfg) {
     if (!scaresOn() || !cfg || !cfg.image) return;
@@ -1389,7 +1471,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.5');
+          const mod = await import('./squats.js?v=0.6');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -1482,6 +1564,7 @@
         return b;
       };
       add('Zpět do hry', closeModal);
+      add('Jak ovládat hru', () => { closeModal(); showHudHelp(); });
       const scene = $('scene');
       add(scene.classList.contains('show-hotspots') ? 'Skrýt vyznačení objektů' : 'Vyznačit objekty v místnosti', () => {
         scene.classList.toggle('show-hotspots');

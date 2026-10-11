@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.5 – ukázka",
+    "version": "0.6 – ukázka",
     "totalGates": 9
   },
 
@@ -38,7 +38,7 @@
     {
       "id": "gsport",
       "name": "GSPORT",
-      "description": "Hra a pohyb. Levely otevřeš vlastním tělem – a hlavou. Potřebuješ trochu místa a ideálně webkameru. Pozor: obsahuje lekačky (dají se vypnout v Menu).",
+      "description": "Hra a pohyb. Levely otevřeš vlastním tělem – a hlavou. Potřebuješ trochu místa a ideálně webkameru. Obsahuje lekačky – kdo chce, zapne si je v Menu.",
       "rooms": ["herna"],
       "finish": {
         "title": "LEVEL 1 splněn",
@@ -968,7 +968,7 @@
       },
 
       "scares": {
-        "_poznamka": "Lekačky: každá proběhne jen jednou za hru. delay = kolik sekund po spuštění (napětí, podkres mezitím ztichne), duration = jak dlouho je obrázek vidět, after = text, který se pak připíše pod místnost. Hráč je může vypnout v Menu.",
+        "_poznamka": "Lekačky: každá proběhne jen jednou za hru. delay = kolik sekund po spuštění (napětí, podkres mezitím ztichne), duration = jak dlouho je obrázek vidět, after = text, který se pak připíše pod místnost. Ve výchozím stavu jsou vypnuté, hráč si je zapne v Menu.",
         "odraz": {
           "image": "assets/scares/odraz.webp",
           "position": "64% 50%",
