@@ -1,4 +1,4 @@
-# Brány biomechaniky – výuková adventura (FTVS UK)
+# Devět bran k pochopení pohybu – výuková adventura (FTVS UK)
 
 ## O projektu
 Webová point-and-click adventura pro studenty 1. ročníku FTVS UK v předmětu biomechanika.

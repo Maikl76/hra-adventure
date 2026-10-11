@@ -1,7 +1,7 @@
-# Brány biomechaniky
+# Devět bran k pochopení pohybu
 
-Výuková point-and-click adventura z biomechaniky pro studenty FTVS UK – se sekcí pro civilní
-studium i pro vojenskou tělovýchovu.
+Výuková point-and-click adventura z biomechaniky, zasazená do prostředí Fakulty tělesné výchovy
+a sportu UK – se sekcí pro civilní studium i pro vojenskou tělovýchovu.
 
 **▶ Hrát: <https://maikl76.github.io/hra-adventure/>**
 

@@ -1,4 +1,4 @@
-/* Brány biomechaniky – vzhled. Tma, teplé světlo lampy, zašlé zlato, patkové písmo. */
+/* Devět bran k pochopení pohybu – vzhled. Tma, teplé světlo lampy, zašlé zlato, patkové písmo. */
 
 :root {
   --bg: #070605;
@@ -140,6 +140,7 @@ button:focus-visible, input:focus-visible {
   font-size: clamp(36px, 7vw, 84px);
   letter-spacing: 0.08em;
   line-height: 1.1;
+  text-wrap: balance;          /* dlouhý název zalomit do vyvážených řádků */
   background: linear-gradient(180deg, #f1dca4 0%, var(--gold) 55%, #6e5528 100%);
   -webkit-background-clip: text;
   background-clip: text;
