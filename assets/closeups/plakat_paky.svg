@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 590">
+  <!-- Detail: plakát se třemi druhy pák (osa = trojúhelník, břemeno = kvádr, síla = šipka) -->
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c9b78f"/>
+      <stop offset="1" stop-color="#9d8a65"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7a2e1e"/>
+    </marker>
+  </defs>
+  <rect width="800" height="590" fill="url(#paper)"/>
+  <rect x="12" y="12" width="776" height="566" fill="none" stroke="#5e4f36" stroke-width="2"/>
+  <text x="400" y="56" text-anchor="middle" font-family="Georgia, serif" font-size="30" letter-spacing="6" fill="#3a2c1c">PÁKY</text>
+
+  <g font-family="Georgia, serif" fill="#3a2c1c">
+    <!-- 1. druh: osa uprostřed -->
+    <text x="40" y="112" font-size="20">Páka 1. druhu</text>
+    <line x1="150" y1="170" x2="650" y2="170" stroke="#3a2c1c" stroke-width="6"/>
+    <polygon points="380,206 420,206 400,174"/>
+    <rect x="598" y="128" width="44" height="40"/>
+    <line x1="180" y1="104" x2="180" y2="160" stroke="#7a2e1e" stroke-width="4" marker-end="url(#arrow)"/>
+    <g font-size="15"><text x="400" y="226" text-anchor="middle">osa</text><text x="620" y="120" text-anchor="middle">břemeno</text><text x="192" y="110">síla</text></g>
+
+    <!-- 2. druh: břemeno uprostřed -->
+    <text x="40" y="282" font-size="20">Páka 2. druhu</text>
+    <line x1="150" y1="340" x2="650" y2="340" stroke="#3a2c1c" stroke-width="6"/>
+    <polygon points="140,376 180,376 160,344"/>
+    <rect x="378" y="298" width="44" height="40"/>
+    <line x1="630" y1="332" x2="630" y2="276" stroke="#7a2e1e" stroke-width="4" marker-end="url(#arrow)"/>
+    <g font-size="15"><text x="160" y="396" text-anchor="middle">osa</text><text x="400" y="290" text-anchor="middle">břemeno</text><text x="642" y="286">síla</text></g>
+
+    <!-- 3. druh: síla uprostřed -->
+    <text x="40" y="452" font-size="20">Páka 3. druhu</text>
+    <line x1="150" y1="510" x2="650" y2="510" stroke="#3a2c1c" stroke-width="6"/>
+    <polygon points="140,546 180,546 160,514"/>
+    <rect x="598" y="468" width="44" height="40"/>
+    <line x1="300" y1="502" x2="300" y2="446" stroke="#7a2e1e" stroke-width="4" marker-end="url(#arrow)"/>
+    <g font-size="15"><text x="160" y="566" text-anchor="middle">osa</text><text x="620" y="460" text-anchor="middle">břemeno</text><text x="312" y="456">síla</text></g>
+  </g>
+</svg>

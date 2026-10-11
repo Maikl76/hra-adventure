@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Jižní stěna kabinetu: vchodové dveře, věšák s pláštěm, fotografie, radiátor – zástupná grafika -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1610"/><stop offset="1" stop-color="#120e0a"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#140f0a"/><stop offset="1" stop-color="#070504"/>
+    </linearGradient>
+    <linearGradient id="doorwood" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2c1c0f"/><stop offset="0.5" stop-color="#3a2614"/><stop offset="1" stop-color="#26180c"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6c67e"/><stop offset="1" stop-color="#7d6535"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Stěna, obložení, podlaha -->
+  <rect width="1600" height="690" fill="url(#wall)"/>
+  <rect y="560" width="1600" height="125" fill="#100c08"/>
+  <line x1="0" y1="560" x2="1600" y2="560" stroke="#2c2116" stroke-width="4"/>
+  <g fill="none" stroke="#1e170f" stroke-width="2">
+    <rect x="20" y="578" width="140" height="92"/><rect x="1180" y="578" width="140" height="92"/>
+    <rect x="1400" y="578" width="140" height="92"/>
+  </g>
+  <rect y="680" width="1600" height="12" fill="#1f160e"/>
+  <rect y="690" width="1600" height="210" fill="url(#floor)"/>
+  <g stroke="#19120b" stroke-width="2">
+    <line x1="0" y1="725" x2="1600" y2="725"/><line x1="0" y1="770" x2="1600" y2="770"/>
+    <line x1="0" y1="828" x2="1600" y2="828"/><line x1="0" y1="892" x2="1600" y2="892"/>
+  </g>
+
+  <!-- Fotografie katedry -->
+  <rect x="300" y="250" width="190" height="140" fill="#3a2716"/>
+  <rect x="312" y="262" width="166" height="116" fill="#26231e"/>
+  <g fill="#45413a">
+    <circle cx="340" cy="300" r="9"/><circle cx="368" cy="296" r="9"/><circle cx="396" cy="298" r="10"/>
+    <circle cx="424" cy="296" r="9"/><circle cx="452" cy="300" r="9"/>
+    <rect x="328" y="310" width="24" height="56" rx="6"/><rect x="356" y="306" width="24" height="60" rx="6"/>
+    <rect x="383" y="308" width="26" height="58" rx="6"/><rect x="412" y="306" width="24" height="60" rx="6"/>
+    <rect x="440" y="310" width="24" height="56" rx="6"/>
+  </g>
+
+  <!-- Radiátor -->
+  <rect x="240" y="565" width="300" height="95" rx="6" fill="#2a2722"/>
+  <g fill="#34302a">
+    <rect x="252" y="572" width="12" height="82" rx="5"/><rect x="274" y="572" width="12" height="82" rx="5"/>
+    <rect x="296" y="572" width="12" height="82" rx="5"/><rect x="318" y="572" width="12" height="82" rx="5"/>
+    <rect x="340" y="572" width="12" height="82" rx="5"/><rect x="362" y="572" width="12" height="82" rx="5"/>
+    <rect x="384" y="572" width="12" height="82" rx="5"/><rect x="406" y="572" width="12" height="82" rx="5"/>
+    <rect x="428" y="572" width="12" height="82" rx="5"/><rect x="450" y="572" width="12" height="82" rx="5"/>
+    <rect x="472" y="572" width="12" height="82" rx="5"/><rect x="494" y="572" width="12" height="82" rx="5"/>
+    <rect x="516" y="572" width="12" height="82" rx="5"/>
+  </g>
+
+  <!-- Cedule VÝCHOD (slabě svítí) -->
+  <ellipse cx="770" cy="142" rx="95" ry="42" fill="#3fbf6a" opacity="0.08"/>
+  <rect x="705" y="120" width="130" height="44" rx="4" fill="#1f6b3a" opacity="0.88"/>
+  <g stroke="#e8f5e8" stroke-width="3" stroke-linecap="round" fill="none">
+    <circle cx="726" cy="131" r="4" fill="#e8f5e8" stroke="none"/>
+    <path d="M724,137 L720,148 M724,137 L732,143 L736,138 M722,142 L715,140 M720,148 L728,156 M720,148 L714,157"/>
+  </g>
+  <text x="790" y="149" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#e8f5e8">VÝCHOD</text>
+
+  <!-- Vchodové dveře -->
+  <rect x="628" y="180" width="284" height="512" fill="#2a2016"/>
+  <rect x="644" y="194" width="252" height="494" fill="url(#doorwood)"/>
+  <rect x="690" y="230" width="160" height="130" fill="#0b0e12" stroke="#1e140b" stroke-width="6"/>
+  <polygon points="700,240 730,240 690,330 690,300" fill="#ffffff" opacity="0.04"/>
+  <rect x="668" y="400" width="204" height="250" fill="none" stroke="#1e140b" stroke-width="3"/>
+  <rect x="858" y="425" width="12" height="42" rx="3" fill="#8a6f3a"/>
+  <rect x="834" y="436" width="36" height="8" rx="4" fill="url(#brass)"/>
+  <circle cx="864" cy="456" r="2.5" fill="#1a1208"/>
+  <rect x="646" y="686" width="248" height="4" fill="#ffd28a" opacity="0.75"/>
+  <polygon points="640,692 900,692 970,770 570,770" fill="#ffd28a" opacity="0.06"/>
+
+  <!-- Vypínač -->
+  <rect x="936" y="415" width="26" height="40" rx="3" fill="#c9c2b0" opacity="0.6"/>
+  <rect x="944" y="428" width="10" height="14" rx="2" fill="#9a937f" opacity="0.8"/>
+
+  <!-- Věšák s pláštěm a kloboukem -->
+  <line x1="1110" y1="200" x2="1110" y2="680" stroke="#3a2a1a" stroke-width="10"/>
+  <ellipse cx="1110" cy="686" rx="46" ry="8" fill="#2a1d12"/>
+  <g stroke="#3a2a1a" stroke-width="6" stroke-linecap="round">
+    <line x1="1110" y1="214" x2="1082" y2="234"/><line x1="1110" y1="214" x2="1140" y2="234"/>
+  </g>
+  <path d="M1072,232 C1052,240 1040,300 1038,360 L1030,560 L1150,560 L1138,360 C1134,300 1124,244 1100,232 Z" fill="#a9a294" opacity="0.75"/>
+  <g fill="none" stroke="#6f6a5e" stroke-width="2" opacity="0.8">
+    <path d="M1078,236 L1090,330 L1100,236"/><line x1="1090" y1="330" x2="1090" y2="555"/>
+    <rect x="1046" y="420" width="34" height="30"/>
+  </g>
+  <rect x="1054" y="414" width="6" height="12" fill="#e8e8dc" opacity="0.8"/>
+  <rect x="1128" y="204" width="42" height="28" rx="9" fill="#2b2420"/>
+  <ellipse cx="1149" cy="232" rx="36" ry="8" fill="#2b2420"/>
+
+  <!-- Koš na papír -->
+  <polygon points="1268,600 1352,600 1342,684 1278,684" fill="#2b2620" stroke="#3a342c" stroke-width="2"/>
+  <circle cx="1295" cy="596" r="12" fill="#cfc6b0" opacity="0.6"/>
+  <circle cx="1322" cy="592" r="10" fill="#cfc6b0" opacity="0.55"/>
+  <ellipse cx="1310" cy="690" rx="50" ry="6" fill="#000" opacity="0.4"/>
+</svg>

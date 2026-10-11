@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: složený lísteček s rukopisem -->
+  <polygon points="12,10 50,7 54,53 15,57" fill="#d8cba8" stroke="#8a7a58" stroke-width="1.5"/>
+  <line x1="13" y1="33" x2="52" y2="30" stroke="#a8996f" stroke-width="1"/>
+  <g fill="none" stroke="#5a4a30" stroke-width="1.6" stroke-linecap="round">
+    <path d="M18,18 q4,-3 8,0 t8,0 t8,0"/>
+    <path d="M18,25 q3,-2 6,0 t6,0"/>
+    <path d="M19,42 q4,-3 8,0 t8,0 t6,0"/>
+  </g>
+</svg>

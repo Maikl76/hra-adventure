@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Vrstva: otevřená brána se světlem za dveřmi. Stejný rozměr jako pozadí místnosti. -->
+  <defs>
+    <radialGradient id="beyond" cx="0.5" cy="0.62" r="0.65">
+      <stop offset="0" stop-color="#ffe0a8"/>
+      <stop offset="0.35" stop-color="#b5823f"/>
+      <stop offset="1" stop-color="#120c06"/>
+    </radialGradient>
+    <linearGradient id="spill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd28a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd28a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M1255,690 L1255,310 A120,120 0 0 1 1495,310 L1495,690 Z" fill="url(#beyond)"/>
+  <!-- Vzdálené dveře na konci chodby -->
+  <path d="M1355,600 L1355,520 A20,20 0 0 1 1395,520 L1395,600 Z" fill="#1a120a" opacity="0.8"/>
+  <!-- Křídlo dveří otevřené dovnitř -->
+  <polygon points="1255,690 1255,310 1302,340 1302,664" fill="#24170c" stroke="#c9a45c" stroke-width="2" stroke-opacity="0.5"/>
+  <polygon points="1255,690 1495,690 1590,900 1150,900" fill="url(#spill)"/>
+</svg>

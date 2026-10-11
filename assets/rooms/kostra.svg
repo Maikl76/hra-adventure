@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Východní stěna kabinetu: kostra, tabule, hodiny, atlas svalů – zástupná grafika -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1610"/><stop offset="1" stop-color="#120e0a"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#140f0a"/><stop offset="1" stop-color="#070504"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Stěna, obložení, podlaha -->
+  <rect width="1600" height="690" fill="url(#wall)"/>
+  <rect y="560" width="1600" height="125" fill="#100c08"/>
+  <line x1="0" y1="560" x2="1600" y2="560" stroke="#2c2116" stroke-width="4"/>
+  <g fill="none" stroke="#1e170f" stroke-width="2">
+    <rect x="500" y="578" width="140" height="92"/><rect x="660" y="578" width="140" height="92"/>
+    <rect x="820" y="578" width="140" height="92"/><rect x="980" y="578" width="140" height="92"/>
+    <rect x="1300" y="578" width="140" height="92"/><rect x="1460" y="578" width="140" height="92"/>
+  </g>
+  <rect y="680" width="1600" height="12" fill="#1f160e"/>
+  <rect y="690" width="1600" height="210" fill="url(#floor)"/>
+  <g stroke="#19120b" stroke-width="2">
+    <line x1="0" y1="725" x2="1600" y2="725"/><line x1="0" y1="770" x2="1600" y2="770"/>
+    <line x1="0" y1="828" x2="1600" y2="828"/><line x1="0" y1="892" x2="1600" y2="892"/>
+  </g>
+
+  <!-- Kostra na stojanu -->
+  <g stroke="#3c3a33" stroke-linecap="round">
+    <line x1="330" y1="112" x2="330" y2="672" stroke-width="6"/>
+    <line x1="268" y1="672" x2="392" y2="672" stroke-width="8"/>
+  </g>
+  <circle cx="270" cy="684" r="8" fill="#2a2a26"/><circle cx="390" cy="684" r="8" fill="#2a2a26"/>
+  <g fill="none" stroke="#c8bca4" stroke-linecap="round" stroke-linejoin="round" opacity="0.92">
+    <line x1="330" y1="228" x2="282" y2="223" stroke-width="7"/><line x1="330" y1="228" x2="378" y2="223" stroke-width="7"/>
+    <path d="M284,246 A46,12 0 0 0 376,246" stroke-width="5"/>
+    <path d="M286,262 A44,13 0 0 0 374,262" stroke-width="5"/>
+    <path d="M288,278 A42,13 0 0 0 372,278" stroke-width="5"/>
+    <path d="M291,294 A39,12 0 0 0 369,294" stroke-width="5"/>
+    <path d="M295,310 A35,11 0 0 0 365,310" stroke-width="5"/>
+    <path d="M300,325 A30,9 0 0 0 360,325" stroke-width="5"/>
+    <line x1="330" y1="236" x2="330" y2="300" stroke-width="7"/>
+    <path d="M300,396 C 280,402 282,432 300,442 L 316,428 L 330,438 L 344,428 L 360,442 C 378,432 380,402 360,396 Z" stroke-width="6"/>
+    <line x1="284" y1="230" x2="272" y2="330" stroke-width="8"/>
+    <line x1="270" y1="334" x2="264" y2="424" stroke-width="5"/><line x1="276" y1="334" x2="272" y2="424" stroke-width="5"/>
+    <path d="M266,428 l-6,26 M270,429 l-2,28 M274,428 l3,26" stroke-width="3"/>
+    <line x1="376" y1="230" x2="388" y2="330" stroke-width="8"/>
+    <line x1="384" y1="334" x2="390" y2="424" stroke-width="5"/><line x1="390" y1="334" x2="396" y2="424" stroke-width="5"/>
+    <path d="M392,428 l-2,26 M396,429 l3,27 M400,428 l6,24" stroke-width="3"/>
+    <line x1="312" y1="440" x2="306" y2="558" stroke-width="9"/>
+    <line x1="348" y1="440" x2="354" y2="558" stroke-width="9"/>
+    <line x1="306" y1="568" x2="308" y2="660" stroke-width="6"/><line x1="354" y1="568" x2="352" y2="660" stroke-width="6"/>
+    <path d="M308,662 L284,670 M352,662 L376,670" stroke-width="6"/>
+  </g>
+  <g fill="#c8bca4" opacity="0.92">
+    <circle cx="306" cy="563" r="7"/><circle cx="354" cy="563" r="7"/>
+    <circle cx="272" cy="332" r="6"/><circle cx="388" cy="332" r="6"/>
+    <g>
+      <rect x="325" y="206" width="10" height="8" rx="2"/><rect x="325" y="218" width="10" height="8" rx="2"/>
+      <rect x="324" y="330" width="12" height="9" rx="2"/><rect x="324" y="343" width="12" height="9" rx="2"/>
+      <rect x="323" y="356" width="14" height="10" rx="2"/><rect x="323" y="370" width="14" height="10" rx="2"/>
+      <rect x="323" y="384" width="14" height="10" rx="2"/>
+    </g>
+    <ellipse cx="330" cy="160" rx="32" ry="36"/>
+    <rect x="313" y="176" width="34" height="28" rx="8"/>
+  </g>
+  <ellipse cx="318" cy="160" rx="9" ry="8" fill="#1a1410"/><ellipse cx="342" cy="160" rx="9" ry="8" fill="#1a1410"/>
+  <path d="M327,170 L330,180 L333,170 Z" fill="#1a1410"/>
+  <g stroke="#6f6553" stroke-width="1.5">
+    <line x1="319" y1="192" x2="319" y2="200"/><line x1="325" y1="192" x2="325" y2="200"/><line x1="331" y1="192" x2="331" y2="200"/>
+    <line x1="337" y1="192" x2="337" y2="200"/><line x1="343" y1="192" x2="343" y2="200"/>
+  </g>
+  <rect x="340" y="132" width="22" height="14" fill="#d8cfb4" opacity="0.8" transform="rotate(12 351 139)"/>
+
+  <!-- Tabule -->
+  <rect x="510" y="140" width="680" height="340" fill="#3a2716"/>
+  <rect x="522" y="152" width="656" height="316" fill="#1c2621"/>
+  <ellipse cx="1040" cy="400" rx="120" ry="44" fill="#d8d8cc" opacity="0.05"/>
+  <g fill="none" stroke="#d8d8cc" stroke-width="4" stroke-linecap="round" opacity="0.55">
+    <line x1="600" y1="362" x2="900" y2="362"/>
+    <path d="M612,394 L640,394 L626,364 Z"/>
+    <rect x="860" y="322" width="36" height="38"/>
+    <line x1="680" y1="358" x2="680" y2="292"/><path d="M670,304 L680,290 L690,304"/>
+    <line x1="878" y1="364" x2="878" y2="420"/><path d="M868,408 L878,422 L888,408"/>
+  </g>
+  <g font-family="'Segoe Print', 'Bradley Hand', cursive" fill="#e6e6dc">
+    <text x="596" y="226" font-size="34" opacity="0.5">ROVNOVÁHA</text>
+    <text x="950" y="262" font-size="40" opacity="0.6">M = F · r</text>
+    <text x="990" y="338" font-size="28" opacity="0.35">r = ?</text>
+  </g>
+  <ellipse cx="790" cy="214" rx="72" ry="28" fill="#1c2621" opacity="0.78"/>
+  <ellipse cx="1030" cy="330" rx="54" ry="22" fill="#1c2621" opacity="0.7"/>
+  <ellipse cx="790" cy="214" rx="80" ry="34" fill="#d8d8cc" opacity="0.05"/>
+  <rect x="504" y="480" width="692" height="12" fill="#3a2716"/>
+  <rect x="884" y="473" width="22" height="7" rx="2" fill="#e8e8dc" opacity="0.8"/>
+  <rect x="914" y="475" width="14" height="5" rx="2" fill="#e8e8dc" opacity="0.7"/>
+  <rect x="1000" y="468" width="46" height="13" rx="3" fill="#8a7a4a"/>
+
+  <!-- Hodiny (2:47) -->
+  <circle cx="1360" cy="240" r="62" fill="#3a2716"/>
+  <circle cx="1360" cy="240" r="52" fill="#b9b09a"/>
+  <g stroke="#2a2016" stroke-width="3">
+    <line x1="1360" y1="196" x2="1360" y2="190"/><line x1="1382" y1="201.9" x2="1385" y2="196.7"/>
+    <line x1="1398.1" y1="218" x2="1403.3" y2="215"/><line x1="1404" y1="240" x2="1410" y2="240"/>
+    <line x1="1398.1" y1="262" x2="1403.3" y2="265"/><line x1="1382" y1="278.1" x2="1385" y2="283.3"/>
+    <line x1="1360" y1="284" x2="1360" y2="290"/><line x1="1338" y1="278.1" x2="1335" y2="283.3"/>
+    <line x1="1321.9" y1="262" x2="1316.7" y2="265"/><line x1="1316" y1="240" x2="1310" y2="240"/>
+    <line x1="1321.9" y1="218" x2="1316.7" y2="215"/><line x1="1338" y1="201.9" x2="1335" y2="196.7"/>
+  </g>
+  <g stroke="#1a1208" stroke-linecap="round">
+    <line x1="1360" y1="240" x2="1387.8" y2="236.8" stroke-width="5"/>
+    <line x1="1360" y1="240" x2="1318.9" y2="231.3" stroke-width="3"/>
+  </g>
+  <circle cx="1360" cy="240" r="4" fill="#1a1208"/>
+
+  <!-- Atlas svalů na zdi -->
+  <rect x="1440" y="330" width="130" height="190" fill="#8f805f" opacity="0.6"/>
+  <rect x="1440" y="330" width="130" height="190" fill="none" stroke="#5e4f36" stroke-width="2"/>
+  <path d="M1505,350 C1490,380 1488,420 1500,450 L1495,500 M1505,350 C1520,380 1522,420 1510,450 L1515,500" fill="none" stroke="#7a3b2e" stroke-width="7" opacity="0.7"/>
+  <ellipse cx="1504" cy="410" rx="22" ry="34" fill="none" stroke="#a83a2a" stroke-width="2" opacity="0.8"/>
+
+  <!-- Židle -->
+  <g fill="#2e1e12">
+    <rect x="1195" y="560" width="80" height="10"/>
+    <rect x="1198" y="570" width="8" height="120"/><rect x="1264" y="570" width="8" height="120"/>
+    <rect x="1264" y="440" width="10" height="122"/>
+    <rect x="1270" y="455" width="6" height="60"/>
+  </g>
+</svg>

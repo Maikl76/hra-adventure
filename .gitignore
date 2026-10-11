@@ -1,0 +1,8 @@
+# Podklady (rozpracovaná publikace, >100 MB) – nepatří do veřejného repozitáře
+podklady/
+
+# Systémové a pomocné soubory
+Thumbs.db
+desktop.ini
+.DS_Store
+.claude/settings.local.json

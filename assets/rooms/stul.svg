@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Deska stolu shora: papíry, hrnek, brýle, tužka – zástupná grafika -->
+  <defs>
+    <linearGradient id="desk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f331d"/><stop offset="1" stop-color="#2f1f10"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="0.3" cy="0.27" r="0.55">
+      <stop offset="0" stop-color="#ffcf87" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ffcf87" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#desk)"/>
+  <g fill="none" stroke="#24160b" stroke-width="3" opacity="0.4">
+    <path d="M0,120 C400,100 800,150 1600,110"/><path d="M0,260 C500,280 900,230 1600,270"/>
+    <path d="M0,420 C350,400 1000,450 1600,410"/><path d="M0,560 C600,590 1100,540 1600,570"/>
+    <path d="M0,720 C400,700 900,750 1600,715"/><path d="M0,850 C500,870 1000,830 1600,860"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#lamp)"/>
+
+  <!-- Podstavec lampy a model paže (shora) -->
+  <line x1="360" y1="160" x2="470" y2="-10" stroke="#3c3a33" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="360" cy="160" r="64" fill="#2a2a26"/>
+  <circle cx="360" cy="160" r="50" fill="#3c3a33"/>
+  <rect x="1330" y="-10" width="220" height="110" rx="6" fill="#3a3a36"/>
+  <rect x="1420" y="22" width="200" height="34" rx="14" fill="#bfae95"/>
+  <circle cx="1420" cy="40" r="28" fill="#a8967c"/>
+
+  <!-- Účtenka -->
+  <g transform="rotate(-8 285 480)">
+    <polygon points="230,330 340,330 340,620 330,630 320,620 310,630 300,620 290,630 280,620 270,630 260,620 250,630 240,620 230,630" fill="#e3dccb"/>
+    <g stroke="#8a8478" stroke-width="3">
+      <line x1="250" y1="360" x2="320" y2="360"/><line x1="250" y1="390" x2="300" y2="390"/>
+      <line x1="250" y1="412" x2="322" y2="412"/><line x1="250" y1="434" x2="290" y2="434"/>
+      <line x1="250" y1="456" x2="316" y2="456"/><line x1="250" y1="500" x2="324" y2="500" stroke-width="2"/>
+      <line x1="250" y1="530" x2="324" y2="530" stroke-width="5"/>
+      <line x1="262" y1="580" x2="312" y2="580"/>
+    </g>
+  </g>
+
+  <!-- Omluvenka (linkovaný papír) -->
+  <g transform="rotate(4 610 375)">
+    <rect x="470" y="270" width="280" height="210" fill="#ddd6c2"/>
+    <g stroke="#7d8ea8" stroke-width="1.5" opacity="0.4">
+      <line x1="470" y1="300" x2="750" y2="300"/><line x1="470" y1="322" x2="750" y2="322"/>
+      <line x1="470" y1="344" x2="750" y2="344"/><line x1="470" y1="366" x2="750" y2="366"/>
+      <line x1="470" y1="388" x2="750" y2="388"/><line x1="470" y1="410" x2="750" y2="410"/>
+      <line x1="470" y1="432" x2="750" y2="432"/><line x1="470" y1="454" x2="750" y2="454"/>
+    </g>
+    <line x1="500" y1="270" x2="500" y2="480" stroke="#b0584a" stroke-width="1.5" opacity="0.4"/>
+    <g fill="none" stroke="#2f3550" stroke-width="2.5" stroke-linecap="round">
+      <path d="M512,296 q8,-8 16,0 t16,0 t16,0 t16,0 t16,0 t16,0"/>
+      <path d="M512,318 q8,-8 16,0 t16,0 t16,0 t16,0 t16,0 t16,0 t16,0 t16,0 t16,0"/>
+      <path d="M512,340 q8,-8 16,0 t16,0 t16,0 t16,0 t16,0 t16,0 t16,0 t16,0"/>
+      <path d="M512,362 q8,-8 16,0 t16,0 t16,0 t16,0 t16,0"/>
+      <path d="M600,428 q8,-8 16,0 t16,0 t16,0 t16,0 t16,0"/>
+    </g>
+  </g>
+
+  <!-- Rozvrh zkoušek (tištěný) -->
+  <g transform="rotate(-3 990 495)">
+    <rect x="830" y="380" width="320" height="230" fill="#e8e4da"/>
+    <rect x="830" y="380" width="320" height="34" fill="#5a4630" opacity="0.7"/>
+    <g stroke="#9a9488" stroke-width="2">
+      <line x1="840" y1="450" x2="1140" y2="450"/><line x1="840" y1="490" x2="1140" y2="490"/>
+      <line x1="840" y1="530" x2="1140" y2="530"/><line x1="840" y1="570" x2="1140" y2="570"/>
+      <line x1="930" y1="420" x2="930" y2="600"/><line x1="1030" y1="420" x2="1030" y2="600"/>
+    </g>
+    <g fill="#8a8478">
+      <rect x="845" y="430" width="70" height="8"/><rect x="945" y="430" width="60" height="8"/><rect x="1045" y="430" width="80" height="8"/>
+      <rect x="845" y="468" width="60" height="7"/><rect x="945" y="468" width="70" height="7"/><rect x="1045" y="468" width="50" height="7"/>
+      <rect x="845" y="508" width="66" height="7"/><rect x="945" y="508" width="56" height="7"/><rect x="1045" y="508" width="70" height="7"/>
+      <rect x="845" y="548" width="58" height="7"/><rect x="945" y="548" width="66" height="7"/><rect x="1045" y="548" width="60" height="7"/>
+    </g>
+  </g>
+
+  <!-- Vzkaz (vytržený list z bloku) -->
+  <g transform="rotate(8 1285 335)">
+    <polygon points="1180,262 1200,252 1215,264 1232,250 1250,262 1268,252 1290,264 1310,250 1330,262 1350,252 1370,262 1390,256 1390,420 1180,420" fill="#e6d9a8"/>
+    <g fill="none" stroke="#3a2c1c" stroke-width="3" stroke-linecap="round">
+      <path d="M1200,296 q9,-9 18,0 t18,0 t18,0 t18,0 t18,0 t18,0 t18,0 t18,0"/>
+      <path d="M1200,326 q9,-9 18,0 t18,0 t18,0 t18,0 t18,0 t18,0"/>
+      <path d="M1200,356 q9,-9 18,0 t18,0 t18,0 t18,0 t18,0 t18,0 t18,0 t18,0 t18,0"/>
+      <path d="M1200,386 q9,-9 18,0 t18,0 t18,0 t18,0"/>
+      <line x1="1200" y1="400" x2="1300" y2="398"/>
+    </g>
+  </g>
+
+  <!-- Lístek z menzy -->
+  <g transform="rotate(-12 715 655)">
+    <rect x="620" y="600" width="190" height="110" rx="3" fill="#d9cfb2"/>
+    <line x1="652" y1="600" x2="652" y2="710" stroke="#8a8170" stroke-width="2" stroke-dasharray="4 5"/>
+    <g fill="#8a8170"><rect x="668" y="622" width="110" height="10"/><rect x="668" y="646" width="80" height="8"/><rect x="668" y="666" width="96" height="8"/></g>
+  </g>
+
+  <!-- Hrnek s kávou a kroužek od kávy -->
+  <circle cx="1120" cy="740" r="50" fill="none" stroke="#24140a" stroke-width="5" opacity="0.5"/>
+  <path d="M1350,630 C1400,630 1400,690 1350,690" fill="none" stroke="#6b2f22" stroke-width="14"/>
+  <circle cx="1290" cy="660" r="62" fill="#6b2f22"/>
+  <circle cx="1290" cy="660" r="48" fill="#2a150c"/>
+  <path d="M1252,632 A48,48 0 0 1 1310,616" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.15"/>
+
+  <!-- Brýle -->
+  <g fill="#9fb4d6" fill-opacity="0.06" stroke="#151412" stroke-width="6">
+    <circle cx="320" cy="760" r="34"/><circle cx="410" cy="760" r="34"/>
+  </g>
+  <g fill="none" stroke="#151412" stroke-width="5" stroke-linecap="round">
+    <path d="M354,756 q11,-10 22,0"/><line x1="286" y1="752" x2="236" y2="706"/><line x1="444" y1="752" x2="494" y2="706"/>
+  </g>
+
+  <!-- Tužka -->
+  <polygon points="850,800 1080,730 1086,742 856,812" fill="#c9a03a"/>
+  <polygon points="1080,730 1086,742 1108,728" fill="#d8b98a"/>
+  <polygon points="1100,730 1108,728 1103,734" fill="#2a2a2a"/>
+  <polygon points="836,804 850,800 856,812 842,816" fill="#b06a6a"/>
+</svg>

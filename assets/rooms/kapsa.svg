@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Detail: dolní kapsa docentova pláště (bez klíčku). Zástupná grafika – lze nahradit obrázkem 1672 × 941. -->
+  <defs>
+    <filter id="weave" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9 0.6" numOctaves="2" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.35  0 0 0 0 0.32  0 0 0 0 0.26  0 0 0 0.35 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d6cdb8"/><stop offset="0.55" stop-color="#bdb39c"/><stop offset="1" stop-color="#8f8670"/>
+    </linearGradient>
+    <linearGradient id="pocket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfc6b0"/><stop offset="1" stop-color="#a99f88"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="0.5" stop-color="#000" stop-opacity="0.22"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="opening" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#1c1810"/><stop offset="1" stop-color="#4a4434" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.45" cy="0.4" r="0.8">
+      <stop offset="0.5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Látka pláště se záhyby -->
+  <rect width="1672" height="941" fill="url(#cloth)"/>
+  <rect width="1672" height="941" fill="#fff" filter="url(#weave)"/>
+  <rect x="90" y="0" width="160" height="941" fill="url(#fold)" transform="rotate(4 170 470)"/>
+  <rect x="1300" y="0" width="220" height="941" fill="url(#fold)" transform="rotate(-6 1410 470)"/>
+
+  <!-- Kapsa -->
+  <path d="M470,330 L1210,318 L1238,941 L440,941 Z" fill="url(#pocket)"/>
+  <path d="M470,330 L1210,318 L1238,941 L440,941 Z" fill="#fff" filter="url(#weave)" opacity="0.7"/>
+  <!-- otvor kapsy (lehce odstává) -->
+  <path d="M478,336 C700,372 1000,368 1204,326 L1204,346 C1000,402 700,404 478,362 Z" fill="url(#opening)"/>
+  <!-- lem a prošívání -->
+  <path d="M470,330 L1210,318 L1212,372 L472,384 Z" fill="#c8bfa8"/>
+  <g fill="none" stroke="#7f7764" stroke-width="3" stroke-dasharray="10 8" opacity="0.8">
+    <path d="M478,372 L1204,360"/>
+    <path d="M488,392 L462,941"/>
+    <path d="M1196,380 L1220,941"/>
+  </g>
+  <path d="M470,330 L1210,318" stroke="#e6dfcc" stroke-width="3"/>
+  <!-- stín pod lemem -->
+  <path d="M472,384 L1212,372 L1212,400 L472,412 Z" fill="#000" opacity="0.08"/>
+
+  <!-- Kousek křídy vyčuhující z kapsy -->
+  <g transform="rotate(-22 530 330)">
+    <rect x="500" y="250" width="40" height="120" rx="12" fill="#ece8dc"/>
+    <rect x="500" y="250" width="40" height="18" rx="9" fill="#f7f4ea"/>
+  </g>
+
+  <rect width="1672" height="941" fill="url(#vignette)"/>
+</svg>

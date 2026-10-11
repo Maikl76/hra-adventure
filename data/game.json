@@ -1,0 +1,740 @@
+{
+  "meta": {
+    "title": "Brány biomechaniky",
+    "subtitle": "Výuková adventura z biomechaniky",
+    "version": "0.2 – ukázka",
+    "totalGates": 9
+  },
+
+  "audio": {
+    "_poznamka": "defaultOn: false = hra začne bez zvuku (vhodné pro výuku ve třídě); hráči si zvuk mohou zapnout tlačítkem Zvuk. Do files lze jménu zvuku přiřadit soubor, např. \"kabinet\": \"assets/audio/kabinet.mp3\" – pak hraje soubor místo generovaného zvuku.",
+    "defaultOn": true,
+    "files": {}
+  },
+
+  "intro": {
+    "lines": [
+      { "at": 1.5,  "until": 6.5,  "text": "Fakulta. Noc." },
+      { "at": 7.5,  "until": 13.0, "text": "Docent, který tu léta učil biomechaniku, zmizel před třemi dny." },
+      { "at": 14.0, "until": 19.5, "text": "Ve svém kabinetu zanechal jedinou větu:" },
+      { "at": 20.5, "until": 27.5, "text": "„Devět bran. Otevřou se jen těm, kdo pohybu skutečně rozumějí.“" }
+    ],
+    "duration": 30
+  },
+
+  "tracks": [
+    {
+      "id": "civilni",
+      "name": "Civilní studium",
+      "description": "Sport, výuka, zdraví. Brány tělovýchovy a sportu.",
+      "rooms": ["kabinet"]
+    },
+    {
+      "id": "vojenska",
+      "name": "Vojenská tělovýchova",
+      "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
+      "rooms": ["kabinet"]
+    }
+  ],
+
+  "defaults": {
+    "use": "Tohle k ničemu nevede.",
+    "combine": "Tyhle dvě věci k sobě nepasují.",
+    "selectHint": "Vyber, na co chceš předmět použít – nebo ho kombinuj s jiným předmětem."
+  },
+
+  "items": {
+    "pravitko": {
+      "name": "Pravítko",
+      "icon": "assets/items/pravitko.svg",
+      "description": "Dřevěné pravítko, třicet centimetrů. Dílky jsou místy ohmatané do hladka."
+    },
+    "listecek": {
+      "name": "Lísteček",
+      "icon": "assets/items/listecek.svg",
+      "description": "Složený lísteček, docentův rukopis.",
+      "closeup": {
+        "note": "Závaží: 50 N",
+        "caption": "Lísteček z šuplíku"
+      }
+    },
+    "klic": {
+      "name": "Klíček",
+      "icon": "assets/items/klic.svg",
+      "description": "Malý mosazný klíček na koženém přívěsku. Na přívěsku je vyraženo písmeno Š."
+    },
+    "kniha": {
+      "name": "Kniha",
+      "icon": "assets/items/kniha.svg",
+      "description": "Základy biomechaniky – skripta se zeleným hřbetem. Okraje stránek jsou popsané docentovou rukou.",
+      "examine": [
+        { "when": { "notFlags": ["kniha_prectena"] }, "do": [
+          { "set": "kniha_prectena" },
+          { "note": "Kniha, kap. 4: segment je v klidu, když síla svalu × rameno svalu = tíha břemene × rameno břemene." }
+        ] }
+      ],
+      "book": {
+        "title": "Základy biomechaniky",
+        "pages": [
+          { "type": "title", "blocks": [
+            { "heading": "ZÁKLADY BIOMECHANIKY" },
+            { "p": "skripta pro 1. ročník" },
+            { "note": "Kdo pochopí páky, pochopí pohyb." }
+          ] },
+          { "blocks": [
+            { "heading": "Obsah" },
+            { "toc": [
+              ["1  Síla a tíha", 3],
+              ["2  Moment síly", 4],
+              ["3  Páky v lidském těle", 5],
+              ["4  Rovnováha momentů", 6],
+              ["5  Řešený příklad", 7],
+              ["6  Výskok a let", 8]
+            ] }
+          ] },
+          { "blocks": [
+            { "heading": "1  Síla a tíha" },
+            { "p": "Sílu měříme v newtonech (N), hmotnost v kilogramech (kg). Nezaměňujte je!" },
+            { "p": "Tíha tělesa je síla, kterou ho přitahuje Země:" },
+            { "formula": "G = m · g,   g ≈ 9,81 m/s²" },
+            { "p": "Závaží o hmotnosti 2 kg má tedy tíhu asi 19,6 N." }
+          ] },
+          { "blocks": [
+            { "heading": "2  Moment síly" },
+            { "p": "Síla, která nepůsobí přímo v ose kloubu, segment otáčí. Otáčivý účinek síly vyjadřuje moment síly:" },
+            { "formula": "M = F · r" },
+            { "p": "F … síla (N)\nr … rameno síly – kolmá vzdálenost osy kloubu od přímky, v níž síla působí (m)\nM … moment síly (N·m)" },
+            { "note": "r vždycky v metrech!" }
+          ] },
+          { "blocks": [
+            { "heading": "3  Páky v lidském těle" },
+            { "p": "Kost je páka, kloub je osa otáčení. Podle toho, kde leží osa, síla a břemeno, rozlišujeme tři druhy pák:" },
+            { "p": "1. druh – osa leží mezi silou a břemenem (např. kývání hlavou)." },
+            { "p": "2. druh – břemeno leží mezi osou a silou." },
+            { "p": "3. druh – síla leží mezi osou a břemenem. Sval se upíná blízko kloubu, břemeno je daleko. V lidském těle nejčastější, např. ohyb v lokti." }
+          ] },
+          { "blocks": [
+            { "heading": "4  Rovnováha momentů" },
+            { "p": "Segment se neotáčí (je v klidu), když se momenty sil kolem kloubu navzájem vyrovnají:" },
+            { "formula": "F_{sval} · r_{sval} = F_{břemeno} · r_{břemeno}" },
+            { "image": "assets/book/rovnovaha.svg" },
+            { "p": "Hledaná síla svalu je tedy:" },
+            { "formula": "F_{sval} = F_{břemeno} · r_{břemeno} / r_{sval}" }
+          ] },
+          { "blocks": [
+            { "heading": "5  Řešený příklad" },
+            { "p": "Ve dlani je břemeno s tíhou 40 N. Jeho střed je 35 cm od osy loketního kloubu, šlacha svalu se upíná 5 cm od osy. Hmotnost předloktí zanedbáme." },
+            { "formula": "F_{sval} = 40 N · 0,35 m / 0,05 m = 280 N" },
+            { "p": "Sval táhne sedmkrát větší silou, než je tíha břemene. Velká svalová síla je cenou za rychlost a rozsah pohybu ruky." },
+            { "note": "Nejdřív převeď centimetry na metry!" }
+          ] },
+          { "blocks": [
+            { "heading": "6  Výskok a let" },
+            { "p": "Z doby letu lze určit výšku výskoku…" },
+            { "p": "(Další stránky jsou slepené rozlitou kávou. Nedají se rozlepit.)" },
+            { "note": "Brána II – laboratoř." }
+          ] },
+          { "blocks": [
+            { "note": "Devět bran. Ta první je nejlehčí." }
+          ] }
+        ]
+      }
+    }
+  },
+
+  "uses": [
+    {
+      "item": "pravitko",
+      "on": "model",
+      "when": { "notFlags": ["zmereno"] },
+      "do": [
+        { "set": "zmereno" },
+        { "sound": "measure" },
+        { "text": "Přiložíš pravítko k předloktí a měříš od osy loketního kloubu: k úponu svalu a ke středu závaží." },
+        { "closeup": { "image": "assets/closeups/paze_mereni.svg", "caption": "Měření na modelu paže" } },
+        { "note": "Závaží je 30 cm od osy loketního kloubu." },
+        { "note": "Úpon dvojhlavého svalu pažního je 3 cm od osy loketního kloubu." }
+      ]
+    },
+    {
+      "item": "pravitko",
+      "on": "model",
+      "do": [
+        { "text": "Změřeno je. Pro jistotu se ještě jednou podíváš." },
+        { "closeup": { "image": "assets/closeups/paze_mereni.svg", "caption": "Měření na modelu paže" } }
+      ]
+    },
+    {
+      "item": "pravitko",
+      "on": "brana",
+      "do": [ { "text": "Pravítkem zámek nevypáčíš. Tady pomůže jen správné číslo." } ]
+    },
+    {
+      "item": "kniha",
+      "on": "brana",
+      "do": [ { "text": "Kniha zámek neotevře. Ale to, co je v ní, možná ano." } ]
+    },
+    {
+      "item": "klic",
+      "on": "suplik",
+      "when": { "notFlags": ["suplik_otevren"] },
+      "do": [
+        { "set": "suplik_otevren" },
+        { "remove": "klic" },
+        { "sound": "unlockDrawer" },
+        { "text": "Klíček zapadl do zámku a otočil se. Cvak! Šuplík jde ztuha ven – uvnitř leží dřevěné pravítko a složený lísteček." },
+        { "give": "pravitko" },
+        { "give": "listecek" },
+        { "note": "Lísteček ze šuplíku: tíha závaží je 50 N." }
+      ]
+    },
+    {
+      "item": "klic",
+      "on": "brana",
+      "do": [ { "text": "Na tak velký zámek je klíček moc malý. Hodí se spíš k něčemu menšímu." } ]
+    }
+  ],
+
+  "combinations": [],
+
+  "rooms": {
+    "kabinet": {
+      "name": "Anatomický kabinet",
+      "gateNumber": "I",
+      "tracks": ["civilni", "vojenska"],
+      "ambience": "kabinet",
+      "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
+      "startView": "u_stolu",
+      "views": {
+
+        "u_stolu": {
+          "name": "U stolu",
+          "background": "assets/rooms/kabinet.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy šuplíku a brány jsou vyrobené z jeho pixelů. Původní zástupná kresba: kabinet.svg.",
+          "darkness": 0.62,
+          "left": "knihovna",
+          "right": "kostra",
+          "enterText": "Stůl s lampou, vitrína a těžké dveře s římskou jedničkou.",
+          "lights": [
+            { "x": 56, "y": 52, "radius": 19, "strength": 0.85, "flicker": true },
+            { "x": 16, "y": 21, "radius": 10, "strength": 0.35 },
+            { "x": 86.7, "y": 55, "radius": 17, "strength": 0.85, "when": { "flags": ["brana_kabinet_otevrena"] } }
+          ],
+          "layers": [
+            { "image": "assets/rooms/kabinet_suplik.webp", "when": { "flags": ["suplik_otevren"] }, "animate": "slide" },
+            { "image": "assets/rooms/kabinet_brana_otevrena.webp", "when": { "flags": ["brana_kabinet_otevrena"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "okno",
+              "name": "Okno",
+              "area": [2.4, 9.6, 19.3, 44.6],
+              "click": [
+                { "do": [ { "text": "Za oknem úplněk nad černými korunami stromů. Nikde ani živáčka." } ] }
+              ]
+            },
+            {
+              "id": "vitrina",
+              "name": "Vitrína",
+              "area": [22.1, 11.2, 17.6, 69.1],
+              "click": [
+                { "do": [ { "text": "Za sklem lebka, sklenice s preparáty a pár knih. Ty důležité budou spíš v knihovně." } ] }
+              ]
+            },
+            {
+              "id": "plakat",
+              "name": "Plakát",
+              "area": [43.8, 14.5, 13.9, 21.1],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "text": "Vybledlý plakát se třemi pákami. Pod každou je drobný popisek: kde leží osa, kde působí síla a kde břemeno." },
+                  { "closeup": { "image": "assets/closeups/plakat_paky.svg", "caption": "Plakát: tři druhy pák" } }
+                ] }
+              ]
+            },
+            {
+              "id": "lampa",
+              "name": "Stolní lampa",
+              "area": [43.4, 38.3, 11.2, 20.7],
+              "click": [
+                { "do": [ { "text": "Lampa na baterie hřeje do dlaně. Někdo ji nechal svítit." } ] }
+              ]
+            },
+            {
+              "id": "model",
+              "name": "Model paže",
+              "area": [54.9, 36.7, 15.2, 22],
+              "click": [
+                { "when": { "flags": ["zmereno"] }, "do": [
+                  { "text": "Model paže. Vzdálenosti už máš změřené – najdeš je v zápisníku." }
+                ] },
+                { "do": [
+                  { "text": "Model paže na stojanu. Loket je ohnutý v pravém úhlu, v dlani leží kovové závaží. Dvojhlavý sval pažní se upíná na předloktí jen kousek od lokte." }
+                ] }
+              ]
+            },
+            {
+              "id": "papiry",
+              "name": "Papíry na stole",
+              "area": [68.2, 55.8, 7.2, 8.5],
+              "click": [
+                { "do": [ { "sound": "paper" }, { "view": "stul" } ] }
+              ]
+            },
+            {
+              "id": "suplik",
+              "name": "Šuplík",
+              "area": [45.5, 61.2, 15.4, 9.5],
+              "click": [
+                { "when": { "flags": ["suplik_otevren"] }, "do": [ { "text": "Šuplík je prázdný. V zámku trčí klíček z pláště." } ] },
+                { "when": { "items": ["klic"] }, "do": [
+                  { "sound": "locked" },
+                  { "text": "Šuplík je zamčený. Klíček z pláště by mohl pasovat – vyber ho v inventáři a klikni na šuplík." }
+                ] },
+                { "do": [
+                  { "sound": "locked" },
+                  { "text": "Šuplík je zamčený. Pod knoflíkem je malá klíčová dírka." },
+                  { "note": "Šuplík u stolu je zamčený – potřebuji malý klíček." }
+                ] }
+              ]
+            },
+            {
+              "id": "brana",
+              "name": "Brána I",
+              "area": [77, 10.1, 19.4, 69.4],
+              "click": [
+                { "when": { "flags": ["brana_kabinet_otevrena"] }, "do": [
+                  { "text": "Brána je otevřená. Za ní je tma." },
+                  { "leave": true }
+                ] },
+                { "do": [
+                  { "text": "Těžké dveře s mosazným zámkem. Nad nimi je vyřezaná římská jednička." },
+                  { "openGate": true }
+                ] }
+              ]
+            }
+          ]
+        },
+
+        "stul": {
+          "name": "Stůl zblízka",
+          "background": "assets/rooms/stul.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026). Původní kresba: stul.svg.",
+          "darkness": 0.55,
+          "back": "u_stolu",
+          "enterText": "Deska stolu, zavalená papíry. Většina z nich vypadá jako nepořádek.",
+          "lights": [
+            { "x": 23, "y": 17, "radius": 32, "strength": 0.9, "flicker": true }
+          ],
+          "hotspots": [
+            {
+              "id": "uctenka",
+              "name": "Účtenka",
+              "area": [12.4, 33.8, 9.6, 34.2],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "closeup": { "note": "PAPÍRNICTVÍ\n\nKřídy bílé 2×     24,00\nSešit A4          39,00\nGuma              12,00\n\nCELKEM            75,00 Kč\n\nDěkujeme za nákup", "font": "type", "caption": "Účtenka" } }
+                ] }
+              ]
+            },
+            {
+              "id": "omluvenka",
+              "name": "Omluvenka",
+              "area": [28.2, 25.3, 19.1, 27.5],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "closeup": { "note": "Vážený pane docente,\nomlouvám se z dnešního semináře, měl jsem trénink. Příště to doženu.\n\nStudent 1. ročníku", "caption": "Omluvenka" } }
+                ] }
+              ]
+            },
+            {
+              "id": "rozvrh",
+              "name": "Rozvrh zkoušek",
+              "area": [49.5, 35.9, 21.8, 29.4],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "closeup": { "note": "ZKOUŠKA Z BIOMECHANIKY\ntermíny\n\n12. 1.   9:00   učebna 2\n19. 1.   9:00   učebna 2\n26. 1.  13:00   učebna 5\n\nPřihlašování přes studijní systém.", "font": "type", "caption": "Rozvrh zkoušek" } }
+                ] }
+              ]
+            },
+            {
+              "id": "listek",
+              "name": "Lístek z menzy",
+              "area": [35, 60.4, 13.5, 16.7],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "closeup": { "note": "MENZA\n\nKáva + rohlík\n38 Kč", "font": "type", "caption": "Lístek z menzy" } }
+                ] }
+              ]
+            },
+            {
+              "id": "vzkaz",
+              "name": "Vytržený list",
+              "area": [72.1, 24.2, 15.6, 23.2],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "text": "List vytržený z bloku. Docentův rukopis – tentokrát úplně čitelný." },
+                  { "closeup": { "note": "Rovnováha je vždycky v momentech.\nKdo neví, jak počítat,\nať otevře knihu se zeleným hřbetem.", "caption": "Vytržený list z bloku" } },
+                  { "note": "Vzkaz na stole: postup výpočtu je v knize se zeleným hřbetem." }
+                ] }
+              ]
+            },
+            {
+              "id": "hrnek",
+              "name": "Hrnek",
+              "area": [76.7, 57.9, 14.4, 20.2],
+              "click": [
+                { "do": [ { "text": "Hrnek s vystydlou kávou. Ještě voní – docent tu musel být nedávno." } ] }
+              ]
+            },
+            {
+              "id": "bryle",
+              "name": "Brýle",
+              "area": [11.2, 73.3, 20.6, 14],
+              "click": [
+                { "do": [ { "text": "Docentovy brýle na čtení. Bez nich prý nepřečte ani vlastní poznámky. Kam jen šel?" } ] }
+              ]
+            },
+            {
+              "id": "tuzka",
+              "name": "Tužka",
+              "area": [48.4, 75.4, 17.5, 12.4],
+              "click": [
+                { "do": [ { "text": "Tužka ořezaná do špičky. Docent prý počítal vždycky nejdřív na papíře – a s jednotkami." } ] }
+              ]
+            },
+            {
+              "id": "krouzek",
+              "name": "Kroužek od kávy",
+              "area": [66.1, 71, 7.1, 13],
+              "click": [
+                { "do": [ { "text": "Kroužek od hrnku. Káva tu stála dřív, než ji někdo přesunul o kus dál." } ] }
+              ]
+            }
+          ]
+        },
+
+        "knihovna": {
+          "name": "Knihovna",
+          "background": "assets/rooms/knihovna.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); mezera po knize je jeho díl vsazený na místo zelené knihy. Původní kresba: knihovna.svg.",
+          "darkness": 0.6,
+          "left": "vchod",
+          "right": "u_stolu",
+          "enterText": "Knihovna až ke stropu. Lampa ze stolu sem sotva dosvítí.",
+          "lights": [
+            { "x": 49, "y": 3, "radius": 34, "strength": 0.55 },
+            { "x": 100, "y": 55, "radius": 22, "strength": 0.35 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/knihovna_mezera.webp", "when": { "flags": ["kniha_vzata"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "diplom",
+              "name": "Diplom",
+              "area": [3.9, 21.5, 8.3, 19.8],
+              "click": [
+                { "do": [ { "text": "Diplom „za celoživotní přínos biomechanice“. Jméno je tak vybledlé, že se nedá přečíst." } ] }
+              ]
+            },
+            {
+              "id": "police",
+              "name": "Knihovna",
+              "area": [14.1, 5.8, 70.9, 72],
+              "click": [
+                { "do": [ { "text": "Stovky knih – anatomie, fyziologie, staré ročníky časopisů. Hledat tu naslepo by trvalo do rána." } ] }
+              ]
+            },
+            {
+              "id": "zebrik",
+              "name": "Žebřík",
+              "area": [69.4, 6.2, 9.9, 72.5],
+              "click": [
+                { "do": [ { "text": "Žebřík ke knihovně. Nahoře jsou jen zaprášené sborníky z konferencí." } ] }
+              ]
+            },
+            {
+              "id": "cervena_kniha",
+              "name": "Kniha s červeným hřbetem",
+              "area": [33.8, 23.2, 2.2, 10],
+              "click": [
+                { "do": [ { "sound": "paper" }, { "text": "Fyziologie zátěže. Otevře se na kapitole o laktátu. Teď ne – vracíš ji zpátky." } ] }
+              ]
+            },
+            {
+              "id": "zelena_kniha",
+              "name": "Kniha se zeleným hřbetem",
+              "area": [54.1, 35.4, 3, 11.4],
+              "click": [
+                { "when": { "notFlags": ["kniha_vzata"] }, "do": [
+                  { "set": "kniha_vzata" },
+                  { "sound": "book" },
+                  { "text": "Vytáhneš knihu se zeleným hřbetem: Základy biomechaniky. Okraje stránek jsou popsané docentovou rukou." },
+                  { "give": "kniha" },
+                  { "openItem": "kniha" }
+                ] },
+                { "do": [ { "text": "Na místě zelené knihy zeje mezera. Kniha je v inventáři." } ] }
+              ]
+            },
+            {
+              "id": "globus",
+              "name": "Glóbus",
+              "area": [87.6, 47.6, 8.8, 31],
+              "click": [
+                { "do": [ { "text": "Glóbus. Někdo na něm fixou zakroužkoval Prahu." } ] }
+              ]
+            }
+          ]
+        },
+
+        "vchod": {
+          "name": "Vchod",
+          "background": "assets/rooms/vchod.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026). Původní kresba: vchod.svg.",
+          "darkness": 0.6,
+          "left": "kostra",
+          "right": "knihovna",
+          "enterText": "Dveře, kterými jsi přišel. Pod nimi prosvítá světlo z chodby.",
+          "lights": [
+            { "x": 48, "y": 76.5, "radius": 15, "strength": 0.6 },
+            { "x": 48.1, "y": 11.7, "radius": 9, "strength": 0.6 }
+          ],
+          "hotspots": [
+            {
+              "id": "foto",
+              "name": "Fotografie",
+              "area": [16.4, 24.8, 14.2, 17.7],
+              "click": [
+                { "do": [ { "text": "Stará fotografie katedry: pět mužů v oblecích, jeden v bílém plášti. Ten jediný se dívá přímo do objektivu." } ] }
+              ]
+            },
+            {
+              "id": "radiator",
+              "name": "Radiátor",
+              "area": [13.2, 59, 21.3, 15.1],
+              "click": [
+                { "do": [ { "text": "Radiátor je studený. V noci se netopí." } ] }
+              ]
+            },
+            {
+              "id": "dvere",
+              "name": "Vchodové dveře",
+              "area": [38.6, 15.9, 19, 60.6],
+              "click": [
+                { "do": [ { "text": "Klika se protáčí naprázdno. Cesta ven vede jen branou." } ] }
+              ]
+            },
+            {
+              "id": "cedule",
+              "name": "Cedule VÝCHOD",
+              "area": [43.2, 8.7, 9.9, 6.4],
+              "click": [
+                { "do": [ { "text": "Zelená cedule VÝCHOD. Panáček na ní běží dlouhým krokem – s propnutým kolenem. Docent by ho opravil." } ] }
+              ]
+            },
+            {
+              "id": "vypinac",
+              "name": "Vypínač",
+              "area": [58.3, 43.3, 3.1, 6.6],
+              "click": [
+                { "do": [ { "sound": "key" }, { "text": "Cvak. Cvak. Nic. Elektřina v kabinetu nejde – svítí jen lampa na baterie." } ] }
+              ]
+            },
+            {
+              "id": "plast",
+              "name": "Plášť na věšáku",
+              "area": [64.5, 17.5, 10.6, 60.3],
+              "click": [
+                { "do": [
+                  { "sound": "paper" },
+                  { "text": "Docentův bílý plášť, nad ním klobouk. Bez klobouku by docent nikam neodešel – že by byl pořád v budově?" },
+                  { "view": "kapsa" }
+                ] }
+              ]
+            },
+            {
+              "id": "kos",
+              "name": "Koš",
+              "area": [80.3, 62.5, 6.5, 15.1],
+              "click": [
+                { "do": [ { "text": "V koši jsou dva zmačkané papíry: nákupní seznam a pozvánka na konferenci. Nic užitečného." } ] }
+              ]
+            }
+          ]
+        },
+
+        "kapsa": {
+          "name": "Kapsa pláště",
+          "background": "assets/rooms/kapsa.svg",
+          "_obrazek": "Zástupná kresba – lze nahradit obrázkem kapsy bez klíčku (1672 × 941) a klíček dát jako průhlednou vrstvu.",
+          "back": "vchod",
+          "darkness": 0.5,
+          "enterText": "Sáhneš do dolní kapsy pláště. Kousek křídy… a něco kovového.",
+          "lights": [
+            { "x": 52, "y": 35, "radius": 38, "strength": 0.65 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/kapsa_klic.svg", "when": { "notFlags": ["klic_vzat"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "kapsa_latka",
+              "name": "Kapsa",
+              "area": [26.3, 33.8, 47.9, 66.2],
+              "click": [
+                { "do": [ { "text": "Dolní kapsa pláště, trochu vytahaná. Docent v ní zřejmě nosil všechno možné." } ] }
+              ]
+            },
+            {
+              "id": "krida_kapsa",
+              "name": "Kousek křídy",
+              "area": [28.4, 24, 5.6, 15],
+              "click": [
+                { "do": [ { "text": "Kousek křídy. Na tabuli už toho docent napsal dost." } ] }
+              ]
+            },
+            {
+              "id": "klic_kapsa",
+              "name": "Klíček",
+              "area": [32.5, 27, 33.5, 28],
+              "click": [
+                { "when": { "notFlags": ["klic_vzat"] }, "do": [
+                  { "set": "klic_vzat" },
+                  { "text": "Vytáhneš z kapsy malý mosazný klíček. Na koženém přívěsku je vyražené písmeno Š." },
+                  { "give": "klic" },
+                  { "note": "V plášti byl klíček s přívěskem „Š“." }
+                ] },
+                { "do": [ { "text": "V kapse už je jen kousek křídy." } ] }
+              ]
+            }
+          ]
+        },
+
+        "kostra": {
+          "name": "Kostra a tabule",
+          "background": "assets/rooms/kostra.webp",
+          "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); původní zástupná kresba je kostra.svg. darkness = síla tmy 0–1 (výchozí 0,86); tmavý obrázek potřebuje méně.",
+          "darkness": 0.62,
+          "left": "u_stolu",
+          "right": "vchod",
+          "enterText": "Kostra na stojanu, tabule a hodiny, které tikají až nepříjemně hlasitě.",
+          "lights": [
+            { "x": 48, "y": 4, "radius": 34, "strength": 0.7 },
+            { "x": 19, "y": 45, "radius": 13, "strength": 0.35 }
+          ],
+          "hotspots": [
+            {
+              "id": "kostra",
+              "name": "Kostra",
+              "area": [13.3, 13.3, 11.7, 69.1],
+              "click": [
+                { "do": [ { "text": "Kostra na stojanu. Na lebce má nalepený papírek: „Nekrmit.“" } ] }
+              ]
+            },
+            {
+              "id": "tabule",
+              "name": "Tabule",
+              "area": [29.3, 8.7, 45.8, 46],
+              "click": [
+                { "do": [ { "text": "Na tabuli je nákres páky, slovo ROVNOVÁHA, vzorec M = F · r a pod ním „r = ?“. Někdo tu přemýšlel o stejné úloze jako ty." } ] }
+              ]
+            },
+            {
+              "id": "kridy",
+              "name": "Křídy",
+              "area": [54.1, 49.5, 12, 5],
+              "click": [
+                { "do": [ { "text": "Křídy a houba. Houba je ještě vlhká – někdo tu psal před chvílí." } ] }
+              ]
+            },
+            {
+              "id": "hodiny",
+              "name": "Hodiny",
+              "area": [80.1, 17, 9.3, 16.5],
+              "click": [
+                { "do": [ { "text": "Hodiny ukazují tři čtvrtě na tři. Tikají až nepříjemně hlasitě." } ] }
+              ]
+            },
+            {
+              "id": "zidle",
+              "name": "Židle",
+              "area": [72.1, 48.9, 8.8, 33.8],
+              "click": [
+                { "do": [ { "text": "Rozviklaná dřevěná židle. Docent na ní prý nikdy neseděl – tvrdil, že kazí držení těla." } ] }
+              ]
+            },
+            {
+              "id": "atlas",
+              "name": "Anatomický plakát",
+              "area": [89.4, 33.6, 9.2, 23.3],
+              "click": [
+                { "do": [ { "text": "Anatomický plakát: svaly celého těla zezadu. Někdo k němu tužkou připsal: „Biceps je vpředu – tady ho nehledej.“" } ] }
+              ]
+            }
+          ]
+        }
+      },
+
+      "gate": {
+        "title": "Zámek brány I",
+        "openFlag": "brana_kabinet_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Do mosazi je vyryto: „Jakou silou musí táhnout dvojhlavý sval pažní, aby paže zůstala v klidu?“ (Hmotnost předloktí zanedbej.)",
+            "unit": "N",
+            "answer": 500,
+            "tolerance": 0,
+            "feedback": {
+              "50": "50 N je tíha závaží. Sval se ale upíná mnohem blíž ke kloubu než závaží – musí táhnout víc, nebo míň?",
+              "15": "15 je moment síly závaží (v N·m). Teď zjisti, jakou silou ho vyrovná sval na svém kratším rameni.",
+              "5": "Pozor na jednotky – nepomíchal ses centimetry a metry?",
+              "1500": "1500 je moment síly závaží v N·cm. Ještě ho vyděl ramenem síly svalu."
+            },
+            "wrong": "Zámek ani necvakl. Zkus to přepočítat.",
+            "hints": [
+              "Paže je v klidu, když se momenty sil kolem loketního kloubu navzájem vyrovnají.",
+              "Moment síly = síla × rameno (kolmá vzdálenost od osy kloubu). Jaký moment vytváří závaží?",
+              "Závaží: 50 N × 0,30 m = 15 N·m. Sval musí vytvořit stejný moment, ale na rameni jen 0,03 m."
+            ],
+            "success": "Zámek cvakl. Dveře ale pořád drží železná závora – i na ní je otázka."
+          },
+          {
+            "type": "choice",
+            "question": "Na závoře stojí: „O jaký druh páky jde v loketním kloubu při tomto držení?“",
+            "options": ["Páka 1. druhu", "Páka 2. druhu", "Páka 3. druhu"],
+            "correct": 2,
+            "feedback": {
+              "0": "U páky 1. druhu leží osa mezi silou a břemenem. Leží loket mezi úponem svalu a závažím?",
+              "1": "U páky 2. druhu leží břemeno mezi osou a silou. Leží závaží mezi loktem a úponem svalu?"
+            },
+            "wrong": "Závora se ani nehnula.",
+            "hints": [
+              "Najdi tři body: osu (loket), sílu (úpon svalu) a břemeno (závaží).",
+              "Který z těch tří bodů leží uprostřed?",
+              "Úpon svalu (síla) leží mezi loktem (osou) a závažím (břemenem)."
+            ],
+            "success": "Závora sklouzla. Dveře se se skřípěním pootevřely."
+          }
+        ],
+        "open": [
+          { "text": "Brána I je otevřená. Z mezery mezi dveřmi proudí studený vzduch a slabé světlo." },
+          { "note": "Brána I: biceps drží závaží silou 500 N – desetkrát víc, než je tíha závaží. Loket je páka 3. druhu." }
+        ]
+      }
+    }
+  },
+
+  "finish": {
+    "title": "Brána I je otevřená",
+    "text": "Za dveřmi se táhne tmavá chodba. Na jejím konci, sotva viditelné, stojí další dveře. Osm bran zůstává zavřených…",
+    "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu."
+  }
+}
