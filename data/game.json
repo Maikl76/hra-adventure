@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.2 – ukázka",
+    "version": "0.3 – ukázka",
     "totalGates": 9
   },
 
@@ -57,6 +57,12 @@
         "note": "Závaží: 50 N",
         "caption": "Lísteček z šuplíku"
       }
+    },
+    "kalkulacka": {
+      "name": "Kalkulačka",
+      "icon": "assets/items/kalkulacka.svg",
+      "description": "Stará školní kalkulačka. Počítá celé výrazy i se závorkami a umí druhou mocninu (x²).",
+      "calculator": true
     },
     "klic": {
       "name": "Klíček",
@@ -629,6 +635,9 @@
             { "x": 48, "y": 4, "radius": 34, "strength": 0.7 },
             { "x": 19, "y": 45, "radius": 13, "strength": 0.35 }
           ],
+          "layers": [
+            { "image": "assets/rooms/kostra_kalkulacka.svg", "when": { "notFlags": ["kalkulacka_vzata"] } }
+          ],
           "hotspots": [
             {
               "id": "kostra",
@@ -668,6 +677,19 @@
               "area": [72.1, 48.9, 8.8, 33.8],
               "click": [
                 { "do": [ { "text": "Rozviklaná dřevěná židle. Docent na ní prý nikdy neseděl – tvrdil, že kazí držení těla." } ] }
+              ]
+            },
+            {
+              "id": "kalkulacka",
+              "name": "Kalkulačka",
+              "area": [74.5, 56.3, 4.5, 9.4],
+              "click": [
+                { "when": { "notFlags": ["kalkulacka_vzata"] }, "do": [
+                  { "set": "kalkulacka_vzata" },
+                  { "text": "O opěradlo židle je opřená stará školní kalkulačka. Bereš ji – počítat z hlavy se ve tmě špatně. (V inventáři na ni klikni dvakrát a otevře se.)" },
+                  { "give": "kalkulacka" }
+                ] },
+                { "do": [ { "text": "Rozviklaná dřevěná židle. Kalkulačku už máš u sebe." } ] }
               ]
             },
             {

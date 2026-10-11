@@ -466,6 +466,12 @@
       this.ping(dest, 1900, t, 0.02, 0.08);
     },
 
+    /* Tlačítko kalkulačky: tiché pípnutí. */
+    beep(dest, t) {
+      this.ping(dest, 2300, t, 0.012, 0.06);
+      this.click(dest, 4000, t, 0.03);
+    },
+
     /* Přiložení pravítka: dvě dřevěná klepnutí. */
     measure(dest, t) {
       this.click(dest, 1400, t, 0.25);

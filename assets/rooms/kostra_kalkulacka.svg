@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: stará kalkulačka opřená o opěradlo židle (zmizí, když ji hráč vezme).
+       Souřadnice odpovídají obrázku kostra.webp (1672 × 941). -->
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a3d40"/><stop offset="1" stop-color="#16181a"/>
+    </linearGradient>
+    <linearGradient id="lcd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9b896"/><stop offset="1" stop-color="#8a9a78"/>
+    </linearGradient>
+  </defs>
+  <!-- stín na sedáku -->
+  <ellipse cx="1284" cy="606" rx="26" ry="3.5" fill="#000" opacity="0.45"/>
+  <!-- kalkulačka lehce zakloněná (horní hrana posunutá doprava) -->
+  <g transform="translate(0 604) skewX(-5) translate(0 -604)">
+    <rect x="1264" y="548" width="38" height="56" rx="3" fill="url(#body)" stroke="#4a4d50" stroke-width="1"/>
+    <rect x="1268" y="552" width="30" height="10" rx="1" fill="url(#lcd)"/>
+    <text x="1296" y="560.5" text-anchor="end" font-family="'Courier New', monospace" font-size="7" fill="#26301f">0.</text>
+    <g fill="#cfcfc6" opacity="0.9">
+      <rect x="1268" y="566" width="6" height="5" rx="1"/><rect x="1276" y="566" width="6" height="5" rx="1"/><rect x="1284" y="566" width="6" height="5" rx="1"/>
+      <rect x="1268" y="573" width="6" height="5" rx="1"/><rect x="1276" y="573" width="6" height="5" rx="1"/><rect x="1284" y="573" width="6" height="5" rx="1"/>
+      <rect x="1268" y="580" width="6" height="5" rx="1"/><rect x="1276" y="580" width="6" height="5" rx="1"/><rect x="1284" y="580" width="6" height="5" rx="1"/>
+      <rect x="1268" y="587" width="6" height="5" rx="1"/><rect x="1276" y="587" width="6" height="5" rx="1"/><rect x="1284" y="587" width="6" height="5" rx="1"/>
+    </g>
+    <g fill="#c98a3c">
+      <rect x="1292" y="566" width="6" height="5" rx="1"/><rect x="1292" y="573" width="6" height="5" rx="1"/>
+      <rect x="1292" y="580" width="6" height="5" rx="1"/><rect x="1292" y="587" width="6" height="12" rx="1"/>
+    </g>
+    <rect x="1268" y="594" width="22" height="5" rx="1" fill="#cfcfc6" opacity="0.9"/>
+    <!-- odlesk lampy -->
+    <path d="M1265,549 L1301,549" stroke="#ffffff" stroke-width="1" opacity="0.35"/>
+  </g>
+</svg>

@@ -21,6 +21,8 @@ pochopením biomechanického principu.
 - Předmět z inventáře vybereš kliknutím a použiješ ho kliknutím na předmět v místnosti;
   druhým kliknutím na předmět v inventáři si ho prohlédneš (knihu otevřeš a listuješ v ní).
 - **Zápisník** si pamatuje zjištěné údaje, **Baterka/Rozsvíceno** přepíná tmu, **Zvuk** vypíná zvuk.
+- **Kalkulačku** najdeš v kabinetu. Otevře se jako okno, které jde přesunout a zůstává otevřené
+  i nad zámkem brány; výsledek se dá jedním tlačítkem přenést do zámku.
 - Postup se ukládá v prohlížeči – po zavření stačí „Pokračovat“.
 
 ## Pro vyučující

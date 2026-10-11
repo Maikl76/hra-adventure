@@ -657,6 +657,100 @@ button:focus-visible, input:focus-visible {
 
 .fatal-wrap p { color: var(--muted); white-space: pre-line; }
 
+/* ---------- Kalkulačka (plovoucí okno nad hrou i nad zámkem) ---------- */
+
+.calc {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 45;
+  width: 236px;
+  padding: 0 10px 10px;
+  background: linear-gradient(180deg, #2c2e31, #1a1b1d);
+  border: 1px solid #4a4d50;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  font-family: var(--digits);
+  animation: rise 0.25s ease both;
+}
+
+.calc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 2px 4px;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: move;
+  touch-action: none;
+  user-select: none;
+}
+
+.calc-close { background: none; border: 0; color: var(--muted); font-size: 20px; line-height: 1; padding: 0 4px; }
+.calc-close:hover { color: var(--gold-bright); }
+
+.calc-screen {
+  background: linear-gradient(180deg, #b3c2a0, #97a785);
+  border: 2px solid #111;
+  border-radius: 4px;
+  padding: 4px 8px 6px;
+  color: #1d2418;
+  text-align: right;
+  font-family: "Courier New", Courier, monospace;
+  height: 66px;               /* pevná výška – tlačítka pod displejem nikdy neposkočí */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.calc-last { min-height: 16px; font-size: 12px; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl; }
+.calc-main { font-size: 22px; font-weight: bold; line-height: 1.2; white-space: nowrap; overflow: hidden; direction: rtl; }
+.calc-main.long { font-size: 16px; }
+.calc-main.xlong { font-size: 12px; }
+
+.calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+
+.calc-key {
+  padding: 8px 0;
+  font-size: 17px;
+  background: linear-gradient(180deg, #e2e2da, #bdbdb4);
+  border: 1px solid #77776f;
+  border-radius: 5px;
+  color: #1a1a18;
+  box-shadow: 0 2px 0 #55554f;
+}
+
+.calc-key:active { transform: translateY(2px); box-shadow: none; }
+.calc-key.fn { background: linear-gradient(180deg, #6a6d70, #4c4f52); color: #f0f0ea; border-color: #2c2e30; }
+.calc-key.op { background: linear-gradient(180deg, #e0a050, #b9772c); color: #1a1208; border-color: #7a4c18; }
+.calc-key.eq { grid-column: 1 / -1; background: linear-gradient(180deg, #e0a050, #b9772c); color: #1a1208; border-color: #7a4c18; font-weight: bold; }
+
+.calc-transfer {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 6px;
+  background: none;
+  border: 1px solid var(--gold-dim);
+  border-radius: 5px;
+  color: var(--gold-bright);
+  font-family: var(--serif);
+  font-size: 14px;
+}
+
+.calc-transfer:hover { border-color: var(--gold-bright); }
+
+/* tlačítko „Kalkulačka“ v zámku brány */
+.lock .calc-open { display: block; margin: 12px auto 0; }
+
+@media (max-width: 600px), (max-height: 600px) {
+  .calc { width: 206px; top: 44px; right: 8px; }
+  .calc-key { padding: 6px 0; font-size: 15px; }
+}
+
 /* ---------- Oznámení ---------- */
 
 .toast {

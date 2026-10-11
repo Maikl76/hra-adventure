@@ -11,6 +11,7 @@
   let data = null;
   let game = null;
   let sound = null;          // zvuk (audio.js)
+  let calc = null;           // kalkulačka (calc.js)
   let selectedItem = null;   // id vybraného předmětu z inventáře
   let flashlightOn = true;   // baterka (tma kolem) / rozsvíceno
   const newItems = new Set(); // předměty, které se mají v inventáři zvýraznit
@@ -44,6 +45,7 @@
     const audioConfig = data.audio || {};
     sound = new Sound(audioConfig);
     sound.setEnabled(Game.getSetting('sound', audioConfig.defaultOn !== false));
+    calc = new Calculator({ onKey: () => sound.sfx('beep') });
 
     flashlightOn = Game.getSetting('flashlight', true);
     setupStatic();
@@ -58,7 +60,10 @@
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach((s) => { s.hidden = s.id !== id; });
     if (id === 'room') startSceneLoop();
-    else stopSceneLoop();
+    else {
+      stopSceneLoop();
+      if (calc) calc.close();
+    }
     if (id in SCREEN_AMBIENCE) sound.ambience(SCREEN_AMBIENCE[id]);
   }
 
@@ -602,6 +607,7 @@
     selectItem(id);
     const lines = [`${item.name}: ${item.description}`];
     if (item.book) lines.push('Klikni na knihu znovu a otevřeš ji.');
+    else if (item.calculator) lines.push('Klikni na kalkulačku znovu a otevře se.');
     else if (item.closeup) lines.push('Klikni na předmět znovu a prohlédneš si ho zblízka.');
     lines.push(data.defaults.selectHint);
     showMessage(lines.slice(0, 1), lines.slice(1));
@@ -621,8 +627,12 @@
   /* Otevření předmětu: kniha k listování, nebo detail. */
   function openItemDetail(id) {
     const item = game.item(id);
-    if (!item || (!item.book && !item.closeup)) return;
+    if (!item || (!item.book && !item.closeup && !item.calculator)) return;
     handleEvents(game.examineItem(id));
+    if (item.calculator) {
+      calc.open();
+      return;
+    }
     sound.sfx(item.book ? 'page' : 'paper');
     if (item.book) openBook(item.book);
     else openCloseup(item.closeup);
@@ -865,6 +875,7 @@
     box.innerHTML = '';
     box.className = 'modal-box';
     bookNav = null;
+    calc.setLockTarget(null);   // zámek (pokud se otevírá) si cíl nastaví znovu
     const close = document.createElement('button');
     close.type = 'button';
     close.className = 'modal-close';
@@ -881,6 +892,7 @@
     $('modal').hidden = true;
     $('modal-box').innerHTML = '';
     bookNav = null;
+    calc.setLockTarget(null);
   }
 
   function heading(box, text) {
@@ -1165,6 +1177,21 @@
       ok.addEventListener('click', submitCode);
       pad.appendChild(ok);
       lock.appendChild(pad);
+
+      // Kalkulačka z inventáře: otevřít ji a výsledek přenést do zámku jedním tlačítkem.
+      if (game.state.inventory.some((id) => game.item(id).calculator)) {
+        calc.setLockTarget((value) => {
+          lockInput = value.replace(/\s/g, '').slice(0, 12);
+          updateLockDisplay();
+          sound.sfx('key');
+        });
+        const cb = document.createElement('button');
+        cb.type = 'button';
+        cb.className = 'btn calc-open';
+        cb.textContent = 'Kalkulačka';
+        cb.addEventListener('click', () => calc.open());
+        lock.appendChild(cb);
+      }
     } else if (step.type === 'choice') {
       const list = document.createElement('div');
       list.className = 'choices';
@@ -1322,6 +1349,7 @@
     if (e.key === 'Escape') {
       if (modalOpen) closeModal();
       else if (selectedItem) selectItem(null);
+      else if (calc.isOpen) calc.close();
     }
   }
 
