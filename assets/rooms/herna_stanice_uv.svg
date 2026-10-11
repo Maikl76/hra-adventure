@@ -1,11 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
-  <!-- Vrstva: v UV světle se objevil nápis nad kostrou a šipka ke dveřím (k pojistkové skříni).
-       Kostra v herna_stanice.webp: x 240–445, lebka nahoře u y 100; šipka vede nad kamerou stanice. -->
+  <!-- Vrstva: v UV světle se nad kostrou objeví nápis KOLIK NÁS JE? a svítící šipka vede dolů
+       na mosazný štítek na podstavci kostry (odpověď 206). Kostra v herna_stanice.webp: x 240–445,
+       podstavec x 262–440, y 763–815, štítek x 287–403, y 787–803. -->
   <defs><filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-  <g filter="url(#glow)" fill="none" stroke="#c6ff6b" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+  <g filter="url(#glow)" fill="none" stroke="#c6ff6b" stroke-linecap="round" stroke-linejoin="round" opacity="0.92">
     <text x="345" y="72" text-anchor="middle" font-family="Comic Sans MS, Segoe Print, cursive" font-size="40" fill="#c6ff6b" stroke="none">KOLIK NÁS JE?</text>
-    <path d="M425,250 q60,-10 100,-6" stroke-width="5"/>
-    <path d="M640,240 h460" stroke-width="5" stroke-dasharray="26 18"/>
-    <path d="M1120,240 h50 m-24,-18 l24,18 l-24,18" stroke-width="6"/>
+    <!-- šipka od nápisu podél kostry dolů k podstavci -->
+    <path d="M478,92 q14,40 2,90" stroke-width="5"/>
+    <path d="M482,200 V700" stroke-width="5" stroke-dasharray="24 16"/>
+    <path d="M482,716 q2,62 -52,78" stroke-width="5"/>
+    <path d="M444,778 l-16,17 l22,8" stroke-width="6"/>
+    <!-- kroužek kolem štítku -->
+    <ellipse cx="345" cy="795" rx="80" ry="21" stroke-width="4" stroke-dasharray="14 9"/>
   </g>
 </svg>

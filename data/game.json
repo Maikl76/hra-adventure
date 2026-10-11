@@ -312,14 +312,14 @@
       "do": [
         { "set": "uv_kostra" },
         { "sound": "uv" },
-        { "text": "Posvítíš UV svítilnou na kostru. Nad lebkou se na stěně rozzáří nápis KOLIK NÁS JE? a od žeber vede svítící šipka – ke dveřím, k pojistkové skříni." },
-        { "note": "UV světlo u kostry: KOLIK NÁS JE? Šipka vede k pojistkové skříni." }
+        { "text": "Posvítíš UV svítilnou na kostru. Nad lebkou se na stěně rozzáří nápis KOLIK NÁS JE? a svítící šipka vede dolů – přímo na mosazný štítek na podstavci kostry." },
+        { "note": "UV světlo u kostry: KOLIK NÁS JE? Šipka ukazuje na štítek na podstavci kostry." }
       ]
     },
     {
       "item": "uv",
       "on": "kostra",
-      "do": [ { "sound": "uv" }, { "text": "Nápis nad kostrou pořád svítí: KOLIK NÁS JE?" } ]
+      "do": [ { "sound": "uv" }, { "text": "Nápis nad kostrou pořád svítí: KOLIK NÁS JE? Šipka míří na štítek na podstavci." } ]
     },
     {
       "item": "uv",
@@ -1029,13 +1029,13 @@
           "steps": [
             {
               "type": "code",
-              "question": "Číselný zámek na pojistkové skříni – tři číslice. Na dvířkách je fixou napsáno: SVĚTLO UKÁŽE CESTU.",
+              "question": "Na displeji zámku pojistkové skříně svítí otázka: „KOLIK KOSTÍ MÁ TĚLO DOSPĚLÉHO ČLOVĚKA?“ Pod displejem je fixou připsáno: SVĚTLO UKÁŽE CESTU.",
               "answer": "206",
               "wrong": "Kontrolka zablikala červeně.",
               "hints": [
-                "Jaké světlo se tu dá najít? Zkus na věci v herně posvítit UV svítilnou.",
-                "UV svítilnou posviť na kostru.",
-                "KOLIK NÁS JE? Kolik kostí má dospělý člověk – je to na štítku kostry: 206."
+                "Nevíš? Odpověď je schovaná v herně – SVĚTLO UKÁŽE CESTU. Zkus posvítit UV svítilnou na dvířka skříně.",
+                "Jdi ke kostře a posviť na ni UV svítilnou. Svítící šipka ti ukáže, kam se podívat.",
+                "Odpověď je na mosazném štítku na podstavci kostry: dospělý člověk má 206 kostí."
               ],
               "success": "Cvak."
             }
@@ -1323,15 +1323,15 @@
               "name": "Kostra",
               "area": [14.4, 10.1, 12.3, 73.9],
               "click": [
-                { "when": { "flags": ["uv_kostra"] }, "do": [ { "text": "Nad kostrou pořád slabě svítí: KOLIK NÁS JE? A šipka míří ke dveřím." } ] },
+                { "when": { "flags": ["uv_kostra"] }, "do": [ { "text": "Nad kostrou pořád slabě svítí KOLIK NÁS JE? a šipka míří dolů na štítek na podstavci. Klikni na podstavec." } ] },
                 { "when": { "flags": ["kostra_otocena"] }, "do": [ { "text": "Kostra se sluchátky na hlavě. Dívá se na tebe prázdnými důlky. Ze sluchátek tiše šumí." } ] },
                 { "do": [ { "text": "Kostra na stojanu ze staré laboratoře. Někdo jí nasadil herní sluchátka. Hlavu má otočenou ke dveřím, jako by na někoho čekala." } ] }
               ]
             },
             {
               "id": "stitek",
-              "name": "Štítek na podstavci",
-              "area": [17, 82.4, 7.2, 3.9],
+              "name": "Podstavec kostry se štítkem",
+              "area": [15.7, 80.6, 10.6, 6.4],
               "click": [ { "do": [
                 { "text": "Mosazný štítek na podstavci: KOSTRA DOSPĚLÉHO ČLOVĚKA – 206 KOSTÍ." },
                 { "note": "Štítek u kostry: dospělý člověk má 206 kostí." }
@@ -1424,7 +1424,7 @@
               "click": [
                 { "when": { "flags": ["pojistky_otevreny"] }, "do": [ { "view": "pojistky" } ] },
                 { "do": [
-                  { "text": "Stará plechová pojistková skříň. Na dvířkách číselný zámek a fixou napsáno: SVĚTLO UKÁŽE CESTU." },
+                  { "text": "Stará plechová pojistková skříň. Na dvířkách je číselný zámek s otázkou a fixou připsáno: SVĚTLO UKÁŽE CESTU." },
                   { "lock": "pojistky" }
                 ] }
               ]
