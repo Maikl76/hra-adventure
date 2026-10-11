@@ -94,6 +94,15 @@ Otevření brány vede na závěrečnou obrazovku s náznakem dalších bran (�
 - Neměň obsah hádanek ani výpočty bez upozornění; fyzikální správnost ověřuje vyučující.
 - Žádné externí knihovny, pokud nejsou nutné.
 
+## Repozitář a zveřejnění
+- GitHub: <https://github.com/Maikl76/hra-adventure> (veřejný, větev `main`) – zcela oddělený
+  od projektu KinemaLab. Hra běží na GitHub Pages: <https://maikl76.github.io/hra-adventure/>.
+- Licence: kód MIT (`LICENSE`), obsah `assets/` + `data/` CC BY 4.0 (`LICENSE-obsah.md`).
+- `.nojekyll` = GitHub Pages servíruje soubory tak, jak jsou.
+- Git na tomto PC nemá nastavenou identitu – commitovat s
+  `git -c user.name="Michal Vágner" -c user.email="vagner.mm76@gmail.com" commit …`.
+  Push přes Git Credential Manager (přihlášení je uložené).
+
 ## Jak hru vyzkoušet
 Hra načítá `data/game.json`, takže otevření `index.html` dvojklikem nestačí (prohlížeč to
 ze souboru nedovolí). Lokálně: ve složce projektu `python -m http.server 8765` a v prohlížeči
