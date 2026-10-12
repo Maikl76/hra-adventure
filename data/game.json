@@ -1992,7 +1992,7 @@
         "dvere": {
           "name": "Pancéřové dveře",
           "background": "assets/rooms/sklad_dvere.webp",
-          "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026). Otevřené dveře jsou zatím zástupná vrstva sklad_dvere_otevrene.svg; původní kresba: sklad_dvere.svg.",
+          "_obrazek": "Obrázky dodal autor projektu (12. 10. 2026): zavřené dveře a stejný záběr s otevřenými dveřmi (vrstva). Původní kresby: sklad_dvere.svg, sklad_dvere_otevrene.svg.",
           "darkness": 0.45,
           "left": "figurina",
           "right": "pult",
@@ -2000,10 +2000,11 @@
           "lights": [
             { "x": 50, "y": 2, "radius": 24, "strength": 0.6 },
             { "x": 61.8, "y": 69, "radius": 3, "strength": 0.5, "when": { "notFlags": ["brana_sklad_otevrena"] } },
-            { "x": 50, "y": 45, "radius": 26, "strength": 0.85, "when": { "flags": ["brana_sklad_otevrena"] } }
+            { "x": 54.5, "y": 16, "radius": 14, "strength": 0.8, "flicker": true, "when": { "flags": ["brana_sklad_otevrena"] } },
+            { "x": 48, "y": 60, "radius": 22, "strength": 0.6, "when": { "flags": ["brana_sklad_otevrena"] } }
           ],
           "layers": [
-            { "image": "assets/rooms/sklad_dvere_otevrene.svg", "when": { "flags": ["brana_sklad_otevrena"] } }
+            { "image": "assets/rooms/sklad_dvere_otevrene.webp", "when": { "flags": ["brana_sklad_otevrena"] } }
           ],
           "hotspots": [
             {
@@ -2012,7 +2013,7 @@
               "area": [30.5, 6, 39.5, 83],
               "click": [
                 { "when": { "flags": ["brana_sklad_otevrena"] }, "do": [
-                  { "text": "Dveře jsou otevřené. Za nimi vede schodiště nahoru." },
+                  { "text": "Dveře jsou otevřené. Za nimi vede úzké betonové schodiště nahoru, ke světlu. Na zábradlí visí přilba." },
                   { "leave": true }
                 ] },
                 { "do": [
@@ -2031,7 +2032,10 @@
               "id": "hasicak",
               "name": "Hasicí přístroj",
               "area": [71.3, 54, 5, 24],
-              "click": [ { "do": [ { "text": "Hasicí přístroj. Poslední revize – před mnoha lety." } ] } ]
+              "click": [
+                { "when": { "flags": ["brana_sklad_otevrena"] }, "do": [ { "text": "Hasicí přístroj je teď schovaný za otevřeným dveřním křídlem." } ] },
+                { "do": [ { "text": "Hasicí přístroj. Poslední revize – před mnoha lety." } ] }
+              ]
             },
             {
               "id": "zed",

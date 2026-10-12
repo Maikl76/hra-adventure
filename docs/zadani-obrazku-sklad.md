@@ -5,12 +5,12 @@ Platí stejná pravidla jako u kabinetu a herny.
 
 **Stav (12. 10. 2026):**
 - Hotovo (vaše obrázky jsou ve hře): všechny čtyři strany místnosti (pult, regály, figurína,
-  dveře), detail měření na figuríně, ikony metru a příručky.
+  dveře), otevřené pancéřové dveře se schodištěm, detail měření na figuríně, ikony metru
+  a příručky.
   - Otevřená skříňka je vsazená z vašeho obrázku otevřené skříňky (barevně sladěná s regály).
   - Vysunutý šuplík pultu je poskládaný z čela šuplíku na vašem obrázku pultu.
-- Zbývá (nepovinné): **pancéřové dveře otevřené** (stejný záběr, za nimi schodiště nahoru) –
-  zatím běží moje zástupná vrstva. Kdybyste chtěl, můžete dodat i pult s vysunutým šuplíkem
-  a regály s otevřenou skříňkou ve stejném záběru – vyměním je.
+- Nepovinné: pult s vysunutým šuplíkem a regály s otevřenou skříňkou ve stejném záběru –
+  vyměním je za poskládané vrstvy.
 - Detail měření: značka těžiště vojáka je na obrázku v hrudníku; ve skutečnosti (a v příručce)
   leží těžiště stojícího člověka v pánvi. Na figuríně v místnosti je značka správně.
 - Nepoužité: kovová krabice se šuplíkem a otevřená krabice s papírem a tyčkou.
