@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Výstrojní sklad – figurína vojáka s batohem (z boku, čelem doprava), olovnice, váha a nástěnka.
+       Zástupná kresba (1672 × 941), viz docs/zadani-obrazku-sklad.md.
+       Měřítko figuríny asi 4 px = 1 cm: těžiště vojáka x = 810 (olovnice), těžiště batohu x = 730 (20 cm). -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34352b"/>
+      <stop offset="1" stop-color="#1e1f18"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26251f"/>
+      <stop offset="1" stop-color="#0d0d0b"/>
+    </linearGradient>
+    <linearGradient id="uniform" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3e4430"/>
+      <stop offset="1" stop-color="#596043"/>
+    </linearGradient>
+    <linearGradient id="pack" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a442c"/>
+      <stop offset="1" stop-color="#655c3c"/>
+    </linearGradient>
+    <linearGradient id="cork" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a5a34"/>
+      <stop offset="1" stop-color="#5a3f22"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1672" height="820" fill="url(#wall)"/>
+  <rect y="820" width="1672" height="121" fill="url(#floor)"/>
+  <line x1="0" y1="820" x2="1672" y2="820" stroke="#141410" stroke-width="4"/>
+
+  <!-- nástěnka s plakátem -->
+  <rect x="1130" y="110" width="400" height="450" fill="url(#cork)" stroke="#3a2a16" stroke-width="8"/>
+  <rect x="1180" y="140" width="300" height="390" fill="#e4dcc4"/>
+  <text x="1330" y="185" font-family="Georgia, serif" font-weight="bold" font-size="28" fill="#2a2418" text-anchor="middle">ZKOUŠKA</text>
+  <text x="1330" y="218" font-family="Georgia, serif" font-weight="bold" font-size="28" fill="#2a2418" text-anchor="middle">STABILITY</text>
+  <!-- piktogram 1: volný předklon (pánev dozadu) -->
+  <g fill="none" stroke="#2a2418" stroke-width="5" stroke-linecap="round">
+    <path d="M1225,470 L1240,400 L1300,370"/>
+    <circle cx="1310" cy="384" r="11" fill="#2a2418"/>
+    <path d="M1290,376 L1300,450"/>
+    <path d="M1220,470 L1262,470"/>
+  </g>
+  <!-- piktogram 2: u zdi -->
+  <line x1="1365" y1="300" x2="1365" y2="480" stroke="#7a2e1e" stroke-width="6"/>
+  <g fill="none" stroke="#2a2418" stroke-width="5" stroke-linecap="round">
+    <path d="M1372,470 L1372,400 L1425,365"/>
+    <circle cx="1436" cy="378" r="11" fill="#2a2418"/>
+    <path d="M1418,372 L1430,420"/>
+    <path d="M1368,470 L1410,470"/>
+  </g>
+  <text x="1440" y="455" font-family="Georgia, serif" font-weight="bold" font-size="40" fill="#7a2e1e">?</text>
+  <circle cx="1150" cy="130" r="7" fill="#b03a2a"/><circle cx="1510" cy="130" r="7" fill="#b03a2a"/>
+
+  <!-- stará váha -->
+  <rect x="190" y="830" width="240" height="30" fill="#2f312a" stroke="#141510" stroke-width="2"/>
+  <rect x="200" y="812" width="220" height="20" fill="#4a4d40"/>
+  <rect x="390" y="640" width="22" height="175" fill="#3a3d33"/>
+  <circle cx="401" cy="620" r="40" fill="#d8d0b4" stroke="#2a2b24" stroke-width="6"/>
+  <line x1="401" y1="620" x2="425" y2="596" stroke="#8c2a1e" stroke-width="4"/>
+  <text x="300" y="826" font-family="Arial, sans-serif" font-size="16" fill="#e8e0c0" opacity="0.8" text-anchor="middle">70 + 30 = 100</text>
+
+  <!-- podstavec -->
+  <ellipse cx="815" cy="880" rx="200" ry="30" fill="#2c2b25" stroke="#131310" stroke-width="3"/>
+  <ellipse cx="815" cy="872" rx="200" ry="30" fill="#3d3c34"/>
+  <g fill="none" stroke="#d9d0b4" stroke-width="2" opacity="0.7">
+    <path d="M770,872 C770,862 860,860 880,868 C884,876 790,882 770,872 Z"/>
+  </g>
+
+  <!-- olovnice ze stropu -->
+  <line x1="810" y1="0" x2="810" y2="852" stroke="#c9c0a0" stroke-width="2"/>
+  <polygon points="802,852 818,852 810,870" fill="#b8a16a"/>
+
+  <!-- batoh (za figurínou) -->
+  <rect x="668" y="228" width="122" height="270" rx="26" fill="url(#pack)" stroke="#262313" stroke-width="3"/>
+  <rect x="680" y="420" width="70" height="60" rx="10" fill="#565033" stroke="#262313" stroke-width="2"/>
+  <ellipse cx="729" cy="220" rx="56" ry="16" fill="#3e3a24"/>
+  <!-- křídová značka těžiště batohu -->
+  <g fill="none" stroke="#efe8d0" stroke-width="3">
+    <circle cx="730" cy="360" r="13"/>
+    <line x1="721" y1="351" x2="739" y2="369"/><line x1="739" y1="351" x2="721" y2="369"/>
+  </g>
+  <rect x="704" y="300" width="34" height="20" fill="#c9c0a0"/>
+
+  <!-- nohy a boty -->
+  <polygon points="772,488 852,488 846,820 790,820" fill="url(#uniform)" stroke="#23271a" stroke-width="2"/>
+  <polygon points="786,814 850,814 890,836 892,852 780,852" fill="#1c1915" stroke="#0b0a08" stroke-width="2"/>
+  <!-- trup -->
+  <rect x="764" y="222" width="94" height="276" rx="18" fill="url(#uniform)" stroke="#23271a" stroke-width="3"/>
+  <!-- popruh batohu -->
+  <path d="M770,240 C800,236 830,250 846,300 L842,420" fill="none" stroke="#2c2a18" stroke-width="10"/>
+  <!-- paže -->
+  <path d="M818,250 L828,360 L842,452" fill="none" stroke="#4a5036" stroke-width="30" stroke-linecap="round"/>
+  <circle cx="844" cy="462" r="13" fill="#8c7a62"/>
+  <!-- hlava a přilba -->
+  <rect x="796" y="196" width="30" height="30" fill="#8c7a62"/>
+  <circle cx="814" cy="170" r="40" fill="#8c7a62"/>
+  <path d="M760,168 A56,48 0 0 1 870,160 L874,172 L756,180 Z" fill="#454c33" stroke="#22261a" stroke-width="3"/>
+  <!-- psí známka -->
+  <path d="M800,214 L846,296 M828,214 L850,290" fill="none" stroke="#b8b3a0" stroke-width="2"/>
+  <rect x="838" y="286" width="22" height="32" rx="6" fill="#c9c6b8" stroke="#6b685c" stroke-width="2"/>
+  <!-- značka těžiště vojáka (olovnice jde přes ni) -->
+  <g>
+    <circle cx="810" cy="470" r="13" fill="#efe8d0"/>
+    <path d="M810,457 A13,13 0 0 1 823,470 L810,470 Z M810,483 A13,13 0 0 1 797,470 L810,470 Z" fill="#1a1a16"/>
+  </g>
+</svg>

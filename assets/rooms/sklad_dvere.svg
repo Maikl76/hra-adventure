@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Výstrojní sklad – pancéřové dveře (Brána I vojenské sekce), lavice, hasicí přístroj a holá zeď.
+       Zástupná kresba (1672 × 941), viz docs/zadani-obrazku-sklad.md. -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34352b"/>
+      <stop offset="1" stop-color="#1e1f18"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26251f"/>
+      <stop offset="1" stop-color="#0d0d0b"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3c4038"/>
+      <stop offset="0.5" stop-color="#555a50"/>
+      <stop offset="1" stop-color="#34372f"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6c67e"/>
+      <stop offset="1" stop-color="#7d6535"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6a4a2b"/>
+      <stop offset="1" stop-color="#3d2a17"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1672" height="860" fill="url(#wall)"/>
+  <rect y="860" width="1672" height="81" fill="url(#floor)"/>
+  <line x1="0" y1="860" x2="1672" y2="860" stroke="#141410" stroke-width="4"/>
+
+  <!-- šmouhy na holé zdi: paty dole, záda výš -->
+  <g fill="#15160f" opacity="0.2">
+    <ellipse cx="1330" cy="846" rx="26" ry="8"/><ellipse cx="1420" cy="848" rx="24" ry="7"/><ellipse cx="1500" cy="845" rx="26" ry="8"/>
+    <ellipse cx="1360" cy="560" rx="30" ry="44"/><ellipse cx="1460" cy="540" rx="34" ry="50"/>
+    <ellipse cx="1365" cy="330" rx="40" ry="34"/><ellipse cx="1465" cy="320" rx="38" ry="36"/>
+  </g>
+
+  <!-- rám a dveře -->
+  <rect x="540" y="60" width="590" height="800" fill="#24251f" stroke="#141410" stroke-width="4"/>
+  <rect x="570" y="80" width="530" height="780" fill="url(#steel)" stroke="#1d1f19" stroke-width="4"/>
+  <g fill="#7a7d70">
+    <circle cx="595" cy="105" r="6"/><circle cx="1075" cy="105" r="6"/><circle cx="595" cy="835" r="6"/><circle cx="1075" cy="835" r="6"/>
+    <circle cx="595" cy="300" r="6"/><circle cx="1075" cy="300" r="6"/><circle cx="595" cy="500" r="6"/><circle cx="1075" cy="500" r="6"/>
+    <circle cx="595" cy="700" r="6"/><circle cx="1075" cy="700" r="6"/><circle cx="835" cy="105" r="6"/><circle cx="835" cy="835" r="6"/>
+  </g>
+  <!-- závora -->
+  <rect x="560" y="290" width="550" height="34" rx="6" fill="#2b2d27" stroke="#121310" stroke-width="3"/>
+  <rect x="1088" y="280" width="40" height="54" fill="#3b3e35"/>
+  <!-- kolo zámku -->
+  <circle cx="835" cy="520" r="100" fill="none" stroke="#2a2c26" stroke-width="18"/>
+  <circle cx="835" cy="520" r="100" fill="none" stroke="#7a7d70" stroke-width="6"/>
+  <g stroke="#6a6d60" stroke-width="12" stroke-linecap="round">
+    <line x1="835" y1="425" x2="835" y2="615"/><line x1="740" y1="520" x2="930" y2="520"/>
+    <line x1="768" y1="453" x2="902" y2="587"/><line x1="902" y1="453" x2="768" y2="587"/>
+  </g>
+  <circle cx="835" cy="520" r="30" fill="url(#brass)" stroke="#3a2e16" stroke-width="3"/>
+  <!-- poslední pojistka -->
+  <rect x="1010" y="640" width="60" height="90" rx="6" fill="#2b2d27" stroke="#121310" stroke-width="3"/>
+  <rect x="1032" y="652" width="16" height="50" rx="6" fill="#8c2a1e"/>
+  <!-- římská jednička -->
+  <rect x="790" y="14" width="90" height="40" fill="url(#brass)" stroke="#3a2e16" stroke-width="3"/>
+  <text x="835" y="45" font-family="Georgia, serif" font-weight="bold" font-size="30" fill="#2a2010" text-anchor="middle">I</text>
+
+  <!-- lavice a polní blůza -->
+  <rect x="100" y="670" width="380" height="24" fill="url(#wood)" stroke="#24190c" stroke-width="2"/>
+  <rect x="120" y="694" width="20" height="80" fill="#3d2a17"/><rect x="440" y="694" width="20" height="80" fill="#3d2a17"/>
+  <rect x="180" y="640" width="150" height="32" rx="8" fill="#4e5538" stroke="#23271a" stroke-width="2"/>
+
+  <!-- hasicí přístroj -->
+  <rect x="1150" y="600" width="58" height="160" rx="20" fill="#8c2a1e" stroke="#3b120c" stroke-width="3"/>
+  <rect x="1165" y="580" width="28" height="24" fill="#2a2a24"/>
+  <path d="M1193,590 C1230,590 1232,640 1214,670" fill="none" stroke="#1a1a16" stroke-width="6"/>
+  <rect x="1158" y="650" width="42" height="40" fill="#e0d8c0"/>
+</svg>

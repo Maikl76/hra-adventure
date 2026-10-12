@@ -503,10 +503,10 @@
     ];
     // naměřené hodnoty světa (např. GSPORT: dřepy, výkon, reflex) – řádek jen když hodnota existuje
     for (const s of fin.stats || []) {
-      if ((s.requires || []).some((v) => game.state.vars[v] === undefined)) continue;
+      if ((s.requires || []).some((v) => game.state.vars[v] === undefined || game.state.vars[v] === null)) continue;
       rows.push([s.label, game.fill(s.value)]);
     }
-    if (st.camera !== undefined) rows.push(['Dřepy ověřené kamerou', st.camera ? 'ano' : 'ne']);
+    if (st.camera !== undefined) rows.push([fin.cameraLabel || 'Dřepy ověřené kamerou', st.camera ? 'ano' : 'ne']);
     const dl = $('finish-stats');
     dl.innerHTML = '';
     for (const [k, v] of rows) {
@@ -1310,7 +1310,7 @@
     });
   }
 
-  /* ---------- Aktivity GSPORT: reflex test, dřepy ---------- */
+  /* ---------- Aktivity: reflex test, dřepy (GSPORT), zkouška stability (vojenská) ---------- */
 
   let activityCleanup = null;  // zastavení časovačů / kamery při zavření okna
   let reflexHit = null;        // stisk mezerníku během reflex testu
@@ -1321,6 +1321,7 @@
     if (!act) return;
     if (act.type === 'reflex') openReflex(act);
     else if (act.type === 'squats') openSquats(act);
+    else if (act.type === 'lean') openLean(act);
   }
 
   function finishActivity(act, results) {
@@ -1471,7 +1472,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.6');
+          const mod = await import('./squats.js?v=0.7');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -1524,6 +1525,158 @@
         });
         stop.disabled = true;
         activityCleanup = () => clearInterval(iv);
+      });
+    });
+  }
+
+  /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
+     (pánev dozadu, ruce nad zemí, krok); bez kamery hráč jen odpoví, jak pokus dopadl. */
+  function openLean(act) {
+    // bez kamery: smazat čísla z případného dřívějšího měření kamerou (závěrečná obrazovka je ukazuje)
+    const NO_CAMERA = { kamera: 0, preskoceno: 0, volne_panev: null, volne_ruce: null, zed_panev: null, zed_ruce: null };
+    openModal((box) => {
+      box.classList.add('activity-box', 'squat-box');
+      heading(box, act.title || 'Zkouška stability');
+      para(box, act.intro || 'Předkloň se a sáhni na špičky – jednou volně, jednou patami u zdi.', 'question');
+
+      const choice = document.createElement('div');
+      choice.className = 'squat-choice';
+      box.appendChild(choice);
+      if (act.safety) para(choice, act.safety, 'lean-safety');
+      para(choice, act.camera || 'S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru (i chodidla).', 'muted');
+      para(choice, 'Obraz z kamery se zpracovává jen v tomto prohlížeči – nic se nenahrává ani neukládá.', 'muted small');
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      choice.appendChild(btns);
+
+      const instr = para(box, '', 'lean-step');
+      instr.hidden = true;
+      const stage = document.createElement('div');
+      stage.className = 'squat-stage';
+      stage.hidden = true;
+      const canvas = document.createElement('canvas');
+      stage.appendChild(canvas);
+      box.appendChild(stage);
+      const status = para(box, '', 'feedback');
+      const results = document.createElement('div');
+      box.appendChild(results);
+
+      const setStatus = (text, kind) => {
+        status.textContent = text;
+        status.className = `feedback${kind === 'ok' ? ' good' : kind === 'bad' ? ' bad' : ''}`;
+      };
+      const showStep = (text) => {
+        instr.hidden = false;
+        instr.textContent = text;
+      };
+
+      // srovnání obou pokusů (s kamerou)
+      const table = (free, wall) => {
+        const t = document.createElement('table');
+        t.className = 'lean-table';
+        const row = (cells, tag) => {
+          const tr = document.createElement('tr');
+          for (const c of cells) {
+            const td = document.createElement(tag);
+            td.textContent = c;
+            tr.appendChild(td);
+          }
+          t.appendChild(tr);
+        };
+        const reach = (r) => (r.ruce === null ? '–' : `${r.ruce} cm${r.dosah ? ' (dosáhl)' : ''}`);
+        row(['', 'Pánev dozadu', 'Ruce nad zemí', 'Krok'], 'th');
+        row(['Volně', `${free.panev} cm`, reach(free), free.krok ? 'ano' : 'ne'], 'td');
+        if (wall) row(['U zdi', `${wall.panev} cm`, reach(wall), wall.krok ? 'ano' : 'ne'], 'td');
+        results.innerHTML = '';
+        results.appendChild(t);
+      };
+
+      const done = (vars, summary) => {
+        sound.sfx('levelUp');
+        instr.hidden = true;
+        setStatus(summary, 'ok');
+        button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { ...vars, stabilita: 1 }));
+      };
+
+      // --- s kamerou: dva pokusy za sebou, kamera běží celou dobu ---
+      button(btns, 'S kamerou', 'btn primary', async () => {
+        choice.hidden = true;
+        stage.hidden = false;
+        let cancelled = false;
+        activityCleanup = () => { cancelled = true; };
+        let free = null;
+        try {
+          const mod = await import('./predklon.js?v=0.7');
+          const ctrl = await mod.startLean({
+            canvas,
+            onStatus: setStatus,
+            onAttempt: (r) => {
+              sound.sfx('squatOk');
+              if (!free) {
+                free = r;
+                table(free, null);
+                setStatus(r.kolena ? 'Pokus 1 změřen.' : 'Pokus 1 změřen – kolena ale byla pokrčená. Můžeš ho zopakovat.', r.kolena ? 'ok' : 'bad');
+                const again = button(results, 'Zopakovat pokus 1', 'btn', () => { free = null; results.innerHTML = ''; showStep(act.free); ctrl.begin(); });
+                const next = button(results, 'Pokus 2: u zdi ›', 'btn primary', () => { again.remove(); next.remove(); showStep(act.wall); ctrl.begin(); });
+                return;
+              }
+              ctrl.stop();
+              stage.hidden = true;
+              table(free, r);
+              done({
+                kamera: 1, preskoceno: 0,
+                volne_panev: free.panev, volne_ruce: free.ruce, volne_dosah: free.dosah,
+                zed_panev: r.panev, zed_ruce: r.ruce, zed_dosah: r.dosah, zed_krok: r.krok,
+              }, act.result || 'Volně pánev ustoupila dozadu a tělo udrželo těžiště nad chodidly. U zdi to nešlo.');
+            },
+          });
+          if (cancelled) { ctrl.stop(); return; }
+          activityCleanup = () => ctrl.stop();
+          showStep(act.free || 'POKUS 1 – VOLNĚ: předkloň se a sáhni ke špičkám, pak se narovnej.');
+          ctrl.begin();
+        } catch (e) {
+          if (cancelled) return;
+          console.error(e);
+          stage.hidden = true;
+          choice.hidden = false;
+          const msg = e && e.name === 'NotAllowedError' ? 'Přístup ke kameře byl odmítnut.'
+            : e && e.name === 'NotFoundError' ? 'Kamera nebyla nalezena.'
+            : 'Kameru se nepodařilo spustit.';
+          setStatus(`${msg} Můžeš pokus udělat bez kamery.`, 'bad');
+        }
+      });
+
+      // --- bez kamery: hráč pokus udělá a odpoví, jak dopadl ---
+      button(btns, 'Bez kamery', 'btn', () => {
+        choice.hidden = true;
+        setStatus('');
+        const manual = document.createElement('div');
+        manual.className = 'squat-manual';
+        box.insertBefore(manual, status);
+        showStep(act.free || 'POKUS 1 – VOLNĚ: předkloň se a sáhni ke špičkám, pak se narovnej.');
+        para(manual, 'Dosáhl jsi prsty ke špičkám?', 'muted');
+        const answer = (freeReach) => {
+          manual.innerHTML = '';
+          showStep(act.wall || 'POKUS 2 – U ZDI: paty a hýždě ke zdi, kolena natažená. Zkus totéž.');
+          para(manual, 'Jak dopadl pokus u zdi?', 'muted');
+          const end = (wallReach, step) => {
+            manual.remove();
+            done({ ...NO_CAMERA, volne_dosah: freeReach, zed_dosah: wallReach, zed_krok: step },
+              wallReach ? (act.resultWallReach || 'Opravdu? Zkontroluj, že paty i hýždě byly u zdi a kolena natažená – skoro nikdo to tak nedokáže.')
+                : (act.result || 'Volně pánev ustoupila dozadu a tělo udrželo těžiště nad chodidly. U zdi to nešlo.'));
+          };
+          button(manual, 'Dosáhl', 'btn', () => end(1, 0));
+          button(manual, 'Nedosáhl', 'btn', () => end(0, 0));
+          button(manual, 'Musel jsem udělat krok', 'btn', () => end(0, 1));
+        };
+        button(manual, 'Ano', 'btn', () => answer(1));
+        button(manual, 'Ne', 'btn', () => answer(0));
+      });
+
+      // --- přeskočit (zdravotní důvody) ---
+      button(btns, 'Přeskočit pokus', 'btn', () => {
+        choice.hidden = true;
+        done({ ...NO_CAMERA, preskoceno: 1 }, act.skipped || 'Pokus přeskočen. Princip najdeš v příručce a ve výsledku zkoušky na plakátu.');
       });
     });
   }

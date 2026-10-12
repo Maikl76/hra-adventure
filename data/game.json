@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.6 – ukázka",
+    "version": "0.7 – ukázka",
     "totalGates": 9
   },
 
@@ -33,7 +33,17 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["kabinet"]
+      "rooms": ["sklad"],
+      "finish": {
+        "title": "Brána I je otevřená",
+        "text": "Za pancéřovými dveřmi vede schodiště nahoru, k tělocvičně. Na zábradlí visí přilba a v ní lísteček: „Dobrá práce, vojáku. Osm bran zbývá. – D.“",
+        "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
+        "cameraLabel": "Zkouška stability ověřená kamerou",
+        "stats": [
+          { "label": "Zkouška stability – volně", "value": "pánev {volne_panev} cm dozadu, ruce {volne_ruce} cm nad zemí", "requires": ["volne_panev"] },
+          { "label": "Zkouška stability – u zdi", "value": "pánev {zed_panev} cm dozadu, ruce {zed_ruce} cm nad zemí", "requires": ["zed_panev"] }
+        ]
+      }
     },
     {
       "id": "gsport",
@@ -227,6 +237,67 @@
           ] }
         ]
       }
+    },
+    "metr": {
+      "name": "Svinovací metr",
+      "icon": "assets/items/metr.webp",
+      "description": "Plechový svinovací metr, dva metry. Na pouzdře je vyraženo: SKLAD VÝSTROJE."
+    },
+    "prirucka": {
+      "name": "Výstroj a stabilita",
+      "icon": "assets/items/prirucka.webp",
+      "description": "Útlá příručka velitele družstva v olivových deskách. Rohy jsou ohmatané, okraje popsané docentovou rukou.",
+      "examine": [
+        { "when": { "notFlags": ["prirucka_prectena"] }, "do": [
+          { "set": "prirucka_prectena" },
+          { "note": "Příručka: poloha společného těžiště = (m₁ · x₁ + m₂ · x₂) / (m₁ + m₂). Stojím stabilně, dokud svislice z těžiště prochází opěrnou plochou (mezi patami a špičkami)." }
+        ] }
+      ],
+      "book": {
+        "title": "Výstroj a stabilita",
+        "pages": [
+          { "type": "title", "blocks": [
+            { "heading": "VÝSTROJ A STABILITA" },
+            { "p": "příručka velitele družstva" },
+            { "note": "Kdo nese, musí umět stát. – D." }
+          ] },
+          { "blocks": [
+            { "heading": "1  Těžiště" },
+            { "p": "Každé těleso má těžiště – bod, ve kterém si můžeme představit soustředěnou celou jeho tíhu." },
+            { "p": "U člověka, který stojí rovně, leží těžiště v pánvi, zhruba v polovině výšky postavy. Svislice z něj (olovnice) míří mezi chodidla." },
+            { "note": "Těžiště se hýbe s tělem. Předkloníš se – posune se." }
+          ] },
+          { "blocks": [
+            { "heading": "2  Opěrná plocha a stabilita" },
+            { "p": "Opěrná plocha je plocha pod chodidly a mezi nimi – od pat ke špičkám a od jednoho chodidla k druhému." },
+            { "p": "Člověk stojí stabilně, dokud svislice z jeho těžiště prochází opěrnou plochou. Jakmile se těžiště dostane mimo ni, tělo padá – nebo musí udělat krok." },
+            { "note": "Olovnice nelže." }
+          ] },
+          { "blocks": [
+            { "heading": "3  Společné těžiště" },
+            { "p": "Voják a batoh na jeho zádech tvoří jedno těleso s jedním společným těžištěm. To leží na spojnici obou těžišť – blíž k tomu těžšímu." },
+            { "formula": "x_{T} = (m_{1} · x_{1} + m_{2} · x_{2}) / (m_{1} + m_{2})" },
+            { "image": "assets/book/teziste_batoh.svg" },
+            { "p": "Vzdálenosti x měříme od jednoho zvoleného místa. Nejjednodušší je měřit od těžiště vojáka – pak x₁ = 0." }
+          ] },
+          { "blocks": [
+            { "heading": "4  Řešený příklad" },
+            { "p": "Voják o hmotnosti 80 kg nese batoh 20 kg. Těžiště batohu je 25 cm za těžištěm vojáka." },
+            { "formula": "x_{T} = (80 · 0 + 20 · 25) / (80 + 20) = 500 / 100 = 5 cm" },
+            { "p": "Společné těžiště je 5 cm za těžištěm vojáka – směrem k batohu." },
+            { "note": "Dělí se SOUČTEM obou hmotností!" }
+          ] },
+          { "blocks": [
+            { "heading": "5  Jak to vyrovnat" },
+            { "p": "Když batoh posune společné těžiště dozadu, svislice z něj se přiblíží k patám – nebo je dokonce mine. Tělo to musí nějak vyrovnat…" },
+            { "p": "(Zbytek kapitoly je vytržený.)" },
+            { "note": "Vyzkoušej to na sobě – plakát na nástěnce u figuríny." }
+          ] },
+          { "blocks": [
+            { "note": "Kdo pochopí těžiště, unese víc. – D." }
+          ] }
+        ]
+      }
     }
   },
 
@@ -370,6 +441,44 @@
       "item": "kniha_drep",
       "on": "dvere_level",
       "do": [ { "text": "Kniha dveře neotevře. Ale to, co je v ní, ano." } ]
+    },
+    {
+      "item": "metr",
+      "on": "figurina",
+      "room": "sklad",
+      "when": { "notFlags": ["figurina_zmerena"] },
+      "do": [
+        { "set": "figurina_zmerena" },
+        { "sound": "measure" },
+        { "text": "Natáhneš metr vodorovně od olovnice, která visí přes těžiště figuríny, ke značce na boku batohu." },
+        { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Měření na figuríně s batohem" } },
+        { "note": "Těžiště batohu je 20 cm za těžištěm vojáka (měřeno vodorovně)." }
+      ]
+    },
+    {
+      "item": "metr",
+      "on": "figurina",
+      "room": "sklad",
+      "do": [
+        { "text": "Změřeno je. Pro jistotu se ještě jednou podíváš." },
+        { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Měření na figuríně s batohem" } }
+      ]
+    },
+    {
+      "item": "metr",
+      "on": "batoh",
+      "room": "sklad",
+      "do": [ { "text": "Batoh sám o sobě nestačí. Měř na celé figuríně – od olovnice k těžišti batohu. Vyber metr a klikni na figurínu." } ]
+    },
+    {
+      "item": "metr",
+      "on": "brana_sklad",
+      "do": [ { "text": "Metrem dveře neotevřeš. Kolo zámku chce číslo." } ]
+    },
+    {
+      "item": "prirucka",
+      "on": "brana_sklad",
+      "do": [ { "text": "Příručka dveře neotevře. Ale to, co je v ní, ano." } ]
     }
   ],
 
@@ -379,7 +488,7 @@
     "kabinet": {
       "name": "Anatomický kabinet",
       "gateNumber": "I",
-      "tracks": ["civilni", "vojenska"],
+      "tracks": ["civilni"],
       "ambience": "kabinet",
       "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
       "startView": "u_stolu",
@@ -1586,6 +1695,432 @@
           { "text": "Staré dveře se pomalu otevřely. Za nimi je tmavá chodba a na jejím konci bliká obrazovka: LEVEL 2." },
           { "scare": "chodba" },
           { "note": "LEVEL 1: výkon = práce / čas. Tvůj výkon při dřepech byl asi {=70*9.81*0.4*n/t:0} W – na 400W herní počítač by bylo potřeba {=ceil(400/(70*9.81*0.4*n/t)):0} hráčů. Svaly přitom spálí asi čtyřikrát víc energie, protože jejich účinnost je jen kolem 25 %." }
+        ]
+      }
+    },
+
+    "sklad": {
+      "name": "Výstrojní sklad",
+      "gateNumber": "I",
+      "tracks": ["vojenska"],
+      "ambience": "sklad",
+      "enterText": "Výstrojní sklad v suterénu fakulty. Pach brezentu, gumy a strojního oleje. Pod stropem bzučí jediná žárovka. Dveře za tebou zapadly.",
+      "enter": [
+        { "when": { "notFlags": ["sklad_vstup"] }, "do": [ { "set": "sklad_vstup" }, { "sound": "doorSoft" } ] }
+      ],
+      "startView": "pult",
+
+      "activities": {
+        "stabilita": {
+          "type": "lean",
+          "title": "Zkouška stability",
+          "intro": "Plakát na nástěnce: „PŘEDKLOŇ SE A SÁHNI NA ŠPIČKY. Jednou volně, jednou patami u zdi. Proč to podruhé nejde?“ Stačí, když pokus udělá jeden člen týmu.",
+          "safety": "Bezpečnost: před sebou měj aspoň 1 m volného místa (žádný stůl, židle ani notebook). U zdi nic nepřetlačuj – když cítíš, že padáš dopředu, udělej krok. Kdo má potíže se zády, pokus přeskočí.",
+          "camera": "S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru i s chodidly. Kamera změří, o kolik ti ustoupí pánev a jak nízko dosáhneš.",
+          "free": "POKUS 1 – VOLNĚ: stůj rovně, nohy u sebe, kolena natažená. Pomalu se předkloň, sáhni co nejníž ke špičkám a zase se narovnej.",
+          "wall": "POKUS 2 – U ZDI: postav se patami a hýžděmi těsně ke zdi (pořád bokem ke kameře), kolena natažená. Zkus totéž – a nepřetlačuj to.",
+          "result": "Volně ti pánev ustoupila dozadu – tělo tak udrželo těžiště nad chodidly. U zdi pánev couvnout nemohla, těžiště se dostalo před špičky… a dál to nešlo.",
+          "resultWallReach": "Opravdu? Zkontroluj, že paty i hýždě byly těsně u zdi a kolena natažená – tak to skoro nikdo nedokáže. Proč asi?",
+          "skipped": "Pokus přeskočen. Princip: při předklonu musí pánev ustoupit dozadu, aby těžiště zůstalo nad chodidly. U zdi to nejde.",
+          "done": [
+            { "set": "stabilita_hotovo" }
+          ],
+          "doneCases": [
+            { "when": { "expr": "kamera == 1" }, "do": [
+              { "note": "Zkouška stability (kamera): volně pánev {volne_panev} cm dozadu, ruce {volne_ruce} cm nad zemí; u zdi pánev {zed_panev} cm dozadu, ruce {zed_ruce} cm nad zemí.", "noteKey": "stabilita" }
+            ] },
+            { "when": { "expr": "preskoceno == 1" }, "do": [
+              { "note": "Zkouška stability: přeskočena. Při předklonu musí pánev ustoupit dozadu, aby těžiště zůstalo nad chodidly.", "noteKey": "stabilita" }
+            ] },
+            { "do": [
+              { "note": "Zkouška stability: volně se pánev posune dozadu a těžiště zůstane nad chodidly. Patami u zdi to nejde – těžiště uteče před špičky.", "noteKey": "stabilita" }
+            ] }
+          ]
+        }
+      },
+
+      "locks": {
+        "skrinka": {
+          "title": "Zámek skříňky",
+          "openFlag": "skrinka_otevrena",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Na dvířkách plechové skříňky je číselný zámek se třemi kolečky. Pod ním je fixou napsáno: „Kdo ztratí známku, ztratí i klíč.“",
+              "answer": "372",
+              "wrong": "Kolečka se protočila naprázdno. Tohle číslo to není.",
+              "hints": [
+                "Jaká „známka“ se nosí na krku? Každý voják ji má – s osobním číslem.",
+                "Psí známka visí na krku figuríny s batohem.",
+                "Na známce je osobní číslo 4719-0372 a vzkaz „Skříňka = poslední tři“. Kód je 372."
+              ],
+              "success": "Cvak."
+            }
+          ],
+          "open": [
+            { "sound": "unlock" },
+            { "text": "Zámek povolil a plechová dvířka se se skřípěním otevřela. Na poličce leží svinovací metr a útlá příručka v olivových deskách. Bereš obojí." },
+            { "give": "metr" },
+            { "give": "prirucka" }
+          ]
+        }
+      },
+
+      "views": {
+        "pult": {
+          "name": "Výdejní pult",
+          "background": "assets/rooms/sklad_pult.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
+          "darkness": 0.55,
+          "left": "dvere",
+          "right": "regaly",
+          "enterText": "Výdejní pult skladu. Na něm výdejní kniha, psací stroj a polní telefon. Svítí jen stolní lampa.",
+          "lights": [
+            { "x": 25.1, "y": 44, "radius": 18, "strength": 0.85, "flicker": true },
+            { "x": 50, "y": 4, "radius": 26, "strength": 0.5 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/sklad_pult_suplik.svg", "when": { "flags": ["kalkulacka_sklad"] }, "animate": "slide" }
+          ],
+          "hotspots": [
+            {
+              "id": "mapa",
+              "name": "Mapa",
+              "area": [8.4, 9.6, 22.7, 25.5],
+              "click": [ { "do": [ { "text": "Stará vojenská mapa okolí s vrstevnicemi. Někdo do ní tužkou zakreslil trasu pochodu: 25 km. U cíle je připsáno: „S plnou polní? Hlavně se nepřevrhnout.“" } ] } ]
+            },
+            {
+              "id": "cedule",
+              "name": "Cedule",
+              "area": [38.3, 12.8, 23.3, 6],
+              "click": [ { "do": [ { "text": "VÝDEJ VÝSTROJE. Pod tím menším písmem: „Výstroj se vydává jen proti podpisu.“" } ] } ]
+            },
+            {
+              "id": "lampa",
+              "name": "Stolní lampa",
+              "area": [21.5, 38, 7.5, 12],
+              "click": [ { "do": [ { "text": "Kovová lampa s ohnutým ramenem. Svítí – někdo ji tu zapomněl zhasnout." } ] } ]
+            },
+            {
+              "id": "kniha_vydej",
+              "name": "Výdejní kniha",
+              "area": [32.3, 44.6, 16.7, 7.6],
+              "click": [ { "do": [
+                { "sound": "paper" },
+                { "text": "Tlustá výdejní kniha je otevřená na poslední stránce. Poslední zápis je psaný docentovou rukou." },
+                { "closeup": { "note": "VÝDEJNÍ KNIHA – SKLAD VÝSTROJE\n\npřilba, opasek ............ vráceno\npolní láhev .............. vráceno\n\nbatoh, plná polní ........ 30 kg\nfigurína č. 1 (voják) .... 70 kg\núčel: ZKOUŠKA STABILITY\n\nS batohem padá dozadu. Proč?\n– D.", "font": "type", "caption": "Výdejní kniha" } },
+                { "note": "Výdejní kniha: figurína = voják 70 kg, batoh s plnou polní 30 kg. „S batohem padá dozadu. Proč?“" }
+              ] } ]
+            },
+            {
+              "id": "stroj",
+              "name": "Psací stroj",
+              "area": [53.8, 41, 13.5, 9.5],
+              "click": [ { "do": [ { "sound": "key" }, { "text": "Starý psací stroj. V válci je založený list: „HLÁŠENÍ: Figurína č. 1 se s batohem převrací dozadu. Bez batohu stojí. Příčina: …“ Dál nic." } ] } ]
+            },
+            {
+              "id": "razitka",
+              "name": "Razítka",
+              "area": [68.6, 45, 6.5, 5.5],
+              "click": [ { "do": [ { "text": "Razítka VYDÁNO a VRÁCENO. Na stojánku chybí třetí. Na podušce zbyl otisk: ZKOUŠKA STABILITY." } ] } ]
+            },
+            {
+              "id": "telefon",
+              "name": "Polní telefon",
+              "area": [75.9, 42.8, 7.6, 7.6],
+              "click": [ { "do": [ { "text": "Polní telefon v olivové bedýnce. Zvedneš sluchátko – jen šum. Kdo by sem v noci volal?" } ] } ]
+            },
+            {
+              "id": "suplik_pult",
+              "name": "Šuplík pultu",
+              "area": [38.3, 62.7, 17.9, 7.6],
+              "click": [
+                { "when": { "notFlags": ["kalkulacka_sklad"] }, "do": [
+                  { "set": "kalkulacka_sklad" },
+                  { "sound": "drawer" },
+                  { "text": "Vysuneš šuplík pultu. Formuláře k výdeji, razítková barva – a stará školní kalkulačka. Bereš ji. (V inventáři na ni klikni dvakrát a otevře se.)" },
+                  { "give": "kalkulacka" }
+                ] },
+                { "do": [ { "sound": "drawer" }, { "text": "V šuplíku zůstaly jen formuláře k výdeji a razítková barva." } ] }
+              ]
+            },
+            {
+              "id": "kartoteka",
+              "name": "Kartotéka",
+              "area": [86.7, 16, 11.6, 58],
+              "click": [ { "do": [ { "text": "Kartotéka se šuplíčky: PŘILBY, OPASKY, BOTY, BATOHY. Šuplíček BATOHY je prázdný. Jen na dně leží lísteček: „Těžké věci k zádům!“ Je to rukopis někoho jiného než docenta." } ] } ]
+            }
+          ]
+        },
+
+        "regaly": {
+          "name": "Regály s výstrojí",
+          "background": "assets/rooms/sklad_regaly.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
+          "darkness": 0.6,
+          "left": "pult",
+          "right": "figurina",
+          "enterText": "Kovové regály plné výstroje, dřevěná bedna a v rohu vysoká plechová skříňka.",
+          "lights": [
+            { "x": 50, "y": 3, "radius": 30, "strength": 0.55 },
+            { "x": 83.5, "y": 50, "radius": 10, "strength": 0.3 }
+          ],
+          "layers": [
+            { "image": "assets/rooms/sklad_skrinka_otevrena.svg", "when": { "flags": ["skrinka_otevrena"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "prilby",
+              "name": "Přilby",
+              "area": [4.2, 10.6, 41.3, 13.8],
+              "click": [ { "do": [ { "text": "Řada přileb na horní polici. Jedna je pořádně promáčknutá. Cedulka: „Při pádu dozadu s batohem.“" } ] } ]
+            },
+            {
+              "id": "batohy",
+              "name": "Batohy",
+              "area": [4.2, 26.6, 41.3, 58.5],
+              "click": [ { "do": [ { "text": "Batohy srovnané podle velikosti. Na každém visí cedulka s hmotností: 12 kg, 18 kg, 25 kg… Místo pro ten nejtěžší je prázdné – ten má na sobě figurína." } ] } ]
+            },
+            {
+              "id": "boty",
+              "name": "Boty",
+              "area": [48.5, 58, 14.4, 9.5],
+              "click": [ { "do": [ { "text": "Vysoké kožené boty se širokou podrážkou. Čím větší plocha pod chodidly, tím jistěji stojíš. Docent by řekl: opěrná plocha." } ] } ]
+            },
+            {
+              "id": "bedna",
+              "name": "Bedna",
+              "area": [47.8, 68, 15.6, 19.2],
+              "click": [ { "do": [ { "text": "Dřevěná bedna se šablonovým nápisem VÝSTROJ. Uvnitř jsou jen srolované karimatky a pár ešusů." } ] } ]
+            },
+            {
+              "id": "skrinka",
+              "name": "Plechová skříňka",
+              "area": [67, 14.9, 18, 72.3],
+              "click": [
+                { "when": { "flags": ["skrinka_otevrena"] }, "do": [ { "text": "Skříňka je otevřená a prázdná. Na vnitřní straně dvířek je nalepený rozvrh služeb." } ] },
+                { "do": [
+                  { "sound": "locked" },
+                  { "text": "Vysoká plechová skříňka s číselným zámkem. Pod zámkem je fixou napsáno: „Kdo ztratí známku, ztratí i klíč.“" },
+                  { "lock": "skrinka" }
+                ] }
+              ]
+            },
+            {
+              "id": "zarivka",
+              "name": "Zářivka",
+              "area": [38, 0, 24, 6],
+              "click": [ { "do": [ { "text": "Zářivka pod stropem je mrtvá. Svítí jen žárovka nad pultem." } ] } ]
+            }
+          ]
+        },
+
+        "figurina": {
+          "name": "Figurína s batohem",
+          "background": "assets/rooms/sklad_figurina.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
+          "darkness": 0.55,
+          "left": "regaly",
+          "right": "dvere",
+          "enterText": "Uprostřed stojí na podstavci figurína vojáka v plné polní, otočená bokem. Přes ni visí ze stropu olovnice. Vedle nástěnka s plakátem.",
+          "lights": [
+            { "x": 48, "y": 3, "radius": 32, "strength": 0.6 },
+            { "x": 79.7, "y": 35, "radius": 14, "strength": 0.35 }
+          ],
+          "hotspots": [
+            {
+              "id": "figurina",
+              "name": "Figurína vojáka",
+              "area": [44.6, 9, 9.2, 80],
+              "click": [
+                { "when": { "flags": ["figurina_zmerena"] }, "do": [ { "text": "Figurína s batohem. Vzdálenost těžiště batohu od olovnice už máš změřenou – je v zápisníku." } ] },
+                { "do": [ { "text": "Figurína vojáka v polní uniformě, otočená bokem. Olovnice ze stropu visí přesně přes značku na jejím boku – těžiště vojáka bez batohu. Batoh je na zádech, za olovnicí. Kdyby to šlo něčím změřit…" } ] }
+              ]
+            },
+            {
+              "id": "batoh",
+              "name": "Batoh",
+              "area": [39.9, 22.5, 6, 31.5],
+              "click": [ { "do": [
+                { "text": "Batoh s plnou polní. Na popruhu visí cedulka: 30 kg. Na boku je křídou nakreslený křížek v kroužku – značka těžiště batohu." },
+                { "note": "Batoh na figuríně: 30 kg, na boku značka těžiště batohu." }
+              ] } ]
+            },
+            {
+              "id": "znamka",
+              "name": "Psí známka",
+              "area": [48.3, 28.5, 4.5, 6.5],
+              "click": [ { "do": [
+                { "sound": "pickup" },
+                { "text": "Na krku figuríny visí na řetízku psí známka. Otočíš ji v prstech." },
+                { "closeup": { "note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Psí známka" } },
+                { "note": "Psí známka figuríny: os. č. 4719-0372, „Skříňka = poslední tři“." }
+              ] } ]
+            },
+            {
+              "id": "podstavec",
+              "name": "Podstavec",
+              "area": [37, 88, 22, 7],
+              "click": [ { "do": [ { "text": "Na podstavci jsou nakreslené obrysy chodidel a nápis OPĚRNÁ PLOCHA. Olovnice míří těsně před paty. Figurína je k podstavci přišroubovaná – jinak by prý spadla dozadu." } ] } ]
+            },
+            {
+              "id": "vaha",
+              "name": "Stará váha",
+              "area": [11, 77, 15, 14],
+              "click": [ { "do": [ { "text": "Stará decimální váha. Na vážní desce je křídou napsáno: VOJÁK 70 + BATOH 30 = 100 KG." } ] } ]
+            },
+            {
+              "id": "nastenka",
+              "name": "Nástěnka s plakátem",
+              "area": [67.6, 11.7, 23.9, 47.8],
+              "click": [
+                { "when": { "flags": ["stabilita_hotovo"] }, "do": [
+                  { "text": "Plakát ZKOUŠKA STABILITY. Zkoušku máš za sebou – výsledek je v zápisníku. Chceš ji zopakovat? Platit bude nové měření." },
+                  { "activity": "stabilita" }
+                ] },
+                { "do": [
+                  { "sound": "paper" },
+                  { "text": "Na nástěnce visí plakát: ZKOUŠKA STABILITY. Pod ním docentovou rukou: „Kdo to nezkusil na sobě, nepochopí to.“" },
+                  { "activity": "stabilita" }
+                ] }
+              ]
+            }
+          ]
+        },
+
+        "dvere": {
+          "name": "Pancéřové dveře",
+          "background": "assets/rooms/sklad_dvere.webp",
+          "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026). Otevřené dveře jsou zatím zástupná vrstva sklad_dvere_otevrene.svg; původní kresba: sklad_dvere.svg.",
+          "darkness": 0.45,
+          "left": "figurina",
+          "right": "pult",
+          "enterText": "Těžké ocelové dveře s kolem uprostřed, závorou a ještě jednou pojistkou. Nad nimi římská jednička.",
+          "lights": [
+            { "x": 50, "y": 2, "radius": 24, "strength": 0.6 },
+            { "x": 61.8, "y": 69, "radius": 3, "strength": 0.5, "when": { "notFlags": ["brana_sklad_otevrena"] } },
+            { "x": 50, "y": 45, "radius": 26, "strength": 0.85, "when": { "flags": ["brana_sklad_otevrena"] } }
+          ],
+          "layers": [
+            { "image": "assets/rooms/sklad_dvere_otevrene.svg", "when": { "flags": ["brana_sklad_otevrena"] } }
+          ],
+          "hotspots": [
+            {
+              "id": "brana_sklad",
+              "name": "Brána I",
+              "area": [30.5, 6, 39.5, 83],
+              "click": [
+                { "when": { "flags": ["brana_sklad_otevrena"] }, "do": [
+                  { "text": "Dveře jsou otevřené. Za nimi vede schodiště nahoru." },
+                  { "leave": true }
+                ] },
+                { "do": [
+                  { "text": "Ocelové dveře s kolem uprostřed. Na kole je vyražená otázka, závora a poslední pojistka mají vlastní." },
+                  { "openGate": true }
+                ] }
+              ]
+            },
+            {
+              "id": "lavice",
+              "name": "Lavice",
+              "area": [2.7, 66, 26, 23],
+              "click": [ { "do": [ { "text": "Dřevěná lavice. Leží na ní složená polní blůza. V kapse jen žvýkačka a lístek z vlaku." } ] } ]
+            },
+            {
+              "id": "hasicak",
+              "name": "Hasicí přístroj",
+              "area": [71.3, 54, 5, 24],
+              "click": [ { "do": [ { "text": "Hasicí přístroj. Poslední revize – před mnoha lety." } ] } ]
+            },
+            {
+              "id": "zed",
+              "name": "Zeď",
+              "area": [77.5, 8, 22, 82],
+              "click": [ { "do": [ { "text": "Betonová zeď s větracími mřížkami, po které stéká vlhkost. Dole u podlahy jsou šmouhy od pat, výš otisky zad. Jako by se tu někdo pořád dokola stavěl patami ke zdi." } ] } ]
+            }
+          ]
+        }
+      },
+
+      "gate": {
+        "title": "Zámek brány I",
+        "openFlag": "brana_sklad_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na kole zámku je vyraženo: „Voják 70 kg nese batoh 30 kg. O kolik centimetrů se posune společné těžiště vojáka a batohu směrem dozadu?“",
+            "unit": "cm",
+            "answer": 6,
+            "tolerance": 0.05,
+            "feedbackFormulas": [
+              { "value": "30*20/70", "text": "Dělil jsi jen hmotností vojáka. Společné těžiště patří vojákovi i batohu – dělí se součtem obou hmotností." },
+              { "value": "70*20/100", "text": "Prohodil jsi hmotnosti. Těžiště se posouvá směrem k batohu – a batoh je ten lehčí." },
+              { "value": "30*20", "text": "600 je jen čitatel (30 kg · 20 cm). Ještě ho vyděl součtem hmotností." },
+              { "value": "0.06", "text": "Správně – ale v metrech. Zámek chce centimetry." },
+              { "value": "20", "text": "20 cm je vzdálenost těžiště batohu. Společné těžiště leží mezi oběma – blíž k těžšímu vojákovi." },
+              { "value": "50*20/100", "text": "Takhle by to vyšlo, kdyby voják i batoh vážili stejně. Voják je ale víc než dvakrát těžší." }
+            ],
+            "wrong": "Kolo se ani nehnulo. Zkus to přepočítat.",
+            "hints": [
+              "Voják a batoh jsou teď jedno těleso se společným těžištěm. Vzorec je v příručce ze skříňky.",
+              "Měř od těžiště vojáka (x₁ = 0). Batoh je 20 cm za ním: x_T = (70 · 0 + 30 · 20) / (70 + 30).",
+              "30 · 20 = 600 a 70 + 30 = 100. Kolik je 600 / 100?"
+            ],
+            "success": "Kolo se se skřípěním pootočilo. Dveře ale drží ještě závora – i na ní je otázka."
+          },
+          {
+            "type": "choice",
+            "question": "Na závoře stojí: „Batoh posunul těžiště vojáka o 6 cm dozadu. Co musí voják udělat, aby nespadl?“",
+            "requiresVars": ["stabilita"],
+            "missingText": "Na závoře visí cedulka: NEJDŘÍV ZKOUŠKA STABILITY. Plakát je na nástěnce u figuríny.",
+            "options": [
+              "Zaklonit se, aby batoh lépe ležel na zádech",
+              "Předklonit se, aby svislice ze společného těžiště zase procházela opěrnou plochou",
+              "Rozkročit se do stran",
+              "Pokrčit kolena a jinak stát rovně jako bez batohu"
+            ],
+            "correct": 1,
+            "feedback": {
+              "0": "Záklonem se těžiště posune ještě víc dozadu – za paty. Vzpomeň si na zkoušku stability: co dělala pánev, když ses volně předkláněl?",
+              "2": "Rozkročení zvětší opěrnou plochu do stran. Batoh ale táhne dozadu – a dozadu se opěrná plocha nezvětšila.",
+              "3": "Pokrčená kolena těžiště sníží, ale neposunou ho dopředu. Svislice z něj pořád míří k patám."
+            },
+            "wrong": "Závora se ani nehnula.",
+            "hints": [
+              "Stabilně stojíš, dokud svislice ze společného těžiště prochází opěrnou plochou – mezi patami a špičkami.",
+              "Při zkoušce stability ti při předklonu pánev ustoupila dozadu, aby těžiště zůstalo nad chodidly. S batohem je potřeba posunout těžiště naopak – dopředu.",
+              "Batoh posunul těžiště dozadu. Aby se vrátilo nad chodidla, musí horní část těla dopředu – předklon."
+            ],
+            "success": "Závora sklouzla. Zbývá poslední pojistka."
+          },
+          {
+            "type": "choice",
+            "question": "Na poslední pojistce je vyryto: „Kam do batohu patří nejtěžší věci?“",
+            "options": [
+              "Na dno batohu",
+              "Do bočních kapes",
+              "Co nejblíž k zádům",
+              "Do vnější přední kapsy, ať jsou po ruce"
+            ],
+            "correct": 2,
+            "feedback": {
+              "0": "Na dně batohu táhnou těžké věci batoh dolů a od zad – těžiště batohu se vzdálí od těla.",
+              "1": "Boční kapsy jsou vně batohu a každá může být jinak těžká – batoh pak táhne i do strany.",
+              "3": "Vnější kapsa je od zad nejdál. Těžiště batohu by bylo ještě dál než 20 cm a společné těžiště by se posunulo víc než o 6 cm."
+            },
+            "wrong": "Pojistka nepovolila.",
+            "hints": [
+              "Ve výpočtu hrála roli vzdálenost těžiště batohu od těžiště vojáka – 20 cm.",
+              "Co se stane se společným těžištěm, když tu vzdálenost zmenšíš? Zkus 30 · 10 / 100.",
+              "Čím blíž k zádům, tím menší posun těžiště a tím menší předklon. Nejtěžší věci patří co nejblíž k zádům."
+            ],
+            "success": "Poslední pojistka cvakla."
+          }
+        ],
+        "open": [
+          { "sound": "door" },
+          { "text": "Pancéřové dveře se pomalu otevřely. Za nimi vede schodiště nahoru – odněkud shora je slyšet vzdálené dunění, jako by v tělocvičně někdo běhal." },
+          { "note": "Brána I (vojenská): batoh 30 kg posune společné těžiště vojáka (70 kg) o 6 cm dozadu. Voják to vyrovná předklonem – svislice z těžiště musí procházet opěrnou plochou. Nejtěžší věci patří co nejblíž k zádům." }
         ]
       }
     }

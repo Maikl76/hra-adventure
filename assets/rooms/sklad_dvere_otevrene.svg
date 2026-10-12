@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: otevřené pancéřové dveře se schodištěm nahoru (příznak brana_sklad_otevrena).
+       Zástupná kresba do autorova obrázku sklad_dvere.webp (dveřní křídlo x 565–1100, y 85–825);
+       lze nahradit variantou obrázku s otevřenými dveřmi. -->
+  <defs>
+    <linearGradient id="stairs" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9a464"/>
+      <stop offset="0.3" stop-color="#4a3c26"/>
+      <stop offset="1" stop-color="#090806"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1c1d18"/>
+      <stop offset="1" stop-color="#3a3b32"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.05" r="0.8">
+      <stop offset="0" stop-color="#ffd28a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd28a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="565" y="85" width="535" height="740" fill="url(#stairs)"/>
+  <g stroke="#120e08" stroke-width="5" opacity="0.85">
+    <line x1="585" y1="770" x2="1080" y2="770"/><line x1="605" y1="685" x2="1060" y2="685"/>
+    <line x1="625" y1="605" x2="1040" y2="605"/><line x1="645" y1="530" x2="1020" y2="530"/>
+    <line x1="665" y1="460" x2="1000" y2="460"/><line x1="685" y1="395" x2="980" y2="395"/>
+    <line x1="705" y1="335" x2="960" y2="335"/><line x1="725" y1="280" x2="940" y2="280"/>
+    <line x1="745" y1="230" x2="920" y2="230"/>
+  </g>
+  <line x1="1010" y1="825" x2="905" y2="200" stroke="#2a241a" stroke-width="7"/>
+  <rect x="565" y="85" width="535" height="740" fill="url(#glow)"/>
+  <!-- dveřní křídlo vyklopené doleva -->
+  <polygon points="565,85 455,45 455,880 565,825" fill="url(#leaf)" stroke="#0e0f0b" stroke-width="4"/>
+  <rect x="468" y="290" width="80" height="34" fill="#2a2b25"/>
+</svg>

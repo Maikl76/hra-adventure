@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: otevřená plechová skříňka (příznak skrinka_otevrena). Souřadnice odpovídají sklad_regaly.svg. -->
+  <rect x="1124" y="144" width="292" height="672" fill="#121310"/>
+  <rect x="1124" y="430" width="292" height="12" fill="#3b4133"/>
+  <rect x="1124" y="250" width="292" height="10" fill="#3b4133"/>
+  <!-- otevřená dvířka v perspektivě -->
+  <polygon points="1420,140 1530,110 1530,850 1420,820" fill="#4c5342" stroke="#23271c" stroke-width="4"/>
+  <polygon points="1440,200 1515,180 1515,330 1440,340" fill="#d9d0b4" opacity="0.85"/>
+  <g stroke="#6b6250" stroke-width="2">
+    <line x1="1450" y1="220" x2="1505" y2="206"/><line x1="1450" y1="240" x2="1505" y2="228"/>
+    <line x1="1450" y1="260" x2="1505" y2="250"/><line x1="1450" y1="280" x2="1505" y2="272"/>
+    <line x1="1450" y1="300" x2="1505" y2="294"/>
+  </g>
+</svg>

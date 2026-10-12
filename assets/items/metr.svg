@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: svinovací metr -->
+  <rect x="30" y="34" width="32" height="9" fill="#f2d24a" stroke="#7a6312" stroke-width="1.2"/>
+  <g stroke="#2a2410" stroke-width="1"><line x1="36" y1="34" x2="36" y2="39"/><line x1="42" y1="34" x2="42" y2="38"/><line x1="48" y1="34" x2="48" y2="39"/><line x1="54" y1="34" x2="54" y2="38"/><line x1="60" y1="34" x2="60" y2="39"/></g>
+  <rect x="4" y="18" width="34" height="34" rx="9" fill="#d8b42c" stroke="#5a4810" stroke-width="2"/>
+  <circle cx="21" cy="35" r="9" fill="#3a3a34" stroke="#1a1a16" stroke-width="1.5"/>
+  <circle cx="21" cy="35" r="3" fill="#bdb79a"/>
+  <rect x="34" y="33" width="5" height="11" fill="#3a3a34"/>
+</svg>

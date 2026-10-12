@@ -854,6 +854,13 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .squat-manual .btn { margin: 0 6px; }
 .squat-clock { font-family: var(--digits); font-size: 42px; color: var(--gold-bright); margin: 6px 0 12px; }
 
+/* Zkouška stability (předklon volně a u zdi) */
+.lean-safety { border-left: 3px solid var(--gold-bright); padding: 6px 10px; text-align: left; background: rgba(255, 210, 138, 0.06); }
+.lean-step { font-weight: bold; color: var(--gold-bright); margin: 8px 0; }
+.lean-table { margin: 10px auto; border-collapse: collapse; }
+.lean-table th, .lean-table td { padding: 4px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); text-align: center; }
+.lean-table th { color: var(--muted); font-weight: normal; }
+
 /* ---------- Kalkulačka (plovoucí okno nad hrou i nad zámkem) ---------- */
 
 .calc {

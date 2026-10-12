@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Výstrojní sklad – výdejní pult. Zástupná kresba (lze nahradit obrázkem 1672 × 941 se stejným rozvržením,
+       viz docs/zadani-obrazku-sklad.md). -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34352b"/>
+      <stop offset="1" stop-color="#1e1f18"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26251f"/>
+      <stop offset="1" stop-color="#0d0d0b"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6a4a2b"/>
+      <stop offset="1" stop-color="#3d2a17"/>
+    </linearGradient>
+    <linearGradient id="front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#47331e"/>
+      <stop offset="1" stop-color="#2a1d10"/>
+    </linearGradient>
+    <linearGradient id="olive" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5d6440"/>
+      <stop offset="1" stop-color="#363b24"/>
+    </linearGradient>
+    <radialGradient id="bulb">
+      <stop offset="0" stop-color="#fff2c8" stop-opacity="0.9"/>
+      <stop offset="0.3" stop-color="#ffd28a" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#ffd28a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd28a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd28a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- stěna a podlaha -->
+  <rect width="1672" height="700" fill="url(#wall)"/>
+  <rect y="700" width="1672" height="241" fill="url(#floor)"/>
+  <g stroke="#2a2b22" stroke-width="2" opacity="0.7">
+    <line x1="0" y1="610" x2="1672" y2="610"/>
+    <line x1="0" y1="700" x2="1672" y2="700" stroke="#141410" stroke-width="4"/>
+  </g>
+  <rect y="610" width="1672" height="90" fill="#2b3122" opacity="0.6"/>
+
+  <!-- žárovka pod stropem -->
+  <line x1="836" y1="0" x2="836" y2="40" stroke="#111" stroke-width="3"/>
+  <circle cx="836" cy="60" r="140" fill="url(#bulb)"/>
+  <circle cx="836" cy="54" r="12" fill="#fff0c0"/>
+
+  <!-- mapa -->
+  <g transform="translate(140 90)">
+    <rect width="380" height="240" fill="#8a7d5c" stroke="#4e4532" stroke-width="5"/>
+    <g fill="none" stroke="#5e6b45" stroke-width="2" opacity="0.8">
+      <path d="M20,180 C80,120 140,200 200,140 S320,90 360,120"/>
+      <path d="M30,210 C90,160 150,230 210,170 S330,120 370,150"/>
+      <path d="M60,60 C100,30 150,70 190,40"/>
+      <ellipse cx="270" cy="70" rx="60" ry="30"/>
+      <ellipse cx="270" cy="70" rx="30" ry="14"/>
+    </g>
+    <path d="M40,200 L120,150 L190,170 L260,90 L330,60" fill="none" stroke="#8c2a1e" stroke-width="3" stroke-dasharray="10 6"/>
+    <circle cx="330" cy="60" r="7" fill="none" stroke="#8c2a1e" stroke-width="3"/>
+  </g>
+
+  <!-- cedule -->
+  <rect x="640" y="120" width="390" height="52" fill="#1f2a1c" stroke="#7f7f60" stroke-width="3"/>
+  <text x="835" y="157" font-family="Georgia, serif" font-size="30" fill="#d8cfae" text-anchor="middle" letter-spacing="3">VÝDEJ VÝSTROJE</text>
+
+  <!-- police za pultem -->
+  <g fill="#1a1a14" stroke="#2c2d24" stroke-width="3">
+    <rect x="560" y="210" width="860" height="260"/>
+    <line x1="560" y1="330" x2="1420" y2="330"/>
+  </g>
+  <g fill="#3f4430" stroke="#262a1b" stroke-width="2">
+    <rect x="590" y="260" width="110" height="68"/><rect x="710" y="280" width="90" height="48"/>
+    <rect x="980" y="250" width="140" height="78"/><rect x="1240" y="270" width="120" height="58"/>
+    <rect x="620" y="380" width="130" height="88"/><rect x="1080" y="400" width="160" height="68"/>
+  </g>
+
+  <!-- kartotéka -->
+  <g transform="translate(1450 150)">
+    <rect width="190" height="550" fill="#4a4f3c" stroke="#23261b" stroke-width="4"/>
+    <g fill="#5b614a" stroke="#2b2e22" stroke-width="2">
+      <rect x="14" y="20" width="76" height="90"/><rect x="100" y="20" width="76" height="90"/>
+      <rect x="14" y="125" width="76" height="90"/><rect x="100" y="125" width="76" height="90"/>
+      <rect x="14" y="230" width="76" height="90"/><rect x="100" y="230" width="76" height="90"/>
+      <rect x="14" y="335" width="76" height="90"/><rect x="100" y="335" width="76" height="90"/>
+      <rect x="14" y="440" width="76" height="90"/><rect x="100" y="440" width="76" height="90"/>
+    </g>
+    <g fill="#c9c0a0">
+      <rect x="37" y="40" width="30" height="12"/><rect x="123" y="40" width="30" height="12"/>
+      <rect x="37" y="145" width="30" height="12"/><rect x="123" y="145" width="30" height="12"/>
+      <rect x="37" y="250" width="30" height="12"/><rect x="123" y="250" width="30" height="12"/>
+      <rect x="37" y="355" width="30" height="12"/><rect x="123" y="355" width="30" height="12"/>
+      <rect x="37" y="460" width="30" height="12"/><rect x="123" y="460" width="30" height="12"/>
+    </g>
+  </g>
+
+  <!-- pult -->
+  <polygon points="260,470 1420,470 1440,502 240,502" fill="url(#wood)"/>
+  <rect x="250" y="502" width="1180" height="258" fill="url(#front)"/>
+  <g stroke="#22170c" stroke-width="2">
+    <line x1="250" y1="560" x2="1430" y2="560"/>
+    <line x1="560" y1="502" x2="560" y2="760"/>
+    <line x1="1020" y1="502" x2="1020" y2="760"/>
+  </g>
+  <rect x="640" y="590" width="300" height="70" fill="#4e3820" stroke="#22170c" stroke-width="3"/>
+  <rect x="770" y="618" width="40" height="12" rx="3" fill="#b8a16a"/>
+
+  <!-- lampa -->
+  <polygon points="380,420 470,420 450,500 400,500" fill="url(#cone)"/>
+  <ellipse cx="420" cy="468" rx="32" ry="7" fill="#2b2b26"/>
+  <path d="M420,466 L392,425 L438,398" fill="none" stroke="#3c3c34" stroke-width="7" stroke-linecap="round"/>
+  <polygon points="420,382 470,396 462,424 404,412" fill="#4b5236" stroke="#24281a" stroke-width="2"/>
+  <ellipse cx="434" cy="420" rx="22" ry="6" fill="#ffe2a0"/>
+
+  <!-- výdejní kniha -->
+  <polygon points="560,446 800,446 815,472 545,472" fill="#e3d9bd" stroke="#6b5a3a" stroke-width="2"/>
+  <line x1="680" y1="446" x2="680" y2="472" stroke="#6b5a3a" stroke-width="2"/>
+  <g stroke="#8b7b5a" stroke-width="1.5">
+    <line x1="575" y1="453" x2="665" y2="453"/><line x1="572" y1="459" x2="666" y2="459"/><line x1="569" y1="465" x2="667" y2="465"/>
+    <line x1="694" y1="453" x2="785" y2="453"/><line x1="694" y1="459" x2="790" y2="459"/><line x1="694" y1="465" x2="796" y2="465"/>
+  </g>
+
+  <!-- psací stroj -->
+  <rect x="960" y="352" width="110" height="52" fill="#e8e1cc"/>
+  <rect x="918" y="396" width="194" height="22" rx="10" fill="#1f1f1c"/>
+  <polygon points="912,418 1118,418 1128,470 902,470" fill="#2e3127" stroke="#16170f" stroke-width="2"/>
+  <g fill="#c9c0a0">
+    <circle cx="940" cy="440" r="5"/><circle cx="962" cy="440" r="5"/><circle cx="984" cy="440" r="5"/><circle cx="1006" cy="440" r="5"/>
+    <circle cx="1028" cy="440" r="5"/><circle cx="1050" cy="440" r="5"/><circle cx="1072" cy="440" r="5"/><circle cx="1094" cy="440" r="5"/>
+    <circle cx="950" cy="456" r="5"/><circle cx="972" cy="456" r="5"/><circle cx="994" cy="456" r="5"/><circle cx="1016" cy="456" r="5"/>
+    <circle cx="1038" cy="456" r="5"/><circle cx="1060" cy="456" r="5"/><circle cx="1082" cy="456" r="5"/>
+  </g>
+
+  <!-- razítka -->
+  <rect x="1150" y="460" width="105" height="10" fill="#3a2a18"/>
+  <g fill="#2a2a24"><rect x="1162" y="436" width="16" height="24"/><rect x="1192" y="436" width="16" height="24"/></g>
+  <g fill="#6b4a2a"><circle cx="1170" cy="432" r="9"/><circle cx="1200" cy="432" r="9"/></g>
+  <rect x="1222" y="448" width="24" height="12" fill="#1c1c18"/>
+
+  <!-- polní telefon -->
+  <rect x="1270" y="414" width="120" height="58" rx="5" fill="url(#olive)" stroke="#1d2014" stroke-width="2"/>
+  <path d="M1282,410 C1290,392 1370,392 1378,410" fill="none" stroke="#1a1a16" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="1330" cy="444" r="14" fill="#2a2d1e" stroke="#9c9a80" stroke-width="2"/>
+</svg>

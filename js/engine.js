@@ -582,7 +582,11 @@
     /* Dokončená aktivita (reflex test, dřepy): uložit naměřené hodnoty a provést její účinky „done“. */
     completeActivity(activity, results) {
       this.setVars(results || {});
-      return this.run(activity.done || []);
+      const events = this.run(activity.done || []);
+      // doneCases: případy s podmínkou (např. jiný zápis s kamerou a bez ní) – provede se první platný
+      const match = (activity.doneCases || []).find((c) => this.check(c.when));
+      if (match) events.push(...this.run(match.do));
+      return events;
     }
 
     /* Přechod do další místnosti sekce; vrací false, když je sekce u konce. */
@@ -614,7 +618,7 @@
         errors: all.reduce((sum, g) => sum + g.errors, 0),
         hints: hintCount,
         gatesOpen: gates.filter((g) => g.open).length,
-        // GSPORT: byly dřepy ověřené kamerou? (undefined = svět bez dřepů)
+        // měření kamerou (dřepy, zkouška stability): ověřeno kamerou? (undefined = svět bez měření)
         camera: this.state.vars.kamera === undefined ? undefined : Boolean(this.state.vars.kamera),
       };
     }
@@ -642,7 +646,10 @@
         for (const c of room.enter || []) checkEffects(c.do, `Místnost „${roomId}“, vstup`);
         for (const [lockId, lock] of Object.entries(room.locks || {})) checkEffects(lock.open, `Místnost „${roomId}“, zámek „${lockId}“`);
         if (room.gate) checkEffects(room.gate.open, `Místnost „${roomId}“, brána`);
-        for (const a of Object.values(room.activities || {})) checkEffects(a.done, `Místnost „${roomId}“, aktivita`);
+        for (const a of Object.values(room.activities || {})) {
+          checkEffects(a.done, `Místnost „${roomId}“, aktivita`);
+          for (const c of a.doneCases || []) checkEffects(c.do, `Místnost „${roomId}“, aktivita`);
+        }
         const views = room.views ? Object.entries(room.views) : [[null, room]];
         for (const [viewId, view] of views) {
           for (const dir of ['left', 'right', 'back']) {

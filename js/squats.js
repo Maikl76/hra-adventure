@@ -17,7 +17,7 @@ const FRONT_RATIO = 0.45;  // šířka ramen / délka trupu nad touto hodnotou =
 let lib = null;
 let landmarker = null;
 
-async function loadModel(onStatus) {
+export async function loadModel(onStatus) {
   if (landmarker) return landmarker;
   onStatus('Načítám rozpoznávání postavy (poprvé asi 15 MB)…');
   lib = await import(`${BASE}vision_bundle.mjs`);
@@ -38,8 +38,13 @@ async function loadModel(onStatus) {
   return landmarker;
 }
 
+/* Knihovna MediaPipe (po loadModel) – pro kreslení kostry v jiných aktivitách (predklon.js). */
+export function poseLib() {
+  return lib;
+}
+
 /* Úhel v bodě b (stupně) mezi úsečkami b–a a b–c, v pixelech obrazu. */
-function angle(a, b, c, w, h) {
+export function angle(a, b, c, w, h) {
   const ux = (a.x - b.x) * w, uy = (a.y - b.y) * h;
   const vx = (c.x - b.x) * w, vy = (c.y - b.y) * h;
   const nu = Math.hypot(ux, uy), nv = Math.hypot(vx, vy);
@@ -58,7 +63,7 @@ function kneeAngle(lm, w, h) {
 }
 
 /* Stojí hráč čelem? Šířka ramen v obraze vůči délce trupu (ramena–kyčle). */
-function facingCamera(lm, w, h) {
+export function facingCamera(lm, w, h) {
   const sw = Math.hypot((lm[11].x - lm[12].x) * w, (lm[11].y - lm[12].y) * h);
   const mid = (i, j) => ({ x: (lm[i].x + lm[j].x) / 2, y: (lm[i].y + lm[j].y) / 2 });
   const s = mid(11, 12), p = mid(23, 24);

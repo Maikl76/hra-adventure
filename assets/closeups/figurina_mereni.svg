@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <!-- Detail: měření na figuríně s batohem. Měřítko 8 jednotek = 1 cm: olovnice (těžiště vojáka) x = 470,
+       těžiště batohu x = 310 → 20 cm. Pata x = 430, špička x = 550. -->
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0" stop-color="#2c2d24"/>
+      <stop offset="1" stop-color="#0e0f0b"/>
+    </radialGradient>
+    <linearGradient id="tape" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2d24a"/>
+      <stop offset="1" stop-color="#c9a628"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+
+  <!-- batoh a trup (výřez) -->
+  <rect x="230" y="60" width="170" height="380" rx="34" fill="#5a5236" stroke="#262313" stroke-width="3"/>
+  <rect x="390" y="30" width="150" height="440" rx="24" fill="#4d5439" stroke="#23271a" stroke-width="3"/>
+  <!-- opěrná plocha dole -->
+  <rect x="430" y="478" width="120" height="14" fill="#d9d0b4" opacity="0.35"/>
+  <text x="490" y="474" font-family="Georgia, serif" font-size="14" fill="#d9d0b4" text-anchor="middle" opacity="0.8">opěrná plocha</text>
+
+  <!-- olovnice -->
+  <line x1="470" y1="0" x2="470" y2="478" stroke="#e8e0c4" stroke-width="2"/>
+  <!-- značka těžiště vojáka -->
+  <circle cx="470" cy="210" r="16" fill="#efe8d0"/>
+  <path d="M470,194 A16,16 0 0 1 486,210 L470,210 Z M470,226 A16,16 0 0 1 454,210 L470,210 Z" fill="#1a1a16"/>
+  <text x="496" y="196" font-family="Georgia, serif" font-size="18" fill="#efe8d0">těžiště vojáka</text>
+  <!-- značka těžiště batohu -->
+  <g fill="none" stroke="#efe8d0" stroke-width="3">
+    <circle cx="310" cy="210" r="16"/>
+    <line x1="299" y1="199" x2="321" y2="221"/><line x1="321" y1="199" x2="299" y2="221"/>
+  </g>
+  <text x="250" y="180" font-family="Georgia, serif" font-size="18" fill="#efe8d0">těžiště batohu</text>
+
+  <!-- svinovací metr -->
+  <rect x="300" y="250" width="180" height="26" fill="url(#tape)" stroke="#7a6312" stroke-width="1.5"/>
+  <g stroke="#2a2410" stroke-width="2">
+    <line x1="310" y1="250" x2="310" y2="270"/><line x1="350" y1="250" x2="350" y2="264"/>
+    <line x1="390" y1="250" x2="390" y2="270"/><line x1="430" y1="250" x2="430" y2="264"/>
+    <line x1="470" y1="250" x2="470" y2="270"/>
+  </g>
+  <g stroke="#2a2410" stroke-width="1">
+    <line x1="318" y1="250" x2="318" y2="257"/><line x1="326" y1="250" x2="326" y2="257"/><line x1="334" y1="250" x2="334" y2="257"/><line x1="342" y1="250" x2="342" y2="257"/>
+    <line x1="358" y1="250" x2="358" y2="257"/><line x1="366" y1="250" x2="366" y2="257"/><line x1="374" y1="250" x2="374" y2="257"/><line x1="382" y1="250" x2="382" y2="257"/>
+    <line x1="398" y1="250" x2="398" y2="257"/><line x1="406" y1="250" x2="406" y2="257"/><line x1="414" y1="250" x2="414" y2="257"/><line x1="422" y1="250" x2="422" y2="257"/>
+    <line x1="438" y1="250" x2="438" y2="257"/><line x1="446" y1="250" x2="446" y2="257"/><line x1="454" y1="250" x2="454" y2="257"/><line x1="462" y1="250" x2="462" y2="257"/>
+  </g>
+  <rect x="470" y="240" width="60" height="46" rx="10" fill="#3a3a34" stroke="#111" stroke-width="2"/>
+  <!-- kóta -->
+  <g stroke="#ffd28a" stroke-width="2.5" fill="none">
+    <line x1="310" y1="320" x2="470" y2="320"/>
+    <line x1="310" y1="308" x2="310" y2="332"/><line x1="470" y1="308" x2="470" y2="332"/>
+  </g>
+  <text x="390" y="356" font-family="Georgia, serif" font-weight="bold" font-size="30" fill="#ffd28a" text-anchor="middle">20 cm</text>
+</svg>

@@ -497,6 +497,21 @@
       this.every(h, 16, 30, (when) => this.ping(group, pick([880, 698.46]), when, 0.008, 0.4));
     },
 
+    /* Výstrojní sklad (vojenská): bzučení žárovky, kapající voda, občas zavrže plech regálu. */
+    sklad(group, h) {
+      const t = this.ctx.currentTime;
+      AMBIENCE.room.call(this, group, h);
+      // žárovka pod stropem (síť 50 Hz → 100 Hz), sotva slyšitelně kolísá
+      const hum = this.gain(0.006, group);
+      h.sources.push(this.osc('sine', 100, hum, t));
+      h.sources.push(this.osc('sine', 300, this.gain(0.25, hum), t));
+      this.lfo(hum.gain, 0.09, 0.003, t, h);
+      // kapka vody ze stropu
+      this.every(h, 4, 9, (when) => this.ping(group, 1400 + Math.random() * 500, when, 0.012, 0.12));
+      // plech regálu
+      this.every(h, 16, 32, (when) => this.creak(group, when, 0.02, 0.6 + Math.random() * 0.6));
+    },
+
     /* Závěrečná obrazovka: klidnější tón. */
     finish(group, h) {
       AMBIENCE.intro.call(this, group, h, { level: 0.5, bells: false });

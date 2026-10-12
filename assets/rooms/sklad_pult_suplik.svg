@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: vysunutý šuplík pultu (příznak kalkulacka_sklad). Souřadnice odpovídají sklad_pult.svg. -->
+  <polygon points="640,590 940,590 975,640 605,640" fill="#1a120a"/>
+  <polygon points="612,640 968,640 968,662 612,662" fill="#5a3f24"/>
+  <polygon points="645,596 935,596 960,632 620,632" fill="#2a1d10"/>
+  <g fill="#d9d0b4" opacity="0.9">
+    <polygon points="660,602 760,602 768,626 652,626"/>
+    <polygon points="700,598 800,600 806,620 696,620" opacity="0.7"/>
+  </g>
+  <rect x="605" y="660" width="370" height="78" fill="#4e3820" stroke="#22170c" stroke-width="3"/>
+  <rect x="770" y="690" width="40" height="12" rx="3" fill="#b8a16a"/>
+</svg>
