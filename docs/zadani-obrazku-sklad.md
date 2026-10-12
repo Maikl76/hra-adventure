@@ -11,8 +11,6 @@ Platí stejná pravidla jako u kabinetu a herny.
   - Vysunutý šuplík pultu je poskládaný z čela šuplíku na vašem obrázku pultu.
 - Nepovinné: pult s vysunutým šuplíkem a regály s otevřenou skříňkou ve stejném záběru –
   vyměním je za poskládané vrstvy.
-- Detail měření: značka těžiště vojáka je na obrázku v hrudníku; ve skutečnosti (a v příručce)
-  leží těžiště stojícího člověka v pánvi. Na figuríně v místnosti je značka správně.
 - Nepoužité: kovová krabice se šuplíkem a otevřená krabice s papírem a tyčkou.
 
 ## Styl
