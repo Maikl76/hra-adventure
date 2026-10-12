@@ -497,19 +497,35 @@
       this.every(h, 16, 30, (when) => this.ping(group, pick([880, 698.46]), when, 0.008, 0.4));
     },
 
-    /* Výstrojní sklad (vojenská): bzučení žárovky, kapající voda, občas zavrže plech regálu. */
+    /* Výstrojní sklad (vojenská): vzduchotechnika, bzučící zářivka, tichý temný tón, kapající voda,
+       občas vzdálené kovové zadunění a vrzání plechu. Hladiny jako u herny, ať je to slyšet i z notebooku. */
     sklad(group, h) {
       const t = this.ctx.currentTime;
-      AMBIENCE.room.call(this, group, h);
-      // žárovka pod stropem (síť 50 Hz → 100 Hz), sotva slyšitelně kolísá
-      const hum = this.gain(0.006, group);
-      h.sources.push(this.osc('sine', 100, hum, t));
-      h.sources.push(this.osc('sine', 300, this.gain(0.25, hum), t));
-      this.lfo(hum.gain, 0.09, 0.003, t, h);
+      // vzduchotechnika (šum vzduchu v potrubí)
+      const air = this.gain(0.035, group);
+      h.sources.push(this.noiseSource(this.filter('lowpass', 900, 0.5, air), t, 0, this.brown, true));
+      this.lfo(air.gain, 0.05, 0.01, t, h);
+      // zářivka: bzučení 100 Hz s vyššími harmonickými (slyšitelné i z malých reproduktorů), občas zakolísá
+      const buzz = this.gain(0.006, group);
+      h.sources.push(this.osc('sawtooth', 100, this.filter('bandpass', 1200, 1.2, buzz), t));
+      this.lfo(buzz.gain, 0.21, 0.003, t, h);
+      // temný tón (d moll bez tercie), pomalu dýchá
+      const pad = this.gain(0.0001, group);
+      pad.gain.setTargetAtTime(1, t, 3);
+      [NOTE.D2, NOTE.A2, 2 * NOTE.D2].forEach((f, i) => {
+        const vg = this.gain(0.012, this.filter('lowpass', 600, 0.7, pad));
+        h.sources.push(this.osc(i === 2 ? 'triangle' : 'sine', f, vg, t, 0, i ? 4 : -4));
+        this.lfo(vg.gain, 0.04 + i * 0.013, 0.008, t, h);
+      });
       // kapka vody ze stropu
-      this.every(h, 4, 9, (when) => this.ping(group, 1400 + Math.random() * 500, when, 0.012, 0.12));
+      this.every(h, 3, 7, (when) => this.ping(group, 1300 + Math.random() * 600, when, 0.035, 0.18));
+      // vzdálené kovové zadunění (někde v budově zapadly dveře)
+      this.every(h, 18, 36, (when) => {
+        this.thump(group, when, 0.06, 65);
+        this.ping(group, 196, when + 0.02, 0.018, 0.9);
+      });
       // plech regálu
-      this.every(h, 16, 32, (when) => this.creak(group, when, 0.02, 0.6 + Math.random() * 0.6));
+      this.every(h, 14, 28, (when) => this.creak(group, when, 0.03, 0.6 + Math.random() * 0.6));
     },
 
     /* Závěrečná obrazovka: klidnější tón. */
