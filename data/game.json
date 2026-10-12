@@ -450,7 +450,7 @@
       "do": [
         { "set": "figurina_zmerena" },
         { "sound": "measure" },
-        { "text": "Natáhneš metr vodorovně od olovnice, která visí přes těžiště figuríny, ke značce na boku batohu." },
+        { "text": "Natáhneš metr vodorovně od značky těžiště figuríny ke značce na boku batohu." },
         { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Měření na figuríně s batohem" } },
         { "note": "Těžiště batohu je 20 cm za těžištěm vojáka (měřeno vodorovně)." }
       ]
@@ -468,7 +468,7 @@
       "item": "metr",
       "on": "batoh",
       "room": "sklad",
-      "do": [ { "text": "Batoh sám o sobě nestačí. Měř na celé figuríně – od olovnice k těžišti batohu. Vyber metr a klikni na figurínu." } ]
+      "do": [ { "text": "Batoh sám o sobě nestačí. Měř na celé figuríně – od značky těžiště vojáka k těžišti batohu. Vyber metr a klikni na figurínu." } ]
     },
     {
       "item": "metr",
@@ -1769,42 +1769,42 @@
       "views": {
         "pult": {
           "name": "Výdejní pult",
-          "background": "assets/rooms/sklad_pult.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
-          "darkness": 0.55,
+          "background": "assets/rooms/sklad_pult.webp",
+          "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026); vysunutý šuplík je vrstva poskládaná z jeho čela šuplíku. Původní kresba: sklad_pult.svg.",
+          "darkness": 0.45,
           "left": "dvere",
           "right": "regaly",
           "enterText": "Výdejní pult skladu. Na něm výdejní kniha, psací stroj a polní telefon. Svítí jen stolní lampa.",
           "lights": [
-            { "x": 25.1, "y": 44, "radius": 18, "strength": 0.85, "flicker": true },
-            { "x": 50, "y": 4, "radius": 26, "strength": 0.5 }
+            { "x": 27, "y": 45, "radius": 16, "strength": 0.8, "flicker": true },
+            { "x": 50, "y": 5, "radius": 24, "strength": 0.65 }
           ],
           "layers": [
-            { "image": "assets/rooms/sklad_pult_suplik.svg", "when": { "flags": ["kalkulacka_sklad"] }, "animate": "slide" }
+            { "image": "assets/rooms/sklad_pult_suplik.webp", "when": { "flags": ["kalkulacka_sklad"] }, "animate": "slide" }
           ],
           "hotspots": [
             {
               "id": "mapa",
               "name": "Mapa",
-              "area": [8.4, 9.6, 22.7, 25.5],
-              "click": [ { "do": [ { "text": "Stará vojenská mapa okolí s vrstevnicemi. Někdo do ní tužkou zakreslil trasu pochodu: 25 km. U cíle je připsáno: „S plnou polní? Hlavně se nepřevrhnout.“" } ] } ]
+              "area": [7.2, 9.4, 23.6, 28.9],
+              "click": [ { "do": [ { "text": "Stará vojenská mapa s vrstevnicemi – SEKTOR B-7. Někdo do ní tužkou zakreslil trasu pochodu: 25 km. U cíle je připsáno: „S plnou polní? Hlavně se nepřevrhnout.“" } ] } ]
             },
             {
               "id": "cedule",
               "name": "Cedule",
-              "area": [38.3, 12.8, 23.3, 6],
+              "area": [35.9, 10.4, 28.1, 7.9],
               "click": [ { "do": [ { "text": "VÝDEJ VÝSTROJE. Pod tím menším písmem: „Výstroj se vydává jen proti podpisu.“" } ] } ]
             },
             {
               "id": "lampa",
               "name": "Stolní lampa",
-              "area": [21.5, 38, 7.5, 12],
+              "area": [22.7, 38.8, 7.2, 15.5],
               "click": [ { "do": [ { "text": "Kovová lampa s ohnutým ramenem. Svítí – někdo ji tu zapomněl zhasnout." } ] } ]
             },
             {
               "id": "kniha_vydej",
               "name": "Výdejní kniha",
-              "area": [32.3, 44.6, 16.7, 7.6],
+              "area": [31.4, 48.5, 18, 6.5],
               "click": [ { "do": [
                 { "sound": "paper" },
                 { "text": "Tlustá výdejní kniha je otevřená na poslední stránce. Poslední zápis je psaný docentovou rukou." },
@@ -1815,25 +1815,25 @@
             {
               "id": "stroj",
               "name": "Psací stroj",
-              "area": [53.8, 41, 13.5, 9.5],
+              "area": [53.5, 39.8, 13.5, 14.6],
               "click": [ { "do": [ { "sound": "key" }, { "text": "Starý psací stroj. V válci je založený list: „HLÁŠENÍ: Figurína č. 1 se s batohem převrací dozadu. Bez batohu stojí. Příčina: …“ Dál nic." } ] } ]
             },
             {
               "id": "razitka",
               "name": "Razítka",
-              "area": [68.6, 45, 6.5, 5.5],
+              "area": [68.7, 47.6, 5.2, 6.4],
               "click": [ { "do": [ { "text": "Razítka VYDÁNO a VRÁCENO. Na stojánku chybí třetí. Na podušce zbyl otisk: ZKOUŠKA STABILITY." } ] } ]
             },
             {
               "id": "telefon",
               "name": "Polní telefon",
-              "area": [75.9, 42.8, 7.6, 7.6],
+              "area": [75.1, 43, 9.8, 11],
               "click": [ { "do": [ { "text": "Polní telefon v olivové bedýnce. Zvedneš sluchátko – jen šum. Kdo by sem v noci volal?" } ] } ]
             },
             {
               "id": "suplik_pult",
               "name": "Šuplík pultu",
-              "area": [38.3, 62.7, 17.9, 7.6],
+              "area": [38.1, 67, 23.8, 7.4],
               "click": [
                 { "when": { "notFlags": ["kalkulacka_sklad"] }, "do": [
                   { "set": "kalkulacka_sklad" },
@@ -1847,7 +1847,7 @@
             {
               "id": "kartoteka",
               "name": "Kartotéka",
-              "area": [86.7, 16, 11.6, 58],
+              "area": [84.8, 10, 13.9, 70.2],
               "click": [ { "do": [ { "text": "Kartotéka se šuplíčky: PŘILBY, OPASKY, BOTY, BATOHY. Šuplíček BATOHY je prázdný. Jen na dně leží lísteček: „Těžké věci k zádům!“ Je to rukopis někoho jiného než docenta." } ] } ]
             }
           ]
@@ -1855,50 +1855,50 @@
 
         "regaly": {
           "name": "Regály s výstrojí",
-          "background": "assets/rooms/sklad_regaly.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
-          "darkness": 0.6,
+          "background": "assets/rooms/sklad_regaly.webp",
+          "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026); otevřená skříňka je vsazená z jeho obrázku otevřené skříňky (barevně sladěná). Původní kresba: sklad_regaly.svg.",
+          "darkness": 0.45,
           "left": "pult",
           "right": "figurina",
-          "enterText": "Kovové regály plné výstroje, dřevěná bedna a v rohu vysoká plechová skříňka.",
+          "enterText": "Kovový regál s přilbami a přepravními kufry, dřevěná bedna s botami a vysoká plechová skříňka. Pod stropem bzučí zářivka.",
           "lights": [
-            { "x": 50, "y": 3, "radius": 30, "strength": 0.55 },
-            { "x": 83.5, "y": 50, "radius": 10, "strength": 0.3 }
+            { "x": 50.5, "y": 3, "radius": 30, "strength": 0.6, "flicker": true },
+            { "x": 81, "y": 50, "radius": 14, "strength": 0.3 }
           ],
           "layers": [
-            { "image": "assets/rooms/sklad_skrinka_otevrena.svg", "when": { "flags": ["skrinka_otevrena"] } }
+            { "image": "assets/rooms/sklad_regaly_skrinka.webp", "when": { "flags": ["skrinka_otevrena"] } }
           ],
           "hotspots": [
             {
               "id": "prilby",
               "name": "Přilby",
-              "area": [4.2, 10.6, 41.3, 13.8],
+              "area": [4.5, 19, 45.7, 8.5],
               "click": [ { "do": [ { "text": "Řada přileb na horní polici. Jedna je pořádně promáčknutá. Cedulka: „Při pádu dozadu s batohem.“" } ] } ]
             },
             {
               "id": "batohy",
-              "name": "Batohy",
-              "area": [4.2, 26.6, 41.3, 58.5],
-              "click": [ { "do": [ { "text": "Batohy srovnané podle velikosti. Na každém visí cedulka s hmotností: 12 kg, 18 kg, 25 kg… Místo pro ten nejtěžší je prázdné – ten má na sobě figurína." } ] } ]
+              "name": "Kufry s výstrojí",
+              "area": [4.5, 30, 45.7, 57],
+              "click": [ { "do": [ { "text": "Přepravní kufry s výstrojí a dole dřevěné bedny. Na kufrech jsou cedulky s hmotností: 12 kg, 18 kg, 25 kg… Jedna přihrádka je prázdná, jen přerušovaně obkreslená. Batoh, který tu chybí, má na sobě figurína." } ] } ]
             },
             {
               "id": "boty",
               "name": "Boty",
-              "area": [48.5, 58, 14.4, 9.5],
+              "area": [54, 56.5, 12.5, 10.5],
               "click": [ { "do": [ { "text": "Vysoké kožené boty se širokou podrážkou. Čím větší plocha pod chodidly, tím jistěji stojíš. Docent by řekl: opěrná plocha." } ] } ]
             },
             {
               "id": "bedna",
               "name": "Bedna",
-              "area": [47.8, 68, 15.6, 19.2],
+              "area": [51.7, 67.5, 17, 21.5],
               "click": [ { "do": [ { "text": "Dřevěná bedna se šablonovým nápisem VÝSTROJ. Uvnitř jsou jen srolované karimatky a pár ešusů." } ] } ]
             },
             {
               "id": "skrinka",
               "name": "Plechová skříňka",
-              "area": [67, 14.9, 18, 72.3],
+              "area": [69, 12.5, 22.5, 77],
               "click": [
-                { "when": { "flags": ["skrinka_otevrena"] }, "do": [ { "text": "Skříňka je otevřená a prázdná. Na vnitřní straně dvířek je nalepený rozvrh služeb." } ] },
+                { "when": { "flags": ["skrinka_otevrena"] }, "do": [ { "text": "Skříňka je otevřená a prázdná. Na vnitřní straně dvířek je nalepený vybledlý rozvrh služeb." } ] },
                 { "do": [
                   { "sound": "locked" },
                   { "text": "Vysoká plechová skříňka s číselným zámkem. Pod zámkem je fixou napsáno: „Kdo ztratí známku, ztratí i klíč.“" },
@@ -1909,38 +1909,39 @@
             {
               "id": "zarivka",
               "name": "Zářivka",
-              "area": [38, 0, 24, 6],
-              "click": [ { "do": [ { "text": "Zářivka pod stropem je mrtvá. Svítí jen žárovka nad pultem." } ] } ]
+              "area": [35.7, 0.5, 29.8, 4.5],
+              "click": [ { "do": [ { "text": "Zářivka v ochranné mřížce. Bzučí a občas zabliká." } ] } ]
             }
           ]
         },
 
         "figurina": {
           "name": "Figurína s batohem",
-          "background": "assets/rooms/sklad_figurina.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-sklad.md.",
-          "darkness": 0.55,
+          "background": "assets/rooms/sklad_figurina.webp",
+          "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026). Původní kresba: sklad_figurina.svg.",
+          "darkness": 0.45,
           "left": "regaly",
           "right": "dvere",
-          "enterText": "Uprostřed stojí na podstavci figurína vojáka v plné polní, otočená bokem. Přes ni visí ze stropu olovnice. Vedle nástěnka s plakátem.",
+          "enterText": "Uprostřed stojí na kruhovém podstavci figurína vojáka v plné polní, otočená bokem. Vedle stará váha a nástěnka s plakátem.",
           "lights": [
-            { "x": 48, "y": 3, "radius": 32, "strength": 0.6 },
-            { "x": 79.7, "y": 35, "radius": 14, "strength": 0.35 }
+            { "x": 2.2, "y": 17, "radius": 12, "strength": 0.7, "flicker": true },
+            { "x": 48, "y": 3, "radius": 30, "strength": 0.5 },
+            { "x": 79.5, "y": 35, "radius": 16, "strength": 0.35 }
           ],
           "hotspots": [
             {
               "id": "figurina",
               "name": "Figurína vojáka",
-              "area": [44.6, 9, 9.2, 80],
+              "area": [46, 9, 7.2, 81],
               "click": [
-                { "when": { "flags": ["figurina_zmerena"] }, "do": [ { "text": "Figurína s batohem. Vzdálenost těžiště batohu od olovnice už máš změřenou – je v zápisníku." } ] },
-                { "do": [ { "text": "Figurína vojáka v polní uniformě, otočená bokem. Olovnice ze stropu visí přesně přes značku na jejím boku – těžiště vojáka bez batohu. Batoh je na zádech, za olovnicí. Kdyby to šlo něčím změřit…" } ] }
+                { "when": { "flags": ["figurina_zmerena"] }, "do": [ { "text": "Figurína s batohem. Vzdálenost těžiště batohu od těžiště vojáka už máš změřenou – je v zápisníku." } ] },
+                { "do": [ { "text": "Figurína vojáka v polní uniformě, otočená bokem. Na boku v úrovni pánve má černobílou značku – těžiště vojáka bez batohu. Svisle pod ní míří šipka na podstavci. Batoh je na zádech, za touto svislicí. Kdyby to šlo něčím změřit…" } ] }
               ]
             },
             {
               "id": "batoh",
               "name": "Batoh",
-              "area": [39.9, 22.5, 6, 31.5],
+              "area": [39, 21, 7, 32.5],
               "click": [ { "do": [
                 { "text": "Batoh s plnou polní. Na popruhu visí cedulka: 30 kg. Na boku je křídou nakreslený křížek v kroužku – značka těžiště batohu." },
                 { "note": "Batoh na figuríně: 30 kg, na boku značka těžiště batohu." }
@@ -1949,7 +1950,7 @@
             {
               "id": "znamka",
               "name": "Psí známka",
-              "area": [48.3, 28.5, 4.5, 6.5],
+              "area": [49.6, 28.6, 2.8, 5.8],
               "click": [ { "do": [
                 { "sound": "pickup" },
                 { "text": "Na krku figuríny visí na řetízku psí známka. Otočíš ji v prstech." },
@@ -1960,19 +1961,19 @@
             {
               "id": "podstavec",
               "name": "Podstavec",
-              "area": [37, 88, 22, 7],
-              "click": [ { "do": [ { "text": "Na podstavci jsou nakreslené obrysy chodidel a nápis OPĚRNÁ PLOCHA. Olovnice míří těsně před paty. Figurína je k podstavci přišroubovaná – jinak by prý spadla dozadu." } ] } ]
+              "area": [33.5, 89, 30.2, 7.5],
+              "click": [ { "do": [ { "text": "Na kruhovém podstavci je namalovaný obrys a šipka – míří přesně pod značku těžiště vojáka, těsně před paty. Figurína je k podstavci přišroubovaná – jinak by prý spadla dozadu." } ] } ]
             },
             {
               "id": "vaha",
               "name": "Stará váha",
-              "area": [11, 77, 15, 14],
-              "click": [ { "do": [ { "text": "Stará decimální váha. Na vážní desce je křídou napsáno: VOJÁK 70 + BATOH 30 = 100 KG." } ] } ]
+              "area": [5.7, 55, 20.3, 38.5],
+              "click": [ { "do": [ { "text": "Stará decimální váha. Na podstavci je napsáno 70 + 30 = 100 – voják 70 kg a batoh 30 kg, dohromady 100 kg." } ] } ]
             },
             {
               "id": "nastenka",
               "name": "Nástěnka s plakátem",
-              "area": [67.6, 11.7, 23.9, 47.8],
+              "area": [66.9, 9.4, 25, 52.5],
               "click": [
                 { "when": { "flags": ["stabilita_hotovo"] }, "do": [
                   { "text": "Plakát ZKOUŠKA STABILITY. Zkoušku máš za sebou – výsledek je v zápisníku. Chceš ji zopakovat? Platit bude nové měření." },
