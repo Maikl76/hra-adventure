@@ -48,6 +48,16 @@ Každý svět bude mít vlastních devět bran.
 - Bez kamery hráč jen odpoví, jak pokusy dopadly; na závěrečné obrazovce je pak „Zkouška
   stability ověřená kamerou: ne“. Obraz se zpracovává jen v prohlížeči.
 
+## Oživení a „hmatatelné“ úlohy
+
+- **Prach ve světle:** v kabinetu, herně i skladu poletuje prach, který je vidět hlavně ve světle
+  lamp a baterky (`"dust"` u pohledu v `game.json`).
+- **Měření tahem:** pravítko na modelu paže (kabinet) a svinovací metr na figuríně (sklad) se
+  natahují myší, prstem nebo šipkami; scéna se před měřením přiblíží (aktivita `"tape"`).
+- **Balení batohu (sklad):** hráč přetahuje věci do částí batohu a živě vidí, kam se posouvá
+  těžiště batohu a společné těžiště vojáka a jaký předklon je potřeba (aktivita `"pack"`).
+- Kdo má v systému zapnuté „omezit pohyb“, nevidí prach ani přiblížení.
+
 ## Ovládání
 
 - Klikání na předměty v místnosti; šipky **‹ ›** (nebo klávesy ← →) = otočit se v místnosti.

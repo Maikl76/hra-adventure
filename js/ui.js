@@ -1413,6 +1413,7 @@
     else if (act.type === 'squats') openSquats(act);
     else if (act.type === 'lean') openLean(act);
     else if (act.type === 'tape') openTape(act);
+    else if (act.type === 'pack') openPack(act);
   }
 
   function finishActivity(act, results) {
@@ -1563,7 +1564,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.8');
+          const mod = await import('./squats.js?v=0.9');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -1663,11 +1664,11 @@
       // svislá pomocná čára od cílové značky dolů k pásku (měří se vodorovně)
       el('line', { x1: tx, y1: ty, x2: tx, y2: sy, stroke: '#ffd28a', 'stroke-width': 1.5, 'stroke-dasharray': '5 4', opacity: 0.55 }, svg);
       const tape = el('g', {}, svg);
-      const band = el('rect', { y: sy - 6, height: 12, fill: '#f2d24a', stroke: '#7a6312', 'stroke-width': 0.8 }, tape);
+      const band = el('rect', { y: sy - 6, height: 12, fill: act.color || '#f2d24a', stroke: act.edge || '#7a6312', 'stroke-width': 0.8 }, tape);
       const ticks = el('g', { stroke: '#2a2410', 'stroke-width': 0.8 }, tape);
       el('circle', { cx: sx, cy: sy, r: 4, fill: '#3a3a34', stroke: '#e8e0c4', 'stroke-width': 1.2 }, svg);   // háček na značce
       const casing = el('g', { style: 'cursor: grab' }, svg);
-      el('rect', { x: -15, y: -15, width: 30, height: 30, rx: 7, fill: '#d8b42c', stroke: '#3a2e0a', 'stroke-width': 1.5 }, casing);
+      el('rect', { x: -15, y: -15, width: 30, height: 30, rx: 7, fill: act.handle || '#d8b42c', stroke: '#3a2e0a', 'stroke-width': 1.5 }, casing);
       el('circle', { cx: 0, cy: 0, r: 7, fill: '#3a3a34' }, casing);
 
       let end = sx + dir * ppc * 3;   // pásek trochu povytažený
@@ -1715,6 +1716,7 @@
       let dragging = false;
       stage.addEventListener('pointerdown', (e) => {
         if (finished) return;
+        e.preventDefault();
         dragging = true;
         stage.classList.add('dragging');
         stage.setPointerCapture(e.pointerId);
@@ -1748,6 +1750,244 @@
       draw();
       setTimeout(() => stage.focus(), 50);
     }));
+  }
+
+  /* Balení batohu: hráč přetahuje věci do částí batohu (nebo klikne na věc a pak na část).
+     Živě se počítá těžiště batohu a o kolik se posune společné těžiště vojáka s batohem:
+     posun = Σ(m · x) / (m_vojáka + m_batohu), x = vodorovná vzdálenost od těžiště vojáka.
+     Hotovo, když jsou všechny věci zabalené a posun je nejvýš „goalMax“ cm. */
+  function openPack(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 1) => v.toFixed(d).replace('.', ',');
+    const place = {};                       // id věci → id části batohu (nebo null = ještě venku)
+    for (const it of act.items) place[it.id] = null;
+    let selected = null;
+    let done = false;
+    const K = 5;                            // px na cm v nákresu
+    const BX = 330;                         // x těžiště vojáka v nákresu
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Sbal batoh');
+      para(box, act.intro || 'Přetáhni věci do batohu.', 'question');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+
+      // nákres z boku: voják vpravo (čelem doprava), batoh na zádech vlevo
+      const svg = el('svg', { viewBox: '0 0 420 300', class: 'pack-svg' }, wrap);
+      el('rect', { x: 0, y: 0, width: 420, height: 300, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+      el('line', { x1: 0, y1: 286, x2: 420, y2: 286, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+      // voják (silueta)
+      el('circle', { cx: 340, cy: 38, r: 16, fill: '#6b6650' }, svg);
+      el('rect', { x: 318, y: 56, width: 42, height: 110, rx: 12, fill: '#4f5638' }, svg);
+      el('rect', { x: 322, y: 160, width: 34, height: 120, rx: 8, fill: '#454c32' }, svg);
+      el('path', { d: 'M318,282 L372,282 L378,286 L314,286 Z', fill: '#1c1915' }, svg);
+      // části batohu = cíle pro věci
+      const zones = {};
+      for (const sl of act.slots) {
+        const x = BX - sl.cm * K;
+        const g = el('g', { class: 'pack-zone', 'data-slot': sl.id }, svg);
+        el('rect', { x: x - 24, y: 60, width: 48, height: 150, rx: 6, fill: 'rgba(120,110,70,0.35)', stroke: '#a89a64', 'stroke-dasharray': '4 3' }, g);
+        el('text', { x, y: 225, 'text-anchor': 'middle', 'font-size': 10, fill: '#d8cfae' }, g, sl.name);
+        el('text', { x, y: 238, 'text-anchor': 'middle', 'font-size': 9, fill: '#9a9078' }, g, `${sl.cm} cm`);
+        const list = el('g', {}, g);
+        zones[sl.id] = { g, list, x, sl };
+        g.addEventListener('click', () => { if (selected) moveTo(selected, sl.id); });
+      }
+      // svislice: těžiště vojáka, těžiště batohu, společné těžiště
+      // ukazatele nesmí zachytávat ukazatel myši (pod nimi jsou části batohu)
+      const marks = el('g', { 'pointer-events': 'none' }, svg);
+      el('line', { x1: BX, y1: 20, x2: BX, y2: 286, stroke: '#e8e0c4', 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: 0.6 }, marks);
+      el('circle', { cx: BX, cy: 150, r: 6, fill: '#efe8d0', stroke: '#1a1a16' }, marks);
+      const packMark = el('g', {}, marks);
+      el('circle', { cx: 0, cy: 0, r: 6, fill: 'none', stroke: '#efe8d0', 'stroke-width': 2 }, packMark);
+      el('path', { d: 'M-4,-4 L4,4 M4,-4 L-4,4', stroke: '#efe8d0', 'stroke-width': 1.5 }, packMark);
+      const comLine = el('line', { y1: 120, y2: 286, stroke: '#ffd28a', 'stroke-width': 2 }, marks);
+      const comMark = el('polygon', { points: '0,0 -6,10 6,10', fill: '#ffd28a' }, marks);
+      el('text', { x: BX + 6, y: 298, 'font-size': 9, fill: '#9a9078' }, marks, 'těžiště vojáka');
+
+      // věci k zabalení
+      const tray = document.createElement('div');
+      tray.className = 'pack-tray';
+      wrap.appendChild(tray);
+      const chips = {};
+      for (const it of act.items) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pack-item';
+        b.textContent = `${it.name} · ${fmt(it.kg, 0)} kg`;
+        b.dataset.item = it.id;
+        chips[it.id] = b;
+        tray.appendChild(b);
+      }
+
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const check = button(actions, act.checkLabel || 'Batoh je sbalený', 'btn primary', () => evaluate());
+
+      function compute() {
+        let m = act.packKg || 0;
+        let mx = (act.packKg || 0) * (act.packCm || 0);
+        for (const it of act.items) {
+          const sl = act.slots.find((z) => z.id === place[it.id]);
+          if (!sl) continue;
+          m += it.kg;
+          mx += it.kg * sl.cm;
+        }
+        const body = act.bodyKg || 70;
+        return { m, d: m ? mx / m : 0, shift: mx / (body + m), all: act.items.every((it) => place[it.id]) };
+      }
+
+      function render() {
+        for (const z of Object.values(zones)) z.list.innerHTML = '';
+        for (const it of act.items) {
+          const chip = chips[it.id];
+          chip.classList.toggle('selected', selected === it.id);
+          chip.classList.toggle('packed', Boolean(place[it.id]));
+          const z = zones[place[it.id]];
+          if (!z) continue;
+          const n = z.list.childNodes.length;
+          const t = el('text', { x: z.x, y: 78 + n * 13, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#f2e6c2', class: 'pack-label', 'data-item': it.id }, z.list, `${it.short || it.name} ${it.kg}`);
+          t.addEventListener('click', (e) => { e.stopPropagation(); if (!suppressClick) select(it.id); });
+        }
+        for (const z of Object.values(zones)) {
+          const full = act.items.filter((it) => place[it.id] === z.sl.id).length >= z.sl.cap;
+          z.g.classList.toggle('full', full);
+        }
+        const r = compute();
+        packMark.setAttribute('transform', `translate(${BX - r.d * K} 150)`);
+        const cx = BX - r.shift * K;
+        comLine.setAttribute('x1', cx);
+        comLine.setAttribute('x2', cx);
+        comMark.setAttribute('transform', `translate(${cx} 276)`);
+        const lean = Math.atan(r.shift / (act.comHeightCm || 100)) * 180 / Math.PI;
+        readout.innerHTML = '';
+        const rows = [
+          ['Batoh', `${fmt(r.m, 0)} kg`],
+          ['Těžiště batohu za těžištěm vojáka', `${fmt(r.d)} cm`],
+          ['Společné těžiště se posune dozadu o', `${fmt(r.shift)} cm`],
+          ['Potřebný předklon (přibližně)', `${fmt(lean)}°`],
+        ];
+        for (const [k, v] of rows) {
+          const d = document.createElement('div');
+          const a = document.createElement('span'); a.textContent = k;
+          const b = document.createElement('strong'); b.textContent = v;
+          d.append(a, b);
+          readout.appendChild(d);
+        }
+        check.disabled = done || !r.all;
+      }
+
+      function select(id) {
+        if (done) return;
+        selected = selected === id ? null : id;
+        render();
+      }
+
+      function moveTo(id, slotId) {
+        if (done) return;
+        const sl = act.slots.find((z) => z.id === slotId);
+        const used = act.items.filter((it) => place[it.id] === slotId && it.id !== id).length;
+        if (sl && used >= sl.cap) {
+          status.textContent = `${sl.name}: tam už se nic nevejde.`;
+          status.className = 'feedback bad';
+          return;
+        }
+        place[id] = slotId;
+        selected = null;
+        status.textContent = '';
+        status.className = 'feedback';
+        sound.sfx('paper');
+        render();
+      }
+
+      function evaluate() {
+        const r = compute();
+        if (r.shift <= act.goalMax + 1e-9) {
+          done = true;
+          sound.sfx('unlock');
+          status.textContent = act.success || 'Sbaleno správně.';
+          status.className = 'feedback good';
+          check.remove();
+          button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { batoh_posun: Math.round(r.shift * 10) / 10 }));
+        } else {
+          sound.sfx('wrong');
+          status.textContent = act.tryAgain || 'Těžiště je pořád moc vzadu.';
+          status.className = 'feedback bad';
+        }
+        render();
+      }
+
+      // tažení věci myší / prstem; kliknutí = vybrat (pak klik na část batohu)
+      let drag = null;
+      let suppressClick = false;   // po tažení nepovažovat puštění za kliknutí
+      tray.addEventListener('click', (e) => {
+        const b = e.target.closest('.pack-item');
+        if (b && !suppressClick) select(b.dataset.item);
+      });
+      const startDrag = (id, e) => {
+        if (done) return;
+        e.preventDefault();   // bez označování textu a nativního přetahování prohlížeče
+        drag = { id, x0: e.clientX, y0: e.clientY, ghost: null };
+      };
+      tray.addEventListener('pointerdown', (e) => {
+        const b = e.target.closest('.pack-item');
+        if (b) startDrag(b.dataset.item, e);
+      });
+      svg.addEventListener('pointerdown', (e) => {
+        const t = e.target.closest('.pack-label');
+        if (!t) return;
+        startDrag(t.getAttribute('data-item'), e);
+      });
+      const onMove = (e) => {
+        if (!drag) return;
+        if (!drag.ghost && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 6) {
+          drag.ghost = document.createElement('div');
+          drag.ghost.className = 'pack-ghost';
+          drag.ghost.textContent = chips[drag.id].textContent;
+          document.body.appendChild(drag.ghost);
+        }
+        if (drag.ghost) {
+          drag.ghost.style.left = `${e.clientX}px`;
+          drag.ghost.style.top = `${e.clientY}px`;
+        }
+      };
+      const onUp = (e) => {
+        if (!drag) return;
+        const d = drag;
+        drag = null;
+        if (!d.ghost) return;            // jen kliknutí – vyřeší „click“
+        d.ghost.remove();
+        suppressClick = true;
+        setTimeout(() => { suppressClick = false; }, 0);
+        const hit = document.elementFromPoint(e.clientX, e.clientY);
+        const zone = hit && hit.closest && hit.closest('.pack-zone');
+        if (zone) moveTo(d.id, zone.dataset.slot);
+        else if (hit && hit.closest && hit.closest('.pack-tray')) { place[d.id] = null; render(); }
+      };
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      activityCleanup = () => {
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        if (drag && drag.ghost) drag.ghost.remove();
+      };
+      render();
+    });
   }
 
   /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
@@ -1827,7 +2067,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.8');
+          const mod = await import('./predklon.js?v=0.9');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

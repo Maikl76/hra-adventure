@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.8 – ukázka",
+    "version": "0.9 – ukázka",
     "totalGates": 9
   },
 
@@ -307,12 +307,8 @@
       "on": "model",
       "when": { "notFlags": ["zmereno"] },
       "do": [
-        { "set": "zmereno" },
-        { "sound": "measure" },
-        { "text": "Přiložíš pravítko k předloktí a měříš od osy loketního kloubu: k úponu svalu a ke středu závaží." },
-        { "closeup": { "image": "assets/closeups/paze_mereni.svg", "caption": "Měření na modelu paže" } },
-        { "note": "Závaží je 30 cm od osy loketního kloubu." },
-        { "note": "Úpon dvojhlavého svalu pažního je 3 cm od osy loketního kloubu." }
+        { "text": "Přiložíš pravítko k mosaznému čepu – ose loketního kloubu." },
+        { "activity": "mereni_paze" }
       ]
     },
     {
@@ -489,11 +485,42 @@
       "ambience": "kabinet",
       "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
       "startView": "u_stolu",
+
+      "activities": {
+        "mereni_paze": {
+          "type": "tape",
+          "title": "Měření pravítkem",
+          "intro": "Nula pravítka je na ose loketního kloubu (mosazný čep). Chyť konec pravítka a posuň ho vodorovně až pod střed závaží. Řiď se svislou čárkovanou čarou.",
+          "image": "assets/rooms/kabinet.webp",
+          "imageSize": [1672, 941],
+          "crop": [900, 360, 320, 190],
+          "start": [960, 492],
+          "target": [1145, 465],
+          "pxPerCm": 6.17,
+          "tolerance": 1.5,
+          "zoomFrom": [54.9, 36.7, 15.2, 22],
+          "color": "#c9a46a",
+          "edge": "#6b5230",
+          "handle": "#8a6a3a",
+          "wrongDirection": "Tímhle směrem je rameno. Závaží je v dlani – posuň pravítko k ruce (doprava).",
+          "tooShort": "Ještě kousek – měříš až ke středu závaží, ne k prstům.",
+          "tooLong": "To už je za závažím. Konec má být přesně pod jeho středem.",
+          "success": "30 cm od osy lokte ke středu závaží. Úpon svalu je hned u kloubu – odečteš 3 cm.",
+          "done": [
+            { "set": "zmereno" },
+            { "note": "Závaží je 30 cm od osy loketního kloubu." },
+            { "note": "Úpon dvojhlavého svalu pažního je 3 cm od osy loketního kloubu." },
+            { "closeup": { "image": "assets/closeups/paze_mereni.svg", "caption": "Měření na modelu paže" } }
+          ]
+        }
+      },
+
       "views": {
 
         "u_stolu": {
           "name": "U stolu",
           "background": "assets/rooms/kabinet.webp",
+          "dust": { "count": 70 },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy šuplíku a brány jsou vyrobené z jeho pixelů. Původní zástupná kresba: kabinet.svg.",
           "darkness": 0.62,
           "left": "knihovna",
@@ -707,6 +734,7 @@
         "knihovna": {
           "name": "Knihovna",
           "background": "assets/rooms/knihovna.webp",
+          "dust": { "count": 60 },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); mezera po knize je jeho díl vsazený na místo zelené knihy. Původní kresba: knihovna.svg.",
           "darkness": 0.6,
           "left": "vchod",
@@ -781,6 +809,7 @@
         "vchod": {
           "name": "Vchod",
           "background": "assets/rooms/vchod.webp",
+          "dust": { "count": 50 },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026). Původní kresba: vchod.svg.",
           "darkness": 0.6,
           "left": "kostra",
@@ -904,6 +933,7 @@
         "kostra": {
           "name": "Kostra a tabule",
           "background": "assets/rooms/kostra.webp",
+          "dust": { "count": 60 },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); původní zástupná kresba je kostra.svg. darkness = síla tmy 0–1 (výchozí 0,86); tmavý obrázek potřebuje méně.",
           "darkness": 0.62,
           "left": "u_stolu",
@@ -1157,6 +1187,7 @@
         "stul": {
           "name": "Herní stůl",
           "background": "assets/rooms/herna_stul.webp",
+          "dust": { "count": 60, "color": "200, 235, 255" },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy2.html). Zelený text na monitoru je vrstva herna_stul_pc.svg.",
           "darkness": 0.6,
           "left": "dvere",
@@ -1304,6 +1335,7 @@
         "knihovna": {
           "name": "Knihovna",
           "background": "assets/rooms/herna_knihovna.webp",
+          "dust": { "count": 60, "color": "200, 235, 255" },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy.html).",
           "darkness": 0.6,
           "left": "stul",
@@ -1389,6 +1421,7 @@
         "stanice": {
           "name": "Kostra a stanice",
           "background": "assets/rooms/herna_stanice.webp",
+          "dust": { "count": 60, "color": "200, 235, 255" },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy2.html). Hlava zepředu je vsazená z autorova obrázku s jiným záběrem; displej a UV nápis jsou SVG vrstvy.",
           "darkness": 0.6,
           "left": "knihovna",
@@ -1480,6 +1513,7 @@
         "dvere": {
           "name": "Dveře LEVEL 1",
           "background": "assets/rooms/herna_dvere.webp",
+          "dust": { "count": 50, "color": "200, 235, 255" },
           "_obrazek": "Obrázek dodal autor projektu (11. 10. 2026); vrstvy jsou poskládané z jeho dílů (podklady/nastroje/herna_vrstvy.html).",
           "darkness": 0.6,
           "left": "stanice",
@@ -1730,6 +1764,38 @@
             { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Změřeno: 20 cm" } }
           ]
         },
+        "baleni": {
+          "type": "pack",
+          "title": "Sbal batoh",
+          "intro": "Rozbalíš batoh z figuríny. Sbal 30 kg výstroje znovu tak, aby se společné těžiště vojáka a batohu posunulo dozadu co nejméně – nejvýš o 6 cm. Věc přetáhni do části batohu (nebo na ni klikni a pak klikni na část batohu).",
+          "bodyKg": 70,
+          "packKg": 3,
+          "packCm": 25,
+          "comHeightCm": 100,
+          "goalMax": 6.1,
+          "slots": [
+            { "id": "kapsa", "name": "Vnější kapsa", "cm": 38, "cap": 2 },
+            { "id": "stred", "name": "Uprostřed", "cm": 25, "cap": 2 },
+            { "id": "zada", "name": "U zad", "cm": 15, "cap": 4 }
+          ],
+          "items": [
+            { "id": "voda", "name": "Voda", "kg": 6 },
+            { "id": "stan", "name": "Stan", "kg": 6 },
+            { "id": "jidlo", "name": "Jídlo", "kg": 4 },
+            { "id": "spacak", "name": "Spacák", "kg": 3 },
+            { "id": "obleceni", "name": "Oblečení", "short": "Oblek.", "kg": 3 },
+            { "id": "varic", "name": "Vařič", "kg": 2 },
+            { "id": "lopatka", "name": "Lopatka", "short": "Lopat.", "kg": 2 },
+            { "id": "lekarnicka", "name": "Lékárnička", "short": "Lékár.", "kg": 1 }
+          ],
+          "checkLabel": "Batoh je sbalený",
+          "success": "Výborně! Nejtěžší věci jsou u zad, společné těžiště se posunulo jen asi o 6 cm. Přesně tak je sbalený batoh na figuríně.",
+          "tryAgain": "Těžiště je pořád moc vzadu. Která věc je nejtěžší – a jak daleko od zad ji máš?",
+          "done": [
+            { "set": "batoh_sbalen" },
+            { "note": "Balení batohu: těžké věci u zad → společné těžiště se posune jen o {batoh_posun:1} cm. Těžké věci ve vnější kapse by ho posunuly přes 8 cm.", "noteKey": "baleni" }
+          ]
+        },
         "stabilita": {
           "type": "lean",
           "title": "Zkouška stability",
@@ -1964,10 +2030,17 @@
               "id": "batoh",
               "name": "Batoh",
               "area": [39, 21, 7, 32.5],
-              "click": [ { "do": [
-                { "text": "Batoh s plnou polní. Na popruhu visí cedulka: 30 kg. Na boku je křídou nakreslený křížek v kroužku – značka těžiště batohu." },
-                { "note": "Batoh na figuríně: 30 kg, na boku značka těžiště batohu." }
-              ] } ]
+              "click": [
+                { "when": { "flags": ["batoh_sbalen"] }, "do": [
+                  { "text": "Batoh je sbalený správně – těžké věci u zad. Chceš si balení zkusit znovu?" },
+                  { "activity": "baleni" }
+                ] },
+                { "do": [
+                  { "text": "Batoh s plnou polní. Na popruhu visí cedulka: 30 kg. Na boku je namalovaný křížek v kroužku – značka těžiště batohu. Přezky jsou povolené, jako by ho někdo chtěl přebalit…" },
+                  { "note": "Batoh na figuríně: 30 kg, na boku značka těžiště batohu." },
+                  { "activity": "baleni" }
+                ] }
+              ]
             },
             {
               "id": "znamka",
@@ -2138,7 +2211,7 @@
             },
             "wrong": "Pojistka nepovolila.",
             "hints": [
-              "Ve výpočtu hrála roli vzdálenost těžiště batohu od těžiště vojáka – 20 cm.",
+              "Vyzkoušej si to: klikni na batoh na figuríně a sbal ho tak, aby se těžiště posunulo co nejméně. Ve výpočtu hrála roli vzdálenost těžiště batohu od těžiště vojáka – 20 cm.",
               "Co se stane se společným těžištěm, když tu vzdálenost zmenšíš? Zkus 30 · 10 / 100.",
               "Čím blíž k zádům, tím menší posun těžiště a tím menší předklon. Nejtěžší věci patří co nejblíž k zádům."
             ],
