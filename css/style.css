@@ -376,6 +376,9 @@ button:focus-visible, input:focus-visible {
 }
 
 .scene-dark { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.scene-dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* přiblížení scény k předmětu (např. před měřením metrem) */
+.scene.zooming { transition: transform 0.65s cubic-bezier(0.45, 0, 0.2, 1); }
 
 .hotspots { position: absolute; inset: 0; }
 
@@ -860,6 +863,13 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .lean-table { margin: 10px auto; border-collapse: collapse; }
 .lean-table th, .lean-table td { padding: 4px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); text-align: center; }
 .lean-table th { color: var(--muted); font-weight: normal; }
+
+/* Měření metrem tahem */
+.modal-box.tape-box { width: min(100%, 760px); }
+.tape-stage { position: relative; width: 100%; border-radius: 6px; overflow: hidden; background-repeat: no-repeat; touch-action: none; cursor: grab; }
+.tape-stage.dragging { cursor: grabbing; }
+.tape-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tape-reading { font-family: var(--digits); font-size: 34px; color: var(--gold-bright); text-align: center; margin: 8px 0 0; min-height: 1.2em; }
 
 /* ---------- Kalkulačka (plovoucí okno nad hrou i nad zámkem) ---------- */
 

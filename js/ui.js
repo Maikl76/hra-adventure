@@ -907,10 +907,13 @@
     const scene = $('scene');
     const canvas = $('scene-dark');
 
+    const dust = $('scene-dust');
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.max(1, Math.round(scene.clientWidth * dpr));
-      canvas.height = Math.max(1, Math.round(scene.clientHeight * dpr));
+      for (const c of [canvas, dust]) {
+        c.width = Math.max(1, Math.round(scene.clientWidth * dpr));
+        c.height = Math.max(1, Math.round(scene.clientHeight * dpr));
+      }
     };
     new ResizeObserver(resize).observe(scene);
 
@@ -946,6 +949,7 @@
     if (sceneRaf) return;
     const draw = (now) => {
       drawDarkness(now / 1000);
+      drawDust(now / 1000);
       sceneRaf = requestAnimationFrame(draw);
     };
     sceneRaf = requestAnimationFrame(draw);
@@ -994,6 +998,91 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
+  /* ---------- Prach ve světle ----------
+     Pohled může mít v game.json „dust“: { "count": 70, "area": [x, y, w, h] v % (výchozí celý obraz) }.
+     Zrnka pomalu plují a jsou vidět hlavně tam, kam dopadá světlo (lampy, baterka).
+     Při „omezit pohyb“ v systému se nekreslí. */
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let dustView = null;
+  let dustParticles = [];
+  let dustLast = 0;
+
+  function drawDust(t) {
+    const canvas = $('scene-dust');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+    const view = game && game.state ? game.view : null;
+    const cfg = view && view.dust;
+    if (!cfg || reducedMotion.matches) {
+      if (dustParticles.length) { ctx.clearRect(0, 0, W, H); dustParticles = []; dustView = null; }
+      return;
+    }
+    const [ax, ay, aw, ah] = cfg.area || [0, 0, 100, 100];
+    if (dustView !== view) {
+      // nový pohled: rozsypat zrnka náhodně do oblasti
+      dustView = view;
+      dustParticles = Array.from({ length: cfg.count || 60 }, () => ({
+        x: ax + Math.random() * aw, y: ay + Math.random() * ah,
+        r: 0.8 + Math.random() * 1.8, sp: 0.15 + Math.random() * 0.5,
+        ph: Math.random() * Math.PI * 2, a: 0.35 + Math.random() * 0.65,
+      }));
+    }
+    const dt = Math.min(0.1, Math.max(0, t - dustLast));
+    dustLast = t;
+    ctx.clearRect(0, 0, W, H);
+    const lights = game.visibleLights().slice();
+    if (flashlightOn && pointer.inside) lights.push({ x: pointer.x * 100, y: pointer.y * 100, radius: 15, strength: 0.95 });
+    const color = cfg.color || '255, 224, 170';
+    const dpr = W / Math.max(1, $('scene').clientWidth);
+    for (const p of dustParticles) {
+      // pomalé klesání a vlnění (souřadnice v %)
+      p.y += p.sp * dt * 1.2;
+      p.x += Math.sin(t * 0.4 + p.ph) * dt * 0.6;
+      if (p.y > ay + ah) { p.y = ay; p.x = ax + Math.random() * aw; }
+      if (p.x < ax) p.x += aw; else if (p.x > ax + aw) p.x -= aw;
+      // jas podle nejbližšího světla (vzdálenost v šířce obrazu, jako u tmy)
+      let lit = flashlightOn ? 0.05 : 0.16;
+      for (const l of lights) {
+        const dx = p.x - l.x;
+        const dy = (p.y - l.y) * (H / W);
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < l.radius) lit = Math.max(lit, (1 - d / l.radius) * (l.strength == null ? 0.8 : l.strength));
+      }
+      const twinkle = 0.75 + 0.25 * Math.sin(t * 1.7 + p.ph * 3);
+      const alpha = Math.min(0.9, lit * p.a * twinkle * 2.2);
+      if (alpha < 0.02) continue;
+      ctx.beginPath();
+      ctx.arc((p.x / 100) * W, (p.y / 100) * H, p.r * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${color}, ${alpha})`;
+      ctx.fill();
+    }
+  }
+
+  /* ---------- Přiblížení scény k předmětu (area v %), např. před měřením ---------- */
+
+  function zoomScene(area, done) {
+    const scene = $('scene');
+    if (!area || reducedMotion.matches) { done(); return; }
+    const [x, y, w, h] = area;
+    const scale = Math.min(2.6, Math.max(1.4, 55 / Math.max(w, h * 9 / 16)));
+    scene.style.transformOrigin = `${x + w / 2}% ${y + h / 2}%`;
+    scene.classList.add('zooming');
+    void scene.offsetWidth;
+    scene.style.transform = `scale(${scale})`;
+    setTimeout(done, 600);
+  }
+
+  function unzoomScene() {
+    const scene = $('scene');
+    if (!scene.style.transform) return;
+    scene.style.transform = '';
+    setTimeout(() => {
+      if (!scene.style.transform) { scene.classList.remove('zooming'); scene.style.transformOrigin = ''; }
+    }, 700);
+  }
+
   function toggleFlashlight() {
     flashlightOn = !flashlightOn;
     Game.setSetting('flashlight', flashlightOn);
@@ -1039,6 +1128,7 @@
       activityCleanup = null;
     }
     reflexHit = null;
+    unzoomScene();
   }
 
   function heading(box, text) {
@@ -1322,6 +1412,7 @@
     if (act.type === 'reflex') openReflex(act);
     else if (act.type === 'squats') openSquats(act);
     else if (act.type === 'lean') openLean(act);
+    else if (act.type === 'tape') openTape(act);
   }
 
   function finishActivity(act, results) {
@@ -1472,7 +1563,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.7');
+          const mod = await import('./squats.js?v=0.8');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -1527,6 +1618,136 @@
         activityCleanup = () => clearInterval(iv);
       });
     });
+  }
+
+  /* Měření metrem tahem: hráč chytí pouzdro metru a natáhne pásek od háčku (start) k cíli.
+     Měří se vodorovně; souřadnice jsou v pixelech obrázku „image“, výřez „crop“ = [x, y, w, h].
+     Správně, když je odečet do „tolerance“ cm od cíle; pak se provedou účinky „done“. */
+  function openTape(act) {
+    const [cx, cy, cw, ch] = act.crop;
+    const [sx, sy] = act.start;
+    const [tx, ty] = act.target;
+    const ppc = act.pxPerCm;
+    const goal = Math.abs(tx - sx) / ppc;
+    const tol = act.tolerance || 1.5;
+    const dir = Math.sign(tx - sx) || -1;
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+
+    zoomScene(act.zoomFrom, () => openModal((box) => {
+      box.classList.add('activity-box', 'tape-box');
+      heading(box, act.title || 'Měření metrem');
+      para(box, act.intro || 'Chyť pouzdro metru a natáhni pásek až pod značku.', 'question');
+
+      const stage = document.createElement('div');
+      stage.className = 'tape-stage';
+      stage.style.aspectRatio = `${cw} / ${ch}`;
+      stage.style.maxWidth = `calc(48dvh * ${cw / ch})`;
+      stage.style.margin = '0 auto';
+      const [iw, ih] = act.imageSize;
+      stage.style.backgroundImage = `url("${act.image}")`;
+      stage.style.backgroundSize = `${(iw / cw) * 100}% ${(ih / ch) * 100}%`;
+      stage.style.backgroundPosition = `${(cx / (iw - cw)) * 100}% ${(cy / (ih - ch)) * 100}%`;
+      stage.tabIndex = 0;
+      stage.setAttribute('aria-label', 'Metr: šipkami doleva a doprava natáhneš pásek, Enter = odečíst');
+      const svg = el('svg', { viewBox: `${cx} ${cy} ${cw} ${ch}` }, stage);
+      box.appendChild(stage);
+      const reading = para(box, '', 'tape-reading');
+      const status = para(box, '', 'feedback');
+
+      // svislá pomocná čára od cílové značky dolů k pásku (měří se vodorovně)
+      el('line', { x1: tx, y1: ty, x2: tx, y2: sy, stroke: '#ffd28a', 'stroke-width': 1.5, 'stroke-dasharray': '5 4', opacity: 0.55 }, svg);
+      const tape = el('g', {}, svg);
+      const band = el('rect', { y: sy - 6, height: 12, fill: '#f2d24a', stroke: '#7a6312', 'stroke-width': 0.8 }, tape);
+      const ticks = el('g', { stroke: '#2a2410', 'stroke-width': 0.8 }, tape);
+      el('circle', { cx: sx, cy: sy, r: 4, fill: '#3a3a34', stroke: '#e8e0c4', 'stroke-width': 1.2 }, svg);   // háček na značce
+      const casing = el('g', { style: 'cursor: grab' }, svg);
+      el('rect', { x: -15, y: -15, width: 30, height: 30, rx: 7, fill: '#d8b42c', stroke: '#3a2e0a', 'stroke-width': 1.5 }, casing);
+      el('circle', { cx: 0, cy: 0, r: 7, fill: '#3a3a34' }, casing);
+
+      let end = sx + dir * ppc * 3;   // pásek trochu povytažený
+      let finished = false;
+      const cm = () => Math.abs(end - sx) / ppc;
+      const draw = () => {
+        const a = Math.min(sx, end);
+        const b = Math.max(sx, end);
+        band.setAttribute('x', a);
+        band.setAttribute('width', Math.max(0, b - a));
+        ticks.innerHTML = '';
+        for (let i = 1; i * ppc <= b - a; i++) {
+          const x = sx + Math.sign(end - sx) * i * ppc;
+          const big = i % 5 === 0;
+          el('line', { x1: x, y1: sy - 6, x2: x, y2: sy - 6 + (big ? 7 : 3.5) }, ticks);
+        }
+        casing.setAttribute('transform', `translate(${end + Math.sign(end - sx || dir) * 15} ${sy})`);
+        reading.textContent = `${Math.round(cm())} cm`;
+      };
+      const toImageX = (e) => {
+        const r = svg.getBoundingClientRect();
+        return cx + ((e.clientX - r.left) / r.width) * cw;
+      };
+      const check = () => {
+        if (finished) return;
+        const v = cm();
+        if (Math.sign(end - sx) !== dir) {
+          status.textContent = act.wrongDirection || 'Opačným směrem – táhni pásek ke značce.';
+          status.className = 'feedback bad';
+        } else if (Math.abs(v - goal) <= tol) {
+          finished = true;
+          end = tx;
+          draw();
+          sound.sfx('measure');
+          status.textContent = act.success || `${Math.round(goal)} cm.`;
+          status.className = 'feedback good';
+          stage.style.cursor = 'default';
+          button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, {}));
+        } else {
+          status.textContent = v < goal ? (act.tooShort || 'Ještě kousek dál.') : (act.tooLong || 'To je moc daleko.');
+          status.className = 'feedback bad';
+        }
+      };
+
+      let dragging = false;
+      stage.addEventListener('pointerdown', (e) => {
+        if (finished) return;
+        dragging = true;
+        stage.classList.add('dragging');
+        stage.setPointerCapture(e.pointerId);
+        end = Math.min(cx + cw - 20, Math.max(cx + 20, toImageX(e)));
+        draw();
+      });
+      stage.addEventListener('pointermove', (e) => {
+        if (!dragging || finished) return;
+        end = Math.min(cx + cw - 20, Math.max(cx + 20, toImageX(e)));
+        draw();
+      });
+      const up = () => {
+        if (!dragging) return;
+        dragging = false;
+        stage.classList.remove('dragging');
+        check();
+      };
+      stage.addEventListener('pointerup', up);
+      stage.addEventListener('pointercancel', up);
+      stage.addEventListener('keydown', (e) => {
+        if (finished) return;
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          end = Math.min(cx + cw - 20, Math.max(cx + 20, end + (e.key === 'ArrowLeft' ? -ppc : ppc)));
+          draw();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          check();
+        }
+      });
+      draw();
+      setTimeout(() => stage.focus(), 50);
+    }));
   }
 
   /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
@@ -1606,7 +1827,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.7');
+          const mod = await import('./predklon.js?v=0.8');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.7 – ukázka",
+    "version": "0.8 – ukázka",
     "totalGates": 9
   },
 
@@ -448,11 +448,8 @@
       "room": "sklad",
       "when": { "notFlags": ["figurina_zmerena"] },
       "do": [
-        { "set": "figurina_zmerena" },
-        { "sound": "measure" },
-        { "text": "Natáhneš metr vodorovně od značky těžiště figuríny ke značce na boku batohu." },
-        { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Měření na figuríně s batohem" } },
-        { "note": "Těžiště batohu je 20 cm za těžištěm vojáka (měřeno vodorovně)." }
+        { "text": "Zahákneš konec metru za značku těžiště figuríny." },
+        { "activity": "mereni" }
       ]
     },
     {
@@ -1711,6 +1708,28 @@
       "startView": "pult",
 
       "activities": {
+        "mereni": {
+          "type": "tape",
+          "title": "Měření metrem",
+          "intro": "Háček metru je na značce těžiště vojáka. Chyť žluté pouzdro a natáhni pásek vodorovně až pod značku těžiště batohu (křížek v kroužku). Pásek drž rovně – měří se vodorovná vzdálenost.",
+          "image": "assets/rooms/sklad_figurina.webp",
+          "imageSize": [1672, 941],
+          "crop": [560, 170, 380, 340],
+          "start": [812, 470],
+          "target": [722, 346],
+          "pxPerCm": 4.45,
+          "tolerance": 1.5,
+          "zoomFrom": [39, 15, 15, 40],
+          "wrongDirection": "Tímhle směrem je hruď vojáka. Batoh je za ním – táhni pásek dozadu (doleva).",
+          "tooShort": "Ještě kousek – pásek musí dosáhnout až pod křížek v kroužku na batohu. Řiď se svislou čárkovanou čarou.",
+          "tooLong": "Přetáhl jsi to – konec pásku má být přesně pod křížkem v kroužku.",
+          "success": "20 cm. Těžiště batohu je 20 cm za těžištěm vojáka.",
+          "done": [
+            { "set": "figurina_zmerena" },
+            { "note": "Těžiště batohu je 20 cm za těžištěm vojáka (měřeno vodorovně)." },
+            { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Změřeno: 20 cm" } }
+          ]
+        },
         "stabilita": {
           "type": "lean",
           "title": "Zkouška stability",
@@ -1770,6 +1789,7 @@
         "pult": {
           "name": "Výdejní pult",
           "background": "assets/rooms/sklad_pult.webp",
+          "dust": { "count": 110 },
           "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026); vysunutý šuplík je vrstva poskládaná z jeho čela šuplíku. Původní kresba: sklad_pult.svg.",
           "darkness": 0.45,
           "left": "dvere",
@@ -1856,6 +1876,7 @@
         "regaly": {
           "name": "Regály s výstrojí",
           "background": "assets/rooms/sklad_regaly.webp",
+          "dust": { "count": 80 },
           "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026); otevřená skříňka je vsazená z jeho obrázku otevřené skříňky (barevně sladěná). Původní kresba: sklad_regaly.svg.",
           "darkness": 0.45,
           "left": "pult",
@@ -1918,6 +1939,7 @@
         "figurina": {
           "name": "Figurína s batohem",
           "background": "assets/rooms/sklad_figurina.webp",
+          "dust": { "count": 120 },
           "_obrazek": "Obrázek dodal autor projektu (12. 10. 2026). Původní kresba: sklad_figurina.svg.",
           "darkness": 0.45,
           "left": "regaly",
@@ -1992,6 +2014,7 @@
         "dvere": {
           "name": "Pancéřové dveře",
           "background": "assets/rooms/sklad_dvere.webp",
+          "dust": { "count": 70 },
           "_obrazek": "Obrázky dodal autor projektu (12. 10. 2026): zavřené dveře a stejný záběr s otevřenými dveřmi (vrstva). Původní kresby: sklad_dvere.svg, sklad_dvere_otevrene.svg.",
           "darkness": 0.45,
           "left": "figurina",
