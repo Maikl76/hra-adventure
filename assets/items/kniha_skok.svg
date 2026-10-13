@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: kniha FYZIKA SKOKU – tmavá vazba se svítící zelenou páskou a parabolou letu -->
+  <g transform="rotate(-10 32 32)">
+    <rect x="14" y="10" width="38" height="46" rx="2" fill="#e2d6b4"/>
+    <rect x="12" y="8" width="36" height="46" rx="2" fill="#132a18" stroke="#0a180c" stroke-width="1.5"/>
+    <rect x="12" y="8" width="7" height="46" fill="#0d1d10"/>
+    <rect x="14" y="10" width="3" height="42" fill="#7dff8a" opacity="0.85"/>
+    <path d="M24,34 Q33,6 42,34" fill="none" stroke="#b6ffbe" stroke-width="1.6"/>
+    <line x1="22" y1="34" x2="44" y2="34" stroke="#7dff8a" stroke-width="1.4"/>
+    <circle cx="33" cy="20" r="1.8" fill="#7dff8a"/>
+  </g>
+</svg>

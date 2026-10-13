@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: NEON AIM dohraný – obrazovka HOTOVO, výdejní okénko svítí (příznak terce_hotovo). -->
+  <defs>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect x="574" y="214" width="522" height="342" rx="8" fill="#04121a" opacity="0.92"/>
+  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="64" fill="#3fe0ff" text-anchor="middle" filter="url(#glow)" opacity="0.8">HOTOVO</text>
+  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="64" fill="#d6fbff" text-anchor="middle">HOTOVO</text>
+  <text x="835" y="172" font-family="Arial Black, Arial" font-weight="bold" font-size="46" fill="#3fe0ff" text-anchor="middle" letter-spacing="8">NEON AIM</text>
+  <rect x="764" y="624" width="142" height="72" rx="4" fill="#3fe0ff" opacity="0.25" filter="url(#glow)"/>
+</svg>

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.10 – ukázka",
+    "version": "0.11 – ukázka",
     "totalGates": 9
   },
 
@@ -49,15 +49,18 @@
       "id": "gsport",
       "name": "GSPORT",
       "description": "Hra a pohyb. Levely otevřeš vlastním tělem – a hlavou. Potřebuješ trochu místa a ideálně webkameru. Obsahuje lekačky – kdo chce, zapne si je v Menu.",
-      "rooms": ["herna"],
+      "rooms": ["herna", "arena"],
       "finish": {
-        "title": "LEVEL 1 splněn",
-        "text": "Za dveřmi je tmavá chodba. Na jejím konci bliká obrazovka LEVEL 2 a pod ní je fixou napsáno: „Díky. Pokračuj. – D.“ Osm levelů zbývá…",
+        "title": "LEVEL 2 splněn",
+        "text": "Za dveřmi je další chodba. Na jejím konci bliká obrazovka LEVEL 3 a pod ní je fixou napsáno: „Skáčeš dobře. Pokračuj. – D.“ Sedm levelů zbývá…",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "stats": [
           { "label": "Squat Challenge", "value": "{n} dřepů za {t:1} s", "requires": ["n", "t"] },
           { "label": "Výkon při dřepech", "value": "{=70*9.81*0.4*n/t:0} W", "requires": ["n", "t"] },
-          { "label": "Reflex test – nejlepší", "value": "{reflex_best} ms", "requires": ["reflex_best"] }
+          { "label": "Reflex test – nejlepší", "value": "{reflex_best} ms", "requires": ["reflex_best"] },
+          { "label": "Výskok z podřepu (SJ)", "value": "doba letu {tl:3} s → {=981*tl^2/8:0} cm", "requires": ["tl"] },
+          { "label": "Výskok ověřený kamerou", "bool": "skok_kamera" },
+          { "label": "NEON AIM", "value": "velké blízké {terce_a} ms, malé vzdálené {terce_b} ms", "requires": ["terce_a", "terce_b"] }
         ]
       }
     }
@@ -271,6 +274,169 @@
       "name": "Klíče od pultu",
       "icon": "assets/items/klice_pult.svg",
       "description": "Svazek dvou klíčů na kroužku – mosazný a ocelový. Na cedulce je napsáno: PULT."
+    },
+    "konektor": {
+      "name": "Konektor",
+      "icon": "assets/items/konektor.svg",
+      "description": "Kovový konektor s pěti kolíky. Pasuje na volný konec kabelu od kontaktní desky – a pak do měřiče."
+    },
+    "baterie": {
+      "name": "Baterie 9 V",
+      "icon": "assets/items/baterie.svg",
+      "description": "Devítivoltová baterie s nálepkou JUMP. Někdo ji vytáhl z měřiče a zamkl do skříňky."
+    },
+    "kniha_skok": {
+      "name": "Fyzika skoku",
+      "icon": "assets/items/kniha_skok.svg",
+      "description": "Útlá příručka pro hráče GSPORT – LEVEL 2. Hřbet svítí neonově zeleně.",
+      "examine": [
+        {
+          "when": {
+            "notFlags": [
+              "kniha_skok_prectena"
+            ]
+          },
+          "do": [
+            {
+              "set": "kniha_skok_prectena"
+            },
+            {
+              "note": "Kniha Fyzika skoku: výška výskoku h = g · t² / 8 (t = doba letu v s, h v m). Rychlost odrazu v = g · t / 2; h = v² / (2g)."
+            }
+          ]
+        }
+      ],
+      "book": {
+        "title": "Fyzika skoku",
+        "pages": [
+          {
+            "type": "title",
+            "blocks": [
+              {
+                "heading": "FYZIKA SKOKU"
+              },
+              {
+                "p": "příručka pro hráče GSPORT – LEVEL 2"
+              },
+              {
+                "note": "Kdo létá, ať počítá. – D."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "1  Výskok z podřepu (SJ)"
+              },
+              {
+                "p": "Hráč se spustí do podřepu (koleno asi 90°), dvě sekundy vydrží v klidu a pak vyskočí jen nahoru – bez dalšího pohybu dolů. Ruce má v bok, aby skok nevylepšovaly."
+              },
+              {
+                "p": "SJ (squat jump) měří, co dokážou svaly nohou samy, bez pomoci pružnosti svalů a šlach."
+              },
+              {
+                "note": "Žádné hupnutí dolů těsně před skokem!"
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "2  Doba letu"
+              },
+              {
+                "p": "Od odrazu do dopadu letí tělo jako vyhozený míč: nahoru se zpomaluje, dolů zrychluje. Výstup i pád trvají stejně dlouho – každý polovinu doby letu t."
+              },
+              {
+                "image": "assets/book/let.svg"
+              },
+              {
+                "p": "Kontaktní deska měří, jak dlouho nohy nejsou na zemi. Kamera automatu JUMP sleduje, kdy chodidla opustí zem a kdy dopadnou."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "3  Výška výskoku"
+              },
+              {
+                "formula": "h = g · t² / 8"
+              },
+              {
+                "p": "t … doba letu (s)\ng ≈ 9,81 m/s²\nh … výška výskoku (m)"
+              },
+              {
+                "note": "Proč osmička? Pád z výšky h trvá t/2: h = ½ · g · (t/2)² = g · t² / 8."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "4  Řešený příklad"
+              },
+              {
+                "p": "Hráčka letěla 0,40 s."
+              },
+              {
+                "formula": "h = 9,81 · 0,40² / 8 = 9,81 · 0,16 / 8 ≈ 0,196 m"
+              },
+              {
+                "p": "Vyskočila asi 20 cm."
+              },
+              {
+                "note": "Doba letu NA DRUHOU! A výsledek je v metrech."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "5  Rychlost odrazu"
+              },
+              {
+                "p": "Rychlost, kterou tělo opouští zem:"
+              },
+              {
+                "formula": "v = g · t / 2"
+              },
+              {
+                "p": "Výška závisí na druhé mocnině této rychlosti:"
+              },
+              {
+                "formula": "h = v² / (2g)"
+              },
+              {
+                "note": "Dvakrát rychlejší odraz = čtyřikrát vyšší skok."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "6  Měření bez desky"
+              },
+              {
+                "p": "Test „jump and reach“: hráč se postaví ke stěně a natáhne ruku co nejvýš (dosah ve stoje). Pak vyskočí a v nejvyšším bodě se stěny dotkne (dosah ve výskoku)."
+              },
+              {
+                "formula": "výška výskoku = dosah ve výskoku − dosah ve stoje"
+              },
+              {
+                "note": "Moje značky jsou na dřevěné stěně. Sedí to s mými 0,50 s na žebříčku? – D."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "note": "Na Měsíci je g šestkrát menší. Kdo ví, jak vysoko by tam skočil, otevře dveře. – D."
+              }
+            ]
+          }
+        ]
+      }
     },
     "metr": {
       "name": "Svinovací metr",
@@ -529,6 +695,217 @@
       "item": "prirucka",
       "on": "brana_sklad",
       "do": [ { "text": "Příručka dveře neotevře. Ale to, co je v ní, ano." } ]
+    },
+    {
+      "item": "konektor",
+      "on": "mer",
+      "room": "arena",
+      "when": {
+        "flags": [
+          "mer_baterie"
+        ],
+        "notFlags": [
+          "deska_kabel"
+        ]
+      },
+      "do": [
+        {
+          "set": "deska_kabel"
+        },
+        {
+          "remove": "konektor"
+        },
+        {
+          "sound": "cardInsert"
+        },
+        {
+          "text": "Nasadíš konektor na volný konec kabelu a zacvakneš ho do měřiče. Kontaktní deska je připojená."
+        },
+        {
+          "sound": "powerOn"
+        },
+        {
+          "text": "Měřič pípl a displej naskočil. Po chvíli se rozsvítil i automat JUMP a neonová stupnice vedle něj. Na obrazovce bliká: POSTAV SE NA DESKU."
+        }
+      ]
+    },
+    {
+      "item": "konektor",
+      "on": "mer",
+      "room": "arena",
+      "when": {
+        "notFlags": [
+          "deska_kabel"
+        ]
+      },
+      "do": [
+        {
+          "set": "deska_kabel"
+        },
+        {
+          "remove": "konektor"
+        },
+        {
+          "sound": "cardInsert"
+        },
+        {
+          "text": "Nasadíš konektor na volný konec kabelu a zacvakneš ho do měřiče. Deska je připojená – ale měřič pořád mlčí. Nemá baterii."
+        }
+      ]
+    },
+    {
+      "item": "konektor",
+      "on": "deska",
+      "room": "arena",
+      "when": {
+        "flags": [
+          "mer_baterie"
+        ],
+        "notFlags": [
+          "deska_kabel"
+        ]
+      },
+      "do": [
+        {
+          "set": "deska_kabel"
+        },
+        {
+          "remove": "konektor"
+        },
+        {
+          "sound": "cardInsert"
+        },
+        {
+          "text": "Nasadíš konektor na volný konec kabelu a zacvakneš ho do měřiče. Kontaktní deska je připojená."
+        },
+        {
+          "sound": "powerOn"
+        },
+        {
+          "text": "Měřič pípl a displej naskočil. Po chvíli se rozsvítil i automat JUMP a neonová stupnice vedle něj. Na obrazovce bliká: POSTAV SE NA DESKU."
+        }
+      ]
+    },
+    {
+      "item": "konektor",
+      "on": "deska",
+      "room": "arena",
+      "when": {
+        "notFlags": [
+          "deska_kabel"
+        ]
+      },
+      "do": [
+        {
+          "set": "deska_kabel"
+        },
+        {
+          "remove": "konektor"
+        },
+        {
+          "sound": "cardInsert"
+        },
+        {
+          "text": "Nasadíš konektor na volný konec kabelu a zacvakneš ho do měřiče. Deska je připojená – ale měřič pořád mlčí. Nemá baterii."
+        }
+      ]
+    },
+    {
+      "item": "baterie",
+      "on": "mer",
+      "room": "arena",
+      "when": {
+        "flags": [
+          "deska_kabel"
+        ],
+        "notFlags": [
+          "mer_baterie"
+        ]
+      },
+      "do": [
+        {
+          "set": "mer_baterie"
+        },
+        {
+          "remove": "baterie"
+        },
+        {
+          "sound": "switch"
+        },
+        {
+          "text": "Baterie zapadla do pouzdra měřiče."
+        },
+        {
+          "sound": "powerOn"
+        },
+        {
+          "text": "Měřič pípl a displej naskočil. Po chvíli se rozsvítil i automat JUMP a neonová stupnice vedle něj. Na obrazovce bliká: POSTAV SE NA DESKU."
+        }
+      ]
+    },
+    {
+      "item": "baterie",
+      "on": "mer",
+      "room": "arena",
+      "when": {
+        "notFlags": [
+          "mer_baterie"
+        ]
+      },
+      "do": [
+        {
+          "set": "mer_baterie"
+        },
+        {
+          "remove": "baterie"
+        },
+        {
+          "sound": "switch"
+        },
+        {
+          "text": "Baterie zapadla do pouzdra měřiče. Displej bliká: DESKA NEPŘIPOJENA. Kabel od desky pořád visí volně – bez konektoru."
+        }
+      ]
+    },
+    {
+      "item": "baterie",
+      "on": "automat",
+      "room": "arena",
+      "do": [
+        {
+          "text": "Automat se napájí z měřiče kontaktní desky – baterie patří do měřiče vlevo."
+        }
+      ]
+    },
+    {
+      "item": "konektor",
+      "on": "automat",
+      "room": "arena",
+      "do": [
+        {
+          "text": "Konektor patří na kabel od kontaktní desky. Ten vede k měřiči vlevo."
+        }
+      ]
+    },
+    {
+      "item": "baterie",
+      "on": "deska",
+      "room": "arena",
+      "do": [
+        {
+          "text": "Deska sama baterii nemá. Napájí ji měřič vlevo – baterii vlož tam."
+        }
+      ]
+    },
+    {
+      "item": "kniha_skok",
+      "on": "dvere_l2",
+      "room": "arena",
+      "do": [
+        {
+          "text": "Kniha dveře neotevře. Ale to, co je v ní, ano."
+        }
+      ]
     }
   ],
 
@@ -2480,6 +2857,1221 @@
           { "sound": "door" },
           { "text": "Pancéřové dveře se pomalu otevřely. Za nimi vede schodiště nahoru – odněkud shora je slyšet vzdálené dunění, jako by v tělocvičně někdo běhal." },
           { "note": "Brána I (vojenská): batoh 30 kg posune společné těžiště vojáka (70 kg) o 6 cm dozadu. Voják to vyrovná předklonem – svislice z těžiště musí procházet opěrnou plochou. Nejtěžší věci patří co nejblíž k zádům." }
+        ]
+      }
+    },
+
+    "arena": {
+      "name": "Skokanská aréna",
+      "gateNumber": "II",
+      "gateLabel": "LEVEL 2",
+      "tracks": [
+        "gsport"
+      ],
+      "ambience": "herna",
+      "enterText": "Chodba skončila u dalších dveří. Za nimi je stará skokanská laboratoř předělaná na arkádu: automat JUMP s kontaktní deskou, neonová střelnice a dřevěná stěna s ryskami. Dveře za tebou cvakly.",
+      "enter": [
+        {
+          "when": {
+            "notFlags": [
+              "arena_vstup"
+            ]
+          },
+          "do": [
+            {
+              "set": "arena_vstup"
+            },
+            {
+              "sound": "doorSoft"
+            }
+          ]
+        }
+      ],
+      "startView": "automat",
+      "activities": {
+        "skok": {
+          "type": "jump",
+          "title": "JUMP – výskok z podřepu",
+          "intro": "Automat změří dobu letu jednoho skoku z podřepu (SJ). Výšku výskoku ti neřekne – tu si spočítáš sám podle knihy Fyzika skoku.",
+          "safety": "Skáče jen jeden člen týmu. Kolem sebe měj volné místo, notebook stranou, žádné kabely ani tašky pod nohama. Doskakuj měkce na špičky a pokrč při dopadu kolena.",
+          "camera": "S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru i s chodidly. Ruce v bok.",
+          "steps": "1) Stůj rovně, ruce v bok.  2) Pomalu se spusť do podřepu (koleno asi 90°) a vydrž.  3) Až pípne, vyskoč co nejvýš – jen nahoru, bez dalšího podřepu.",
+          "attempts": 3,
+          "counterText": "Tohle byl skok s protipohybem – po pípnutí ses ještě spustil dolů. To už není výskok z podřepu (SJ), nepočítá se. Zkus to znovu: zůstaň dole a vyskoč jen nahoru.",
+          "rangeText": "Tenhle skok se nepodařilo změřit. Zkus to znovu – celý v záběru i s chodidly.",
+          "resultCamera": "Nejlepší doba letu: {t} s. Výšku výskoku si spočítej podle knihy – číselník u dveří se na ni zeptá.",
+          "reachLabel": "Bez kamery (dosah na stěně)",
+          "reachText": "Test „jump and reach“: postav se bokem ke stěně, natáhni ruku a označ si dosah ve stoje (křídou na prstech nebo lepíkem). Pak vyskoč z podřepu a v nejvyšším bodě se dotkni stěny. Změř obě výšky od země a zadej je.",
+          "reachInvalid": "Zkontroluj čísla: dosah ve výskoku musí být o 5–90 cm větší než ve stoje.",
+          "resultReach": "Rozdíl dosahu {d} cm odpovídá době letu {t} s. U dveří z ní spočítáš výšku zpátky – ověříš si tak vzorec.",
+          "skipLabel": "Nemohu skákat",
+          "defaultT": 0.45,
+          "skipped": "Počítáš s dobou letu {t} s – je to doba letu průměrného hráče GSPORT.",
+          "done": [
+            {
+              "set": "skok_hotovo"
+            },
+            {
+              "note": "JUMP: doba letu (SJ) t = {tl:3} s.",
+              "noteKey": "skok"
+            },
+            {
+              "text": "Neonová stupnice vedle automatu vyšlehne nahoru a zase pohasne. Obrazovka píše: DOBA LETU {tl:3} S. VÝŠKU SI SPOČÍTEJ SÁM."
+            }
+          ]
+        },
+        "terce": {
+          "type": "targets",
+          "title": "NEON AIM",
+          "intro": "Trefuj neonové terče co nejrychleji – myší, nebo prstem na dotykové obrazovce. Automat měří, jak dlouho ti trvá terč trefit. Dvě kola: nejdřív velké terče blízko sebe, pak malé terče daleko od sebe.",
+          "minPx": 26,
+          "rounds": [
+            {
+              "name": "Velké a blízko",
+              "var": "terce_a",
+              "count": 11,
+              "size": [
+                0.17,
+                0.22
+              ],
+              "dist": [
+                0.1,
+                0.2
+              ],
+              "text": "Terče budou velké a objeví se kousek od místa, kde jsi střílel naposledy."
+            },
+            {
+              "name": "Malé a daleko",
+              "var": "terce_b",
+              "count": 11,
+              "size": [
+                0.045,
+                0.06
+              ],
+              "dist": [
+                0.55,
+                0.8
+              ],
+              "text": "Teď budou terče malé a objeví se daleko – na druhé straně obrazovky."
+            }
+          ],
+          "doneTitle": "NEON AIM – výsledky",
+          "doneText": "Výdejní okénko automatu cvaklo.",
+          "success": "Malé vzdálené terče ti trvaly déle. Proč? Plakát vedle automatu napoví.",
+          "successFlat": "Tentokrát ti malé vzdálené terče netrvaly déle než velké blízké – obvykle trvají. Proč, napoví plakát vedle automatu. Klidně hraj znovu.",
+          "done": [
+            {
+              "set": "terce_hotovo"
+            },
+            {
+              "note": "NEON AIM: velké blízké terče {terce_a} ms (obtížnost {terce_a_id:1} bitu), malé vzdálené {terce_b} ms ({terce_b_id:1} bitu). Střel vedle: {terce_chyby}.",
+              "noteKey": "terce"
+            }
+          ],
+          "doneCases": [
+            {
+              "when": {
+                "notFlags": [
+                  "konektor_vzat"
+                ]
+              },
+              "do": [
+                {
+                  "set": "konektor_vzat"
+                },
+                {
+                  "sound": "cardInsert"
+                },
+                {
+                  "text": "Z výdejního okénka automatu vypadl kovový konektor s pěti kolíky. Výhra! Bereš ho."
+                },
+                {
+                  "give": "konektor"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "locks": {
+        "skrinka_arena": {
+          "title": "Zámek skříňky na stěně",
+          "openFlag": "skrinka_stena_otevrena",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Na dvířkách je dvoumístný číselník a docentovou rukou: „KÓD = VÝŠKA MÉHO VÝSKOKU V CENTIMETRECH. – D.“",
+              "unit": "cm",
+              "answer": 31,
+              "feedback": {
+                "252": "252 cm je docentův dosah ve výskoku. Výška výskoku je, o kolik výš dosáhl než ve stoje.",
+                "221": "221 cm je dosah ve stoje. Výška výskoku je rozdíl obou značek.",
+                "473": "Sečetl jsi obě značky. Výška výskoku je jejich rozdíl."
+              },
+              "wrong": "Kontrolka zablikala červeně.",
+              "hints": [
+                "Výšku výskoku jde změřit i bez desky – podívej se na dřevěnou stěnu s ryskami.",
+                "Na stěně jsou dvě docentovy značky: dosah ve stoje a dosah ve výskoku.",
+                "252 − 221 = 31 cm."
+              ],
+              "success": "Cvak."
+            }
+          ],
+          "open": [
+            {
+              "text": "Dvířka skříňky odskočila. Uvnitř leží devítivoltová baterie s nálepkou JUMP. Bereš ji."
+            },
+            {
+              "give": "baterie"
+            }
+          ]
+        }
+      },
+      "views": {
+        "automat": {
+          "name": "Automat JUMP",
+          "background": "assets/rooms/arena_automat.svg",
+          "dust": {
+            "count": 60,
+            "color": "200, 235, 255"
+          },
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "darkness": 0.6,
+          "left": "dvere",
+          "right": "terce",
+          "enterText": "Arkádový automat JUMP s kamerou nahoře, před ním na zemi kontaktní deska. Vlevo malý měřič, vpravo neonová stupnice.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 5,
+              "radius": 30,
+              "strength": 0.45,
+              "flicker": true
+            },
+            {
+              "x": 12,
+              "y": 28,
+              "radius": 10,
+              "strength": 0.5
+            },
+            {
+              "x": 50.2,
+              "y": 36,
+              "radius": 11,
+              "strength": 0.65,
+              "flicker": true,
+              "when": {
+                "flags": [
+                  "deska_kabel",
+                  "mer_baterie"
+                ]
+              }
+            },
+            {
+              "x": 61.6,
+              "y": 52,
+              "radius": 12,
+              "strength": 0.6,
+              "when": {
+                "flags": [
+                  "deska_kabel",
+                  "mer_baterie"
+                ]
+              }
+            },
+            {
+              "x": 27.2,
+              "y": 64.5,
+              "radius": 3.5,
+              "strength": 0.55,
+              "when": {
+                "flags": [
+                  "mer_baterie"
+                ]
+              }
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/arena_automat_kabel.svg",
+              "when": {
+                "flags": [
+                  "deska_kabel"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/arena_automat_baterie.svg",
+              "when": {
+                "flags": [
+                  "mer_baterie"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/arena_automat_zapnuto.svg",
+              "when": {
+                "flags": [
+                  "deska_kabel",
+                  "mer_baterie"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "zebricek",
+              "name": "Žebříček JUMP",
+              "area": [
+                5.4,
+                19.1,
+                14.4,
+                19.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Žebříček automatu JUMP. Měří se doba letu, ne výška."
+                    },
+                    {
+                      "closeup": {
+                        "note": "JUMP – VÝSKOK Z PODŘEPU (SJ)\nDOBA LETU\n\n1. NEONFOX      0,58 s\n2. KR4KEN       0,55 s\n3. PIXEL_PAJA   0,49 s\n4. AFK_ADAM     0,31 s\n\nPOSLEDNÍ HRÁČ:\n   DOCENT       0,50 s\n   před 3 dny",
+                        "font": "type",
+                        "caption": "Žebříček na obrazovce"
+                      }
+                    },
+                    {
+                      "note": "Žebříček JUMP: docent – doba letu 0,50 s (před 3 dny)."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mer",
+              "name": "Měřič kontaktní desky",
+              "area": [
+                22.7,
+                59.5,
+                8.4,
+                14.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel",
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Měřič svítí: DESKA OK – BATERIE OK. Měření se spouští u automatu JUMP."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Displej měřiče bliká: DESKA NEPŘIPOJENA. Kabel od desky visí volně – na konci mu chybí konektor."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Kabel od desky je zapojený, ale displej je mrtvý. Pouzdro na baterii je prázdné."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Malý měřič kontaktní desky. Displej je mrtvý: pouzdro na devítivoltovou baterii je prázdné a kabel od desky visí volně – na konci mu chybí konektor."
+                    },
+                    {
+                      "note": "Měřič kontaktní desky: chybí baterie 9 V a konektor na kabel od desky."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kamera",
+              "name": "Kamera automatu",
+              "area": [
+                48.7,
+                13.6,
+                3,
+                3.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Malá kamera na střeše automatu. Podle cedulky sleduje, kdy chodidla opustí desku a kdy znovu dopadnou. Stát se má bokem."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "automat",
+              "name": "Automat JUMP",
+              "area": [
+                41.9,
+                17,
+                16.7,
+                70.1
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "skok_hotovo",
+                      "deska_kabel",
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Obrazovka automatu: DOBA LETU {tl:3} S. VÝŠKU SI SPOČÍTEJ SÁM – KNIHA JE U STĚNY. Chceš skočit znovu? Platit bude nové měření."
+                    },
+                    {
+                      "activity": "skok"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel",
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Obrazovka automatu: SQUAT JUMP – PODŘEP, VÝDRŽ, SKOK. MĚŘÍM DOBU LETU."
+                    },
+                    {
+                      "activity": "skok"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "locked"
+                    },
+                    {
+                      "text": "Automat JUMP je mrtvý – obrazovka černá, stupnice zhasnutá. Na boku je cedulka: NAPÁJENO Z MĚŘIČE KONTAKTNÍ DESKY."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "stupnice",
+              "name": "Neonová stupnice",
+              "area": [
+                60.4,
+                21.3,
+                2.4,
+                63.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel",
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Neonová stupnice 0–60 cm. Při skoku vyšlehne podle výšky – ale číslo ti automat neřekne."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Zhasnutá neonová stupnice s ryskami po pěti centimetrech, od 0 do 60."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "deska",
+              "name": "Kontaktní deska",
+              "area": [
+                33.5,
+                88.7,
+                33.5,
+                9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel",
+                      "mer_baterie"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Kontaktní deska je připojená. Měří, jak dlouho nohy nejsou na zemi. Skok spustíš u automatu."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "deska_kabel"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Kontaktní deska je připojená k měřiči, jenže měřič nemá baterii."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Stará kontaktní deska ze skokanské laboratoře. Kabel od ní vede k měřiči, ale na konci je utržený konektor – volný konec visí vedle měřiče."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rekordy",
+              "name": "Tabule rekordů",
+              "area": [
+                70.6,
+                19.1,
+                20.3,
+                25.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Stará dřevěná tabule: LABORATOŘ BIOMECHANIKY – REKORDY 1987. Výskok z podřepu (SJ) 38 cm, výskok s protipohybem 44 cm. Pod tím tužkou: „S protipohybem vždycky o kus výš – svaly a šlachy se napnou jako pružina.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kreslo",
+              "name": "Herní křeslo",
+              "area": [
+                74.2,
+                55.3,
+                16.7,
+                34
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Herní křeslo s propadlým sedákem. Na opěrce visí sportovní ručník s nápisem GSPORT."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "terce": {
+          "name": "Neonová střelnice",
+          "background": "assets/rooms/arena_terce.svg",
+          "dust": {
+            "count": 60,
+            "color": "200, 235, 255"
+          },
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "darkness": 0.6,
+          "left": "automat",
+          "right": "stena",
+          "enterText": "Velký arkádový automat NEON AIM s dotykovou obrazovkou. Vedle něj plakát a stará police s přístroji.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 41,
+              "radius": 18,
+              "strength": 0.6,
+              "flicker": true
+            },
+            {
+              "x": 17.4,
+              "y": 39,
+              "radius": 10,
+              "strength": 0.3
+            },
+            {
+              "x": 50,
+              "y": 70,
+              "radius": 5,
+              "strength": 0.6,
+              "when": {
+                "flags": [
+                  "terce_hotovo"
+                ]
+              }
+            },
+            {
+              "x": 84,
+              "y": 30,
+              "radius": 10,
+              "strength": 0.3
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/arena_terce_hotovo.svg",
+              "when": {
+                "flags": [
+                  "terce_hotovo"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "plakat_fitts",
+              "name": "Plakát",
+              "area": [
+                9,
+                19.1,
+                16.7,
+                40.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "RYCHLOST × PŘESNOST\n\nČím menší a vzdálenější cíl,\ntím déle trvá ho trefit.\n\nRychlý pohyb je nepřesný.\nNa malý cíl musí ruka na konci\nzpomalit a pohyb dorovnat.\n\nFittsův zákon:\nčas ≈ a + b · log₂(D / Š + 1)\nD … vzdálenost k cíli\nŠ … šířka cíle",
+                        "font": "type",
+                        "caption": "Plakát u automatu"
+                      }
+                    },
+                    {
+                      "note": "Plakát RYCHLOST × PŘESNOST: čím menší a vzdálenější cíl, tím déle trvá pohyb – rychlý pohyb je nepřesný (Fittsův zákon)."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "neon_aim",
+              "name": "Automat NEON AIM",
+              "area": [
+                31.1,
+                12.8,
+                37.7,
+                54
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "terce_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "NEON AIM: velké blízké terče {terce_a} ms, malé vzdálené {terce_b} ms. Chceš hrát znovu? Platit bude nové měření."
+                    },
+                    {
+                      "activity": "terce"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "powerOn"
+                    },
+                    {
+                      "text": "Obrazovka automatu se rozsvítí: NEON AIM – TREFUJ TERČE. VÝHRA ZA DOHRANOU HRU."
+                    },
+                    {
+                      "activity": "terce"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "okenko",
+              "name": "Výdejní okénko",
+              "area": [
+                45.5,
+                65.9,
+                9,
+                8.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "terce_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Výdejní okénko je prázdné. Výhru už máš."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Výdejní okénko automatu je zavřené. Nad ním bliká: VÝHRA ZA DOHRANOU HRU. Uvnitř něco kovově cinká."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "osciloskop",
+              "name": "Police s přístroji",
+              "area": [
+                74.8,
+                26.6,
+                18.5,
+                47.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Starý osciloskop, kabely a krabička s nápisem ‚Reakční doba – 1987‘. Na osciloskopu je lepítko: ‚Rychle, nebo přesně? Obojí naráz nejde. – D.‘"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "stena": {
+          "name": "Stěna s ryskami",
+          "background": "assets/rooms/arena_stena.svg",
+          "dust": {
+            "count": 50,
+            "color": "200, 235, 255"
+          },
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "darkness": 0.6,
+          "left": "terce",
+          "right": "dvere",
+          "enterText": "Vysoká dřevěná stěna s ryskami, plechová skříňka s číselníkem, police s knihami a basketbalový automat.",
+          "lights": [
+            {
+              "x": 20,
+              "y": 4,
+              "radius": 16,
+              "strength": 0.5
+            },
+            {
+              "x": 61.3,
+              "y": 33,
+              "radius": 4,
+              "strength": 0.6,
+              "flicker": true,
+              "when": {
+                "notFlags": [
+                  "kniha_skok_vzata"
+                ]
+              }
+            },
+            {
+              "x": 87,
+              "y": 22,
+              "radius": 12,
+              "strength": 0.5,
+              "flicker": true
+            },
+            {
+              "x": 38.5,
+              "y": 38,
+              "radius": 6,
+              "strength": 0.3
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/arena_stena_znacky.svg"
+            },
+            {
+              "image": "assets/rooms/arena_stena_skrinka.svg",
+              "when": {
+                "flags": [
+                  "skrinka_stena_otevrena"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/arena_stena_mezera.svg",
+              "when": {
+                "flags": [
+                  "kniha_skok_vzata"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "sargent",
+              "name": "Dřevěná stěna s ryskami",
+              "area": [
+                15.6,
+                6.4,
+                8.4,
+                59.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Vysoká dřevěná deska s ryskami po centimetrech – stěna pro test „jump and reach“ (dosah ve stoje a ve výskoku). Křídou jsou na ní dvě docentovy značky: STOJ 221 cm a VÝSKOK 252 cm."
+                    },
+                    {
+                      "note": "Stěna jump and reach: docentův dosah ve stoje 221 cm, ve výskoku 252 cm."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "skrinka_stena",
+              "name": "Skříňka s číselníkem",
+              "area": [
+                31.1,
+                23.4,
+                14.4,
+                31.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "skrinka_stena_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Skříňka je otevřená a prázdná."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "locked"
+                    },
+                    {
+                      "text": "Plechová skříňka na stěně s dvoumístným číselníkem. Na dvířkách: „KÓD = VÝŠKA MÉHO VÝSKOKU V CENTIMETRECH. – D.“"
+                    },
+                    {
+                      "lock": "skrinka_arena"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "knihovna_arena",
+              "name": "Police s knihami",
+              "area": [
+                51.4,
+                19.1,
+                23.9,
+                40.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Staré ročníky časopisu Atletika, šanony s protokoly ze skokanské laboratoře a krabice od her. Jedna kniha má hřbet, který svítí neonově zeleně."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kniha_skok",
+              "name": "Svítící kniha",
+              "area": [
+                60,
+                27,
+                2.8,
+                11.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "notFlags": [
+                      "kniha_skok_vzata"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "set": "kniha_skok_vzata"
+                    },
+                    {
+                      "sound": "book"
+                    },
+                    {
+                      "text": "Vytáhneš knihu se svítícím hřbetem: FYZIKA SKOKU – příručka pro hráče GSPORT, LEVEL 2."
+                    },
+                    {
+                      "give": "kniha_skok"
+                    },
+                    {
+                      "openItem": "kniha_skok"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Tady stála kniha Fyzika skoku. Máš ji v inventáři."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kos",
+              "name": "Basketbalový automat",
+              "area": [
+                78.9,
+                12.8,
+                16.7,
+                74.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Basketbalový automat. Obroučka je podle cedulky ve výšce 305 cm. Na desce je přilepený lísteček: „Nedosáhl jsem na ni ani ve výskoku. Ani s rukou nahoře. – D.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "dvere": {
+          "name": "Dveře LEVEL 2",
+          "background": "assets/rooms/arena_dvere.svg",
+          "dust": {
+            "count": 45,
+            "color": "200, 235, 255"
+          },
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "darkness": 0.6,
+          "left": "stena",
+          "right": "automat",
+          "enterText": "Kovové dveře v neonovém rámu s nápisem LEVEL 2 a číselníkem. Vedle monitor a věšák.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 7,
+              "radius": 14,
+              "strength": 0.6,
+              "flicker": true
+            },
+            {
+              "x": 68.8,
+              "y": 49,
+              "radius": 4,
+              "strength": 0.6
+            },
+            {
+              "x": 18.5,
+              "y": 34,
+              "radius": 10,
+              "strength": 0.4
+            },
+            {
+              "x": 50,
+              "y": 45,
+              "radius": 24,
+              "strength": 0.85,
+              "when": {
+                "flags": [
+                  "brana_arena_otevrena"
+                ]
+              }
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/arena_dvere_otevrene.svg",
+              "when": {
+                "flags": [
+                  "brana_arena_otevrena"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "monitor_arena",
+              "name": "Monitor",
+              "area": [
+                9.6,
+                23.4,
+                17.9,
+                21.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "closeup": {
+                        "note": "HRÁČ: DOCENT\nNAPOSLEDY ONLINE: PŘED 3 DNY\n\nLEVEL 2: SPLNĚNO\nLEVEL 3: ZAMČENO\n\nPOKRAČUJ.",
+                        "font": "terminal",
+                        "caption": "Monitor u dveří"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vr",
+              "name": "Věšák s brýlemi",
+              "area": [
+                76.6,
+                31.9,
+                7.2,
+                12.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na věšáku visí VR brýle s prasklým sklíčkem a sportovní mikina GSPORT. V kapse mikiny je jen obal od tyčinky."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "jump_zone",
+              "name": "Páska na podlaze",
+              "area": [
+                31.1,
+                90.3,
+                37.7,
+                6.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na podlaze je žlutočerná páska: JUMP ZONE – NEDOSKAKUJ NA PATY."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dvere_l2",
+              "name": "Dveře LEVEL 2",
+              "area": [
+                35.9,
+                11.7,
+                28.1,
+                76.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_arena_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Dveře jsou otevřené. Za nimi další chodba a na jejím konci bliká LEVEL 3."
+                    },
+                    {
+                      "leave": true
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Kovové dveře v neonovém rámu. Klika nepovolí. Číselník vedle chce čísla."
+                    },
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "klavesnice",
+              "name": "Číselník",
+              "area": [
+                66.4,
+                42.5,
+                4.8,
+                12.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_arena_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Číselník svítí zeleně: LEVEL 2 SPLNĚN."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "gate": {
+        "title": "Dveře LEVEL 2",
+        "openFlag": "brana_arena_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku svítí: „Jak vysoko jsi vyskočil z podřepu? Zadej v centimetrech.“",
+            "unit": "cm",
+            "requiresVars": [
+              "tl"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV JUMP. Změř se na kontaktní desce u automatu JUMP.",
+            "answer": "981*tl^2/8",
+            "toleranceRel": 0.05,
+            "feedbackFormulas": [
+              {
+                "value": "9.81*tl^2/8",
+                "text": "Správně – ale v metrech. Číselník chce centimetry."
+              },
+              {
+                "value": "981*tl^2/2",
+                "text": "g · t² / 2 by platilo, kdybys padal celou dobu letu. Jenže výstup i pád trvají každý jen polovinu: t/2. Mrkni do knihy, proč je ve vzorci osmička."
+              },
+              {
+                "value": "981*tl/8",
+                "text": "Zapomněl jsi dobu letu umocnit na druhou."
+              },
+              {
+                "value": "981*tl^2",
+                "text": "Chybí dělení osmi: h = g · t² / 8."
+              },
+              {
+                "value": "981*tl^2/4",
+                "text": "Čtyřka? Pád trvá t/2, takže h = ½ · g · (t/2)² = g · t² / 8."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně. Přepočítej to podle knihy Fyzika skoku.",
+            "hints": [
+              "Vzorec je v knize Fyzika skoku – stojí v polici u stěny s ryskami a má svítící hřbet.",
+              "h = 9,81 · t² / 8, tvoje doba letu t = {tl:3} s. Výsledek vyjde v metrech – převeď ho na centimetry.",
+              "9,81 · {tl:3}² / 8 = {=9.81*tl^2/8:3} m."
+            ],
+            "success": "Zelená! VÝŠKA PŘIJATA. A další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„NEON AIM: malé vzdálené terče {terce_b} ms, velké blízké {terce_a} ms. Proč trvá trefit malý vzdálený terč déle?“",
+            "requiresVars": [
+              "terce_a",
+              "terce_b"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV NEON AIM. Automat s terči je vedle automatu JUMP.",
+            "options": [
+              "Malé terče se na obrazovce hůř hledají, samotný pohyb ruky trvá stejně",
+              "Rychlý pohyb je nepřesný – k malému a vzdálenému cíli musí ruka zpomalit a pohyb na konci dorovnat",
+              "Ruka se během hry unavila",
+              "Na vzdálenosti nezáleží, jen na velikosti terče"
+            ],
+            "correct": 1,
+            "feedback": {
+              "0": "Hledání trochu přidá, ale hlavní je pohyb: u malého terče ruka na konci zpomaluje a dolaďuje míření.",
+              "2": "Únava za pár desítek sekund nehraje roli – a velké terče jsi střílel ve stejné hře.",
+              "3": "Na vzdálenosti záleží: delší pohyb trvá déle a víc se odchýlí, takže je potřeba víc dorovnávat."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Plakát vedle automatu NEON AIM: RYCHLOST × PŘESNOST.",
+              "Čím rychleji pohyb děláš, tím je méně přesný. Malý vzdálený cíl ale přesnost vyžaduje…",
+              "K malému a vzdálenému cíli musí pohyb zpomalit a na konci se dorovnat (Fittsův zákon)."
+            ],
+            "success": "Zelená! Poslední otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Na Měsíci je gravitace šestkrát slabší. Kolikrát výš bys tam vyskočil, kdyby ses odrazil stejně rychle?“",
+            "unit": "×",
+            "answer": 6,
+            "feedback": {
+              "36": "36 by vyšlo, kdyby výška rostla s druhou mocninou g. Podle knihy je h = v² / (2g): rychlost je stejná, g je ve jmenovateli bez mocniny.",
+              "2.4": "Odmocnina? h = v² / (2g) – g je ve jmenovateli bez odmocniny.",
+              "2.45": "Odmocnina? h = v² / (2g) – g je ve jmenovateli bez odmocniny.",
+              "1": "Stejně vysoko? Slabší gravitace tě ve výskoku brzdí méně.",
+              "0.17": "Opačně – slabší gravitace znamená vyšší skok, ne nižší."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Rychlost odrazu zůstává stejná, mění se jen g.",
+              "V knize: h = v² / (2g).",
+              "g je šestkrát menší, takže h je šestkrát větší."
+            ],
+            "success": "Zámek dveří cvakl. LEVEL 2 SPLNĚN."
+          }
+        ],
+        "open": [
+          {
+            "sound": "levelUp"
+          },
+          {
+            "text": "Dveře se se syčením odsunuly. Za nimi je další chodba a na jejím konci bliká obrazovka: LEVEL 3."
+          },
+          {
+            "note": "LEVEL 2: výška výskoku z doby letu h = g · t² / 8 – tvůj skok z podřepu asi {=981*tl^2/8:0} cm (t = {tl:3} s). Rychlost × přesnost: menší a vzdálenější cíl = pomalejší pohyb. Na Měsíci bys se stejným odrazem vyskočil šestkrát výš."
+          }
         ]
       }
     }

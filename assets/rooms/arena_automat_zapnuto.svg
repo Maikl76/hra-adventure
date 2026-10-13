@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: automat JUMP zapnutý – obrazovka, nápis a stupnice svítí (příznaky deska_kabel a mer_baterie). -->
+  <defs>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <text x="840" y="218" font-family="Arial Black, Arial" font-weight="bold" font-size="52" fill="#ff4fd8" text-anchor="middle" letter-spacing="6" filter="url(#glow)" opacity="0.8">JUMP</text>
+  <text x="840" y="218" font-family="Arial Black, Arial" font-weight="bold" font-size="52" fill="#ffd0f3" text-anchor="middle" letter-spacing="6">JUMP</text>
+  <rect x="739" y="264" width="202" height="152" rx="6" fill="#06121a"/>
+  <text x="840" y="318" font-family="Courier New, monospace" font-size="22" fill="#3fe0ff" text-anchor="middle">SQUAT JUMP</text>
+  <text x="840" y="352" font-family="Courier New, monospace" font-size="16" fill="#9ff3ff" text-anchor="middle">POSTAV SE</text>
+  <text x="840" y="374" font-family="Courier New, monospace" font-size="16" fill="#9ff3ff" text-anchor="middle">NA DESKU</text>
+  <rect x="1016" y="206" width="28" height="588" rx="6" fill="#3fe0ff" opacity="0.18" filter="url(#glow)"/>
+  <g stroke="#3fe0ff" stroke-width="3">
+    <line x1="1014" y1="800" x2="1046" y2="800"/>
+    <line x1="1014" y1="700" x2="1046" y2="700"/>
+    <line x1="1014" y1="600" x2="1046" y2="600"/>
+    <line x1="1014" y1="500" x2="1046" y2="500"/>
+    <line x1="1014" y1="400" x2="1046" y2="400"/>
+    <line x1="1014" y1="300" x2="1046" y2="300"/>
+    <line x1="1014" y1="200" x2="1046" y2="200"/>
+  </g>
+  <polygon points="560,840 1120,840 1150,915 530,915" fill="none" stroke="#ffe14f" stroke-width="4" opacity="0.8"/>
+</svg>

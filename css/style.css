@@ -897,6 +897,32 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .stance-results { margin: 4px 0 0; padding-left: 18px; font-size: 14px; color: var(--muted); }
 .stance-results .ok { color: var(--ok); }
 .stance-results .bad { color: var(--danger); }
+/* Výskok: zadání dosahu */
+.jump-reach { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.jump-field { display: flex; gap: 10px; align-items: center; font-size: 15px; }
+.jump-field input { width: 90px; padding: 6px 8px; font: inherit; background: #0f1418; color: var(--ink); border: 1px solid var(--gold-dim); border-radius: 4px; }
+
+/* Neonové terče */
+.modal-box.targets-box { width: min(100%, 920px); }
+.targets-arena { position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 60dvh; margin: 0 auto; overflow: hidden; border-radius: 8px; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: radial-gradient(ellipse at 50% 120%, rgba(255, 79, 216, 0.18), transparent 60%), linear-gradient(rgba(63, 224, 255, 0.07) 1px, transparent 1px) 0 0 / 40px 40px, linear-gradient(90deg, rgba(63, 224, 255, 0.07) 1px, transparent 1px) 0 0 / 40px 40px, #05070c;
+  border: 1px solid #1d3a48; cursor: crosshair; }
+.targets-overlay { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; text-align: center; background: rgba(3, 5, 9, 0.8); }
+.targets-overlay[hidden] { display: none; }
+.targets-overlay h3 { margin: 0; color: var(--gold-bright); }
+.neon-target { position: absolute; border-radius: 50%; pointer-events: none; --c: #3fe0ff;
+  border: 3px solid var(--c); box-shadow: 0 0 10px var(--c), 0 0 24px var(--c), inset 0 0 12px var(--c);
+  background: radial-gradient(circle, var(--c) 0 14%, transparent 15% 34%, color-mix(in srgb, var(--c) 45%, transparent) 35% 42%, transparent 43%); }
+.neon-target.appear-0 { animation: t-zoom 0.18s ease-out; }
+.neon-target.appear-1 { animation: t-fade 0.22s ease-out; }
+.neon-target.appear-2 { animation: t-spin 0.25s ease-out; }
+.neon-target.hit { animation: t-hit 0.25s ease-out forwards; }
+@keyframes t-zoom { from { transform: scale(0.2); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes t-fade { from { opacity: 0; filter: blur(4px); } to { opacity: 1; filter: none; } }
+@keyframes t-spin { from { transform: scale(1.6) rotate(90deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes t-hit { to { transform: scale(1.8); opacity: 0; } }
+.target-miss { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; pointer-events: none; color: #ff6b6b; font-size: 18px; line-height: 18px; text-align: center; animation: t-fade 0.2s reverse forwards; }
+.target-miss::before { content: '×'; }
 .tape-reading { font-family: var(--digits); font-size: 34px; color: var(--gold-bright); text-align: center; margin: 8px 0 0; min-height: 1.2em; }
 
 /* ---------- Kalkulačka (plovoucí okno nad hrou i nad zámkem) ---------- */

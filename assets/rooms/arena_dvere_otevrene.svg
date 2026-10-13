@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: otevřené dveře LEVEL 2, za nimi chodba s nápisem LEVEL 3 (příznak brana_arena_otevrena). -->
+  <defs>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <defs>
+    <linearGradient id="corr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1030"/>
+      <stop offset="1" stop-color="#05040a"/>
+    </linearGradient>
+  </defs>
+  <rect x="604" y="114" width="462" height="712" fill="url(#corr)"/>
+  <polygon points="604,114 760,300 910,300 1066,114" fill="#120a22"/>
+  <polygon points="604,826 760,620 910,620 1066,826" fill="#0a0814"/>
+  <rect x="760" y="300" width="150" height="320" fill="#080614"/>
+  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="34" fill="#3fe0ff" text-anchor="middle" filter="url(#glow)" opacity="0.8">LEVEL 3</text>
+  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="34" fill="#d6fbff" text-anchor="middle">LEVEL 3</text>
+  <polygon points="600,110 520,80 520,860 600,830" fill="#2a2d33" stroke="#0d0e10" stroke-width="4"/>
+</svg>

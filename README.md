@@ -26,6 +26,13 @@ Každý svět bude mít vlastních devět bran.
   svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
   15 dřepů u měřicí stanice a z vlastního času spočítá svůj výkon. Grafiku místnosti
   i lekaček dodal autor.
+- **GSPORT – LEVEL 2: Skokanská aréna** (doba letu a výška výskoku, rychlost a přesnost pohybu):
+  stará skokanská laboratoř předělaná na arkádu. Hráč zprovozní automat JUMP (konektor
+  z výherního okénka NEON AIM, baterie ze skříňky, jejíž kód je docentova výška výskoku
+  ze značek na stěně), udělá jeden **výskok z podřepu (SJ)** a z naměřené doby letu sám spočítá
+  výšku. Na automatu NEON AIM trefuje neonové terče a u dveří vysvětlí, proč malý vzdálený
+  terč trvá déle, a spočítá skok na Měsíci. Zatím se zástupnou grafikou (zadání obrázků:
+  [`docs/zadani-obrazku-arena.md`](docs/zadani-obrazku-arena.md)).
 - Další brány se připravují.
 
 ## GSPORT: dřepy před webkamerou
@@ -36,6 +43,22 @@ Každý svět bude mít vlastních devět bran.
 - Bez kamery (nebo když ji hráč nepovolí) jde dřepy udělat i „na poctivost“: hra jen změří čas.
   Na závěrečné obrazovce je pak uvedeno „Dřepy ověřené kamerou: ne“.
 - Výpočty počítají se standardním hráčem 70 kg, aby hra nepotřebovala osobní údaje.
+
+## GSPORT: výskok z podřepu a neonové terče
+
+- **Výskok (SJ):** hráč stojí bokem ke kameře, ruce v bok, spustí se do podřepu a vydrží. Po
+  pípnutí vyskočí jen nahoru. Hra změří **dobu letu**, tedy jak dlouho jsou chodidla nad zemí.
+  Výšku neukáže, tu hráč spočítá sám podle vzorce h = g · t² / 8. Kdo se po pípnutí ještě
+  spustí dolů (protipohyb), tomu se skok nepočítá. Má tři pokusy, platí nejlepší.
+- Bez kamery jde udělat test **„jump and reach“**: hráč zadá dosah na stěně ve stoje a ve
+  výskoku a hra z rozdílu dopočítá dobu letu. Kdo skákat nemůže, počítá s průměrnou dobou
+  letu 0,45 s. Na závěrečné obrazovce je uvedeno, jestli skok měřila kamera.
+- **Bezpečnost:** skáče jeden člen týmu, kolem musí být volné místo bez kabelů a tašek,
+  doskakuje se měkce s pokrčenými koleny.
+- **NEON AIM:** terče se objevují v různých barvách, velikostech a s různými animacemi; trefují
+  se myší nebo prstem (funguje i na mobilu a tabletu). Dvě kola: velké terče blízko, malé
+  daleko. Hra měří průměrný čas na terč a obtížnost pohybu ID = log₂(D/W + 1) (Fittsův zákon)
+  a výsledky zapíše do zápisníku.
 
 ## Vojenská tělovýchova: zkouška stability před webkamerou
 
@@ -85,7 +108,7 @@ Každý svět bude mít vlastních devět bran.
 - **Výuka ve třídě:** v `game.json` nastavte `"audio": { "defaultOn": false }` – hra pak začne
   potichu (zvuk si hráči mohou zapnout, nejlépe se sluchátky).
 - Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
-  naměřené dřepy, výkon a reakční dobu) – studenti ji vyfotí pro vyhodnocení.
+  naměřené dřepy, výkon, reakční dobu, dobu letu, výšku výskoku a časy z NEON AIM) – studenti ji vyfotí pro vyhodnocení.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
   s hlasitým zvukem). Ve výchozím stavu jsou **vypnuté**; kdo chce, zapne si je v Menu →
   „Lekačky: zapnuté/vypnuté“. Obraz nebliká opakovaně, ale citlivější studenty je dobré
@@ -111,7 +134,7 @@ a otevřete `http://127.0.0.1:8765`.
 v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nahradit nahrávkami.
 
 Jediná knihovna je **MediaPipe Tasks Vision** (Google, licence Apache 2.0) pro odhad polohy
-těla z kamery (dřepy v GSPORT, zkouška stability ve vojenské tělovýchově). Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
+těla z kamery (dřepy a výskok v GSPORT, zkouška stability ve vojenské tělovýchově). Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
 i s modelem, takže hra nestahuje nic z cizích serverů. Načte se, až když hráč zvolí měření
 s kamerou.
 

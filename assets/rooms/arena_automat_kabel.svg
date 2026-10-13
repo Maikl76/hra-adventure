@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: kabel od desky s konektorem zapojený do měřiče (příznak deska_kabel). -->
+  <defs>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <path d="M468,772 C468,740 474,700 482,680 C488,668 492,664 494,662" fill="none" stroke="#151515" stroke-width="9" stroke-linecap="round"/>
+  <rect x="482" y="652" width="22" height="20" rx="3" fill="#8a8f96" stroke="#2a2d30" stroke-width="2"/>
+</svg>

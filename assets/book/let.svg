@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 290">
+  <!-- Obrázek do knihy: let po odrazu – výstup i pád trvají t/2 (inkoust na průhledném pozadí) -->
+  <defs>
+    <marker id="tip" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#3a2a14"/>
+    </marker>
+  </defs>
+  <g font-family="Georgia, serif" fill="#3a2a14">
+    <!-- zem -->
+    <line x1="40" y1="230" x2="560" y2="230" stroke="#3a2a14" stroke-width="2"/>
+    <g stroke="#3a2a14" stroke-width="1.2">
+      <line x1="60" y1="230" x2="48" y2="242"/><line x1="100" y1="230" x2="88" y2="242"/><line x1="140" y1="230" x2="128" y2="242"/>
+      <line x1="460" y1="230" x2="448" y2="242"/><line x1="500" y1="230" x2="488" y2="242"/><line x1="540" y1="230" x2="528" y2="242"/>
+    </g>
+    <!-- dráha těžiště (parabola) -->
+    <path d="M140,210 Q300,-10 460,210" fill="none" stroke="#3a2a14" stroke-width="3"/>
+    <circle cx="140" cy="210" r="6" fill="#3a2a14"/>
+    <circle cx="300" cy="100" r="7" fill="#7a2e1e"/>
+    <circle cx="460" cy="210" r="6" fill="#3a2a14"/>
+    <text x="140" y="268" font-size="17" text-anchor="middle">odraz</text>
+    <text x="460" y="268" font-size="17" text-anchor="middle">dopad</text>
+    <text x="300" y="80" font-size="16" text-anchor="middle" fill="#7a2e1e">nejvyšší bod (v = 0)</text>
+    <!-- výška -->
+    <line x1="300" y1="108" x2="300" y2="204" stroke="#7a2e1e" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#tip)"/>
+    <text x="312" y="168" font-size="20" font-style="italic" fill="#7a2e1e">h</text>
+    <line x1="132" y1="210" x2="468" y2="210" stroke="#3a2a14" stroke-width="1" stroke-dasharray="3 5"/>
+    <!-- časy -->
+    <line x1="146" y1="38" x2="294" y2="38" stroke="#3a2a14" stroke-width="1.5" marker-start="url(#tip)" marker-end="url(#tip)"/>
+    <line x1="306" y1="38" x2="454" y2="38" stroke="#3a2a14" stroke-width="1.5" marker-start="url(#tip)" marker-end="url(#tip)"/>
+    <text x="220" y="30" font-size="18" text-anchor="middle" font-style="italic">t / 2</text>
+    <text x="380" y="30" font-size="18" text-anchor="middle" font-style="italic">t / 2</text>
+    <text x="220" y="58" font-size="13" text-anchor="middle">výstup – zpomaluje</text>
+    <text x="380" y="58" font-size="13" text-anchor="middle">pád – zrychluje</text>
+    <line x1="140" y1="26" x2="140" y2="200" stroke="#3a2a14" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="460" y1="26" x2="460" y2="200" stroke="#3a2a14" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="300" y="286" font-size="15" text-anchor="middle">doba letu t = od odrazu do dopadu</text>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: baterie v měřiči a rozsvícený displej (příznak mer_baterie). -->
+  <defs>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect x="402" y="642" width="38" height="42" rx="3" fill="#2f7a3a" stroke="#123a18" stroke-width="2"/>
+  <rect x="410" y="636" width="8" height="8" fill="#ccc"/><rect x="424" y="636" width="8" height="8" fill="#ccc"/>
+  <rect x="398" y="578" width="104" height="40" rx="3" fill="#0f2a14"/>
+  <text x="450" y="605" font-family="Courier New, monospace" font-size="18" fill="#7dff8a" text-anchor="middle">9.0 V</text>
+</svg>

@@ -552,6 +552,12 @@
     // naměřené hodnoty světa (např. GSPORT: dřepy, výkon, reflex) – řádek jen když hodnota existuje
     for (const s of fin.stats || []) {
       if ((s.requires || []).some((v) => game.state.vars[v] === undefined || game.state.vars[v] === null)) continue;
+      // „bool“: řádek ano/ne podle proměnné (např. výskok ověřený kamerou)
+      if (s.bool) {
+        if (game.state.vars[s.bool] === undefined) continue;
+        rows.push([s.label, game.state.vars[s.bool] ? 'ano' : 'ne']);
+        continue;
+      }
       rows.push([s.label, game.fill(s.value)]);
     }
     if (st.camera !== undefined) rows.push([fin.cameraLabel || 'Dřepy ověřené kamerou', st.camera ? 'ano' : 'ne']);
@@ -1499,6 +1505,8 @@
     else if (act.type === 'pack') openPack(act);
     else if (act.type === 'lift') openLift(act);
     else if (act.type === 'stance') openStance(act);
+    else if (act.type === 'jump') openJump(act);
+    else if (act.type === 'targets') openTargets(act);
   }
 
   function finishActivity(act, results) {
@@ -1649,7 +1657,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.10');
+          const mod = await import('./squats.js?v=0.11');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2455,6 +2463,336 @@
     });
   }
 
+  /* Výskok z podřepu (SJ): s kamerou měří dobu letu js/skok.js (až 3 pokusy, platí nejlepší);
+     bez kamery hráč zadá dosah ve stoje a ve výskoku (test „jump and reach“) a hra z rozdílu
+     dopočítá dobu letu; kdo skákat nemůže, počítá s hodnotou „defaultT“. Výšku hra neukazuje –
+     tu má hráč spočítat sám. Proměnné: tl (doba letu v s), skok_kamera, skok_dosah, skok_preskoceno. */
+  function openJump(act) {
+    const fmt = (v, d) => v.toFixed(d).replace('.', ',');
+    openModal((box) => {
+      box.classList.add('activity-box', 'squat-box');
+      heading(box, act.title || 'Výskok z podřepu');
+      para(box, act.intro || '', 'question');
+      const choice = document.createElement('div');
+      choice.className = 'squat-choice';
+      box.appendChild(choice);
+      if (act.safety) para(choice, act.safety, 'lean-safety');
+      para(choice, act.camera || 'S kamerou: postav se bokem ke kameře, celý v záběru i s chodidly.', 'muted');
+      para(choice, 'Obraz z kamery se zpracovává jen v tomto prohlížeči – nic se nenahrává ani neukládá.', 'muted small');
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      choice.appendChild(btns);
+
+      const instr = para(box, '', 'lean-step');
+      instr.hidden = true;
+      const stage = document.createElement('div');
+      stage.className = 'squat-stage';
+      stage.hidden = true;
+      const canvas = document.createElement('canvas');
+      const counter = document.createElement('div');
+      counter.className = 'squat-counter';
+      counter.textContent = '–';
+      stage.append(canvas, counter);
+      box.appendChild(stage);
+      const status = para(box, '', 'feedback');
+      const results = document.createElement('div');
+      box.appendChild(results);
+      const setStatus = (text, kind) => {
+        status.textContent = text;
+        status.className = `feedback${kind === 'ok' ? ' good' : kind === 'bad' ? ' bad' : ''}`;
+      };
+      const finish = (vars, summary) => {
+        sound.sfx('levelUp');
+        instr.hidden = true;
+        setStatus(summary, 'ok');
+        button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, vars));
+      };
+
+      // --- s kamerou: až „attempts“ pokusů, platí nejdelší doba letu ---
+      button(btns, 'S kamerou', 'btn primary', async () => {
+        choice.hidden = true;
+        stage.hidden = false;
+        instr.hidden = false;
+        instr.textContent = act.steps || 'Stoj → podřep a výdrž → po pípnutí výskok jen nahoru.';
+        let cancelled = false;
+        activityCleanup = () => { cancelled = true; };
+        const times = [];
+        const max = act.attempts || 3;
+        try {
+          const mod = await import('./skok.js?v=0.11');
+          let ctrl = null;
+          const list = document.createElement('ol');
+          list.className = 'reflex-list';
+          results.appendChild(list);
+          const done = () => {
+            ctrl.stop();
+            stage.hidden = true;
+            const best = Math.max(...times);
+            finish({ tl: best, skok_kamera: 1, skok_pokusy: times.length, skok_preskoceno: 0 },
+              (act.resultCamera || 'Nejlepší doba letu: {t} s.').replace('{t}', fmt(best, 3)));
+          };
+          ctrl = await mod.startJump({
+            canvas,
+            onStatus: setStatus,
+            onBeep: (k) => sound.sfx(k === 'go' ? 'reflexGo' : 'squatOk'),
+            onAttempt: (r) => {
+              if (!r.valid) {
+                setStatus(r.reason === 'cm' ? (act.counterText || 'To byl skok s protipohybem – nepočítá se.') : (act.rangeText || 'Tenhle skok se nepodařilo změřit.'), 'bad');
+                setTimeout(() => ctrl.begin(), 1800);
+                return;
+              }
+              times.push(r.t);
+              const li = document.createElement('li');
+              li.textContent = `${fmt(r.t, 3)} s`;
+              list.appendChild(li);
+              counter.textContent = `${fmt(Math.max(...times), 3)} s`;
+              counter.classList.remove('bump'); void counter.offsetWidth; counter.classList.add('bump');
+              if (times.length >= max) { done(); return; }
+              setStatus(`Pokus ${times.length}: doba letu ${fmt(r.t, 3)} s. Můžeš skočit znovu – platí nejlepší.`, 'ok');
+              const again = results.querySelector('.jump-actions') || document.createElement('div');
+              again.className = 'squat-buttons jump-actions';
+              again.innerHTML = '';
+              results.appendChild(again);
+              button(again, 'Skočit znovu', 'btn', () => { again.innerHTML = ''; ctrl.begin(); });
+              button(again, 'Hotovo', 'btn primary', () => { again.remove(); done(); });
+            },
+          });
+          if (cancelled) { ctrl.stop(); return; }
+          activityCleanup = () => ctrl.stop();
+          ctrl.begin();
+        } catch (e) {
+          if (cancelled) return;
+          console.error(e);
+          stage.hidden = true;
+          instr.hidden = true;
+          choice.hidden = false;
+          const msg = e && e.name === 'NotAllowedError' ? 'Přístup ke kameře byl odmítnut.'
+            : e && e.name === 'NotFoundError' ? 'Kamera nebyla nalezena.'
+            : 'Kameru se nepodařilo spustit.';
+          setStatus(`${msg} Můžeš výšku změřit u stěny (bez kamery).`, 'bad');
+        }
+      });
+
+      // --- bez kamery: dosah ve stoje a ve výskoku ---
+      button(btns, act.reachLabel || 'Bez kamery (dosah na stěně)', 'btn', () => {
+        choice.hidden = true;
+        setStatus('');
+        const form = document.createElement('div');
+        form.className = 'squat-manual jump-reach';
+        box.insertBefore(form, status);
+        para(form, act.reachText || 'Změř dosah ve stoje a dosah ve výskoku (v cm) a zadej je.', 'muted');
+        const field = (label) => {
+          const l = document.createElement('label');
+          l.className = 'jump-field';
+          const t = document.createElement('span');
+          t.textContent = label;
+          const i = document.createElement('input');
+          i.type = 'number'; i.inputMode = 'numeric'; i.min = 50; i.max = 400;
+          l.append(t, i);
+          form.appendChild(l);
+          return i;
+        };
+        const a = field('Dosah ve stoje (cm)');
+        const b = field('Dosah ve výskoku (cm)');
+        button(form, 'Spočítat', 'btn primary', () => {
+          const d = Number(b.value) - Number(a.value);
+          if (!Number.isFinite(d) || !a.value || !b.value || d < 5 || d > 90) {
+            setStatus(act.reachInvalid || 'Zkontroluj čísla: dosah ve výskoku musí být o 5–90 cm větší než ve stoje.', 'bad');
+            return;
+          }
+          const t = Math.round(Math.sqrt((8 * d / 100) / 9.81) * 1000) / 1000;
+          form.remove();
+          finish({ tl: t, skok_kamera: 0, skok_dosah: d, skok_preskoceno: 0 },
+            (act.resultReach || 'Rozdíl dosahu {d} cm odpovídá době letu {t} s.').replace('{d}', String(d)).replace('{t}', fmt(t, 3)));
+        });
+      });
+
+      // --- nemohu skákat ---
+      button(btns, act.skipLabel || 'Nemohu skákat', 'btn', () => {
+        choice.hidden = true;
+        const t = act.defaultT || 0.45;
+        finish({ tl: t, skok_kamera: 0, skok_preskoceno: 1 }, (act.skipped || 'Počítáš s dobou letu {t} s.').replace('{t}', fmt(t, 2)));
+      });
+    });
+  }
+
+  /* Neonové terče: v každém kole se terče objevují jeden po druhém na náhodném místě, v náhodné
+     barvě a velikosti z rozmezí kola, ve vzdálenosti z rozmezí kola od místa posledního zásahu.
+     Hráč je trefuje myší nebo prstem. Měří se čas od objevení do zásahu (první terč kola se
+     nepočítá – rozcvička) a „obtížnost“ podle Fittse: ID = log₂(D / Š + 1). Proměnné „vars“ kol
+     (např. terce_a, terce_b) = průměrné časy v ms; terce_chyby = počet střel vedle. */
+  function openTargets(act) {
+    const COLORS = act.colors || ['#3fe0ff', '#ff4fd8', '#9dff6a', '#ffe14f', '#b48cff'];
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    openModal((box) => {
+      box.classList.add('activity-box', 'squat-box', 'targets-box');
+      heading(box, act.title || 'Neonové terče');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const arena = document.createElement('div');
+      arena.className = 'targets-arena';
+      box.appendChild(arena);
+      const overlay = document.createElement('div');
+      overlay.className = 'targets-overlay';
+      arena.appendChild(overlay);
+      const status = para(box, '', 'feedback');
+      const results = document.createElement('div');
+      box.appendChild(results);
+
+      const out = {};
+      let misses = 0;
+      let roundIdx = 0;
+      let current = null;       // { el, x, y, r, t0, D, W }
+      let last = null;          // poslední místo zásahu (px v ploše)
+      let hits = [];
+      let running = false;
+      let timer = 0;
+
+      const rnd = (a, b) => a + Math.random() * (b - a);
+      const size = () => arena.getBoundingClientRect();
+
+      function showOverlay(title, text, label, onGo) {
+        overlay.innerHTML = '';
+        overlay.hidden = false;
+        const h = document.createElement('h3');
+        h.textContent = title;
+        overlay.appendChild(h);
+        if (text) para(overlay, text);
+        button(overlay, label, 'btn primary', onGo);
+      }
+
+      function spawn() {
+        const rd = act.rounds[roundIdx];
+        const rect = size();
+        const W = rect.width, H = rect.height;
+        const scale = Math.min(W, H);
+        // velikost: zlomek kratší strany plochy, ale aspoň minPx (prst na mobilu)
+        const r = Math.max((act.minPx || 26) / 2, (rnd(rd.size[0], rd.size[1]) * scale) / 2);
+        const from = last || { x: W / 2, y: H / 2 };
+        let x = 0, y = 0, D = 0;
+        for (let k = 0; k < 40; k++) {
+          D = rnd(rd.dist[0], rd.dist[1]) * Math.hypot(W, H) / 1.4;
+          const a = Math.random() * Math.PI * 2;
+          x = from.x + Math.cos(a) * D;
+          y = from.y + Math.sin(a) * D;
+          if (x > r + 6 && x < W - r - 6 && y > r + 6 && y < H - r - 6) break;
+          if (k === 39) { x = Math.min(W - r - 6, Math.max(r + 6, x)); y = Math.min(H - r - 6, Math.max(r + 6, y)); D = Math.hypot(x - from.x, y - from.y); }
+        }
+        const el = document.createElement('div');
+        el.className = `neon-target appear-${Math.floor(Math.random() * 3)}`;
+        const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+        el.style.setProperty('--c', c);
+        el.style.left = `${x - r}px`;
+        el.style.top = `${y - r}px`;
+        el.style.width = el.style.height = `${2 * r}px`;
+        arena.appendChild(el);
+        current = { el, x, y, r, t0: performance.now(), D, W: 2 * r };
+      }
+
+      function startRound() {
+        overlay.hidden = true;
+        const rd = act.rounds[roundIdx];
+        hits = [];
+        last = null;
+        running = true;
+        info.textContent = `Kolo ${roundIdx + 1}/${act.rounds.length}: ${rd.name} – terč 0/${rd.count}`;
+        let n = 3;
+        status.textContent = `${n}…`;
+        status.className = 'feedback';
+        timer = setInterval(() => {
+          n -= 1;
+          if (n > 0) { status.textContent = `${n}…`; sound.sfx('key'); return; }
+          clearInterval(timer);
+          status.textContent = '';
+          sound.sfx('reflexGo');
+          spawn();
+        }, 600);
+      }
+
+      function endRound() {
+        running = false;
+        const rd = act.rounds[roundIdx];
+        const used = hits.slice(1);   // první terč kola = rozcvička
+        const mt = used.reduce((s2, h) => s2 + h.mt, 0) / used.length;
+        const id = used.reduce((s2, h) => s2 + Math.log2(h.D / h.W + 1), 0) / used.length;
+        out[rd.var] = Math.round(mt);
+        out[`${rd.var}_id`] = Math.round(id * 10) / 10;
+        roundIdx += 1;
+        if (roundIdx < act.rounds.length) {
+          const nx = act.rounds[roundIdx];
+          showOverlay(`Kolo ${roundIdx + 1}: ${nx.name}`, `${rd.name}: průměr ${fmt(mt)} ms. ${nx.text || ''}`, 'Start', startRound);
+          return;
+        }
+        finishAll();
+      }
+
+      function finishAll() {
+        info.textContent = act.doneTitle || 'Výsledky';
+        sound.sfx('levelUp');
+        results.innerHTML = '';
+        const t = document.createElement('table');
+        t.className = 'lean-table';
+        const row = (cells, tag) => {
+          const tr = document.createElement('tr');
+          for (const c of cells) { const td = document.createElement(tag); td.textContent = c; tr.appendChild(td); }
+          t.appendChild(tr);
+        };
+        row(['Kolo', 'Průměrný čas', 'Obtížnost (ID)'], 'th');
+        for (const rd of act.rounds) row([rd.name, `${out[rd.var]} ms`, `${fmt(out[`${rd.var}_id`], 1)} bitu`], 'td');
+        results.appendChild(t);
+        para(results, `Střel vedle: ${misses}`, 'muted small');
+        // poslední kolo (malé a daleko) by mělo trvat déle než první – jinak jiný text
+        const first = out[act.rounds[0].var], lastMt = out[act.rounds[act.rounds.length - 1].var];
+        const slower = lastMt > first;
+        status.textContent = (slower ? act.success : act.successFlat || act.success) || '';
+        status.className = `feedback${slower ? ' good' : ''}`;
+        button(results, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { ...out, terce_chyby: misses }));
+        results.hidden = true;
+        status.hidden = true;
+        // po dohrání plochu s terči schovat, ať jsou výsledky i tlačítko vidět bez posouvání
+        showOverlay(act.doneTitle || 'Hotovo', act.doneText || '', 'Zobrazit výsledky', () => {
+          arena.hidden = true;
+          results.hidden = false;
+          status.hidden = false;
+        });
+      }
+
+      // zásah / vedle – pointerdown (myš i dotyk, bez zpoždění kliknutí)
+      arena.addEventListener('pointerdown', (e) => {
+        if (!running || !current || e.target.closest('.targets-overlay')) return;
+        e.preventDefault();
+        const rect = size();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const hit = Math.hypot(x - current.x, y - current.y) <= current.r;
+        if (!hit) {
+          misses += 1;
+          sound.sfx('squatShallow');
+          const m = document.createElement('div');
+          m.className = 'target-miss';
+          m.style.left = `${x}px`; m.style.top = `${y}px`;
+          arena.appendChild(m);
+          setTimeout(() => m.remove(), 450);
+          return;
+        }
+        const now = performance.now();
+        hits.push({ mt: now - current.t0, D: current.D, W: current.W });
+        sound.sfx('beep');
+        current.el.classList.add('hit');
+        const el = current.el;
+        setTimeout(() => el.remove(), 250);
+        last = { x, y };
+        current = null;
+        const rd = act.rounds[roundIdx];
+        info.textContent = `Kolo ${roundIdx + 1}/${act.rounds.length}: ${rd.name} – terč ${hits.length}/${rd.count}`;
+        if (hits.length >= rd.count) { endRound(); return; }
+        spawn();
+      });
+
+      activityCleanup = () => { clearInterval(timer); running = false; };
+      showOverlay(`Kolo 1: ${act.rounds[0].name}`, act.rounds[0].text || '', 'Start', startRound);
+    });
+  }
+
   /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
      (pánev dozadu, ruce nad zemí, krok); bez kamery hráč jen odpoví, jak pokus dopadl. */
   function openLean(act) {
@@ -2532,7 +2870,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.10');
+          const mod = await import('./predklon.js?v=0.11');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

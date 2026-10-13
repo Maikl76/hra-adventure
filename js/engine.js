@@ -564,7 +564,7 @@
       if (!ok) {
         gs.errors += 1;
         this.save();
-        const specific = formulaFeedback || (step.feedback && step.feedback[feedbackKey]);
+        const specific = formulaFeedback || (step.feedback && this.fill(step.feedback[feedbackKey]));
         return { ok: false, message: specific || this.fill(step.wrong) || 'Špatně.' };
       }
 
