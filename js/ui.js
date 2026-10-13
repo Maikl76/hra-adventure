@@ -1462,6 +1462,7 @@
     else if (act.type === 'lean') openLean(act);
     else if (act.type === 'tape') openTape(act);
     else if (act.type === 'pack') openPack(act);
+    else if (act.type === 'lift') openLift(act);
   }
 
   function finishActivity(act, results) {
@@ -2034,6 +2035,183 @@
         document.removeEventListener('pointerup', onUp);
         if (drag && drag.ghost) drag.ghost.remove();
       };
+      render();
+    });
+  }
+
+  /* Zvedání břemene: hráč volí držení těla a tahem posouvá bednu blíž k tělu nebo dál.
+     Moment v bedrech (osa L5/S1) = tíha trupu × rameno trupu + tíha bedny × rameno bedny;
+     zádové svaly ho vyrovnávají na krátkém rameni „muscleArmCm“: F = M / r. Zvedne se, když M ≤ „goalMax“. */
+  function openLift(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const K = 4;                       // px na cm v nákresu
+    let posture = act.postures[0];
+    let rk = posture.rMin;             // vodorovná vzdálenost bedny od beder (cm)
+    let done = false;
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Zvedni bednu');
+      para(box, act.intro || '', 'question');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 420 300', class: 'pack-svg lift-svg' }, wrap);
+      el('rect', { x: 0, y: 0, width: 420, height: 300, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+      el('line', { x1: 0, y1: 286, x2: 420, y2: 286, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+      const figure = el('g', {}, svg);
+      const caseG = el('g', { class: 'lift-case' }, svg);
+      el('rect', { x: -22, y: -18, width: 44, height: 36, rx: 3, fill: '#6a4a2b', stroke: '#2d1f10', 'stroke-width': 2 }, caseG);
+      el('line', { x1: -22, y1: 0, x2: 22, y2: 0, stroke: '#2d1f10', 'stroke-width': 1.5 }, caseG);
+      el('text', { x: 0, y: 30, 'text-anchor': 'middle', 'font-size': 10, fill: '#d8cfae' }, caseG, `${act.loadKg} kg`);
+      const arm = el('line', { stroke: '#c9b08a', 'stroke-width': 7, 'stroke-linecap': 'round' }, svg);
+      const marks = el('g', { 'pointer-events': 'none' }, svg);
+      const hip = el('circle', { r: 6, fill: '#ffd28a', stroke: '#1a1a16' }, marks);
+      const arc = el('path', { fill: 'none', stroke: '#ffd28a', 'stroke-width': 3, 'stroke-linecap': 'round' }, marks);
+      const dimLine = el('line', { stroke: '#e8e0c4', 'stroke-width': 1, 'stroke-dasharray': '3 3' }, marks);
+      const dimText = el('text', { 'font-size': 10, fill: '#e8e0c4', 'text-anchor': 'middle' }, marks);
+
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      para(side, act.postureLabel || 'Jak bednu zvedáš?', 'muted');
+      const pbtns = {};
+      for (const p of act.postures) {
+        pbtns[p.id] = button(side, p.name, 'btn lift-posture', () => {
+          if (done) return;
+          posture = p;
+          rk = Math.max(p.rMin, Math.min(p.rMax, rk));
+          sound.sfx('step');
+          render();
+        });
+      }
+      para(side, act.dragHint || 'Bednu táhni myší nebo prstem blíž k tělu a dál (nebo šipkami).', 'muted small');
+
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const lift = button(actions, act.liftLabel || 'Zvednout', 'btn primary', () => tryLift());
+
+      const compute = () => {
+        const mt = act.trunkKg * g * (posture.trunkArmCm / 100);
+        const ml = act.loadKg * g * (rk / 100);
+        const m = mt + ml;
+        return { mt, ml, m, f: m / (act.muscleArmCm / 100) };
+      };
+
+      function render() {
+        const p = posture;
+        // postava z boku (čelem doprava): kotník, koleno, bedra (L5), rameno, hlava
+        figure.innerHTML = '';
+        const pts = p.figure;   // body postavy v nákresu: kotník, koleno, bedra, rameno, hlava
+        const P = (i) => [pts[i][0], pts[i][1]];
+        const line = (a, b, w, c) => el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: c, 'stroke-width': w, 'stroke-linecap': 'round' }, figure);
+        line(P(0), P(1), 12, '#454c32');
+        line(P(1), P(2), 13, '#454c32');
+        line(P(2), P(3), 18, '#4f5638');
+        el('circle', { cx: pts[4][0], cy: pts[4][1], r: 13, fill: '#6b6650' }, figure);
+        el('path', { d: `M${pts[0][0] - 6},286 L${pts[0][0] + 26},286 L${pts[0][0] + 26},280 L${pts[0][0] - 4},278 Z`, fill: '#1c1915' }, figure);
+        // bedna před tělem ve výšce rukou
+        const cx = pts[2][0] + rk * K;
+        const cy = p.handY;
+        caseG.setAttribute('transform', `translate(${cx} ${cy})`);
+        arm.setAttribute('x1', pts[3][0]); arm.setAttribute('y1', pts[3][1]);
+        arm.setAttribute('x2', cx - 16); arm.setAttribute('y2', cy - 10);
+        hip.setAttribute('cx', pts[2][0]); hip.setAttribute('cy', pts[2][1]);
+        // vodorovná kóta od beder k bedně
+        dimLine.setAttribute('x1', pts[2][0]); dimLine.setAttribute('x2', cx);
+        dimLine.setAttribute('y1', cy + 30); dimLine.setAttribute('y2', cy + 30);
+        dimText.setAttribute('x', (pts[2][0] + cx) / 2); dimText.setAttribute('y', cy + 42);
+        dimText.textContent = `${fmt(rk)} cm`;
+        const r = compute();
+        // oblouk u beder: čím větší moment, tím delší
+        const ang = Math.min(300, r.m / 250 * 300) * Math.PI / 180;
+        const R = 18;
+        const a0 = -Math.PI / 2;
+        arc.setAttribute('d', `M${pts[2][0] + R * Math.cos(a0)},${pts[2][1] + R * Math.sin(a0)} A${R},${R} 0 ${ang > Math.PI ? 1 : 0} 1 ${pts[2][0] + R * Math.cos(a0 + ang)},${pts[2][1] + R * Math.sin(a0 + ang)}`);
+        arc.setAttribute('stroke', r.m <= act.goalMax ? '#9fbf7a' : '#e0805f');
+        for (const [id, b] of Object.entries(pbtns)) b.classList.toggle('selected', id === p.id);
+        readout.innerHTML = '';
+        const rows = [
+          ['Moment trupu v bedrech', `${fmt(r.mt)} N·m`],
+          [`Moment bedny (${act.loadKg} kg)`, `${fmt(r.ml)} N·m`],
+          ['Celkový moment v bedrech', `${fmt(r.m)} N·m`],
+          [`Síla zádových svalů (rameno ${act.muscleArmCm} cm)`, `${fmt(r.f)} N ≈ ${fmt(r.f / g)} kg`],
+        ];
+        for (const [k, v] of rows) {
+          const d = document.createElement('div');
+          const a = document.createElement('span'); a.textContent = k;
+          const b = document.createElement('strong'); b.textContent = v;
+          d.append(a, b);
+          readout.appendChild(d);
+        }
+        lift.disabled = done;
+      }
+
+      function tryLift() {
+        const r = compute();
+        if (r.m <= act.goalMax) {
+          done = true;
+          sound.sfx('unlock');
+          status.textContent = act.success || 'Zvednuto.';
+          status.className = 'feedback good';
+          lift.remove();
+          button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, {
+            zvedani_m: Math.round(r.m), zvedani_f: Math.round(r.f),
+          }));
+        } else {
+          sound.sfx('wrong');
+          status.textContent = posture.id === act.postures[0].id ? (act.badPosture || 'Takhle to záda neudrží.') : (act.tooFar || 'Bedna je moc daleko od těla.');
+          status.className = 'feedback bad';
+        }
+        render();
+      }
+
+      // tažení bedny (vodorovně)
+      let dragging = false;
+      const toR = (e) => {
+        const b = svg.getBoundingClientRect();
+        const x = ((e.clientX - b.left) / b.width) * 420;
+        const r = (x - posture.figure[2][0]) / K;
+        return Math.max(posture.rMin, Math.min(posture.rMax, Math.round(r)));
+      };
+      svg.addEventListener('pointerdown', (e) => {
+        if (done || !e.target.closest('.lift-case')) return;
+        e.preventDefault();
+        dragging = true;
+        svg.setPointerCapture(e.pointerId);
+      });
+      svg.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        rk = toR(e);
+        render();
+      });
+      const up = () => { dragging = false; };
+      svg.addEventListener('pointerup', up);
+      svg.addEventListener('pointercancel', up);
+      svg.tabIndex = 0;
+      svg.addEventListener('keydown', (e) => {
+        if (done) return;
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          rk = Math.max(posture.rMin, Math.min(posture.rMax, rk + (e.key === 'ArrowLeft' ? -1 : 1)));
+          render();
+        }
+      });
       render();
     });
   }

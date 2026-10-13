@@ -506,10 +506,9 @@
         { "set": "kalkulacka_sklad" },
         { "remove": "klice_pult" },
         { "sound": "unlockDrawer" },
-        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede. Mezi formuláři leží stará školní kalkulačka, role lepicí pásky a kousek kovu se zubatým okrajem – dolní půlka psí známky. Bereš všechno. (Kalkulačka se otevře dvojím kliknutím v inventáři.)" },
+        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede. Mezi formuláři leží stará školní kalkulačka a role lepicí pásky. Bereš obojí. (Kalkulačka se otevře dvojím kliknutím v inventáři.)" },
         { "give": "kalkulacka" },
-        { "give": "paska" },
-        { "give": "znamka_dolni" }
+        { "give": "paska" }
       ]
     },
     {
@@ -564,7 +563,7 @@
     },
     {
       "items": ["paska", "znamka_horni"],
-      "do": [ { "text": "Přelepit jednu půlku páskou nemá smysl. Druhá půlka známky musí být někde ve skladu." } ]
+      "do": [ { "text": "Přelepit jednu půlku páskou nemá smysl. Druhá půlka známky musí být někde ve skladu – co třeba v regálu?" } ]
     },
     {
       "items": ["paska", "znamka_dolni"],
@@ -1859,6 +1858,33 @@
             { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Změřeno: 20 cm" } }
           ]
         },
+        "zvedani": {
+          "type": "lift",
+          "title": "Zvedni bednu",
+          "intro": "Bedna ze spodní police váží 15 kg. Na víku je docentovou rukou: „Zvedni mě tak, aby tě nebolela záda.“ Vyber, jak bednu zvedáš, a táhni ji blíž k tělu nebo dál. Bedra fungují jako kloub páky: tíhu trupu a bedny musí vyrovnat zádové svaly – a ty táhnou na rameni jen asi 5 cm.",
+          "trunkKg": 40,
+          "loadKg": 15,
+          "muscleArmCm": 5,
+          "goalMax": 100,
+          "postureLabel": "Jak bednu zvedáš?",
+          "dragHint": "Bednu táhni myší nebo prstem blíž k tělu a dál (nebo šipkami ← →). Zvedne se, když je moment v bedrech nejvýš 100 N·m.",
+          "liftLabel": "Zvednout",
+          "postures": [
+            { "id": "predklon", "name": "Předklon s propnutými koleny", "trunkArmCm": 26, "rMin": 40, "rMax": 65, "handY": 222,
+              "figure": [[150, 282], [152, 218], [150, 160], [211, 125], [232, 110]] },
+            { "id": "drep", "name": "Podřep s rovnými zády", "trunkArmCm": 12, "rMin": 20, "rMax": 55, "handY": 246,
+              "figure": [[150, 282], [192, 238], [140, 218], [166, 152], [174, 128]] }
+          ],
+          "badPosture": "V předklonu s propnutými koleny je trup daleko před bedry – už jeho vlastní tíha dává přes 100 N·m. Zkus jiné držení těla.",
+          "tooFar": "Záda by to unesla, ale bedna je moc daleko od těla. Přitáhni ji blíž – kratší rameno, menší moment.",
+          "success": "Zvednuto! Rovná záda a bedna u těla: krátká ramena, malý moment. I tak ale zádové svaly táhnou silou, která by unesla víc než sto kilogramů.",
+          "done": [
+            { "set": "bedna_zvednuta" },
+            { "text": "Postavíš bednu na zem a odklopíš víko. Na dně mezi srolovanými karimatkami leží kousek kovu se zubatým okrajem – dolní půlka psí známky. Bereš ji." },
+            { "give": "znamka_dolni" },
+            { "note": "Zvedání bedny (15 kg): rovná záda a bedna u těla → moment v bedrech {zvedani_m} N·m, zádové svaly táhnou asi {zvedani_f} N. V předklonu s propnutými koleny a bednou daleko by to bylo přes 160 N·m a víc než 3 000 N.", "noteKey": "zvedani" }
+          ]
+        },
         "baleni": {
           "type": "pack",
           "title": "Sbal batoh",
@@ -1931,7 +1957,7 @@
               "wrong": "Kolečka se protočila naprázdno. Tohle číslo to není.",
               "hints": [
                 "Jaká „známka“ se nosí na krku? Každý voják ji má – s osobním číslem.",
-                "Psí známka na figuríně je přelomená. Dolní půlka je v zamčeném šuplíku pultu (klíče leží na pultu). Obě půlky slep páskou ze šuplíku.",
+                "Psí známka na figuríně je přelomená. Dolní půlka je ve spodní bedně v regálu (zvedni ji správně), lepicí páska v zamčeném šuplíku pultu (klíče leží na pultu).",
                 "Na slepené známce je osobní číslo 4719-0372 a vzkaz „Skříňka = poslední tři“. Kód je 372."
               ],
               "success": "Cvak."
@@ -2080,6 +2106,18 @@
               "name": "Kufry s výstrojí",
               "area": [4.5, 30, 45.7, 57],
               "click": [ { "do": [ { "text": "Přepravní kufry s výstrojí a dole dřevěné bedny. Na kufrech jsou cedulky s hmotností: 12 kg, 18 kg, 25 kg… Jedna přihrádka je prázdná, jen přerušovaně obkreslená. Batoh, který tu chybí, má na sobě figurína." } ] } ]
+            },
+            {
+              "id": "bedna_regal",
+              "name": "Spodní bedna v regálu",
+              "area": [7.2, 75.5, 11, 11],
+              "click": [
+                { "when": { "flags": ["bedna_zvednuta"] }, "do": [ { "text": "Bedna stojí na zemi, víko je odklopené. Uvnitř už jsou jen srolované karimatky." } ] },
+                { "do": [
+                  { "text": "Dřevěná bedna na spodní polici. Na cedulce 15 kg, na víku docentovou rukou: „Zvedni mě tak, aby tě nebolela záda.“" },
+                  { "activity": "zvedani" }
+                ] }
+              ]
             },
             {
               "id": "boty",

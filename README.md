@@ -56,6 +56,9 @@ Každý svět bude mít vlastních devět bran.
   natahují myší, prstem nebo šipkami; scéna se před měřením přiblíží (aktivita `"tape"`).
 - **Balení batohu (sklad):** hráč přetahuje věci do částí batohu a živě vidí, kam se posouvá
   těžiště batohu a společné těžiště vojáka a jaký předklon je potřeba (aktivita `"pack"`).
+- **Zvedání bedny (sklad):** hráč volí držení těla a tahem posouvá bednu blíž k tělu; vidí moment
+  v bedrech a sílu zádových svalů na krátkém rameni (aktivita `"lift"`). Bednu zvedne jen
+  s rovnými zády a blízko těla.
 - Kdo má v systému zapnuté „omezit pohyb“, nevidí prach ani přiblížení.
 
 ## Ovládání
