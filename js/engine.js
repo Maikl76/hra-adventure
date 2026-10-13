@@ -440,6 +440,8 @@
             events.push({ type: 'scare', scare: def });
           }
         }
+        // nápověda mimo zámky (např. z polního telefonu) – započítá se do statistik
+        if ('hint' in effect) s.extraHints = (s.extraHints || 0) + 1;
         if ('leave' in effect) events.push({ type: 'leave' });
       }
       events.push({ type: 'state' });
@@ -610,7 +612,7 @@
     stats() {
       const gates = Object.values(this.state.gates);
       const all = gates.concat(Object.values(this.state.locks || {}));   // chyby a nápovědy i u malých zámků
-      const hintCount = all.reduce((sum, g) => sum + g.hints.reduce((a, b) => a + (b || 0), 0), 0);
+      const hintCount = all.reduce((sum, g) => sum + g.hints.reduce((a, b) => a + (b || 0), 0), 0) + (this.state.extraHints || 0);
       return {
         team: this.state.team,
         track: this.track.name,

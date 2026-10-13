@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.9 – ukázka",
+    "version": "0.10 – ukázka",
     "totalGates": 9
   },
 
@@ -1834,6 +1834,13 @@
         { "when": { "notFlags": ["sklad_vstup"] }, "do": [ { "set": "sklad_vstup" }, { "sound": "doorSoft" } ] }
       ],
       "startView": "pult",
+      "phone": {
+        "_poznamka": "Když tým idleSeconds sekund nepostoupí, nastaví se příznak flag a polní telefon na pultu zvoní (co řekne, je u objektu telefon).",
+        "flag": "telefon_zvoni",
+        "idleSeconds": 240,
+        "ringEvery": 6,
+        "text": "Z výdejního pultu se ozvalo ostré zvonění polního telefonu."
+      },
 
       "activities": {
         "mereni": {
@@ -1856,6 +1863,38 @@
             { "set": "figurina_zmerena" },
             { "note": "Těžiště batohu je 20 cm za těžištěm vojáka (měřeno vodorovně)." },
             { "closeup": { "image": "assets/closeups/figurina_mereni.webp", "caption": "Změřeno: 20 cm" } }
+          ]
+        },
+        "postoj": {
+          "type": "stance",
+          "title": "Postoj a opěrná plocha",
+          "intro": "Vedle bot leží lísteček: „Voják s plnou polní musí ustát i strčení. Najdi postoj, ve kterém ustojí strčení zboku, zepředu i zezadu.“ Nákres ukazuje chodidla shora a průmět těžiště vojáka s batohem – kvůli batohu je 6 cm za středem. Posuvníky měň postoj a pak do vojáka strč.",
+          "comY": -6,
+          "pushCm": 14,
+          "width0": 16,
+          "stagger0": 0,
+          "widthMin": 10,
+          "widthMax": 60,
+          "staggerMax": 55,
+          "widthLabel": "Rozkročení do stran",
+          "staggerLabel": "Výpad (jedna noha vpřed)",
+          "pushLabel": "Strč do vojáka:",
+          "comLabel": "● průmět těžiště (s batohem)   ○ bez strčení",
+          "pushes": [
+            { "id": "bok", "name": "Zboku", "dx": 1, "dy": 0,
+              "okText": "Zboku ustál.",
+              "failText": "Spadl do strany – průmět těžiště vyjel z opěrné plochy. Rozkroč se víc do stran." },
+            { "id": "zepredu", "name": "Zepředu", "dx": 0, "dy": -1,
+              "okText": "Zepředu ustál – zadní noha ho zachytila.",
+              "failText": "Spadl dozadu! Batoh už těžiště posunul dozadu a strčení ho vytlačilo za paty. Rozkročení do stran tady nepomůže – zkus dát jednu nohu dozadu (výpad)." },
+            { "id": "zezadu", "name": "Zezadu", "dx": 0, "dy": 1,
+              "okText": "Zezadu ustál.",
+              "failText": "Spadl dopředu – průmět těžiště vyjel před špičky." }
+          ],
+          "success": "Ustál všechno! Opěrná plocha musí být velká ve směru, odkud přichází síla: do stran pomáhá rozkročení, dopředu a dozadu výpad. Proto vojáci – ale i judisté nebo hokejisté – stojí v širokém postoji s jednou nohou vpředu.",
+          "done": [
+            { "set": "postoj_hotovo" },
+            { "note": "Postoj: opěrná plocha musí být velká ve směru síly – rozkročení chrání do stran, výpad dopředu a dozadu. Ustál jsem v postoji {postoj_sire} cm do stran a {postoj_vypad} cm výpad.", "noteKey": "postoj" }
           ]
         },
         "zvedani": {
@@ -1985,6 +2024,7 @@
           "lights": [
             { "x": 27, "y": 45, "radius": 16, "strength": 0.8, "flicker": true },
             { "x": 51.8, "y": 53.8, "radius": 3, "strength": 0.45, "when": { "notFlags": ["klice_pult_vzaty"] } },
+            { "x": 80, "y": 47, "radius": 7, "strength": 0.7, "flicker": true, "when": { "flags": ["telefon_zvoni"] } },
             { "x": 50, "y": 5, "radius": 24, "strength": 0.65 }
           ],
           "layers": [
@@ -2037,7 +2077,54 @@
               "id": "telefon",
               "name": "Polní telefon",
               "area": [75.1, 43, 9.8, 11],
-              "click": [ { "do": [ { "text": "Polní telefon v olivové bedýnce. Zvedneš sluchátko – jen šum. Kdo by sem v noci volal?" } ] } ]
+              "click": [
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["klice_pult_vzaty"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Zamčené šuplíky se odemykají klíči. A klíče se ve skladu nechávají ležet na pultu.“ Linka ztichne." },
+                  { "note": "Telefon: Zamčené šuplíky se odemykají klíči. A klíče se ve skladu nechávají ležet na pultu.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["znamka_horni_vzata"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Každý voják nosí na krku známku s osobním číslem. Podívej se na figurínu.“ Linka ztichne." },
+                  { "note": "Telefon: Každý voják nosí na krku známku s osobním číslem. Podívej se na figurínu.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["bedna_zvednuta", "skrinka_otevrena"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Druhá půlka známky leží v bedně dole v regálu. Zvedej ji jako voják: rovná záda, bedna u těla.“ Linka ztichne." },
+                  { "note": "Telefon: Druhá půlka známky leží v bedně dole v regálu. Zvedej ji jako voják: rovná záda, bedna u těla.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["kalkulacka_sklad", "skrinka_otevrena"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Na slepení známky potřebuješ pásku. Je v zamčeném šuplíku pultu.“ Linka ztichne." },
+                  { "note": "Telefon: Na slepení známky potřebuješ pásku. Je v zamčeném šuplíku pultu.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notItems": ["znamka"], "notFlags": ["skrinka_otevrena"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Obě půlky známky slep páskou: vyber jednu půlku v inventáři a klikni na druhou.“ Linka ztichne." },
+                  { "note": "Telefon: Obě půlky známky slep páskou: vyber jednu půlku v inventáři a klikni na druhou.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["skrinka_otevrena"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Na slepené známce stojí, jak získat kód skříňky: poslední tři číslice osobního čísla.“ Linka ztichne." },
+                  { "note": "Telefon: Na slepené známce stojí, jak získat kód skříňky: poslední tři číslice osobního čísla.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["figurina_zmerena"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Metr ze skříňky použij na figurínu. Měř vodorovně – od značky těžiště vojáka ke značce na batohu.“ Linka ztichne." },
+                  { "note": "Telefon: Metr ze skříňky použij na figurínu. Měř vodorovně – od značky těžiště vojáka ke značce na batohu.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["stabilita_hotovo"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Plakát u figuríny: zkouška stability. Bez ní se závora na dveřích nepohne.“ Linka ztichne." },
+                  { "note": "Telefon: Plakát u figuríny: zkouška stability. Bez ní se závora na dveřích nepohne.", "noteKey": "telefon" }
+                ] },
+                { "when": {"flags": ["telefon_zvoni"]}, "do": [
+                  { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Společné těžiště: hmotnosti krát vzdálenosti, sečíst a vydělit SOUČTEM hmotností. A pak přemýšlej, kam musí voják přenést váhu, aby nespadl.“ Linka ztichne." },
+                  { "note": "Telefon: Společné těžiště: hmotnosti krát vzdálenosti, sečíst a vydělit SOUČTEM hmotností. A pak přemýšlej, kam musí voják přenést váhu, aby nespadl.", "noteKey": "telefon" }
+                ] },
+                { "do": [ { "text": "Polní telefon v olivové bedýnce. Zvedneš sluchátko – jen šum. Kdo by sem v noci volal?" } ] }
+              ]
             },
             {
               "id": "suplik_pult",
@@ -2123,7 +2210,16 @@
               "id": "boty",
               "name": "Boty",
               "area": [54, 56.5, 12.5, 10.5],
-              "click": [ { "do": [ { "text": "Vysoké kožené boty se širokou podrážkou. Čím větší plocha pod chodidly, tím jistěji stojíš. Docent by řekl: opěrná plocha." } ] } ]
+              "click": [
+                { "when": { "flags": ["postoj_hotovo"] }, "do": [
+                  { "text": "Vysoké kožené boty. Opěrnou plochu už znáš – chceš si postoj vyzkoušet znovu?" },
+                  { "activity": "postoj" }
+                ] },
+                { "do": [
+                  { "text": "Vysoké kožené boty se širokou podrážkou. Pod nimi je zastrčený lísteček s nákresem chodidel." },
+                  { "activity": "postoj" }
+                ] }
+              ]
             },
             {
               "id": "bedna",

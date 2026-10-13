@@ -690,6 +690,17 @@
     },
 
     /* Tlačítko kalkulačky: tiché pípnutí. */
+    /* Starý polní telefon: dvě krátká zvonění mechanického zvonku (rychle opakovaný úder). */
+    phoneRing(dest, t) {
+      for (const start of [0, 0.55]) {
+        for (let i = 0; i < 9; i++) {
+          const when = t + start + i * 0.042;
+          this.ping(dest, 1250 + (i % 2) * 60, when, 0.05, 0.05);
+          this.click(dest, 3200, when, 0.02);
+        }
+      }
+    },
+
     beep(dest, t) {
       this.ping(dest, 2300, t, 0.012, 0.06);
       this.click(dest, 4000, t, 0.03);

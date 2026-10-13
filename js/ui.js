@@ -592,6 +592,7 @@
       // Čas běží a ukládá se jen při hraní v místnosti (jiné okno s hrou tak postup nepřepíše).
       if (game.state && !$('room').hidden && document.visibilityState === 'visible') {
         game.tick(delta);
+        checkPhone(delta);
         sinceSave += delta;
         if (sinceSave >= 10000) {
           game.save();
@@ -599,6 +600,40 @@
         }
       }
     }, 1000);
+  }
+
+  /* ---------- Telefon s nápovědou ----------
+     Místnost může mít v game.json „phone“: { "flag", "idleSeconds", "ringEvery", "text" }.
+     Když tým „idleSeconds“ nepostoupí (nezmění se příznaky, inventář ani zápisník), nastaví se
+     příznak (telefon zvoní) a zvoní, dokud někdo nezvedne sluchátko. Co řekne, je v game.json
+     u objektu telefonu (případy podle stavu hry). Po otevření brány už nezvoní. */
+  let phoneIdle = 0;
+  let phoneSig = '';
+  let phoneRingIn = 0;
+
+  function checkPhone(delta) {
+    const cfg = game.room.phone;
+    if (!cfg || game.gateOpen()) return;
+    const st = game.state;
+    const sig = `${Object.keys(st.flags).length}|${st.inventory.join(',')}|${st.notes.length}`;
+    if (sig !== phoneSig) { phoneSig = sig; phoneIdle = 0; }
+    if (st.flags[cfg.flag]) {
+      // zvoní: opakovat zvonění (ne přes otevřené okno, aby nerušilo)
+      phoneRingIn -= delta;
+      if (phoneRingIn <= 0 && $('modal').hidden) {
+        sound.sfx(cfg.sound || 'phoneRing');
+        phoneRingIn = (cfg.ringEvery || 6) * 1000;
+      }
+      return;
+    }
+    if (!$('modal').hidden) return;
+    phoneIdle += delta;
+    if (phoneIdle >= (cfg.idleSeconds || 240) * 1000) {
+      phoneIdle = 0;
+      phoneRingIn = 0;
+      handleEvents(game.run([{ set: cfg.flag }, { text: cfg.text || 'Zazvonil telefon.' }]));
+      phoneSig = '';
+    }
   }
 
   /* ====================================================================
@@ -1463,6 +1498,7 @@
     else if (act.type === 'tape') openTape(act);
     else if (act.type === 'pack') openPack(act);
     else if (act.type === 'lift') openLift(act);
+    else if (act.type === 'stance') openStance(act);
   }
 
   function finishActivity(act, results) {
@@ -1613,7 +1649,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.9');
+          const mod = await import('./squats.js?v=0.10');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2216,6 +2252,162 @@
     });
   }
 
+  /* Postoj a opěrná plocha (pohled shora): posuvníky mění rozkročení do stran a výpad.
+     Opěrná plocha = konvexní obal obou chodidel. Strčení posune průmět těžiště o „pushCm“
+     daným směrem; voják ustojí, když průmět zůstane uvnitř opěrné plochy. Výchozí průmět těžiště
+     může být posunutý (např. batoh: „comY“ = −6 cm, tj. dozadu). Hotovo, když ustojí všechny směry. */
+  function openStance(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const K = 3;                          // px na cm
+    const C = { x: 160, y: 165 };         // střed nákresu
+    const FL = act.footLength || 26;
+    const FW = act.footWidth || 10;
+    let width = act.width0 || 20;         // vzdálenost středů chodidel do stran (cm)
+    let stagger = act.stagger0 || 0;      // výpad: o kolik je jedna noha před druhou (cm)
+    const results = {};
+    let done = false;
+
+    // body opěrné plochy (v cm; y kladné = dopředu)
+    const feet = () => {
+      const pts = [];
+      for (const [fx, fy] of [[-width / 2, stagger / 2], [width / 2, -stagger / 2]]) {
+        for (const [dx, dy] of [[-FW / 2, -FL / 2], [FW / 2, -FL / 2], [FW / 2, FL / 2], [-FW / 2, FL / 2]]) pts.push([fx + dx, fy + dy]);
+      }
+      return pts;
+    };
+    const hull = (pts) => {
+      const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+      const lower = [];
+      for (const q of p) { while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop(); lower.push(q); }
+      const upper = [];
+      for (const q of p.slice().reverse()) { while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop(); upper.push(q); }
+      return lower.slice(0, -1).concat(upper.slice(0, -1));
+    };
+    const inside = (poly, [x, y]) => poly.every((a, i) => {
+      const b = poly[(i + 1) % poly.length];
+      return (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]) >= -1e-9;
+    });
+    const toPx = ([x, y]) => [C.x + x * K, C.y - y * K];
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Postoj a opěrná plocha');
+      para(box, act.intro || '', 'question');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 320 330', class: 'pack-svg' }, wrap);
+      el('rect', { x: 0, y: 0, width: 320, height: 330, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+      el('text', { x: 160, y: 16, 'text-anchor': 'middle', 'font-size': 10, fill: '#9a9078' }, svg, 'dopředu ↑   (pohled shora)');
+      const hullEl = el('polygon', { fill: 'rgba(159,191,122,0.18)', stroke: '#9fbf7a', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg);
+      const footG = el('g', {}, svg);
+      const arrow = el('line', { stroke: '#e0805f', 'stroke-width': 3, 'marker-end': 'url(#st-tip)' }, svg);
+      const defs = el('defs', {}, svg);
+      const mk = el('marker', { id: 'st-tip', viewBox: '0 0 10 10', refX: 6, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' }, defs);
+      el('path', { d: 'M0,0 L10,5 L0,10 Z', fill: '#e0805f' }, mk);
+      const com0 = el('circle', { r: 5, fill: 'none', stroke: '#efe8d0', 'stroke-width': 1.5 }, svg);
+      const com = el('circle', { r: 6, fill: '#ffd28a', stroke: '#1a1a16' }, svg);
+      el('text', { x: 160, y: 322, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#9a9078' }, svg, act.comLabel || '● průmět těžiště   ○ bez strčení');
+
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const slider = (label, min, max, get, set) => {
+        const l = document.createElement('label');
+        l.className = 'stance-slider';
+        const t = document.createElement('span');
+        const r = document.createElement('input');
+        r.type = 'range'; r.min = min; r.max = max; r.step = 1; r.value = get();
+        const upd = () => { t.textContent = `${label}: ${get()} cm`; };
+        r.addEventListener('input', () => { if (done) return; set(Number(r.value)); for (const k of Object.keys(results)) delete results[k]; upd(); render(); });
+        upd();
+        l.append(t, r);
+        side.appendChild(l);
+      };
+      slider(act.widthLabel || 'Rozkročení do stran', act.widthMin || 10, act.widthMax || 60, () => width, (v) => { width = v; });
+      slider(act.staggerLabel || 'Výpad (jedna noha vpřed)', 0, act.staggerMax || 50, () => stagger, (v) => { stagger = v; });
+      para(side, act.pushLabel || 'Strč do vojáka:', 'muted');
+      const btnRow = document.createElement('div');
+      btnRow.className = 'stance-push';
+      side.appendChild(btnRow);
+      const list = document.createElement('ul');
+      list.className = 'stance-results';
+      side.appendChild(list);
+
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      let shown = null;   // právě předváděný směr
+      function render() {
+        const poly = hull(feet());
+        hullEl.setAttribute('points', poly.map((p) => toPx(p).join(',')).join(' '));
+        footG.innerHTML = '';
+        for (const [fx, fy] of [[-width / 2, stagger / 2], [width / 2, -stagger / 2]]) {
+          const [x, y] = toPx([fx, fy]);
+          el('rect', { x: x - (FW / 2) * K, y: y - (FL / 2) * K, width: FW * K, height: FL * K, rx: 12, fill: '#2a2620', stroke: '#8a7e62', 'stroke-width': 1.5 }, footG);
+          el('ellipse', { cx: x, cy: y - (FL / 2 - 4) * K, rx: (FW / 2 - 1) * K, ry: 3 * K, fill: '#3a352c' }, footG);
+        }
+        const base = [0, act.comY || 0];
+        const [bx, by] = toPx(base);
+        com0.setAttribute('cx', bx); com0.setAttribute('cy', by);
+        let p = base;
+        if (shown) {
+          const d = act.pushes.find((q) => q.id === shown);
+          p = [base[0] + d.dx * act.pushCm, base[1] + d.dy * act.pushCm];
+          const [ax, ay] = toPx(p);
+          arrow.setAttribute('x1', bx); arrow.setAttribute('y1', by);
+          arrow.setAttribute('x2', ax); arrow.setAttribute('y2', ay);
+          arrow.setAttribute('visibility', 'visible');
+        } else {
+          arrow.setAttribute('visibility', 'hidden');
+        }
+        const [cx, cy] = toPx(p);
+        com.setAttribute('cx', cx); com.setAttribute('cy', cy);
+        const ok = inside(poly, p);
+        com.setAttribute('fill', shown && !ok ? '#e0805f' : '#ffd28a');
+        list.innerHTML = '';
+        for (const q of act.pushes) {
+          const li = document.createElement('li');
+          li.textContent = `${q.name}: ${q.id in results ? (results[q.id] ? 'ustál ✓' : 'spadl ✗') : '–'}`;
+          if (q.id in results) li.className = results[q.id] ? 'ok' : 'bad';
+          list.appendChild(li);
+        }
+      }
+
+      for (const q of act.pushes) {
+        button(btnRow, q.name, 'btn', () => {
+          if (done) return;
+          shown = q.id;
+          const base = [0, act.comY || 0];
+          const p = [base[0] + q.dx * act.pushCm, base[1] + q.dy * act.pushCm];
+          results[q.id] = inside(hull(feet()), p);
+          sound.sfx(results[q.id] ? 'step' : 'wrong');
+          status.textContent = results[q.id] ? (q.okText || 'Ustál.') : (q.failText || 'Spadl.');
+          status.className = `feedback ${results[q.id] ? 'good' : 'bad'}`;
+          render();
+          if (act.pushes.every((r) => results[r.id])) {
+            done = true;
+            sound.sfx('unlock');
+            status.textContent = act.success || 'Ustál všechno.';
+            status.className = 'feedback good';
+            button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { postoj_sire: width, postoj_vypad: stagger }));
+          }
+        });
+      }
+      render();
+    });
+  }
+
   /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
      (pánev dozadu, ruce nad zemí, krok); bez kamery hráč jen odpoví, jak pokus dopadl. */
   function openLean(act) {
@@ -2293,7 +2485,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.9');
+          const mod = await import('./predklon.js?v=0.10');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
