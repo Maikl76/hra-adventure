@@ -2252,10 +2252,11 @@
     });
   }
 
-  /* Postoj a opěrná plocha (pohled shora): posuvníky mění rozkročení do stran a výpad.
-     Opěrná plocha = konvexní obal obou chodidel. Strčení posune průmět těžiště o „pushCm“
-     daným směrem; voják ustojí, když průmět zůstane uvnitř opěrné plochy. Výchozí průmět těžiště
-     může být posunutý (např. batoh: „comY“ = −6 cm, tj. dozadu). Hotovo, když ustojí všechny směry. */
+  /* Postoj a opěrná plocha (pohled shora). Hráč projde „rounds“ – kola s daným směrem nárazu.
+     Mezi koly mění rozkročení, výpad (kladný = levá noha vpřed, záporný = pravá) a může pokrčit
+     kolena: nižší těžiště → stejný náraz posune průmět těžiště jen o „crouchFactor“ násobek.
+     Opěrná plocha = konvexní obal obou chodidel; voják ustojí, když průmět těžiště zůstane uvnitř.
+     Výchozí průmět může být posunutý („comY“ = −6 cm: batoh). Po posledním kole účinky „done“. */
   function openStance(act) {
     const NS = 'http://www.w3.org/2000/svg';
     const el = (name, attrs, parent, text) => {
@@ -2269,12 +2270,13 @@
     const C = { x: 160, y: 165 };         // střed nákresu
     const FL = act.footLength || 26;
     const FW = act.footWidth || 10;
-    let width = act.width0 || 20;         // vzdálenost středů chodidel do stran (cm)
-    let stagger = act.stagger0 || 0;      // výpad: o kolik je jedna noha před druhou (cm)
-    const results = {};
+    let width = act.width0 || 16;         // vzdálenost středů chodidel do stran (cm)
+    let stagger = 0;                      // výpad: kladný = levá noha vpřed (cm)
+    let crouch = false;
+    let round = 0;
+    let pushed = false;                   // v tomto kole už se strkalo (ukázat šipku posunu)
     let done = false;
 
-    // body opěrné plochy (v cm; y kladné = dopředu)
     const feet = () => {
       const pts = [];
       for (const [fx, fy] of [[-width / 2, stagger / 2], [width / 2, -stagger / 2]]) {
@@ -2296,6 +2298,13 @@
       return (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]) >= -1e-9;
     });
     const toPx = ([x, y]) => [C.x + x * K, C.y - y * K];
+    const base = () => [0, act.comY || 0];
+    const target = () => {
+      const r = act.rounds[round];
+      const n = Math.hypot(r.dir[0], r.dir[1]) || 1;
+      const k = r.push * (crouch ? (act.crouchFactor || 0.7) : 1);
+      return [base()[0] + (r.dir[0] / n) * k, base()[1] + (r.dir[1] / n) * k];
+    };
 
     openModal((box) => {
       box.classList.add('activity-box', 'pack-box');
@@ -2305,65 +2314,86 @@
       wrap.className = 'pack-wrap';
       box.appendChild(wrap);
       const svg = el('svg', { viewBox: '0 0 320 330', class: 'pack-svg' }, wrap);
+      const defs = el('defs', {}, svg);
+      for (const [id, col] of [['st-tip', '#e0805f'], ['st-in', '#e6c67e']]) {
+        const mk = el('marker', { id, viewBox: '0 0 10 10', refX: 6, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' }, defs);
+        el('path', { d: 'M0,0 L10,5 L0,10 Z', fill: col }, mk);
+      }
       el('rect', { x: 0, y: 0, width: 320, height: 330, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
       el('text', { x: 160, y: 16, 'text-anchor': 'middle', 'font-size': 10, fill: '#9a9078' }, svg, 'dopředu ↑   (pohled shora)');
       const hullEl = el('polygon', { fill: 'rgba(159,191,122,0.18)', stroke: '#9fbf7a', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg);
       const footG = el('g', {}, svg);
+      const force = el('line', { stroke: '#e6c67e', 'stroke-width': 5, 'marker-end': 'url(#st-in)', opacity: 0.85 }, svg);
+      const forceText = el('text', { 'font-size': 10, fill: '#e6c67e', 'text-anchor': 'middle' }, svg, 'náraz');
       const arrow = el('line', { stroke: '#e0805f', 'stroke-width': 3, 'marker-end': 'url(#st-tip)' }, svg);
-      const defs = el('defs', {}, svg);
-      const mk = el('marker', { id: 'st-tip', viewBox: '0 0 10 10', refX: 6, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' }, defs);
-      el('path', { d: 'M0,0 L10,5 L0,10 Z', fill: '#e0805f' }, mk);
       const com0 = el('circle', { r: 5, fill: 'none', stroke: '#efe8d0', 'stroke-width': 1.5 }, svg);
       const com = el('circle', { r: 6, fill: '#ffd28a', stroke: '#1a1a16' }, svg);
-      el('text', { x: 160, y: 322, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#9a9078' }, svg, act.comLabel || '● průmět těžiště   ○ bez strčení');
+      el('text', { x: 160, y: 322, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#9a9078' }, svg, act.comLabel || '● průmět těžiště   ○ bez nárazu');
 
       const side = document.createElement('div');
       side.className = 'lift-side';
       wrap.appendChild(side);
-      const slider = (label, min, max, get, set) => {
+      const roundEl = para(side, '', 'lean-step');
+      const sliders = [];
+      const slider = (min, max, get, set, label) => {
         const l = document.createElement('label');
         l.className = 'stance-slider';
         const t = document.createElement('span');
         const r = document.createElement('input');
         r.type = 'range'; r.min = min; r.max = max; r.step = 1; r.value = get();
-        const upd = () => { t.textContent = `${label}: ${get()} cm`; };
-        r.addEventListener('input', () => { if (done) return; set(Number(r.value)); for (const k of Object.keys(results)) delete results[k]; upd(); render(); });
+        const upd = () => { t.textContent = label(get()); };
+        r.addEventListener('input', () => { if (done) return; set(Number(r.value)); pushed = false; upd(); render(); });
         upd();
         l.append(t, r);
         side.appendChild(l);
+        sliders.push(upd);
       };
-      slider(act.widthLabel || 'Rozkročení do stran', act.widthMin || 10, act.widthMax || 60, () => width, (v) => { width = v; });
-      slider(act.staggerLabel || 'Výpad (jedna noha vpřed)', 0, act.staggerMax || 50, () => stagger, (v) => { stagger = v; });
-      para(side, act.pushLabel || 'Strč do vojáka:', 'muted');
-      const btnRow = document.createElement('div');
-      btnRow.className = 'stance-push';
-      side.appendChild(btnRow);
+      slider(act.widthMin || 10, act.widthMax || 45, () => width, (v) => { width = v; }, (v) => `Rozkročení do stran: ${v} cm`);
+      const sm = act.staggerMax || 40;
+      slider(-sm, sm, () => stagger, (v) => { stagger = v; },
+        (v) => (v === 0 ? 'Výpad: chodidla vedle sebe' : `Výpad: ${v > 0 ? 'levá' : 'pravá'} noha vpřed o ${Math.abs(v)} cm`));
+      const crouchBtn = button(side, act.crouchLabel || 'Pokrčit kolena (nižší těžiště)', 'btn lift-posture', () => {
+        if (done) return;
+        crouch = !crouch;
+        pushed = false;
+        sound.sfx('step');
+        render();
+      });
+      const pushBtn = button(side, act.pushLabel || 'Strč!', 'btn primary', () => push());
       const list = document.createElement('ul');
       list.className = 'stance-results';
       side.appendChild(list);
-
       const status = para(box, '', 'feedback');
       const actions = document.createElement('div');
       actions.className = 'squat-buttons';
       box.appendChild(actions);
 
-      let shown = null;   // právě předváděný směr
       function render() {
+        const r = act.rounds[Math.min(round, act.rounds.length - 1)];
+        roundEl.textContent = done ? (act.allDone || 'Všechna kola zvládnutá.') : `Kolo ${round + 1}/${act.rounds.length}: ${r.name}`;
         const poly = hull(feet());
         hullEl.setAttribute('points', poly.map((p) => toPx(p).join(',')).join(' '));
         footG.innerHTML = '';
         for (const [fx, fy] of [[-width / 2, stagger / 2], [width / 2, -stagger / 2]]) {
           const [x, y] = toPx([fx, fy]);
-          el('rect', { x: x - (FW / 2) * K, y: y - (FL / 2) * K, width: FW * K, height: FL * K, rx: 12, fill: '#2a2620', stroke: '#8a7e62', 'stroke-width': 1.5 }, footG);
+          el('rect', { x: x - (FW / 2) * K, y: y - (FL / 2) * K, width: FW * K, height: FL * K, rx: 12, fill: crouch ? '#36302a' : '#2a2620', stroke: '#8a7e62', 'stroke-width': 1.5 }, footG);
           el('ellipse', { cx: x, cy: y - (FL / 2 - 4) * K, rx: (FW / 2 - 1) * K, ry: 3 * K, fill: '#3a352c' }, footG);
         }
-        const base = [0, act.comY || 0];
-        const [bx, by] = toPx(base);
+        // šipka nárazu: přichází zvenku ve směru „dir“ k vojákovi
+        const n = Math.hypot(r.dir[0], r.dir[1]) || 1;
+        const ux = r.dir[0] / n, uy = r.dir[1] / n;
+        const [bx, by] = toPx(base());
+        const f1 = [bx - ux * 140, by + uy * 140];
+        const f2 = [bx - ux * 62, by + uy * 62];
+        force.setAttribute('x1', f1[0]); force.setAttribute('y1', f1[1]);
+        force.setAttribute('x2', f2[0]); force.setAttribute('y2', f2[1]);
+        forceText.setAttribute('x', f1[0]); forceText.setAttribute('y', f1[1] - 6);
+        force.setAttribute('visibility', done ? 'hidden' : 'visible');
+        forceText.setAttribute('visibility', done ? 'hidden' : 'visible');
         com0.setAttribute('cx', bx); com0.setAttribute('cy', by);
-        let p = base;
-        if (shown) {
-          const d = act.pushes.find((q) => q.id === shown);
-          p = [base[0] + d.dx * act.pushCm, base[1] + d.dy * act.pushCm];
+        let p = base();
+        if (pushed && !done) {
+          p = target();
           const [ax, ay] = toPx(p);
           arrow.setAttribute('x1', bx); arrow.setAttribute('y1', by);
           arrow.setAttribute('x2', ax); arrow.setAttribute('y2', ay);
@@ -2373,36 +2403,53 @@
         }
         const [cx, cy] = toPx(p);
         com.setAttribute('cx', cx); com.setAttribute('cy', cy);
-        const ok = inside(poly, p);
-        com.setAttribute('fill', shown && !ok ? '#e0805f' : '#ffd28a');
+        com.setAttribute('fill', pushed && !inside(poly, p) ? '#e0805f' : '#ffd28a');
+        crouchBtn.classList.toggle('selected', crouch);
+        crouchBtn.textContent = crouch ? (act.crouchOn || 'Kolena pokrčená ✓') : (act.crouchLabel || 'Pokrčit kolena (nižší těžiště)');
+        pushBtn.disabled = done;
         list.innerHTML = '';
-        for (const q of act.pushes) {
+        act.rounds.forEach((q, i) => {
           const li = document.createElement('li');
-          li.textContent = `${q.name}: ${q.id in results ? (results[q.id] ? 'ustál ✓' : 'spadl ✗') : '–'}`;
-          if (q.id in results) li.className = results[q.id] ? 'ok' : 'bad';
+          li.textContent = `${q.name}: ${i < round || done ? 'ustál ✓' : i === round ? 'teď' : '–'}`;
+          if (i < round || done) li.className = 'ok';
           list.appendChild(li);
-        }
+        });
       }
 
-      for (const q of act.pushes) {
-        button(btnRow, q.name, 'btn', () => {
-          if (done) return;
-          shown = q.id;
-          const base = [0, act.comY || 0];
-          const p = [base[0] + q.dx * act.pushCm, base[1] + q.dy * act.pushCm];
-          results[q.id] = inside(hull(feet()), p);
-          sound.sfx(results[q.id] ? 'step' : 'wrong');
-          status.textContent = results[q.id] ? (q.okText || 'Ustál.') : (q.failText || 'Spadl.');
-          status.className = `feedback ${results[q.id] ? 'good' : 'bad'}`;
-          render();
-          if (act.pushes.every((r) => results[r.id])) {
-            done = true;
-            sound.sfx('unlock');
-            status.textContent = act.success || 'Ustál všechno.';
-            status.className = 'feedback good';
-            button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { postoj_sire: width, postoj_vypad: stagger }));
+      function push() {
+        if (done) return;
+        const r = act.rounds[round];
+        pushed = true;
+        const ok = inside(hull(feet()), target());
+        render();
+        if (!ok) {
+          sound.sfx('wrong');
+          // rada: kolo může mít zvláštní text pro případ, kdy by pomohl podřep
+          let tip = r.failText || 'Spadl.';
+          if (!crouch && r.crouchHint) {
+            crouch = true;
+            const would = inside(hull(feet()), target());
+            crouch = false;
+            if (would) tip = r.crouchHint;
           }
-        });
+          status.textContent = tip;
+          status.className = 'feedback bad';
+          return;
+        }
+        sound.sfx('step');
+        status.textContent = r.okText || 'Ustál.';
+        status.className = 'feedback good';
+        round += 1;
+        if (round >= act.rounds.length) {
+          done = true;
+          sound.sfx('unlock');
+          status.textContent = act.success || 'Ustál všechno.';
+          render();
+          button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, {}));
+          return;
+        }
+        // další kolo: krátce nechat vidět, že ustál, pak ukázat nový náraz
+        setTimeout(() => { pushed = false; render(); }, 1100);
       }
       render();
     });

@@ -506,9 +506,8 @@
         { "set": "kalkulacka_sklad" },
         { "remove": "klice_pult" },
         { "sound": "unlockDrawer" },
-        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede. Mezi formuláři leží stará školní kalkulačka a role lepicí pásky. Bereš obojí. (Kalkulačka se otevře dvojím kliknutím v inventáři.)" },
-        { "give": "kalkulacka" },
-        { "give": "paska" }
+        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede. Mezi formuláři leží stará školní kalkulačka. Bereš ji. (V inventáři na ni klikni dvakrát a otevře se.)" },
+        { "give": "kalkulacka" }
       ]
     },
     {
@@ -1868,33 +1867,41 @@
         "postoj": {
           "type": "stance",
           "title": "Postoj a opěrná plocha",
-          "intro": "Vedle bot leží lísteček: „Voják s plnou polní musí ustát i strčení. Najdi postoj, ve kterém ustojí strčení zboku, zepředu i zezadu.“ Nákres ukazuje chodidla shora a průmět těžiště vojáka s batohem – kvůli batohu je 6 cm za středem. Posuvníky měň postoj a pak do vojáka strč.",
+          "intro": "Pod botami je lísteček: „Kdo ustojí čtyři nárazy, najde v botě, co potřebuje.“ Nákres ukazuje chodidla vojáka s plnou polní shora a průmět jeho těžiště – kvůli batohu je 6 cm za středem. Před každým nárazem uprav postoj: rozkročení, výpad (kterou nohou vpřed) a případně pokrč kolena. Pak strč.",
           "comY": -6,
-          "pushCm": 14,
+          "crouchFactor": 0.7,
           "width0": 16,
-          "stagger0": 0,
           "widthMin": 10,
-          "widthMax": 60,
-          "staggerMax": 55,
-          "widthLabel": "Rozkročení do stran",
-          "staggerLabel": "Výpad (jedna noha vpřed)",
-          "pushLabel": "Strč do vojáka:",
-          "comLabel": "● průmět těžiště (s batohem)   ○ bez strčení",
-          "pushes": [
-            { "id": "bok", "name": "Zboku", "dx": 1, "dy": 0,
-              "okText": "Zboku ustál.",
-              "failText": "Spadl do strany – průmět těžiště vyjel z opěrné plochy. Rozkroč se víc do stran." },
-            { "id": "zepredu", "name": "Zepředu", "dx": 0, "dy": -1,
-              "okText": "Zepředu ustál – zadní noha ho zachytila.",
-              "failText": "Spadl dozadu! Batoh už těžiště posunul dozadu a strčení ho vytlačilo za paty. Rozkročení do stran tady nepomůže – zkus dát jednu nohu dozadu (výpad)." },
-            { "id": "zezadu", "name": "Zezadu", "dx": 0, "dy": 1,
-              "okText": "Zezadu ustál.",
-              "failText": "Spadl dopředu – průmět těžiště vyjel před špičky." }
+          "widthMax": 45,
+          "staggerMax": 40,
+          "crouchLabel": "Pokrčit kolena (nižší těžiště)",
+          "crouchOn": "Kolena pokrčená – těžiště je níž ✓",
+          "pushLabel": "Strč!",
+          "comLabel": "● průmět těžiště (s batohem)   ○ bez nárazu",
+          "rounds": [
+            { "name": "Náraz zleva", "dir": [1, 0], "push": 16,
+              "okText": "Ustál! Opěrná plocha je dost široká do strany, odkud přišel náraz. Teď přijde další.",
+              "failText": "Spadl do strany – průmět těžiště vyjel z opěrné plochy. Rozkroč se víc." },
+            { "name": "Náraz zepředu", "dir": [0, -1], "push": 14,
+              "okText": "Ustál – zadní noha ho zachytila. Další náraz přijde odjinud.",
+              "failText": "Spadl dozadu! Batoh už těžiště posunul za střed a náraz ho vytlačil za paty. Rozkročení do stran tady nepomůže – dej jednu nohu dozadu (výpad).",
+              "crouchHint": "Spadl dozadu – ale málem to šlo. Zkus pokrčit kolena: s nižším těžištěm tě stejný náraz vychýlí méně." },
+            { "name": "Náraz šikmo zepředu zprava", "dir": [-1, -1], "push": 18,
+              "okText": "Ustál! Spojnice chodidel vede ve směru nárazu.",
+              "failText": "Spadl šikmo dozadu doleva. Opěrná plocha musí být dlouhá právě v tomhle směru – kterou nohu dát vpřed, aby zadní noha stála vlevo vzadu?",
+              "crouchHint": "Těsně to nevyšlo. Pokrčená kolena by pomohla – nižší těžiště = menší vychýlení." },
+            { "name": "Silný náraz šikmo zepředu zleva", "dir": [1, -1], "push": 30,
+              "okText": "Ustál i silný náraz!",
+              "failText": "Spadl šikmo dozadu doprava. Teď potřebuješ zadní nohu vpravo vzadu – a na tak silný náraz i nižší těžiště.",
+              "crouchHint": "Postoj je dobrý, ale náraz je silný. Pokrč kolena – nižší těžiště tě udrží." }
           ],
-          "success": "Ustál všechno! Opěrná plocha musí být velká ve směru, odkud přichází síla: do stran pomáhá rozkročení, dopředu a dozadu výpad. Proto vojáci – ale i judisté nebo hokejisté – stojí v širokém postoji s jednou nohou vpředu.",
+          "allDone": "Všechny čtyři nárazy ustál!",
+          "success": "Ustál všechny nárazy! Opěrná plocha musí být dlouhá ve směru, odkud přichází síla – podle něj se mění rozkročení i to, která noha je vpředu. A s pokrčenými koleny (nižší těžiště) tě stejná síla vychýlí méně.",
           "done": [
             { "set": "postoj_hotovo" },
-            { "note": "Postoj: opěrná plocha musí být velká ve směru síly – rozkročení chrání do stran, výpad dopředu a dozadu. Ustál jsem v postoji {postoj_sire} cm do stran a {postoj_vypad} cm výpad.", "noteKey": "postoj" }
+            { "text": "Z pravé boty vytáhneš roli široké lepicí pásky. Vojáci si jí lepí paty proti puchýřům – a docent si ji tu nechal schválně." },
+            { "give": "paska" },
+            { "note": "Postoj: opěrná plocha musí být dlouhá ve směru síly (rozkročení do stran, výpad dopředu a dozadu – podle směru nárazu, kterou nohou vpřed). Pokrčená kolena = nižší těžiště = menší vychýlení.", "noteKey": "postoj" }
           ]
         },
         "zvedani": {
@@ -1996,7 +2003,7 @@
               "wrong": "Kolečka se protočila naprázdno. Tohle číslo to není.",
               "hints": [
                 "Jaká „známka“ se nosí na krku? Každý voják ji má – s osobním číslem.",
-                "Psí známka na figuríně je přelomená. Dolní půlka je ve spodní bedně v regálu (zvedni ji správně), lepicí páska v zamčeném šuplíku pultu (klíče leží na pultu).",
+                "Psí známka na figuríně je přelomená. Dolní půlka je ve spodní bedně v regálu (zvedni ji správně), lepicí pásku získáš z bot vedle regálu (ustoj čtyři nárazy).",
                 "Na slepené známce je osobní číslo 4719-0372 a vzkaz „Skříňka = poslední tři“. Kód je 372."
               ],
               "success": "Cvak."
@@ -2093,10 +2100,10 @@
                   { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Druhá půlka známky leží v bedně dole v regálu. Zvedej ji jako voják: rovná záda, bedna u těla.“ Linka ztichne." },
                   { "note": "Telefon: Druhá půlka známky leží v bedně dole v regálu. Zvedej ji jako voják: rovná záda, bedna u těla.", "noteKey": "telefon" }
                 ] },
-                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["kalkulacka_sklad", "skrinka_otevrena"]}, "do": [
+                { "when": {"flags": ["telefon_zvoni"], "notFlags": ["postoj_hotovo", "skrinka_otevrena"]}, "do": [
                   { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
-                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Na slepení známky potřebuješ pásku. Je v zamčeném šuplíku pultu.“ Linka ztichne." },
-                  { "note": "Telefon: Na slepení známky potřebuješ pásku. Je v zamčeném šuplíku pultu.", "noteKey": "telefon" }
+                  { "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Na slepení známky potřebuješ pásku. Je v botě u regálu – ale napřed musíš ustát čtyři nárazy. Postoj měň podle směru nárazu.“ Linka ztichne." },
+                  { "note": "Telefon: Na slepení známky potřebuješ pásku. Je v botě u regálu – ale napřed musíš ustát čtyři nárazy. Postoj měň podle směru nárazu.", "noteKey": "telefon" }
                 ] },
                 { "when": {"flags": ["telefon_zvoni"], "notItems": ["znamka"], "notFlags": ["skrinka_otevrena"]}, "do": [
                   { "unset": "telefon_zvoni" }, { "hint": true }, { "sound": "paper" },
@@ -2212,11 +2219,11 @@
               "area": [54, 56.5, 12.5, 10.5],
               "click": [
                 { "when": { "flags": ["postoj_hotovo"] }, "do": [
-                  { "text": "Vysoké kožené boty. Opěrnou plochu už znáš – chceš si postoj vyzkoušet znovu?" },
+                  { "text": "Vysoké kožené boty – pásku z nich už máš. Chceš si nárazy vyzkoušet znovu?" },
                   { "activity": "postoj" }
                 ] },
                 { "do": [
-                  { "text": "Vysoké kožené boty se širokou podrážkou. Pod nimi je zastrčený lísteček s nákresem chodidel." },
+                  { "text": "Vysoké kožené boty se širokou podrážkou. V pravé botě něco je – ale pod botami je zastrčený lísteček s nákresem chodidel a docentovým vzkazem." },
                   { "activity": "postoj" }
                 ] }
               ]

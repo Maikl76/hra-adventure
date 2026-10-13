@@ -59,8 +59,9 @@ Každý svět bude mít vlastních devět bran.
 - **Zvedání bedny (sklad):** hráč volí držení těla a tahem posouvá bednu blíž k tělu; vidí moment
   v bedrech a sílu zádových svalů na krátkém rameni (aktivita `"lift"`). Bednu zvedne jen
   s rovnými zády a blízko těla.
-- **Postoj a opěrná plocha (sklad, boty):** pohled shora na chodidla; hráč mění rozkročení a výpad
-  a „strčí“ do vojáka s batohem zboku, zepředu a zezadu (aktivita `"stance"`, nepovinná).
+- **Postoj a opěrná plocha (sklad, boty):** pohled shora na chodidla vojáka s batohem; čtyři nárazy
+  z různých směrů (i šikmo), před každým je potřeba upravit rozkročení, výpad (kterou nohou vpřed)
+  a případně pokrčit kolena (aktivita `"stance"`). Odměnou je lepicí páska na slepení známky.
 - **Polní telefon (sklad):** když tým několik minut nepostoupí, telefon zazvoní a „docent“ napoví
   podle toho, kde tým je; nápověda se počítá do statistik (`"phone"` u místnosti, `{ "hint": true }`).
 - Kdo má v systému zapnuté „omezit pohyb“, nevidí prach ani přiblížení.
