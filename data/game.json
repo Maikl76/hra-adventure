@@ -14,8 +14,8 @@
 
   "intro": {
     "lines": [
-      { "at": 1.5,  "until": 6.5,  "text": "Fakulta. Noc." },
-      { "at": 7.5,  "until": 13.0, "text": "Docent, který tu léta učil biomechaniku, zmizel před třemi dny." },
+      { "at": 1.5,  "until": 6.5,  "text": "Fakulta" },
+      { "at": 7.5,  "until": 13.0, "text": "Docent, který tady léta učil, zmizel před třemi dny." },
       { "at": 14.0, "until": 19.5, "text": "Ve svém kabinetu zanechal jedinou větu:" },
       { "at": 20.5, "until": 27.5, "text": "„Devět bran. Otevřou se jen těm, kdo pohybu skutečně rozumějí.“" }
     ],
