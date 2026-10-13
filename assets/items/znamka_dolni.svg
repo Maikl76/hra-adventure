@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: dolní půlka přelomené psí známky -->
+  <path d="M14,30 L19,27 L25,32 L31,26 L38,32 L44,27 L50,31 L50,48 Q50,52 46,52 L18,52 Q14,52 14,48 Z" fill="#c9c6b8" stroke="#5e5b50" stroke-width="1.5"/>
+  <g fill="#4a4840"><rect x="20" y="37" width="24" height="2.5" rx="1"/><rect x="20" y="43" width="18" height="2.5" rx="1"/></g>
+</svg>

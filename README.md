@@ -63,6 +63,8 @@ Každý svět bude mít vlastních devět bran.
 - Klikání na předměty v místnosti; šipky **‹ ›** (nebo klávesy ← →) = otočit se v místnosti.
 - Předmět z inventáře vybereš kliknutím a použiješ ho kliknutím na předmět v místnosti;
   druhým kliknutím na předmět v inventáři si ho prohlédneš (knihu otevřeš a listuješ v ní).
+- Dva předměty spojíš tak, že vybereš jeden a klikneš na druhý (např. půlky psí známky a páska
+  ve skladu).
 - **Zápisník** si pamatuje zjištěné údaje, **Baterka/Rozsvíceno** přepíná tmu, **Zvuk** vypíná zvuk.
 - **Kalkulačku** najdeš v kabinetu. Otevře se jako okno, které jde přesunout a zůstává otevřené
   i nad zámkem brány; výsledek se dá jedním tlačítkem přenést do zámku.

@@ -238,6 +238,35 @@
         ]
       }
     },
+    "znamka_horni": {
+      "name": "Horní půlka známky",
+      "icon": "assets/items/znamka_horni.svg",
+      "description": "Horní půlka přelomené psí známky na řetízku. Druhá půlka chybí.",
+      "closeup": { "note": "OS. Č. 47……\nKREV. SK. ……\n\n(na zadní straně:)\nSKŘÍŇKA = ……", "font": "type", "caption": "Horní půlka psí známky" }
+    },
+    "znamka_dolni": {
+      "name": "Dolní půlka známky",
+      "icon": "assets/items/znamka_dolni.svg",
+      "description": "Dolní půlka přelomené psí známky. Lom je zubatý – musí k ní pasovat druhá půlka.",
+      "closeup": { "note": "……19-0372\n……A+\n\n(na zadní straně:)\n……POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Dolní půlka psí známky" }
+    },
+    "paska": {
+      "name": "Lepicí páska",
+      "icon": "assets/items/paska.svg",
+      "description": "Role široké lepicí pásky. Drží, co se dá – snad i kov."
+    },
+    "znamka": {
+      "name": "Psí známka",
+      "icon": "assets/items/znamka.svg",
+      "description": "Slepená psí známka. Přes zlom drží páska, číslo i vzkaz jsou zase celé.",
+      "closeup": { "note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Slepená psí známka" },
+      "examine": [
+        { "when": { "notFlags": ["znamka_prectena"] }, "do": [
+          { "set": "znamka_prectena" },
+          { "note": "Slepená psí známka: os. č. 4719-0372, „Skříňka = poslední tři“." }
+        ] }
+      ]
+    },
     "klice_pult": {
       "name": "Klíče od pultu",
       "icon": "assets/items/klice_pult.svg",
@@ -477,8 +506,10 @@
         { "set": "kalkulacka_sklad" },
         { "remove": "klice_pult" },
         { "sound": "unlockDrawer" },
-        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede – formuláře k výdeji, razítková barva a stará školní kalkulačka. Bereš ji. (V inventáři na ni klikni dvakrát a otevře se.)" },
-        { "give": "kalkulacka" }
+        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede. Mezi formuláři leží stará školní kalkulačka, role lepicí pásky a kousek kovu se zubatým okrajem – dolní půlka psí známky. Bereš všechno. (Kalkulačka se otevře dvojím kliknutím v inventáři.)" },
+        { "give": "kalkulacka" },
+        { "give": "paska" },
+        { "give": "znamka_dolni" }
       ]
     },
     {
@@ -503,7 +534,43 @@
     }
   ],
 
-  "combinations": [],
+  "combinations": [
+    {
+      "items": ["znamka_horni", "znamka_dolni"],
+      "when": { "items": ["paska"] },
+      "do": [
+        { "remove": "znamka_horni" }, { "remove": "znamka_dolni" }, { "remove": "paska" },
+        { "sound": "paper" },
+        { "text": "Přiložíš půlky k sobě – zubatý lom do sebe přesně zapadne – a přelepíš ho páskou. Známka drží. Číslo i vzkaz na zadní straně jsou zase celé." },
+        { "give": "znamka" },
+        { "set": "znamka_prectena" },
+        { "note": "Slepená psí známka: os. č. 4719-0372, „Skříňka = poslední tři“." },
+        { "closeup": { "note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Slepená psí známka" } }
+      ]
+    },
+    {
+      "items": ["znamka_horni", "znamka_dolni"],
+      "do": [ { "text": "Půlky k sobě pasují, zubatý lom do sebe zapadne. Jenže jakmile je pustíš, rozpadnou se. Potřebuješ něco, co je udrží pohromadě." } ]
+    },
+    {
+      "items": ["paska", "znamka_horni"],
+      "when": { "items": ["znamka_dolni"] },
+      "do": [{"remove": "znamka_horni"}, {"remove": "znamka_dolni"}, {"remove": "paska"}, {"sound": "paper"}, {"text": "Přiložíš půlky k sobě – zubatý lom do sebe přesně zapadne – a přelepíš ho páskou. Známka drží. Číslo i vzkaz na zadní straně jsou zase celé."}, {"give": "znamka"}, {"set": "znamka_prectena"}, {"note": "Slepená psí známka: os. č. 4719-0372, „Skříňka = poslední tři“."}, {"closeup": {"note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Slepená psí známka"}}]
+    },
+    {
+      "items": ["paska", "znamka_dolni"],
+      "when": { "items": ["znamka_horni"] },
+      "do": [{"remove": "znamka_horni"}, {"remove": "znamka_dolni"}, {"remove": "paska"}, {"sound": "paper"}, {"text": "Přiložíš půlky k sobě – zubatý lom do sebe přesně zapadne – a přelepíš ho páskou. Známka drží. Číslo i vzkaz na zadní straně jsou zase celé."}, {"give": "znamka"}, {"set": "znamka_prectena"}, {"note": "Slepená psí známka: os. č. 4719-0372, „Skříňka = poslední tři“."}, {"closeup": {"note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Slepená psí známka"}}]
+    },
+    {
+      "items": ["paska", "znamka_horni"],
+      "do": [ { "text": "Přelepit jednu půlku páskou nemá smysl. Druhá půlka známky musí být někde ve skladu." } ]
+    },
+    {
+      "items": ["paska", "znamka_dolni"],
+      "do": [ { "text": "Přelepit jednu půlku páskou nemá smysl. Horní půlka asi pořád visí tam, kde známka byla – na figuríně." } ]
+    }
+  ],
 
   "rooms": {
     "kabinet": {
@@ -1864,8 +1931,8 @@
               "wrong": "Kolečka se protočila naprázdno. Tohle číslo to není.",
               "hints": [
                 "Jaká „známka“ se nosí na krku? Každý voják ji má – s osobním číslem.",
-                "Psí známka visí na krku figuríny s batohem.",
-                "Na známce je osobní číslo 4719-0372 a vzkaz „Skříňka = poslední tři“. Kód je 372."
+                "Psí známka na figuríně je přelomená. Dolní půlka je v zamčeném šuplíku pultu (klíče leží na pultu). Obě půlky slep páskou ze šuplíku.",
+                "Na slepené známce je osobní číslo 4719-0372 a vzkaz „Skříňka = poslední tři“. Kód je 372."
               ],
               "success": "Cvak."
             }
@@ -2092,12 +2159,16 @@
               "id": "znamka",
               "name": "Psí známka",
               "area": [49.6, 28.6, 2.8, 5.8],
-              "click": [ { "do": [
-                { "sound": "pickup" },
-                { "text": "Na krku figuríny visí na řetízku psí známka. Otočíš ji v prstech." },
-                { "closeup": { "note": "OS. Č. 4719-0372\nKREV. SK. A+\n\n(na zadní straně vyryto:)\nSKŘÍŇKA = POSLEDNÍ TŘI\n– D.", "font": "type", "caption": "Psí známka" } },
-                { "note": "Psí známka figuríny: os. č. 4719-0372, „Skříňka = poslední tři“." }
-              ] } ]
+              "click": [
+                { "when": { "notFlags": ["znamka_horni_vzata"] }, "do": [
+                  { "set": "znamka_horni_vzata" },
+                  { "text": "Na krku figuríny visí na řetízku psí známka – jenže jen horní půlka. Je přelomená, jak se to s vojenskými známkami dělá. Druhá půlka chybí. Sundáš ji." },
+                  { "give": "znamka_horni" },
+                  { "closeup": { "note": "OS. Č. 47……\nKREV. SK. ……\n\n(na zadní straně:)\nSKŘÍŇKA = ……", "font": "type", "caption": "Horní půlka psí známky" } },
+                  { "note": "Psí známka na figuríně je přelomená: horní půlka „OS. Č. 47…“, „SKŘÍŇKA = …“. Dolní půlka chybí." }
+                ] },
+                { "do": [ { "text": "Na krku figuríny visí už jen prázdný řetízek." } ] }
+              ]
             },
             {
               "id": "podstavec",
