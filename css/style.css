@@ -223,6 +223,11 @@ button:focus-visible, input:focus-visible {
 .link { background: none; border: 0; color: var(--muted); }
 .link:hover { color: var(--gold-bright); }
 
+/* Odkaz pro vyučující (?mistnost=…): upozornění na titulní obrazovce, jediný svět v nabídce */
+.shortcut-note { max-width: 520px; margin: 24px auto 0; padding: 10px 14px; border: 1px dashed var(--gold-dim); border-radius: var(--radius); color: var(--gold-bright); font-size: 15px; line-height: 1.45; }
+.tracks.single { grid-template-columns: minmax(0, 380px); justify-content: center; }
+.track-all { display: block; margin: 10px auto 0; font-size: 14px; }
+
 /* ---------- Místnost ---------- */
 
 #room {

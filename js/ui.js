@@ -14,6 +14,7 @@
   let calc = null;           // kalkulačka (calc.js)
   let selectedItem = null;   // id vybraného předmětu z inventáře
   let flashlightOn = true;   // baterka (tma kolem) / rozsvíceno
+  let shortcut = null;       // odkaz pro vyučující ?mistnost=… { track, roomId, label } (null = bez zkratky)
   const newItems = new Set(); // předměty, které se mají v inventáři zvýraznit
 
   /* ====================================================================
@@ -42,6 +43,7 @@
     game = new Game(data);
     const problems = game.validate();
     if (problems.length) console.warn('Problémy v data/game.json:\n' + problems.join('\n'));
+    shortcut = readShortcut();
 
     const audioConfig = data.audio || {};
     sound = new Sound(audioConfig);
@@ -53,6 +55,28 @@
     setupScene();
     startClock();
     showEnter();
+  }
+
+  /* Označení místnosti pro texty: „LEVEL 2 – Skokanská aréna“, „Brána I – Výstrojní sklad“. */
+  const roomLabel = (room) => `${room.gateLabel || `Brána ${room.gateNumber || ''}`} – ${room.name}`;
+
+  /* Odkaz pro vyučující: …/?mistnost=<id> – nová hra začne rovnou v dané místnosti (např.
+     ?mistnost=arena = GSPORT LEVEL 2, když tým LEVEL 1 dohrál minule nebo na jiném počítači).
+     V nabídce je pak jen svět, kam místnost patří. */
+  function readShortcut() {
+    let id = null;
+    try {
+      id = new URLSearchParams(location.search).get('mistnost');
+    } catch (e) {
+      return null;
+    }
+    if (!id) return null;
+    const track = data.tracks.find((t) => t.rooms.includes(id));
+    if (!track) {
+      console.warn(`Odkaz ?mistnost=${id}: taková místnost ve hře není.`);
+      return null;
+    }
+    return { track, roomId: id, label: roomLabel(data.rooms[id]) };
   }
 
   /* Podkres pro jednotlivé obrazovky (místnost si ho určuje sama v game.json). */
@@ -105,10 +129,12 @@
     $('game-subtitle').textContent = data.meta.subtitle || '';
     $('version').textContent = data.meta.version ? `verze ${data.meta.version}` : '';
 
-    $('btn-continue').addEventListener('click', () => continueGame());
+    $('btn-continue').addEventListener('click', () => continueGame(shortcut ? shortcut.track.id : undefined));
     $('btn-new').addEventListener('click', showTrack);
     $('btn-intro').addEventListener('click', () => playIntro(showTitle));
     $('track-back').addEventListener('click', showTitle);
+    // ze zkratky zpět na běžnou hru (adresa bez ?mistnost=…)
+    $('track-all').addEventListener('click', () => { location.href = location.pathname; });
     $('btn-again').addEventListener('click', () => { Game.clearSave(); showTitle(); });
 
     $('btn-notes').addEventListener('click', openNotes);
@@ -134,11 +160,14 @@
     document.addEventListener('keydown', onKeyDown);
   }
 
-  /* Karty světů (Civilní / Vojenská / GSPORT); rozehraný svět jde dohrát nebo začít znovu. */
+  /* Karty světů (Civilní / Vojenská / GSPORT); rozehraný svět jde dohrát nebo začít znovu.
+     Se zkratkou pro vyučující jen svět dané místnosti a nová hra začne v ní. */
   function renderTrackCards() {
     const tracks = $('tracks');
     tracks.innerHTML = '';
-    for (const track of data.tracks) {
+    tracks.classList.toggle('single', Boolean(shortcut));
+    $('track-all').hidden = !shortcut;
+    for (const track of shortcut ? [shortcut.track] : data.tracks) {
       const saved = Game.hasSave(track.id);
       const wrap = document.createElement('div');
       wrap.className = `track-wrap-card world-${track.id}`;
@@ -154,6 +183,14 @@
         const s = document.createElement('p');
         s.className = 'track-saved';
         s.textContent = 'Rozehráno – kliknutím pokračuješ';
+        // se zkratkou říct, kde je rozehráno (může to být dřívější místnost, než kam vede odkaz)
+        const at = shortcut && Game.savedRoomId(track.id, data);
+        if (at) s.textContent = `Rozehráno v místnosti ${roomLabel(data.rooms[at])} – kliknutím pokračuješ`;
+        card.appendChild(s);
+      } else if (shortcut) {
+        const s = document.createElement('p');
+        s.className = 'track-saved';
+        s.textContent = `Začne se v místnosti ${shortcut.label}`;
         card.appendChild(s);
       }
       card.addEventListener('click', () => (saved ? continueGame(track.id) : startNewGame(track.id)));
@@ -162,7 +199,7 @@
         const again = document.createElement('button');
         again.type = 'button';
         again.className = 'link track-again';
-        again.textContent = 'Začít tento svět znovu';
+        again.textContent = shortcut ? `Začít znovu od místnosti ${shortcut.label}` : 'Začít tento svět znovu';
         again.addEventListener('click', () => {
           Game.clearSave(track.id);
           startNewGame(track.id);
@@ -417,7 +454,10 @@
 
   function showTitle() {
     applyWorld(null);
-    $('btn-continue').hidden = !Game.hasSave();
+    $('btn-continue').hidden = !Game.hasSave(shortcut ? shortcut.track.id : undefined);
+    const note = $('shortcut-note');
+    note.hidden = !shortcut;
+    if (shortcut) note.textContent = `Odkaz pro vyučující: nová hra začne rovnou v místnosti ${shortcut.label} (${shortcut.track.name}).`;
     showScreen('title');
   }
 
@@ -431,7 +471,8 @@
   function startNewGame(trackId) {
     selectedItem = null;
     newItems.clear();
-    const events = game.newGame(trackId, $('team-name').value);
+    const start = shortcut && shortcut.track.id === trackId ? shortcut.roomId : undefined;
+    const events = game.newGame(trackId, $('team-name').value, start);
     applyWorld(game.state.trackId);
     showScreen('room');
     handleEvents(events);
@@ -544,11 +585,16 @@
     const rows = [
       ['Tým', st.team || '—'],
       ['Sekce', st.track],
+    ];
+    // hra začala zkratkou v pozdější místnosti – čas, chyby a nápovědy platí až od ní
+    const startRoom = game.state.startRoom && data.rooms[game.state.startRoom];
+    if (startRoom) rows.push(['Začátek', `${roomLabel(startRoom)} (odkaz pro vyučující)`]);
+    rows.push(
       ['Čas', formatTime(st.playMs)],
       ['Chybné pokusy', String(st.errors)],
       ['Použité nápovědy', String(st.hints)],
       ['Otevřené brány', `${st.gatesOpen} z ${data.meta.totalGates || 9}`],
-    ];
+    );
     // naměřené hodnoty světa (např. GSPORT: dřepy, výkon, reflex) – řádek jen když hodnota existuje
     for (const s of fin.stats || []) {
       if ((s.requires || []).some((v) => game.state.vars[v] === undefined || game.state.vars[v] === null)) continue;

@@ -154,13 +154,15 @@
 
     /* ---------- Založení, uložení, načtení ---------- */
 
-    newGame(trackId, team) {
+    /* startRoomId: zkratka pro vyučující – začít rovnou v pozdější místnosti světa (odkaz ?mistnost=…). */
+    newGame(trackId, team, startRoomId) {
       const track = this.data.tracks.find((t) => t.id === trackId) || this.data.tracks[0];
+      const startIndex = Math.max(0, track.rooms.indexOf(startRoomId));
       this.state = {
         version: SAVE_VERSION,
         trackId: track.id,
         team: (team || '').trim(),
-        roomIndex: 0,
+        roomIndex: startIndex,
         inventory: [],
         flags: {},
         notes: [],
@@ -169,8 +171,20 @@
         playMs: 0,
         finished: false,
       };
+      if (startIndex > 0) this.state.startRoom = track.rooms[startIndex];   // ukáže závěrečná obrazovka
       this.save();
-      return this.enterRoom();
+      const events = this.enterRoom();
+      // co by si hráč přinesl z dřívějších místností (např. kalkulačku): „shortcut“ u místnosti v game.json
+      if (startIndex > 0) events.push(...this.run(this.room.shortcut || []));
+      return events;
+    }
+
+    /* Id místnosti, ve které je uložená hra daného světa (null = žádná). */
+    static savedRoomId(trackId, data) {
+      const saved = storage.get(saveKey(trackId));
+      if (!saved || saved.version !== SAVE_VERSION) return null;
+      const track = data.tracks.find((t) => t.id === trackId);
+      return (track && track.rooms[saved.roomIndex]) || null;
     }
 
     /* Starší verze ukládala jedinou hru pod společný klíč – převést na uložení podle světa. */
@@ -646,6 +660,7 @@
       for (const [roomId, r] of Object.entries(d.rooms)) {
         room = r;
         for (const c of room.enter || []) checkEffects(c.do, `Místnost „${roomId}“, vstup`);
+        if (room.shortcut) checkEffects(room.shortcut, `Místnost „${roomId}“, zkratka`);
         for (const [lockId, lock] of Object.entries(room.locks || {})) checkEffects(lock.open, `Místnost „${roomId}“, zámek „${lockId}“`);
         if (room.gate) checkEffects(room.gate.open, `Místnost „${roomId}“, brána`);
         for (const a of Object.values(room.activities || {})) {

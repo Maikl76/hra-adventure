@@ -107,6 +107,15 @@ Každý svět bude mít vlastních devět bran.
   [`data/game.json`](data/game.json) – upravuje se bez programování.
 - **Výuka ve třídě:** v `game.json` nastavte `"audio": { "defaultOn": false }` – hra pak začne
   potichu (zvuk si hráči mohou zapnout, nejlépe se sluchátky).
+- **Zkratka do pozdější místnosti:** odkaz s parametrem `mistnost` otevře hru tak, že nová hra
+  začne rovnou v dané místnosti. Hodí se, když tým předchozí level dohrál minule nebo na jiném
+  počítači, a pro vyzkoušení:
+  - GSPORT – LEVEL 2 (Skokanská aréna): <https://maikl76.github.io/hra-adventure/?mistnost=arena>
+
+  Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
+  od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč
+  dostane automaticky (`"shortcut"` u místnosti v `game.json`). Na závěrečné obrazovce je řádek
+  „Začátek“, takže je vidět, že čas, chyby a nápovědy platí až od této místnosti.
 - Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
   naměřené dřepy, výkon, reakční dobu, dobu letu, výšku výskoku a časy z NEON AIM) – studenti ji vyfotí pro vyhodnocení.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
