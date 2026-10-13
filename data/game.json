@@ -238,6 +238,11 @@
         ]
       }
     },
+    "klice_pult": {
+      "name": "Klíče od pultu",
+      "icon": "assets/items/klice_pult.svg",
+      "description": "Svazek dvou klíčů na kroužku – mosazný a ocelový. Na cedulce je napsáno: PULT."
+    },
     "metr": {
       "name": "Svinovací metr",
       "icon": "assets/items/metr.webp",
@@ -462,6 +467,29 @@
       "on": "batoh",
       "room": "sklad",
       "do": [ { "text": "Batoh sám o sobě nestačí. Měř na celé figuríně – od značky těžiště vojáka k těžišti batohu. Vyber metr a klikni na figurínu." } ]
+    },
+    {
+      "item": "klice_pult",
+      "on": "suplik_pult",
+      "when": { "notFlags": ["pult_odemcen"] },
+      "do": [
+        { "set": "pult_odemcen" },
+        { "set": "kalkulacka_sklad" },
+        { "remove": "klice_pult" },
+        { "sound": "unlockDrawer" },
+        { "text": "Mosazný klíč zapadl do zámku. Cvak! Šuplík vyjede – formuláře k výdeji, razítková barva a stará školní kalkulačka. Bereš ji. (V inventáři na ni klikni dvakrát a otevře se.)" },
+        { "give": "kalkulacka" }
+      ]
+    },
+    {
+      "item": "klice_pult",
+      "on": "brana_sklad",
+      "do": [ { "text": "Na pancéřové dveře tyhle klíčky nestačí. Hodí se spíš k pultu." } ]
+    },
+    {
+      "item": "klice_pult",
+      "on": "skrinka",
+      "do": [ { "text": "Skříňka nemá klíčovou dírku – jen číselný zámek." } ]
     },
     {
       "item": "metr",
@@ -1863,9 +1891,11 @@
           "enterText": "Výdejní pult skladu. Na něm výdejní kniha, psací stroj a polní telefon. Svítí jen stolní lampa.",
           "lights": [
             { "x": 27, "y": 45, "radius": 16, "strength": 0.8, "flicker": true },
+            { "x": 51.8, "y": 53.8, "radius": 3, "strength": 0.45, "when": { "notFlags": ["klice_pult_vzaty"] } },
             { "x": 50, "y": 5, "radius": 24, "strength": 0.65 }
           ],
           "layers": [
+            { "image": "assets/rooms/sklad_pult_klice.svg", "when": { "notFlags": ["klice_pult_vzaty"] } },
             { "image": "assets/rooms/sklad_pult_suplik.webp", "when": { "flags": ["kalkulacka_sklad"] }, "animate": "slide" }
           ],
           "hotspots": [
@@ -1921,13 +1951,29 @@
               "name": "Šuplík pultu",
               "area": [38.1, 67, 23.8, 7.4],
               "click": [
-                { "when": { "notFlags": ["kalkulacka_sklad"] }, "do": [
-                  { "set": "kalkulacka_sklad" },
-                  { "sound": "drawer" },
-                  { "text": "Vysuneš šuplík pultu. Formuláře k výdeji, razítková barva – a stará školní kalkulačka. Bereš ji. (V inventáři na ni klikni dvakrát a otevře se.)" },
-                  { "give": "kalkulacka" }
+                { "when": { "flags": ["kalkulacka_sklad"] }, "do": [ { "sound": "drawer" }, { "text": "V šuplíku zůstaly jen formuláře k výdeji a razítková barva." } ] },
+                { "when": { "items": ["klice_pult"] }, "do": [
+                  { "sound": "locked" },
+                  { "text": "Šuplík je zamčený. Klíče z pultu by mohly pasovat – vyber je v inventáři a klikni na šuplík." }
                 ] },
-                { "do": [ { "sound": "drawer" }, { "text": "V šuplíku zůstaly jen formuláře k výdeji a razítková barva." } ] }
+                { "do": [
+                  { "sound": "locked" },
+                  { "text": "Šuplík pultu je zamčený. Pod mosazným úchytem je klíčová dírka." },
+                  { "note": "Šuplík výdejního pultu je zamčený – potřebuji klíč." }
+                ] }
+              ]
+            },
+            {
+              "id": "klice",
+              "name": "Klíče",
+              "area": [49.3, 51.5, 5.2, 4.2],
+              "click": [
+                { "when": { "notFlags": ["klice_pult_vzaty"] }, "do": [
+                  { "set": "klice_pult_vzaty" },
+                  { "text": "Na pultu vedle výdejní knihy leží svazek dvou klíčů. Na cedulce je napsáno PULT. Bereš je." },
+                  { "give": "klice_pult" }
+                ] },
+                { "do": [ { "text": "Tady ležely klíče od pultu. Máš je u sebe." } ] }
               ]
             },
             {

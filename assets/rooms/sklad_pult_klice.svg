@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: svazek klíčů ležící na pultu vedle výdejní knihy (zmizí, když je hráč vezme).
+       Souřadnice odpovídají autorovu obrázku sklad_pult.webp; deska pultu je v pohledu silně
+       zkrácená, proto jsou klíče „zploštělé“ (měřítko svisle 0,62). -->
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d98a"/>
+      <stop offset="0.5" stop-color="#a87c30"/>
+      <stop offset="1" stop-color="#5a4016"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2d6b8"/>
+      <stop offset="0.5" stop-color="#8f8470"/>
+      <stop offset="1" stop-color="#4a4234"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.6"/>
+    </filter>
+  </defs>
+  <g transform="translate(866 507) scale(1.15 0.62)">
+    <!-- stín na desce -->
+    <ellipse cx="4" cy="10" rx="40" ry="16" fill="#000" opacity="0.45" filter="url(#soft)"/>
+    <!-- kroužek -->
+    <ellipse cx="-14" cy="0" rx="11" ry="11" fill="none" stroke="url(#steel)" stroke-width="3"/>
+    <!-- klíč 1 (mosazný, delší) -->
+    <g transform="rotate(-12 -4 0)">
+      <circle cx="-2" cy="0" r="8" fill="url(#brass)" stroke="#4a3714" stroke-width="1"/>
+      <circle cx="-2" cy="0" r="2.6" fill="#2a2010"/>
+      <rect x="5" y="-2.4" width="34" height="4.8" rx="1.2" fill="url(#brass)" stroke="#4a3714" stroke-width="0.8"/>
+      <path d="M26,2.4 L26,6 L29,6 L29,4 L32,4 L32,6.5 L35,6.5 L35,2.4 Z" fill="url(#brass)" stroke="#4a3714" stroke-width="0.6"/>
+    </g>
+    <!-- klíč 2 (ocelový, kratší) -->
+    <g transform="rotate(28 -10 4)">
+      <rect x="-8" y="-1" width="11" height="11" rx="2" fill="url(#steel)" stroke="#33332e" stroke-width="1"/>
+      <rect x="2" y="2.6" width="22" height="3.8" rx="1" fill="url(#steel)" stroke="#33332e" stroke-width="0.7"/>
+      <path d="M15,6.4 L15,9.5 L18,9.5 L18,8 L21,8 L21,6.4 Z" fill="url(#steel)" stroke="#33332e" stroke-width="0.5"/>
+    </g>
+    <!-- přívěsek s cedulkou -->
+    <rect x="-34" y="-6" width="14" height="10" rx="2" fill="#c9b98e" stroke="#4a3e22" stroke-width="0.8" transform="rotate(-20 -27 -1)"/>
+    <!-- odlesk -->
+    <ellipse cx="14" cy="-3" rx="6" ry="2" fill="#fff6d8" opacity="0.8"/>
+  </g>
+</svg>
