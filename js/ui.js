@@ -177,16 +177,6 @@
    * Úvod: pomalý průchod tmou skrze řadu bran (kresleno na plátno)
    * ==================================================================== */
 
-  /* Tvary otvorů bran v jednotkách: výška otvoru 640, střed v 0,0. */
-  const GATE_SHAPES = [
-    'M-180,320 L-180,-140 A180,180 0 0 1 180,-140 L180,320 Z',              // půlkruhový oblouk
-    'M-170,320 L-170,-120 Q-170,-250 0,-320 Q170,-250 170,-120 L170,320 Z', // lomený oblouk
-    'M-160,320 L-160,-300 L160,-300 L160,320 Z',                            // pravoúhlé dveře
-    'M-140,320 L-140,-180 A140,140 0 0 1 140,-180 L140,320 Z',              // úzký oblouk
-  ];
-  const WALL = 'M-4000,-4000 H4000 V4000 H-4000 Z ';
-  const STONE_JOINTS = 'M-700,-200 H-260 M260,-200 H700 M-900,40 H-240 M240,40 H900 M-650,250 H-230 M230,250 H650';
-
   let introRaf = 0;
   let introDone = null;
 
@@ -204,20 +194,22 @@
     const focal = 0.55;           // „ohnisko“: brána ve vzdálenosti 1 má otvor 55 % výšky obrazovky
     const endZ = count + 0.7;     // světlo za poslední branou
 
+    // vzhled bran kreslí js/brany.js (kámen, klenba, svorník s číslicí, lampy); tady jen poloha v chodbě
     const gates = [];
     for (let i = 0; i < count; i++) {
-      const shape = GATE_SHAPES[i % GATE_SHAPES.length];
-      gates.push({
+      gates.push(Object.assign(IntroGates.create(i), {
         z: i + 1,
         ox: Math.sin(i * 1.7) * 70,
         oy: Math.cos(i * 1.3) * 22,
-        opening: new Path2D(shape),
-        wall: new Path2D(WALL + shape),
-        joints: new Path2D(STONE_JOINTS),
         numeral: ROMAN[i] || '',
-        top: i % GATE_SHAPES.length === 2 ? -300 : -320,  // horní okraj otvoru (pro římské číslo)
-      });
+      }));
     }
+    // prach v chodbě: zrnka rozptýlená po celé délce průletu (souřadnice v jednotkách brány)
+    let seed = 11;
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const motes = Array.from({ length: 260 }, () => ({
+      x: (rnd() - 0.5) * 900, y: (rnd() - 0.5) * 560, z: 0.3 + rnd() * (count + 0.6), ph: rnd() * 6.28,
+    })).sort((a, b) => b.z - a.z);
 
     const smooth = (x) => x * x * (3 - 2 * x);
     const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -225,8 +217,12 @@
     let currentLine = -1;
     let lightPlayed = false;
 
+    // pojistka pro slabší počítače: když se průlet trhá, plátno se vykreslí v nižším rozlišení
+    let quality = 1;
+    let slowFrames = 0;
+    let lastFrame = 0;
     function size() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2) * quality;
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
     }
@@ -235,6 +231,11 @@
 
     function frame(now) {
       const t = (now - start) / 1000;
+      if (lastFrame && t > 1 && quality > 0.5) {
+        slowFrames = now - lastFrame > 28 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+        if (slowFrames > 20) { quality -= 0.2; slowFrames = 0; size(); }
+      }
+      lastFrame = now;
       const p = clamp(t / duration, 0, 1);
       const camZ = endZ * smooth(p);
       const W = canvas.width;
@@ -269,41 +270,88 @@
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, W, H);
 
-      // Brány od nejvzdálenější po nejbližší.
-      for (let i = gates.length - 1; i >= 0; i--) {
-        const g = gates[i];
-        const dz = g.z - camZ;
-        if (!g.passed && dz < 0.6) {
-          g.passed = true;           // svist ve chvíli, kdy brána míjí kameru
-          sound.sfx('pass');
+      // Paprsky světla z konce chodby (brány je zakryjí – prosvítají jen otvory).
+      ctx.globalCompositeOperation = 'lighter';
+      for (let r = 0; r < 7; r++) {
+        const a = r * 0.9 + t * 0.03;
+        const len = Math.max(W, H) * 1.2;
+        const ray = ctx.createLinearGradient(lx, ly, lx + Math.cos(a) * len, ly + Math.sin(a) * len);
+        ray.addColorStop(0, `rgba(255, 225, 170, ${0.07 * glowAlpha})`);
+        ray.addColorStop(1, 'rgba(255, 225, 170, 0)');
+        ctx.fillStyle = ray;
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx + Math.cos(a - 0.06) * len, ly + Math.sin(a - 0.06) * len);
+        ctx.lineTo(lx + Math.cos(a + 0.06) * len, ly + Math.sin(a + 0.06) * len);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+
+      // zrnka prachu mezi dvěma hloubkami (kreslí se mezi branami, aby je bližší brány zakryly)
+      let mi = 0;
+      const drawMotes = (zMin) => {
+        while (mi < motes.length && motes[mi].z > zMin) {
+          const m = motes[mi++];
+          const dz = m.z - camZ;
+          if (dz < 0.15) continue;
+          const ms = focal / dz * u;
+          const x = W / 2 + (m.x + Math.sin(t * 0.5 + m.ph) * 12 - camX) * ms;
+          const y = H / 2 + (m.y + Math.sin(t * 0.3 + m.ph * 2) * 8 - camY) * ms;
+          if (x < -10 || y < -10 || x > W + 10 || y > H + 10) continue;
+          const near = clamp(1.45 - dz * 0.36, 0, 1);
+          const dl = Math.hypot(x - lx, y - ly) / Math.max(W, H);
+          const a = near * (0.12 + 0.5 * clamp(1 - dl * 2.2, 0, 1)) * (0.7 + 0.3 * Math.sin(t * 2 + m.ph));
+          if (a < 0.02) continue;
+          ctx.fillStyle = `rgba(255, 226, 180, ${a})`;
+          ctx.beginPath();
+          ctx.arc(x, y, clamp(2.2 * ms / u, 0.6, 3.5) * (W / 1600 + 0.5), 0, Math.PI * 2);
+          ctx.fill();
         }
-        if (dz < 0.22) continue;
+      };
+
+      // Poloha a průhlednost bran na obrazovce.
+      const view = gates.map((g) => {
+        const dz = g.z - camZ;
+        if (dz < 0.22) return null;
         const s = focal / dz;
         const fog = clamp(1.45 - dz * 0.36, 0, 1);
         const passing = s > 1.15 ? clamp(1 - (s - 1.15) / 0.9, 0, 1) : 1;
         const alpha = fog * passing;
-        if (alpha < 0.01) continue;
+        if (alpha < 0.01) return null;
         const scale = s * u;
-        ctx.setTransform(scale, 0, 0, scale, W / 2 + (g.ox - camX) * scale, H / 2 + (g.oy - camY) * scale);
+        const s2 = focal / (dz + 0.09) * u;      // zadní hrana otvoru (tloušťka zdi)
+        return {
+          alpha,
+          s: scale, x: W / 2 + (g.ox - camX) * scale, y: H / 2 + (g.oy - camY) * scale,
+          s2, x2: W / 2 + (g.ox - camX) * s2, y2: H / 2 + (g.oy - camY) * s2,
+          near: s, light: g.z / gates.length, t, numeral: g.numeral,
+        };
+      });
 
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = '#0d0a07';
-        ctx.fill(g.wall, 'evenodd');
-        ctx.strokeStyle = '#1c150d';
-        ctx.lineWidth = 6;
-        ctx.stroke(g.joints);
-        ctx.strokeStyle = '#2a2014';
-        ctx.lineWidth = 26;
-        ctx.stroke(g.opening);
-        ctx.globalAlpha = alpha * (0.35 + 0.65 * clamp(s, 0, 1));
-        ctx.strokeStyle = '#c9a45c';
-        ctx.lineWidth = 3.5;
-        ctx.stroke(g.opening);
-        ctx.fillStyle = '#c9a45c';
-        ctx.font = '64px Georgia, "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(g.numeral, 0, g.top - 46);
+      // Brány od nejvzdálenější po nejbližší. Vzdálenější brána je vidět jen otvorem bližší
+      // neprůhledné brány – kreslí se jen tam (ušetří to většinu práce).
+      for (let i = gates.length - 1; i >= 0; i--) {
+        const g = gates[i];
+        drawMotes(g.z);
+        if (!g.passed && g.z - camZ < 0.6) {
+          g.passed = true;           // svist ve chvíli, kdy brána míjí kameru
+          sound.sfx('pass');
+        }
+        const v = view[i];
+        if (!v) continue;
+        let front = null;
+        for (let n = i - 1; n >= 0; n--) {
+          if (view[n] && view[n].alpha > 0.98) { front = n; break; }
+        }
+        if (front !== null) {
+          const f = view[front];
+          v.clip = new Path2D();
+          v.clip.addPath(gates[front].opening, new DOMMatrix([f.s, 0, 0, f.s, f.x, f.y]));
+        }
+        IntroGates.draw(ctx, g, v);
       }
+      drawMotes(camZ);
 
       // Vinětace (ztmavení okrajů).
       ctx.setTransform(1, 0, 0, 1, 0, 0);
