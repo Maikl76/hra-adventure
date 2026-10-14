@@ -1,14 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
-  <!-- Vrstva: NEON AIM dohraný – obrazovka HOTOVO, výdejní okénko svítí (příznak terce_hotovo). -->
+  <!-- Vrstva: NEON AIM dohraný – obrazovka HOTOVO, výdejní okénko svítí (příznak terce_hotovo).
+       Podle autorova obrázku arena_terce.webp (obrazovka x 560–1111, y 251–652; okénko x 745–926, y 779–862). -->
   <defs>
     <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
-      <feGaussianBlur stdDeviation="6"/>
+      <feGaussianBlur stdDeviation="7"/>
     </filter>
   </defs>
-
-  <rect x="574" y="214" width="522" height="342" rx="8" fill="#04121a" opacity="0.92"/>
-  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="64" fill="#3fe0ff" text-anchor="middle" filter="url(#glow)" opacity="0.8">HOTOVO</text>
-  <text x="835" y="400" font-family="Arial Black, Arial" font-weight="bold" font-size="64" fill="#d6fbff" text-anchor="middle">HOTOVO</text>
-  <text x="835" y="172" font-family="Arial Black, Arial" font-weight="bold" font-size="46" fill="#3fe0ff" text-anchor="middle" letter-spacing="8">NEON AIM</text>
-  <rect x="764" y="624" width="142" height="72" rx="4" fill="#3fe0ff" opacity="0.25" filter="url(#glow)"/>
+  <rect x="562" y="253" width="547" height="397" rx="10" fill="#03121a" opacity="0.9"/>
+  <g font-family="'Arial Black', Arial, sans-serif" font-weight="bold" font-size="76" text-anchor="middle" letter-spacing="4">
+    <text x="835" y="478" fill="#3fe0ff" filter="url(#glow)" opacity="0.9">HOTOVO</text>
+    <text x="835" y="478" fill="#d6fbff">HOTOVO</text>
+  </g>
+  <text x="835" y="530" font-family="'Courier New', monospace" font-weight="bold" font-size="20" fill="#ff7ae6" text-anchor="middle">VÝHRA VYDÁNA</text>
+  <rect x="742" y="776" width="188" height="90" rx="6" fill="#3fe0ff" opacity="0.35" filter="url(#glow)"/>
+  <rect x="747" y="781" width="178" height="80" rx="4" fill="#3fe0ff" opacity="0.18"/>
 </svg>

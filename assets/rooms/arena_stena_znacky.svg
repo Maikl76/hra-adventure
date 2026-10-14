@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
-  <!-- Vrstva (vždy viditelná): čísla na stěně s ryskami a docentovy křídové značky – dosah ve stoje 221 cm a ve výskoku 252 cm. Stupnice: 200 cm = y 600, 6,5 px na cm. -->
-  <defs>
-    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
-      <feGaussianBlur stdDeviation="6"/>
-    </filter>
-  </defs>
-
-  <g font-family="Arial" font-size="15" fill="#e8dcc0" opacity="0.85">
-    <text x="410" y="604">200</text>
-    <text x="410" y="539">210</text>
-    <text x="410" y="474">220</text>
-    <text x="410" y="409">230</text>
-    <text x="410" y="344">240</text>
-    <text x="410" y="279">250</text>
-    <text x="410" y="214">260</text>
-    <text x="410" y="149">270</text>
-    <text x="410" y="84">280</text>
+  <!-- Vrstva (vždy viditelná): čísla na desce s ryskami a docentovy křídové značky – dosah ve stoje 221 cm
+       a ve výskoku 252 cm. Podle autorova obrázku arena_stena.webp: dlouhé rysky po 10 cm, 200 cm = y 599,
+       280 cm = y 82,5 (6,456 px na cm). -->
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="15" fill="#24170b" fill-opacity="0.85" text-anchor="end">
+    <text x="346" y="604">200</text>
+    <text x="346" y="539">210</text>
+    <text x="346" y="475">220</text>
+    <text x="346" y="410">230</text>
+    <text x="346" y="346">240</text>
+    <text x="346" y="281">250</text>
+    <text x="346" y="217">260</text>
+    <text x="346" y="152">270</text>
+    <text x="346" y="88">280</text>
   </g>
-  <g stroke="#f4f0e4" stroke-width="5" stroke-linecap="round">
-    <line x1="268" y1="463.5" x2="350" y2="463.5"/>
-    <line x1="268" y1="262.0" x2="350" y2="262.0"/>
+  <g stroke-linecap="round">
+    <line x1="270" y1="463.4" x2="398" y2="463.4" stroke="#000" stroke-opacity="0.3" stroke-width="8"/>
+    <line x1="270" y1="263.3" x2="398" y2="263.3" stroke="#000" stroke-opacity="0.3" stroke-width="8"/>
+    <line x1="270" y1="463.4" x2="398" y2="463.4" stroke="#f7f3e8" stroke-width="4.5"/>
+    <line x1="270" y1="263.3" x2="398" y2="263.3" stroke="#f7f3e8" stroke-width="4.5"/>
+    <line x1="274" y1="464.6" x2="392" y2="464.0" stroke="#ffffff" stroke-opacity="0.6" stroke-width="1.6"/>
+    <line x1="274" y1="264.5" x2="392" y2="263.9" stroke="#ffffff" stroke-opacity="0.6" stroke-width="1.6"/>
   </g>
-  <g font-family="Segoe Print, Bradley Hand, cursive" font-size="17" fill="#f4f0e4" text-anchor="end">
-    <text x="252" y="470">STOJ 221 – D.</text>
-    <text x="252" y="268">VÝSKOK 252 – D.</text>
+  <g font-family="'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive" font-size="17" fill="#f4f0e4" text-anchor="end">
+    <text x="252" y="469">STOJ 221 – D.</text>
+    <text x="252" y="269">VÝSKOK 252 – D.</text>
   </g>
 </svg>

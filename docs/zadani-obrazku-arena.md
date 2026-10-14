@@ -4,17 +4,21 @@ Až budou hotové vaše obrázky, vyměním je za zástupné kresby a doladím k
 Platí stejná pravidla jako u herny.
 
 **Stav (14. 10. 2026):**
-- Hotovo (vaše obrázky jsou ve hře): **automat JUMP** a **dveře LEVEL 2**.
-  - Varianty automatu (kabel, baterie, zapnuto) a otevřené dveře měly každá trochu jiný záběr,
-    takže jsem z nich vrstvy poskládal po částech: displej „9.0 V“ a baterii z obrázku s baterií,
-    zástrčku z obrázku se zapojeným kabelem (kabel k ní je dokreslený), chodbu a křídlo dveří
-    z obrázku otevřených dveří (napasované do rámu).
-  - Vrstvu zapnutého automatu (text na obrazovce, svítící stupnice) jsem zatím nakreslil sám –
-    váš šestý obrázek se nenahrál. Až ho pošlete znovu, můžu použít díly z něj.
-- Zbývá: **neonová střelnice** a **stěna s ryskami** (obě s variantami), ikony konektoru,
-  baterie a knihy Fyzika skoku. Zatím pro ně běží moje zástupné kresby (SVG).
+- Hotovo (vaše obrázky jsou ve hře): **všechny čtyři strany místnosti** – automat JUMP, neonová
+  střelnice, stěna s ryskami a dveře LEVEL 2.
+  - Varianty měly každá trochu jiný záběr, takže jsem z nich vrstvy poskládal po částech:
+    displej „9.0 V“ a baterii, zástrčku (kabel k ní dokreslený), otevřené dveře (chodba a křídlo
+    napasované do rámu), otevřenou skříňku na stěně a mezeru po knize.
+  - Obrázky střelnice a otevřené skříňky byly 4 : 3 – střelnici jsem ořízl na 16 : 9 (zůstala
+    neonová trubice nahoře, spodek automatu je uříznutý), ze skříňky stačil výřez.
+  - Dokreslil jsem sám: čísla a docentovy křídové značky na desce (sedí na vaše rysky po 2 cm),
+    zapnutý automat JUMP (text na obrazovce, svítící stupnici) a dohraný NEON AIM (HOTOVO,
+    svítící okénko).
+- Nepovinné: obrázek **zapnutého automatu JUMP** (šestý obrázek se nenahrál – při dalším
+  posílání můžu použít díly z něj), varianta **dohraného NEON AIM**, ikony konektoru, baterie
+  a knihy Fyzika skoku. Zatím pro ně běží moje kresby.
 - Tip pro varianty: nejlépe nechat generátor **upravit stejný obrázek** (jedna změna), ne
-  vygenerovat nový – pak varianta sedí na pixel a vrstva se z ní vyřízne celá.
+  vygenerovat nový – pak varianta sedí na pixel a vrstva se z ní vyřízne celá. A vždy 16 : 9.
 
 ## Styl
 

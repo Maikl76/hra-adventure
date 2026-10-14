@@ -31,8 +31,7 @@ Každý svět bude mít vlastních devět bran.
   z výherního okénka NEON AIM, baterie ze skříňky, jejíž kód je docentova výška výskoku
   ze značek na stěně), udělá jeden **výskok z podřepu (SJ)** a z naměřené doby letu sám spočítá
   výšku. Na automatu NEON AIM trefuje neonové terče a u dveří vysvětlí, proč malý vzdálený
-  terč trvá déle, a spočítá skok na Měsíci. Grafiku automatu JUMP a dveří dodal autor, střelnice
-  a stěna mají zatím zástupnou grafiku (zadání obrázků:
+  terč trvá déle, a spočítá skok na Měsíci. Grafiku místnosti dodal autor (zadání obrázků:
   [`docs/zadani-obrazku-arena.md`](docs/zadani-obrazku-arena.md)).
 - Další brány se připravují.
 
