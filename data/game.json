@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.11.1 – ukázka",
+    "version": "0.11.2 – ukázka",
     "totalGates": 9
   },
 
@@ -3045,12 +3045,12 @@
       "views": {
         "automat": {
           "name": "Automat JUMP",
-          "background": "assets/rooms/arena_automat.svg",
+          "background": "assets/rooms/arena_automat.webp",
           "dust": {
             "count": 60,
             "color": "200, 235, 255"
           },
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "_obrazek": "Obrázek dodal autor projektu (14. 10. 2026). Vrstvy: zapojený kabel (zástrčka z jeho obrázku s kabelem, kabel dokreslený), baterie a displej (z jeho obrázku s baterií), zapnutý automat (dokreslená obrazovka a stupnice). Původní kresba: arena_automat.svg.",
           "darkness": 0.6,
           "left": "dvere",
           "right": "terce",
@@ -3058,20 +3058,20 @@
           "lights": [
             {
               "x": 50,
-              "y": 5,
+              "y": 4.5,
               "radius": 30,
               "strength": 0.45,
               "flicker": true
             },
             {
-              "x": 12,
-              "y": 28,
+              "x": 13,
+              "y": 28.4,
               "radius": 10,
               "strength": 0.5
             },
             {
-              "x": 50.2,
-              "y": 36,
+              "x": 50,
+              "y": 34.7,
               "radius": 11,
               "strength": 0.65,
               "flicker": true,
@@ -3083,8 +3083,8 @@
               }
             },
             {
-              "x": 61.6,
-              "y": 52,
+              "x": 61.7,
+              "y": 50.5,
               "radius": 12,
               "strength": 0.6,
               "when": {
@@ -3095,8 +3095,8 @@
               }
             },
             {
-              "x": 27.2,
-              "y": 64.5,
+              "x": 26.6,
+              "y": 60.1,
               "radius": 3.5,
               "strength": 0.55,
               "when": {
@@ -3108,7 +3108,7 @@
           ],
           "layers": [
             {
-              "image": "assets/rooms/arena_automat_kabel.svg",
+              "image": "assets/rooms/arena_automat_kabel.webp",
               "when": {
                 "flags": [
                   "deska_kabel"
@@ -3116,7 +3116,7 @@
               }
             },
             {
-              "image": "assets/rooms/arena_automat_baterie.svg",
+              "image": "assets/rooms/arena_automat_baterie.webp",
               "when": {
                 "flags": [
                   "mer_baterie"
@@ -3139,9 +3139,9 @@
               "name": "Žebříček JUMP",
               "area": [
                 5.4,
-                19.1,
-                14.4,
-                19.1
+                18.3,
+                15.3,
+                20.2
               ],
               "click": [
                 {
@@ -3167,10 +3167,10 @@
               "id": "mer",
               "name": "Měřič kontaktní desky",
               "area": [
-                22.7,
-                59.5,
-                8.4,
-                14.9
+                22.5,
+                56.3,
+                9.3,
+                14.0
               ],
               "click": [
                 {
@@ -3226,10 +3226,10 @@
               "id": "kamera",
               "name": "Kamera automatu",
               "area": [
-                48.7,
-                13.6,
-                3,
-                3.4
+                48.2,
+                10.3,
+                3.7,
+                4.5
               ],
               "click": [
                 {
@@ -3245,10 +3245,10 @@
               "id": "automat",
               "name": "Automat JUMP",
               "area": [
-                41.9,
-                17,
-                16.7,
-                70.1
+                41.4,
+                15.0,
+                17.3,
+                69.0
               ],
               "click": [
                 {
@@ -3290,7 +3290,7 @@
                       "sound": "locked"
                     },
                     {
-                      "text": "Automat JUMP je mrtvý – obrazovka černá, stupnice zhasnutá. Na boku je cedulka: NAPÁJENO Z MĚŘIČE KONTAKTNÍ DESKY."
+                      "text": "Automat JUMP nereaguje – obrazovka je černá a stupnice zhasnutá, svítí jen nápis nahoře. Na boku je cedulka: NAPÁJENO Z MĚŘIČE KONTAKTNÍ DESKY."
                     }
                   ]
                 }
@@ -3300,10 +3300,10 @@
               "id": "stupnice",
               "name": "Neonová stupnice",
               "area": [
-                60.4,
-                21.3,
-                2.4,
-                63.8
+                60.0,
+                17.6,
+                5.1,
+                65.5
               ],
               "click": [
                 {
@@ -3332,10 +3332,10 @@
               "id": "deska",
               "name": "Kontaktní deska",
               "area": [
-                33.5,
-                88.7,
-                33.5,
-                9
+                30.2,
+                86.1,
+                39.7,
+                8.3
               ],
               "click": [
                 {
@@ -3366,7 +3366,7 @@
                 {
                   "do": [
                     {
-                      "text": "Stará kontaktní deska ze skokanské laboratoře. Kabel od ní vede k měřiči, ale na konci je utržený konektor – volný konec visí vedle měřiče."
+                      "text": "Stará kontaktní deska ze skokanské laboratoře. Kabel od ní vede k měřiči, ale konektor na konci je utržený – volný konec s rozcuchanými dráty trčí pod stoličkou."
                     }
                   ]
                 }
@@ -3377,9 +3377,9 @@
               "name": "Tabule rekordů",
               "area": [
                 70.6,
-                19.1,
-                20.3,
-                25.5
+                17.5,
+                21.1,
+                27.6
               ],
               "click": [
                 {
@@ -3395,16 +3395,16 @@
               "id": "kreslo",
               "name": "Herní křeslo",
               "area": [
-                74.2,
-                55.3,
-                16.7,
-                34
+                75.1,
+                51.4,
+                14.4,
+                37.0
               ],
               "click": [
                 {
                   "do": [
                     {
-                      "text": "Herní křeslo s propadlým sedákem. Na opěrce visí sportovní ručník s nápisem GSPORT."
+                      "text": "Herní křeslo s neonovým proužkem na opěradle. Kůže na sedáku je odřená od dlouhého sezení."
                     }
                   ]
                 }
@@ -3799,16 +3799,16 @@
         },
         "dvere": {
           "name": "Dveře LEVEL 2",
-          "background": "assets/rooms/arena_dvere.svg",
+          "background": "assets/rooms/arena_dvere.webp",
           "dust": {
             "count": 45,
             "color": "200, 235, 255"
           },
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-arena.md.",
+          "_obrazek": "Obrázek dodal autor projektu (14. 10. 2026). Otevřené dveře jsou vrstva poskládaná z jeho obrázku otevřených dveří (chodba a křídlo napasované do rámu). Původní kresba: arena_dvere.svg.",
           "darkness": 0.6,
           "left": "stena",
           "right": "automat",
-          "enterText": "Kovové dveře v neonovém rámu s nápisem LEVEL 2 a číselníkem. Vedle monitor a věšák.",
+          "enterText": "Kovové dveře v neonovém rámu s nápisem LEVEL 2 a číselníkem. Vlevo monitor, vpravo VR brýle na podstavci GSPORT.",
           "lights": [
             {
               "x": 50,
@@ -3818,14 +3818,14 @@
               "flicker": true
             },
             {
-              "x": 68.8,
-              "y": 49,
+              "x": 68.4,
+              "y": 46.7,
               "radius": 4,
               "strength": 0.6
             },
             {
-              "x": 18.5,
-              "y": 34,
+              "x": 16.5,
+              "y": 33,
               "radius": 10,
               "strength": 0.4
             },
@@ -3843,7 +3843,7 @@
           ],
           "layers": [
             {
-              "image": "assets/rooms/arena_dvere_otevrene.svg",
+              "image": "assets/rooms/arena_dvere_otevrene.webp",
               "when": {
                 "flags": [
                   "brana_arena_otevrena"
@@ -3856,10 +3856,10 @@
               "id": "monitor_arena",
               "name": "Monitor",
               "area": [
-                9.6,
-                23.4,
-                17.9,
-                21.3
+                5.6,
+                21.0,
+                21.9,
+                24.1
               ],
               "click": [
                 {
@@ -3877,18 +3877,18 @@
             },
             {
               "id": "vr",
-              "name": "Věšák s brýlemi",
+              "name": "VR brýle na podstavci",
               "area": [
-                76.6,
-                31.9,
-                7.2,
-                12.8
+                77.9,
+                29.5,
+                10.1,
+                25.1
               ],
               "click": [
                 {
                   "do": [
                     {
-                      "text": "Na věšáku visí VR brýle s prasklým sklíčkem a sportovní mikina GSPORT. V kapse mikiny je jen obal od tyčinky."
+                      "text": "Na fialovém podstavci s nápisem GSPORT stojí VR brýle s prasklým sklíčkem. Kdo v nich hrál naposledy, odešel ve spěchu."
                     }
                   ]
                 }
@@ -3898,10 +3898,10 @@
               "id": "jump_zone",
               "name": "Páska na podlaze",
               "area": [
-                31.1,
-                90.3,
-                37.7,
-                6.9
+                27.0,
+                87.1,
+                46.1,
+                7.4
               ],
               "click": [
                 {
@@ -3917,10 +3917,10 @@
               "id": "dvere_l2",
               "name": "Dveře LEVEL 2",
               "area": [
-                35.9,
-                11.7,
-                28.1,
-                76.5
+                35.7,
+                13.4,
+                28.8,
+                71.8
               ],
               "click": [
                 {
@@ -3954,10 +3954,10 @@
               "id": "klavesnice",
               "name": "Číselník",
               "area": [
-                66.4,
-                42.5,
-                4.8,
-                12.8
+                65.9,
+                40.4,
+                5.1,
+                12.5
               ],
               "click": [
                 {
@@ -4082,7 +4082,7 @@
             "sound": "levelUp"
           },
           {
-            "text": "Dveře se se syčením odsunuly. Za nimi je další chodba a na jejím konci bliká obrazovka: LEVEL 3."
+            "text": "Dveře se se syčením otevřely. Za nimi je další chodba a na jejím konci bliká obrazovka: LEVEL 3."
           },
           {
             "note": "LEVEL 2: výška výskoku z doby letu h = g · t² / 8 – tvůj skok z podřepu asi {=981*tl^2/8:0} cm (t = {tl:3} s). Rychlost × přesnost: menší a vzdálenější cíl = pomalejší pohyb. Na Měsíci bys se stejným odrazem vyskočil šestkrát výš."

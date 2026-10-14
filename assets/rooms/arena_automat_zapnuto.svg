@@ -1,26 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
-  <!-- Vrstva: automat JUMP zapnutý – obrazovka, nápis a stupnice svítí (příznaky deska_kabel a mer_baterie). -->
+  <!-- Vrstva: automat JUMP zapnutý – obrazovka s textem, svítící stupnice a okraj desky (příznaky deska_kabel a mer_baterie).
+       Souřadnice podle autorova obrázku arena_automat.webp (obrazovka x 732–940, y 247–406; trubice stupnice x 1012–1052). -->
   <defs>
     <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
-      <feGaussianBlur stdDeviation="6"/>
+      <feGaussianBlur stdDeviation="5"/>
     </filter>
+    <filter id="soft" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+      <feGaussianBlur stdDeviation="1.4"/>
+    </filter>
+    <linearGradient id="crt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#062a33"/>
+      <stop offset="1" stop-color="#03141a"/>
+    </linearGradient>
+    <radialGradient id="crtGlow" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#3fe0ff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#3fe0ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3fe0ff" stop-opacity="0.10"/>
+      <stop offset="0.5" stop-color="#7ff0ff" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#3fe0ff" stop-opacity="0.10"/>
+    </linearGradient>
   </defs>
-
-  <text x="840" y="218" font-family="Arial Black, Arial" font-weight="bold" font-size="52" fill="#ff4fd8" text-anchor="middle" letter-spacing="6" filter="url(#glow)" opacity="0.8">JUMP</text>
-  <text x="840" y="218" font-family="Arial Black, Arial" font-weight="bold" font-size="52" fill="#ffd0f3" text-anchor="middle" letter-spacing="6">JUMP</text>
-  <rect x="739" y="264" width="202" height="152" rx="6" fill="#06121a"/>
-  <text x="840" y="318" font-family="Courier New, monospace" font-size="22" fill="#3fe0ff" text-anchor="middle">SQUAT JUMP</text>
-  <text x="840" y="352" font-family="Courier New, monospace" font-size="16" fill="#9ff3ff" text-anchor="middle">POSTAV SE</text>
-  <text x="840" y="374" font-family="Courier New, monospace" font-size="16" fill="#9ff3ff" text-anchor="middle">NA DESKU</text>
-  <rect x="1016" y="206" width="28" height="588" rx="6" fill="#3fe0ff" opacity="0.18" filter="url(#glow)"/>
-  <g stroke="#3fe0ff" stroke-width="3">
-    <line x1="1014" y1="800" x2="1046" y2="800"/>
-    <line x1="1014" y1="700" x2="1046" y2="700"/>
-    <line x1="1014" y1="600" x2="1046" y2="600"/>
-    <line x1="1014" y1="500" x2="1046" y2="500"/>
-    <line x1="1014" y1="400" x2="1046" y2="400"/>
-    <line x1="1014" y1="300" x2="1046" y2="300"/>
-    <line x1="1014" y1="200" x2="1046" y2="200"/>
+  <!-- obrazovka -->
+  <rect x="732" y="247" width="208" height="159" rx="6" fill="url(#crt)"/>
+  <rect x="732" y="247" width="208" height="159" rx="6" fill="url(#crtGlow)"/>
+  <g stroke="#000" stroke-opacity="0.22" stroke-width="1.5">
+    <line x1="734" y1="250" x2="938" y2="250"/>
+    <line x1="734" y1="254" x2="938" y2="254"/>
+    <line x1="734" y1="258" x2="938" y2="258"/>
+    <line x1="734" y1="262" x2="938" y2="262"/>
+    <line x1="734" y1="266" x2="938" y2="266"/>
+    <line x1="734" y1="270" x2="938" y2="270"/>
+    <line x1="734" y1="274" x2="938" y2="274"/>
+    <line x1="734" y1="278" x2="938" y2="278"/>
+    <line x1="734" y1="282" x2="938" y2="282"/>
+    <line x1="734" y1="286" x2="938" y2="286"/>
+    <line x1="734" y1="290" x2="938" y2="290"/>
+    <line x1="734" y1="294" x2="938" y2="294"/>
+    <line x1="734" y1="298" x2="938" y2="298"/>
+    <line x1="734" y1="302" x2="938" y2="302"/>
+    <line x1="734" y1="306" x2="938" y2="306"/>
+    <line x1="734" y1="310" x2="938" y2="310"/>
+    <line x1="734" y1="314" x2="938" y2="314"/>
+    <line x1="734" y1="318" x2="938" y2="318"/>
+    <line x1="734" y1="322" x2="938" y2="322"/>
+    <line x1="734" y1="326" x2="938" y2="326"/>
+    <line x1="734" y1="330" x2="938" y2="330"/>
+    <line x1="734" y1="334" x2="938" y2="334"/>
+    <line x1="734" y1="338" x2="938" y2="338"/>
+    <line x1="734" y1="342" x2="938" y2="342"/>
+    <line x1="734" y1="346" x2="938" y2="346"/>
+    <line x1="734" y1="350" x2="938" y2="350"/>
+    <line x1="734" y1="354" x2="938" y2="354"/>
+    <line x1="734" y1="358" x2="938" y2="358"/>
+    <line x1="734" y1="362" x2="938" y2="362"/>
+    <line x1="734" y1="366" x2="938" y2="366"/>
+    <line x1="734" y1="370" x2="938" y2="370"/>
+    <line x1="734" y1="374" x2="938" y2="374"/>
+    <line x1="734" y1="378" x2="938" y2="378"/>
+    <line x1="734" y1="382" x2="938" y2="382"/>
+    <line x1="734" y1="386" x2="938" y2="386"/>
+    <line x1="734" y1="390" x2="938" y2="390"/>
+    <line x1="734" y1="394" x2="938" y2="394"/>
+    <line x1="734" y1="398" x2="938" y2="398"/>
+    <line x1="734" y1="402" x2="938" y2="402"/>
   </g>
-  <polygon points="560,840 1120,840 1150,915 530,915" fill="none" stroke="#ffe14f" stroke-width="4" opacity="0.8"/>
+  <g font-family="'Courier New', 'DejaVu Sans Mono', monospace" font-weight="bold" text-anchor="middle">
+    <g fill="#3fe0ff" filter="url(#glow)" opacity="0.9">
+      <text x="836" y="300" font-size="25">SQUAT JUMP</text>
+      <text x="836" y="342" font-size="18">POSTAV SE</text>
+      <text x="836" y="367" font-size="18">NA DESKU</text>
+    </g>
+    <text x="836" y="300" font-size="25" fill="#bff8ff">SQUAT JUMP</text>
+    <text x="836" y="342" font-size="18" fill="#9ff3ff">POSTAV SE</text>
+    <text x="836" y="367" font-size="18" fill="#9ff3ff">NA DESKU</text>
+  </g>
+  <rect x="733" y="248" width="206" height="157" rx="6" fill="none" stroke="#3fe0ff" stroke-opacity="0.35" stroke-width="2" filter="url(#soft)"/>
+  <!-- stupnice: rozsvícená trubice -->
+  <rect x="1008" y="176" width="48" height="600" rx="10" fill="#3fe0ff" opacity="0.30" filter="url(#glow)"/>
+  <rect x="1013" y="182" width="38" height="588" rx="6" fill="url(#tube)"/>
+  <g stroke="#3fe0ff" stroke-width="7" opacity="0.5" filter="url(#glow)">
+    <line x1="1016" y1="181" x2="1047" y2="181"/>
+    <line x1="1016" y1="281" x2="1047" y2="281"/>
+    <line x1="1016" y1="381" x2="1047" y2="381"/>
+    <line x1="1016" y1="482" x2="1047" y2="482"/>
+    <line x1="1016" y1="581" x2="1047" y2="581"/>
+    <line x1="1016" y1="680" x2="1047" y2="680"/>
+    <line x1="1022" y1="231" x2="1043" y2="231"/>
+    <line x1="1022" y1="331" x2="1043" y2="331"/>
+    <line x1="1022" y1="431" x2="1043" y2="431"/>
+    <line x1="1022" y1="532" x2="1043" y2="532"/>
+    <line x1="1022" y1="631" x2="1043" y2="631"/>
+    <line x1="1022" y1="730" x2="1043" y2="730"/>
+  </g>
+  <g stroke="#d8fdff" stroke-width="3" stroke-linecap="round">
+    <line x1="1016" y1="181" x2="1047" y2="181"/>
+    <line x1="1016" y1="281" x2="1047" y2="281"/>
+    <line x1="1016" y1="381" x2="1047" y2="381"/>
+    <line x1="1016" y1="482" x2="1047" y2="482"/>
+    <line x1="1016" y1="581" x2="1047" y2="581"/>
+    <line x1="1016" y1="680" x2="1047" y2="680"/>
+    <line x1="1022" y1="231" x2="1043" y2="231"/>
+    <line x1="1022" y1="331" x2="1043" y2="331"/>
+    <line x1="1022" y1="431" x2="1043" y2="431"/>
+    <line x1="1022" y1="532" x2="1043" y2="532"/>
+    <line x1="1022" y1="631" x2="1043" y2="631"/>
+    <line x1="1022" y1="730" x2="1043" y2="730"/>
+  </g>
+  <!-- okraj kontaktní desky -->
+  <polygon points="549,814 1121,814 1167,884 506,884" fill="none" stroke="#ffe14f" stroke-width="8" opacity="0.45" filter="url(#glow)"/>
 </svg>

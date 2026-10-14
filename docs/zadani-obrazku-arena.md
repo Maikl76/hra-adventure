@@ -3,12 +3,18 @@
 Až budou hotové vaše obrázky, vyměním je za zástupné kresby a doladím klikací plochy i světla.
 Platí stejná pravidla jako u herny.
 
-**Stav (13. 10. 2026):**
-- Ve hře běží moje zástupné kresby (SVG): všechny čtyři strany místnosti, všechny varianty
-  (kabel, baterie, zapnutý automat, dohraný NEON AIM, otevřená skříňka, mezera po knize,
-  otevřené dveře), ikony konektoru, baterie a knihy Fyzika skoku, obrázek letu do knihy.
-- Soubory: `assets/rooms/arena_*.svg`, `assets/items/konektor.svg`, `baterie.svg`,
-  `kniha_skok.svg`, `assets/book/let.svg`.
+**Stav (14. 10. 2026):**
+- Hotovo (vaše obrázky jsou ve hře): **automat JUMP** a **dveře LEVEL 2**.
+  - Varianty automatu (kabel, baterie, zapnuto) a otevřené dveře měly každá trochu jiný záběr,
+    takže jsem z nich vrstvy poskládal po částech: displej „9.0 V“ a baterii z obrázku s baterií,
+    zástrčku z obrázku se zapojeným kabelem (kabel k ní je dokreslený), chodbu a křídlo dveří
+    z obrázku otevřených dveří (napasované do rámu).
+  - Vrstvu zapnutého automatu (text na obrazovce, svítící stupnice) jsem zatím nakreslil sám –
+    váš šestý obrázek se nenahrál. Až ho pošlete znovu, můžu použít díly z něj.
+- Zbývá: **neonová střelnice** a **stěna s ryskami** (obě s variantami), ikony konektoru,
+  baterie a knihy Fyzika skoku. Zatím pro ně běží moje zástupné kresby (SVG).
+- Tip pro varianty: nejlépe nechat generátor **upravit stejný obrázek** (jedna změna), ne
+  vygenerovat nový – pak varianta sedí na pixel a vrstva se z ní vyřízne celá.
 
 ## Styl
 
