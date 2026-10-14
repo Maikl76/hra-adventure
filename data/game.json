@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.11.3 – ukázka",
+    "version": "0.11.4 – ukázka",
     "totalGates": 9
   },
 
@@ -3419,7 +3419,7 @@
             "count": 60,
             "color": "200, 235, 255"
           },
-          "_obrazek": "Obrázek dodal autor projektu (14. 10. 2026), původně 4 : 3 – výřez y 25–840 zvětšený na 1672 × 941. Vrstva dohraného automatu (HOTOVO, svítící okénko) dokreslená. Původní kresba: arena_terce.svg.",
+          "_obrazek": "Obrázky dodal autor projektu (14. 10. 2026). Výchozí byl 4 : 3 – výřez y 25–840 zvětšený na 1672 × 941. Dohraný automat je vrstva z jeho obrázku dohraného automatu (jiný záběr): obrazovka s HOTOVO (po stranách oříznutá, aby terče zůstaly kulaté) a rozsvícené okénko napasované do automatu. Původní kresba: arena_terce.svg.",
           "darkness": 0.6,
           "left": "automat",
           "right": "stena",
@@ -3458,7 +3458,7 @@
           ],
           "layers": [
             {
-              "image": "assets/rooms/arena_terce_hotovo.svg",
+              "image": "assets/rooms/arena_terce_hotovo.webp",
               "when": {
                 "flags": [
                   "terce_hotovo"

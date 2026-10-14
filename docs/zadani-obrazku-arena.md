@@ -11,12 +11,12 @@ Platí stejná pravidla jako u herny.
     napasované do rámu), otevřenou skříňku na stěně a mezeru po knize.
   - Obrázky střelnice a otevřené skříňky byly 4 : 3 – střelnici jsem ořízl na 16 : 9 (zůstala
     neonová trubice nahoře, spodek automatu je uříznutý), ze skříňky stačil výřez.
-  - Dokreslil jsem sám: čísla a docentovy křídové značky na desce (sedí na vaše rysky po 2 cm),
-    zapnutý automat JUMP (text na obrazovce, svítící stupnici) a dohraný NEON AIM (HOTOVO,
-    svítící okénko).
-- Nepovinné: obrázek **zapnutého automatu JUMP** (šestý obrázek se nenahrál – při dalším
-  posílání můžu použít díly z něj), varianta **dohraného NEON AIM**, ikony konektoru, baterie
-  a knihy Fyzika skoku. Zatím pro ně běží moje kresby.
+  - Dohraný NEON AIM: obrazovku s HOTOVO a rozsvícené okénko jsem z vašeho obrázku napasoval
+    do automatu (obrazovku po stranách mírně oříznutou, aby terče zůstaly kulaté).
+  - Dokreslil jsem sám: čísla a docentovy křídové značky na desce (sedí na vaše rysky po 2 cm)
+    a zapnutý automat JUMP (text na obrazovce, svítící stupnici).
+- Ikony konektoru, baterie a knihy Fyzika skoku a obrázek do knihy zůstávají moje (autor je
+  ponechal, 14. 10. 2026).
 - Tip pro varianty: nejlépe nechat generátor **upravit stejný obrázek** (jedna změna), ne
   vygenerovat nový – pak varianta sedí na pixel a vrstva se z ní vyřízne celá. A vždy 16 : 9.
 
