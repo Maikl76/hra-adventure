@@ -32,11 +32,15 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
   správnost ověřuje autor. Úlohy formulovat vlastními slovy (žádný doslovný text z cizích podkladů).
 - **Veškerý obsah patří do `data/game.json`** (texty, hádanky, odpovědi, nápovědy, obrázky
   místností) – vyučující ho musí umět upravit bez programování.
+- **`game.json` nikdy nepřeformátovat celý** (např. načíst a uložit s jiným odsazením) – části
+  souboru mají ruční formát a vznikl by rozdíl přes tisíce řádků. Měnit jen dotčené místo;
+  po úpravě ověřit, že soubor jde načíst (JSON) a že rozdíl obsahuje jen zamýšlené změny.
 - Po každé změně hru vyzkoušet v prohlížeči. Při výměně obrázku zkontrolovat klikací místa
   (Menu → Vyznačit objekty v místnosti) a světla (`lights`).
-- **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…` (a `squats.js` se importuje
-  s `?v=` v `js/ui.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`,
-  jinak prohlížeče hráčů míchají starý a nový kód.
+- **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
+  importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`) a `skok.js`
+  i `predklon.js` importují `squats.js` také s `?v=`. Při každém nahrání změněného JS/CSS zvýšit
+  spolu s `meta.version`, jinak prohlížeče hráčů míchají starý a nový kód.
 - Do repozitáře **nikdy**: složka `podklady/` (originály obrázků, pomocné nástroje, odborné
   podklady – jen u autora), soubor `CLAUDE.md` v kořeni (lokální poznámky se soukromými údaji),
   `zkousky/` (lokální prototypy). Vše je v `.gitignore`.
@@ -115,7 +119,10 @@ Těžiště a stabilita se zátěží (voják 70 kg, batoh 30 kg): měření met
 batohu se živým těžištěm, zvedání bedny (moment v bedrech, síla zádových svalů), postoj a opěrná
 plocha, slepení přelomené psí známky (kód skříňky), polní telefon s nápovědami, zkouška
 stability před kamerou. Zámek: posun těžiště **6 cm**, co s tím udělat, kam patří těžké věci.
-Část grafiky je zatím zástupná (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
+Všechny čtyři pohledy a otevřené dveře jsou od autora; zástupné zůstaly jen ikony klíčů, půlek
+známky a pásky (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
+**Odloženo do další vojenské místnosti** (nápady autor schválil, zatím nedělat): decimální váha
+(páka), protizávaží u přilby, hlášení na psacím stroji (shrnutí), mapa se svahem, nosítka.
 
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
@@ -141,6 +148,8 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
 ## Rozhodnutí autora (důležitá)
 
+- **Každá věc, která se v místnosti dělá nebo skládá, má mít výukový význam** – student se tím
+  má něco naučit (žádné úkoly jen „pro hru“).
 - Výpočty v GSPORT jednoduché, **vzorec musí hráč najít v místnosti**; hratelné u vlastního
   notebooku. Standardní hráč **70 kg** (bez osobních údajů).
 - Kamera měří **jen bokem** (2D úhly z bodů MediaPipe; 3D body dávaly ve stoji nesmysly, čelem
@@ -156,11 +165,15 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
 ## Obrázky od autora – postup
 
-- Pohledy 1672 × 941 px (WebP). **Varianty jednoho pohledu se stejným záběrem**; díly mohou mít
-  průhledné pozadí. Text, na kterém záleží (čísla, nápisy na displejích, štítky), do obrázku
+- Pohledy 1672 × 941 px (WebP), **vždy 16 : 9**. **Varianty jednoho pohledu se stejným záběrem**
+  – nejlépe nechat generátor upravit stejný obrázek s jedinou změnou, ne vygenerovat nový
+  (u arény měla každá varianta jiný záběr a dvě byly 4 : 3, vrstvy se pak musely skládat po
+  částech a napasovat). Díly mohou mít průhledné pozadí. Text, na kterém záleží (čísla, nápisy na displejích, štítky), do obrázku
   nekreslit – doplňuje se jako SVG vrstva (generátory písmo komolí).
 - Vrstvy (otevřený šuplík, otevřené dveře…) se z dílů skládají na autorově počítači pomocnými
-  nástroji v `podklady/nastroje/` (v prohlížeči, výsledek WebP). Kde díl chybí, lze vrstvu složit
+  nástroji v `podklady/nastroje/` (v prohlížeči, výsledek WebP); v cloudové konverzaci tyto
+  nástroje nejsou – tam vrstvy skládá AI asistent vlastními skripty (Python/Pillow), výsledek
+  je stejný (malé WebP vrstvy přes celý obraz). Kde díl chybí, lze vrstvu složit
   z částí jiných obrázků autora. Velké obrázky vložené do SVG (MB) nahradit malými WebP vrstvami.
 - Zadání obrázků pro autora: `docs/zadani-obrazku-*.md` – po dodání v nich označit, co je hotové.
 
@@ -168,6 +181,9 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
 - Testovací prohlížeč AI asistenta nemá kameru – ověřit jde jen cesta bez kamery; kameru zkouší
   autor u sebe.
+- **Zbývá ověřit skutečnou kamerou:** měření výskoku (`js/skok.js`, aréna) a zkoušku stability –
+  předklon (`js/predklon.js`, sklad). Zatím otestované jen na umělých datech (výskok: chyba
+  doby letu do 10 ms, skok s protipohybem se nepočítá).
 - **Po testu zavřít testovací záložky** – hra v nich hraje dál (podkres) i po zavření okna
   aplikace, protože aplikace na Windows běží v oznamovací oblasti.
 - Testovací uložení dělat na jiném původu (`localhost` místo `127.0.0.1`), ať se nepřepíše
