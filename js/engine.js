@@ -154,10 +154,13 @@
 
     /* ---------- Založení, uložení, načtení ---------- */
 
-    /* startRoomId: zkratka pro vyučující – začít rovnou v pozdější místnosti světa (odkaz ?mistnost=…). */
+    /* startRoomId: zkratka pro vyučující – začít rovnou v pozdější místnosti světa (odkaz ?mistnost=…).
+       Může to být i zkušební místnost světa („trialRooms“: místnost → kam vede); běžná hra ji přeskočí. */
     newGame(trackId, team, startRoomId) {
       const track = this.data.tracks.find((t) => t.id === trackId) || this.data.tracks[0];
-      const startIndex = Math.max(0, track.rooms.indexOf(startRoomId));
+      const trialTo = (track.trialRooms || {})[startRoomId];
+      const startIndex = Math.max(0, track.rooms.indexOf(trialTo || startRoomId));
+      const shortcut = startIndex > 0 || Boolean(trialTo);
       this.state = {
         version: SAVE_VERSION,
         trackId: track.id,
@@ -171,11 +174,12 @@
         playMs: 0,
         finished: false,
       };
-      if (startIndex > 0) this.state.startRoom = track.rooms[startIndex];   // ukáže závěrečná obrazovka
+      if (trialTo) this.state.trialRoom = startRoomId;                     // zkušební místnost, pak track.rooms[startIndex]
+      if (shortcut) this.state.startRoom = trialTo ? startRoomId : track.rooms[startIndex];   // ukáže závěrečná obrazovka
       this.save();
       const events = this.enterRoom();
       // co by si hráč přinesl z dřívějších místností (např. kalkulačku): „shortcut“ u místnosti v game.json
-      if (startIndex > 0) events.push(...this.run(this.room.shortcut || []));
+      if (shortcut) events.push(...this.run(this.room.shortcut || []));
       return events;
     }
 
@@ -184,7 +188,7 @@
       const saved = storage.get(saveKey(trackId));
       if (!saved || saved.version !== SAVE_VERSION) return null;
       const track = data.tracks.find((t) => t.id === trackId);
-      return (track && track.rooms[saved.roomIndex]) || null;
+      return saved.trialRoom || (track && track.rooms[saved.roomIndex]) || null;
     }
 
     /* Starší verze ukládala jedinou hru pod společný klíč – převést na uložení podle světa. */
@@ -283,7 +287,19 @@
     }
 
     get roomId() {
-      return this.track.rooms[this.state.roomIndex];
+      return this.state.trialRoom || this.track.rooms[this.state.roomIndex];
+    }
+
+    /* Chodba „z vlastních očí“: kde hráč stojí (políčko, směr, prošlá políčka). */
+    corridorPos() {
+      const saved = this.state.places && this.state.places[this.roomId];
+      return saved || { ...this.room.corridor.start };
+    }
+
+    setCorridorPos(pos) {
+      if (!this.state.places) this.state.places = {};
+      this.state.places[this.roomId] = pos;
+      this.save();
     }
 
     get room() {
@@ -607,6 +623,12 @@
 
     /* Přechod do další místnosti sekce; vrací false, když je sekce u konce. */
     nextRoom() {
+      // ze zkušební místnosti se jde do místnosti, kam vede (roomIndex už na ni ukazuje)
+      if (this.state.trialRoom) {
+        delete this.state.trialRoom;
+        this.save();
+        return this.enterRoom();
+      }
       if (this.state.roomIndex + 1 >= this.track.rooms.length) {
         this.state.finished = true;
         this.save();
@@ -645,6 +667,28 @@
       const d = this.data;
       for (const t of d.tracks) {
         for (const r of t.rooms) if (!d.rooms[r]) problems.push(`Sekce „${t.id}“ odkazuje na neexistující místnost „${r}“.`);
+        for (const [r, to] of Object.entries(t.trialRooms || {})) {
+          if (!d.rooms[r]) problems.push(`Sekce „${t.id}“: neexistující zkušební místnost „${r}“.`);
+          if (!t.rooms.includes(to)) problems.push(`Sekce „${t.id}“: zkušební místnost „${r}“ vede do „${to}“, která v sekci není.`);
+        }
+      }
+      // chodby „z vlastních očí“: mapa, start, textury, objekty na zdech
+      for (const [roomId, r] of Object.entries(d.rooms)) {
+        if (r.type !== 'corridor') continue;
+        const c = r.corridor || {};
+        const map = c.map || [];
+        const at = (x, y) => (map[y] || '')[x];
+        if (!map.length) problems.push(`Chodba „${roomId}“ nemá mapu.`);
+        if (!c.start || at(c.start.x, c.start.y) !== '.') problems.push(`Chodba „${roomId}“: start není na políčku chodby.`);
+        for (const ch of new Set(map.join('').replace(/\./g, ''))) {
+          const e = (c.legend || {})[ch];
+          const names = Array.isArray(e) ? e.map((v) => v.texture) : [e || c.wall];
+          for (const n of names) if (!n || !(c.textures || {})[n]) problems.push(`Chodba „${roomId}“: znak „${ch}“ nemá texturu.`);
+        }
+        for (const h of r.hotspots || []) {
+          const [x, y] = h.cell || [];
+          if (at(x, y) === undefined || at(x, y) === '.') problems.push(`Chodba „${roomId}“, objekt „${h.id}“: „cell“ není zeď v mapě.`);
+        }
       }
       let room = null;
       const checkEffects = (effects, where) => {

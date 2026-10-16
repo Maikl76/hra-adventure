@@ -63,9 +63,10 @@ js/squats.js        počítání dřepů kamerou (GSPORT, herna)
 js/skok.js          výskok z podřepu – doba letu (GSPORT, aréna)
 js/predklon.js      zkouška stability – předklon (vojenská tělovýchova, sklad)
 js/goblet.js        goblet dřep 90 s – platné a neplatné dřepy (vojenská tělovýchova, tělocvična)
+js/chodba.js        chodba „z vlastních očí“ – chůze po krocích, kreslení jako DOOM (zkouška: sklep)
 vendor/mediapipe/   MediaPipe Tasks Vision 0.10.14 + model pose_landmarker_lite (Apache 2.0)
 data/game.json      VEŠKERÝ obsah hry
-assets/             rooms/ (pohledy a vrstvy), items/, closeups/, book/, scares/
+assets/             rooms/ (pohledy a vrstvy), items/, closeups/, book/, scares/, chodba/ (textury)
 docs/               tyto poznámky a zadání obrázků pro autora (zadani-obrazku-*.md)
 ```
 
@@ -107,6 +108,13 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
   a `table` (`caption`, `head`, `rows`; první buňka řádku je záhlaví) – tabulky norem v brožuře.
+- **Chodba „z vlastních očí“** (`"type": "corridor"`, kreslí `js/chodba.js`): místo pohledů má
+  `corridor` – `map` (řádky; `.` = chodba, jiné znaky = zdi), `start` {x, y, dir N/E/S/W}, `legend`
+  (znak → textura, nebo seznam variant s `when`), `textures` (obrázky 512 × 512), `floor`, `ceiling`,
+  `lamps` (zářivky na stropě, `flicker` = bliká). Objekty jsou v `hotspots` s `cell` [x, y] místo
+  `area`: kliká se na zeď přímo před hráčem. Poloha hráče se ukládá (`state.places`).
+- **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
+  odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
 - Lekačky `scares`: `image`, `sound` (`scareHit`/`scareStatic`/`scareRush`), `delay` (napětí,
   podkres ztichne), `duration`, `rush`, `position` (co zůstane v záběru na úzkém displeji),
   `after` (text připsaný potom). Každá jen jednou za hru.
@@ -182,6 +190,21 @@ okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze
 `981*tl^2/8` cm) → NEON AIM (Fittsův zákon, ID = log₂(D/W + 1)) → otázka, proč malý vzdálený terč
 trvá déle → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
+
+### Zkouška: sklepní chodba „z vlastních očí“ (`chodba`)
+Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026). Zvolená varianta: chodby z vlastních očí,
+místnosti zůstávají s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně,
+jde ovládat i tlačítky na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení
+(žádný kód DOOMu – jeho licence by si vynutila změnu licence hry). Odkaz: `?mistnost=chodba` –
+nová hra začne v chodbě za výstrojním skladem, po schodech pokračuje do tělocvičny; běžná hra
+chodbu přeskakuje (`trialRooms` u světa vojenska). Ovládání: ↑ ↓ / W S krok, ← → / A D otočit,
+šipky na obrazovce, kliknutí do obrazu (vlevo / vpravo otočit, uprostřed krok), Enter = věc před
+hráčem. Malá mapa prošlých políček vpravo nahoře. Výukový úkol: mříž ke schodišti otevře práce
+vojáka s batohem při výstupu, W = m · g · h = 100 · 9,81 · 18 · 0,17 ≈ **3 000 J** (±3 %; cílené
+rady: bez batohu, jen batoh, jeden schod, centimetry, chybí g). Údaje: nástěnka (batoh 30 kg,
+W = m·g·h) a cedule u mříže (18 schodů × 17 cm). Zástupné textury ode mě
+(`docs/zadani-obrazku-chodba.md`). Kreslení ~15 ms na snímek v testovacím prohlížeči.
+Pokud se osvědčí: zařadit `chodba` do `rooms` vojenské sekce mezi sklad a tělocvičnu.
 
 ## Rozhodnutí autora (důležitá)
 

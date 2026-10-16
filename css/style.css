@@ -387,6 +387,17 @@ button:focus-visible, input:focus-visible {
 
 .hotspots { position: absolute; inset: 0; }
 
+/* Chodba „z vlastních očí“ (js/chodba.js): obraz se kreslí na plátno, kliknutí vlevo / vpravo otočí,
+   uprostřed krok; objekt na zdi před hráčem má klikací plochu, jinak plátno dostává kliknutí. */
+.scene-corridor { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; }
+.scene-corridor[hidden] { display: none; }
+.scene.corridor .hotspots { pointer-events: none; }
+.scene.corridor .hotspot { pointer-events: auto; cursor: pointer; }
+.scene.corridor .hotspot:hover { outline: 1px dashed rgba(230, 198, 126, 0.45); }
+.nav-forward, .nav-backward { left: 50%; width: 64px; height: 36px; margin-left: -32px; font-size: 18px; line-height: 1; padding: 0; }
+.nav-forward { bottom: 52px; }
+.nav-backward { bottom: 10px; }
+
 .hotspot {
   position: absolute;
   background: none;

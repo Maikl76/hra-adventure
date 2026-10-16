@@ -71,7 +71,7 @@
       return null;
     }
     if (!id) return null;
-    const track = data.tracks.find((t) => t.rooms.includes(id));
+    const track = data.tracks.find((t) => t.rooms.includes(id) || (t.trialRooms && id in t.trialRooms));
     if (!track) {
       console.warn(`Odkaz ?mistnost=${id}: taková místnost ve hře není.`);
       return null;
@@ -87,6 +87,7 @@
     if (id === 'room') startSceneLoop();
     else {
       stopSceneLoop();
+      if (corridor) corridor.stop();
       if (calc) calc.close();
       if ($('hud-help')) hideHudHelp();
     }
@@ -695,6 +696,11 @@
   /* Vykreslení aktuálního pohledu místnosti; direction = odkud přichází (animace otočení). */
   function renderRoom(direction) {
     const room = game.room;
+    if (room.type === 'corridor') {
+      renderCorridor();
+      return;
+    }
+    leaveCorridor();
     const view = game.view;
     $('hud-gate').textContent = room.gateLabel || `Brána ${room.gateNumber || ''}`;
     $('hud-room').textContent = view !== room && view.name ? `${room.name} · ${view.name}` : room.name;
@@ -707,28 +713,165 @@
 
     const hotspots = $('hotspots');
     hotspots.innerHTML = '';
-    for (const h of view.hotspots || []) {
-      const [x, y, w, hgt] = h.area;
+    for (const h of view.hotspots || []) hotspots.appendChild(hotspotButton(h));
+    renderState(false);
+  }
+
+  /* Klikací plocha objektu (area v % obrázku). */
+  function hotspotButton(h) {
+    const [x, y, w, hgt] = h.area;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'hotspot';
+    btn.style.left = `${x}%`;
+    btn.style.top = `${y}%`;
+    btn.style.width = `${w}%`;
+    btn.style.height = `${hgt}%`;
+    btn.setAttribute('aria-label', h.name);
+    btn.dataset.id = h.id;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onHotspot(h);
+    });
+    btn.addEventListener('pointerenter', () => showTooltip(h));
+    btn.addEventListener('focus', () => showTooltip(h));
+    btn.addEventListener('pointerleave', hideTooltip);
+    btn.addEventListener('blur', hideTooltip);
+    return btn;
+  }
+
+  /* ---------- Chodba „z vlastních očí“ (zkouška; kreslí js/chodba.js) ----------
+     Hráč chodí po krocích (↑ ↓ / W S) a otáčí se o 90° (← → / A D); šipky jsou i na obrazovce
+     a kliknutí do obrazu vlevo / vpravo otočí, uprostřed udělá krok. Objekt na zdi přímo před
+     hráčem dostane klikací plochu přes celou zeď (Enter / mezerník). Poloha se ukládá do hry. */
+  let corridor = null;        // instance Corridor
+  let corridorRoom = null;    // id místnosti, pro kterou je načtená
+  let corridorBusy = false;   // probíhá krok / otočení
+
+  function corridorCanvas() {
+    let c = $('scene-corridor');
+    if (!c) {
+      c = document.createElement('canvas');
+      c.id = 'scene-corridor';
+      c.className = 'scene-corridor';
+      $('scene-bg').after(c);
+      c.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const r = c.getBoundingClientRect();
+        const fx = (e.clientX - r.left) / r.width;
+        if (fx < 0.25) corridorMove('turn', -1);
+        else if (fx > 0.75) corridorMove('turn', 1);
+        else corridorMove('step', 1);
+      });
+    }
+    return c;
+  }
+
+  async function renderCorridor() {
+    const room = game.room;
+    const roomId = game.roomId;
+    $('hud-gate').textContent = room.gateLabel || '';
+    $('hud-room').textContent = room.name;
+    sound.ambience(room.ambience || 'room');
+    hideTooltip();
+    $('scene').classList.add('corridor');
+    $('scene-bg').hidden = true;
+    $('scene-layers').innerHTML = '';
+    $('hotspots').innerHTML = '';
+    renderCorridorNav();
+    renderState(false);
+    const canvas = corridorCanvas();
+    canvas.hidden = false;
+    if (!corridor || corridorRoom !== roomId) {
+      if (corridor) corridor.destroy();
+      corridor = null;
+      const mod = await import('./chodba.js?v=0.13');
+      const c = new mod.Corridor(canvas, room.corridor, { check: (w) => game.check(w), reducedMotion: reducedMotion.matches });
+      await c.load();
+      if (!game.state || game.roomId !== roomId) return;   // mezitím odešel
+      corridor = c;
+      corridorRoom = roomId;
+    }
+    corridor.setFlashlight(flashlightOn);
+    corridor.setPosition(game.corridorPos());
+    corridor.start();
+    updateCorridorFacing(false);
+  }
+
+  function leaveCorridor() {
+    $('scene').classList.remove('corridor');
+    $('scene-bg').hidden = false;
+    const c = $('scene-corridor');
+    if (c) c.hidden = true;
+    if (corridor) corridor.stop();
+  }
+
+  function renderCorridorNav() {
+    const nav = $('scene-nav');
+    nav.innerHTML = '';
+    const add = (cls, label, title, kind, delta) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'hotspot';
-      btn.style.left = `${x}%`;
-      btn.style.top = `${y}%`;
-      btn.style.width = `${w}%`;
-      btn.style.height = `${hgt}%`;
-      btn.setAttribute('aria-label', h.name);
-      btn.dataset.id = h.id;
+      btn.className = cls;
+      btn.textContent = label;
+      btn.title = title;
+      btn.setAttribute('aria-label', title);
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        onHotspot(h);
+        corridorMove(kind, delta);
       });
-      btn.addEventListener('pointerenter', () => showTooltip(h));
-      btn.addEventListener('focus', () => showTooltip(h));
-      btn.addEventListener('pointerleave', hideTooltip);
-      btn.addEventListener('blur', hideTooltip);
-      hotspots.appendChild(btn);
-    }
-    renderState(false);
+      nav.appendChild(btn);
+    };
+    add('nav-left', '‹', 'Otočit se doleva (←)', 'turn', -1);
+    add('nav-right', '›', 'Otočit se doprava (→)', 'turn', 1);
+    add('nav-forward', '▲', 'Krok vpřed (↑)', 'step', 1);
+    add('nav-backward', '▼', 'Krok vzad (↓)', 'step', -1);
+  }
+
+  async function corridorMove(kind, delta) {
+    if (!corridor || corridorBusy || !$('modal').hidden || $('room').hidden) return;
+    corridorBusy = true;
+    $('hotspots').innerHTML = '';
+    hideTooltip();
+    if (kind === 'step' && corridorOpen(delta)) sound.sfx('step');
+    const moved = kind === 'step' ? await corridor.step(delta) : await corridor.turn(delta);
+    corridorBusy = false;
+    if (!game.state || !corridor) return;
+    game.setCorridorPos(corridor.position());
+    updateCorridorFacing(true, kind === 'step' && !moved);
+  }
+
+  /* Je ve směru kroku volno? (zvuk kroku jen při skutečném kroku) */
+  function corridorOpen(delta) {
+    const f = corridor.facing();
+    const c = delta > 0 ? f.front : f.back;
+    return corridor.isFloor(c.x, c.y);
+  }
+
+  function corridorHotspotAt(cell) {
+    return (game.room.hotspots || []).find((h) => h.cell && h.cell[0] === cell.x && h.cell[1] === cell.y);
+  }
+
+  function frontHotspot() {
+    return corridor ? corridorHotspotAt(corridor.facing().front) : null;
+  }
+
+  /* Po kroku: klikací plocha na zdi před hráčem a krátká nápověda, co je kolem. */
+  function updateCorridorFacing(replace, bumped) {
+    if (!corridor) return;
+    const f = corridor.facing();
+    const front = corridorHotspotAt(f.front);
+    const hs = $('hotspots');
+    hs.innerHTML = '';
+    if (front) hs.appendChild(hotspotButton({ ...front, area: [14, 8, 72, 84] }));
+    const lines = [];
+    if (front) lines.push(`Před tebou: ${front.name} (klikni, nebo stiskni Enter).`);
+    const left = corridorHotspotAt(f.left), right = corridorHotspotAt(f.right);
+    if (left) lines.push(`Vlevo: ${left.name}.`);
+    if (right) lines.push(`Vpravo: ${right.name}.`);
+    if (bumped) lines.unshift('Tudy cesta nevede.');
+    if (replace) showMessage([], lines);
+    else lines.forEach((l) => appendMessage(l, true));
   }
 
   /* Šipky pro otočení v místnosti a návrat ze zvětšeného pohledu. */
@@ -778,6 +921,7 @@
   /* Části, které se mění se stavem: vrstvy obrázku, inventář.
      animate = nově objevená vrstva se ukáže animací (např. vysunutí šuplíku); při otočení ne. */
   function renderState(animate = true) {
+    if (corridor && game.room.type === 'corridor') corridor.invalidate();
     const layers = $('scene-layers');
     const wanted = game.visibleLayers();
     const wantedSrc = wanted.map((l) => l.image);
@@ -1221,6 +1365,7 @@
   function toggleFlashlight() {
     flashlightOn = !flashlightOn;
     Game.setSetting('flashlight', flashlightOn);
+    if (corridor) corridor.setFlashlight(flashlightOn);
     updateLightButton();
   }
 
@@ -1731,7 +1876,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.12.1');
+          const mod = await import('./squats.js?v=0.13');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2593,7 +2738,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.12.1');
+          const mod = await import('./skok.js?v=0.13');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -2971,7 +3116,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.12.1');
+          const mod = await import('./goblet.js?v=0.13');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -3681,7 +3826,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.12.1');
+          const mod = await import('./predklon.js?v=0.13');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4057,6 +4202,26 @@
     if (modalOpen && bookNav) {
       if (e.key === 'ArrowRight') { bookNav.next(); e.preventDefault(); return; }
       if (e.key === 'ArrowLeft') { bookNav.prev(); e.preventDefault(); return; }
+    }
+    // Chodba: ↑ ↓ / W S = krok, ← → / A D = otočit se, Enter / mezerník = věc před hráčem.
+    if (!modalOpen && !$('room').hidden && corridor && game.room.type === 'corridor' && !e.target.matches('input, textarea')) {
+      const move = {
+        ArrowUp: ['step', 1], w: ['step', 1], W: ['step', 1], ArrowDown: ['step', -1], s: ['step', -1], S: ['step', -1],
+        ArrowLeft: ['turn', -1], a: ['turn', -1], A: ['turn', -1], ArrowRight: ['turn', 1], d: ['turn', 1], D: ['turn', 1],
+      }[e.key];
+      if (move) {
+        e.preventDefault();
+        corridorMove(...move);
+        return;
+      }
+      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('button')) {
+        const h = frontHotspot();
+        if (h) {
+          e.preventDefault();
+          onHotspot(h);
+          return;
+        }
+      }
     }
     // Otáčení v místnosti šipkami (← → otočení, ↓ zpět ze zvětšeného pohledu).
     if (!modalOpen && !$('room').hidden && !e.target.matches('input, textarea')) {

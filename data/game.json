@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.12.1 – ukázka",
+    "version": "0.13 – ukázka",
     "totalGates": 9
   },
 
@@ -34,6 +34,8 @@
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
       "rooms": ["sklad", "telocvicna"],
+      "_zkusebni": "trialRooms: zkušební místnost → do které místnosti světa vede. Hraje se jen přes odkaz ?mistnost=<id>, běžná hra ji přeskočí.",
+      "trialRooms": { "chodba": "telocvicna" },
       "finish": {
         "title": "Brána II je otevřená",
         "text": "Za dveřmi tělocvičny vede chodba ven na cvičiště. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
@@ -6244,6 +6246,325 @@
             "noteKey": "brana2"
           }
         ]
+      }
+    },
+
+    "chodba": {
+      "name": "Sklepní chodba",
+      "gateLabel": "Sklep",
+      "tracks": [
+        "vojenska"
+      ],
+      "type": "corridor",
+      "_zkouska": "Zkušební chodba „z vlastních očí“ (js/chodba.js). Hraje se jen přes odkaz ?mistnost=chodba; po výstupu po schodech pokračuje hra v tělocvičně. Až se osvědčí, stačí ji ve světě vojenska zařadit do „rooms“ mezi sklad a tělocvičnu.",
+      "ambience": "sklad",
+      "darkness": 0,
+      "enterText": "Za pancéřovými dveřmi skladu vede dlouhá sklepní chodba. Pod stropem bzučí zářivky, jedna bliká. (Zkušební chodba: šipka ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se. Na věc před sebou klikni nebo stiskni Enter.)",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš ve sklepní chodbě za výstrojním skladem (zkušební verze). Kalkulačku ze skladu máš u sebe."
+        }
+      ],
+      "corridor": {
+        "_poznamka": "Mapa: „.“ = chodba, ostatní znaky = zdi s texturou podle „legend“ (varianta s „when“ podle stavu hry). Políčko měří asi 2,4 m. Lampy = zářivky na stropě (x, y políčka). Objekty na zdech jsou v „hotspots“ s „cell“ [x, y]; kliká se na zeď, před kterou hráč stojí.",
+        "map": [
+          "#A#####C##",
+          "#.......M#",
+          "#.##B#####",
+          "#.########",
+          "#.N#######",
+          "H.########",
+          "#.########",
+          "#.########",
+          "#.########",
+          "#D########"
+        ],
+        "start": {
+          "x": 1,
+          "y": 8,
+          "dir": "N"
+        },
+        "cellMeters": 2.4,
+        "wall": "zed",
+        "floor": "podlaha",
+        "ceiling": "strop",
+        "legend": {
+          "#": "zed",
+          "A": "sipka",
+          "B": "potrubi",
+          "C": "cedule_schody",
+          "H": "hasicak",
+          "N": "nastenka",
+          "D": "dvere_sklad",
+          "M": [
+            {
+              "when": {
+                "flags": [
+                  "mriz_otevrena"
+                ]
+              },
+              "texture": "schodiste"
+            },
+            {
+              "texture": "mriz"
+            }
+          ]
+        },
+        "textures": {
+          "zed": "assets/chodba/zed.svg",
+          "podlaha": "assets/chodba/podlaha.svg",
+          "strop": "assets/chodba/strop.svg",
+          "sipka": "assets/chodba/sipka.svg",
+          "potrubi": "assets/chodba/potrubi.svg",
+          "cedule_schody": "assets/chodba/cedule_schody.svg",
+          "hasicak": "assets/chodba/hasicak.svg",
+          "nastenka": "assets/chodba/nastenka.svg",
+          "dvere_sklad": "assets/chodba/dvere_sklad.svg",
+          "mriz": "assets/chodba/mriz.svg",
+          "schodiste": "assets/chodba/schodiste.svg"
+        },
+        "lamps": [
+          {
+            "x": 1,
+            "y": 7,
+            "strength": 0.85
+          },
+          {
+            "x": 1,
+            "y": 4,
+            "strength": 0.8,
+            "flicker": true
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "strength": 0.75
+          },
+          {
+            "x": 4,
+            "y": 1,
+            "strength": 0.8
+          },
+          {
+            "x": 7,
+            "y": 1,
+            "strength": 1.0
+          }
+        ]
+      },
+      "hotspots": [
+        {
+          "id": "dvere_sklad",
+          "name": "Dveře skladu",
+          "cell": [
+            1,
+            9
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Otevřené pancéřové dveře výstrojního skladu. Brána I je za tebou – cesta vede chodbou dál."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hasicak",
+          "name": "Hasicí přístroj",
+          "cell": [
+            0,
+            5
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Hasicí přístroj na háku. Revizní štítek je z doby, kdy tu docent ještě učil."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "nastenka",
+          "name": "Nástěnka",
+          "cell": [
+            2,
+            4
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "sound": "paper"
+                },
+                {
+                  "closeup": {
+                    "note": "ROZPIS – VÝROČNÍ PŘEZKOUŠENÍ\n\nTělocvična: ze sklepa schodištěm nahoru.\nNastoupit v polní výstroji\n(batoh 30 kg).\n\nKdo nese plnou polní po schodech,\nať ví, co ho čeká:\nW = m · g · h\n– D.",
+                    "font": "type",
+                    "caption": "Nástěnka ve sklepní chodbě"
+                  }
+                },
+                {
+                  "note": "Nástěnka: do tělocvičny se jde v polní výstroji (batoh 30 kg). Práce proti tíze W = m · g · h.",
+                  "noteKey": "nastenka_chodba"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sipka",
+          "name": "Nápis na zdi",
+          "cell": [
+            1,
+            0
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Na zdi je šablonou nastříkáno TĚLOCVIČNA – SCHODIŠTĚ a šipka doprava."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "potrubi",
+          "name": "Potrubí",
+          "cell": [
+            4,
+            2
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Potrubí ústředního topení s červeným ventilem. Ventil je zarezlý a trubky jsou teplé."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cedule_schody",
+          "name": "Cedule u schodiště",
+          "cell": [
+            7,
+            0
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "closeup": {
+                    "note": "SCHODIŠTĚ\n\n18 SCHODŮ × 17 cm",
+                    "font": "type",
+                    "caption": "Smaltovaná cedule u schodiště"
+                  }
+                },
+                {
+                  "note": "Schodiště do tělocvičny: 18 schodů po 17 cm.",
+                  "noteKey": "cedule_schody"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mriz",
+          "name": "Mříž ke schodišti",
+          "cell": [
+            8,
+            1
+          ],
+          "click": [
+            {
+              "when": {
+                "flags": [
+                  "mriz_otevrena"
+                ]
+              },
+              "do": [
+                {
+                  "text": "Stoupáš po úzkém schodišti nahoru. Osmnáct schodů – s plnou polní je to znát…"
+                },
+                {
+                  "leave": true
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "sound": "locked"
+                },
+                {
+                  "lock": "mriz"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "locks": {
+        "mriz": {
+          "title": "Mříž ke schodišti",
+          "openFlag": "mriz_otevrena",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Na mříži visí zámek s číselníkem a docentův lísteček: „Nahoru po schodech půjde voják 70 kg s batohem 30 kg. Kolik práce vykoná proti tíze, než vystoupá do tělocvičny? Zadej v joulech. – D.“",
+              "unit": "J",
+              "answer": "100*9.81*18*0.17",
+              "toleranceRel": 0.03,
+              "feedbackFormulas": [
+                {
+                  "value": "70*9.81*18*0.17",
+                  "text": "Zapomněl jsi na batoh. Nahoru jde voják i batoh: 70 + 30 kg."
+                },
+                {
+                  "value": "30*9.81*18*0.17",
+                  "text": "To je jen batoh. Voják nese nahoru i sám sebe."
+                },
+                {
+                  "value": "100*9.81*0.17",
+                  "text": "To je práce na jediný schod. Schodů je 18."
+                },
+                {
+                  "value": "100*9.81*18*17",
+                  "text": "Výška je v centimetrech. Převeď ji na metry: 17 cm = 0,17 m."
+                },
+                {
+                  "value": "100*18*0.17",
+                  "text": "Chybí tíhové zrychlení g = 9,81 m/s². Práce proti tíze je W = m · g · h."
+                }
+              ],
+              "wrong": "Zámek ani necvakl.",
+              "hints": [
+                "Práce proti tíze: W = m · g · h. Výšku schodiště zjistíš na ceduli vedle mříže.",
+                "m = 70 + 30 = 100 kg; h = 18 · 0,17 m = 3,06 m.",
+                "100 · 9,81 · 3,06 ≈ 3 000 J."
+              ],
+              "success": "Cvak! Zámek mříže povolil."
+            }
+          ],
+          "open": [
+            {
+              "text": "Mříž se se skřípěním otevřela. Za ní stoupá úzké schodiště a shora je slyšet vzdálené dunění – jako by v tělocvičně někdo běhal."
+            },
+            {
+              "note": "Schodiště: voják 70 kg + batoh 30 kg, 18 schodů po 17 cm → W = m · g · h = 100 · 9,81 · 3,06 ≈ 3 000 J.",
+              "noteKey": "schodiste_prace"
+            }
+          ]
+        }
       }
     }
   },
