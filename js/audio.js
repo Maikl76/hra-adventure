@@ -528,6 +528,42 @@
       this.every(h, 14, 28, (when) => this.creak(group, when, 0.03, 0.6 + Math.random() * 0.6));
     },
 
+    /* Tělocvična (vojenská, Brána II): prázdný velký sál, bzučení zářivek, tichý tón, občas
+       vzdálené doskakování míče a zavrzání parket. Nic náhlého ani hlasitého. */
+    telocvicna(group, h) {
+      const t = this.ctx.currentTime;
+      // tón prázdného sálu
+      const hall = this.gain(0.03, group);
+      h.sources.push(this.noiseSource(this.filter('lowpass', 500, 0.5, hall), t, 0, this.brown, true));
+      this.lfo(hall.gain, 0.04, 0.008, t, h);
+      // řada zářivek: 100 Hz s harmonickými, dvě trubice mírně rozladěné
+      for (const [f, lvl] of [[100, 0.006], [100.6, 0.004]]) {
+        const buzz = this.gain(lvl, group);
+        h.sources.push(this.osc('sawtooth', f, this.filter('bandpass', 1500, 1.1, buzz), t));
+        this.lfo(buzz.gain, 0.17 + f / 2000, 0.002, t, h);
+      }
+      // tichý tón (d moll bez tercie), pomalu dýchá
+      const pad = this.gain(0.0001, group);
+      pad.gain.setTargetAtTime(1, t, 3);
+      [NOTE.D2, NOTE.A2].forEach((f, i) => {
+        const vg = this.gain(0.01, this.filter('lowpass', 500, 0.7, pad));
+        h.sources.push(this.osc('sine', f, vg, t, 0, i ? 3 : -3));
+        this.lfo(vg.gain, 0.05 + i * 0.017, 0.006, t, h);
+      });
+      // vzdálený míč: doskakuje, údery se zkracují a slábnou
+      this.every(h, 25, 45, (when) => {
+        let dt = 0;
+        let gap = 0.55;
+        for (let i = 0; i < 6; i++) {
+          this.thump(group, when + dt, 0.07 * Math.pow(0.7, i), 110);
+          dt += gap;
+          gap *= 0.72;
+        }
+      });
+      // parkety
+      this.every(h, 16, 30, (when) => this.creak(group, when, 0.025, 0.5 + Math.random() * 0.5));
+    },
+
     /* Závěrečná obrazovka: klidnější tón. */
     finish(group, h) {
       AMBIENCE.intro.call(this, group, h, { level: 0.5, bells: false });
@@ -710,6 +746,19 @@
     measure(dest, t) {
       this.click(dest, 1400, t, 0.25);
       this.click(dest, 1150, t + 0.14, 0.2);
+    },
+
+    /* Psací stroj: rychlé údery kláves a na konci zvonek a posun válce. */
+    typewriter(dest, t) {
+      let dt = 0;
+      for (let i = 0; i < 14; i++) {
+        this.click(dest, 1700 + Math.random() * 900, t + dt, 0.22);
+        this.thump(dest, t + dt, 0.07, 140);
+        dt += 0.07 + Math.random() * 0.08;
+      }
+      this.ping(dest, 2350, t + dt + 0.05, 0.05, 0.6);
+      this.noiseBurst(dest, t + dt + 0.2, 0.3, 'bandpass', 1400, 0.08);
+      this.click(dest, 900, t + dt + 0.52, 0.2);
     },
 
     /* Nový předmět v inventáři. */

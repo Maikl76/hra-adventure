@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: litinový kettlebell 5 kg -->
+  <defs><radialGradient id="k" cx="0.35" cy="0.35" r="0.75"><stop offset="0" stop-color="#6a6e70"/><stop offset="1" stop-color="#141617"/></radialGradient></defs>
+  <path d="M19,30 C17,8 47,8 45,30" fill="none" stroke="#2a2d2e" stroke-width="7"/>
+  <circle cx="32" cy="40" r="20" fill="url(#k)"/>
+  <rect x="22" y="56" width="20" height="4" rx="2" fill="#0d0e0f"/>
+  <text x="32" y="47" font-size="15" font-weight="bold" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" fill="#c9cdce">5</text>
+</svg>

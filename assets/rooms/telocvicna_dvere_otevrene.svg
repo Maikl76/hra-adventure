@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: otevřené dveře tělocvičny (příznak brana_telocvicna_otevrena). Souřadnice odpovídají telocvicna_dvere.svg. -->
+  <defs>
+    <linearGradient id="hall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6dc"/><stop offset="1" stop-color="#c9b78e"/></linearGradient>
+    <linearGradient id="door" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8b6a44"/><stop offset="1" stop-color="#6e5232"/></linearGradient>
+  </defs>
+  <rect x="908" y="124" width="454" height="716" fill="url(#hall)"/>
+  <polygon points="1030,560 1240,560 1362,840 908,840" fill="#a89574"/>
+  <rect x="1030" y="250" width="210" height="310" fill="#e9dcb8"/>
+  <rect x="1090" y="300" width="90" height="200" fill="#fffbea"/>
+  <polygon points="908,124 968,160 968,800 908,840" fill="url(#door)" stroke="#3a2a16" stroke-width="3"/>
+  <polygon points="1362,124 1302,160 1302,800 1362,840" fill="url(#door)" stroke="#3a2a16" stroke-width="3"/>
+  <rect x="1404" y="404" width="52" height="16" rx="2" fill="#123a1e"/>
+  <text x="1430" y="417" font-size="12" font-weight="bold" text-anchor="middle" font-family="'Courier New', Courier, monospace" fill="#5dff8a">OK</text>
+  <circle cx="1456" cy="499" r="4" fill="#5dff8a"/>
+</svg>

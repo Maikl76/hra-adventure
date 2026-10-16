@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: rozjetý běžecký pás (příznak pas_bezi). Souřadnice odpovídají telocvicna_sektor.svg. -->
+  <rect x="1494" y="394" width="92" height="36" rx="3" fill="#0e2a16"/>
+  <text x="1540" y="421" font-size="22" font-weight="bold" text-anchor="middle" font-family="'Courier New', Courier, monospace" fill="#5dff8a">13,5</text>
+  <circle cx="1504" cy="446" r="6" fill="#5dff8a"/>
+  <g stroke="#6a6e70" stroke-width="3" opacity="0.8">
+    <line x1="1200" y1="802" x2="1260" y2="802"/><line x1="1320" y1="812" x2="1390" y2="812"/>
+    <line x1="1440" y1="800" x2="1500" y2="800"/><line x1="1260" y1="818" x2="1300" y2="818"/>
+  </g>
+</svg>

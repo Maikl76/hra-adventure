@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: napsané hlášení v psacím stroji (příznak hlaseni_hotovo). Souřadnice odpovídají telocvicna_stul.svg. -->
+  <polygon points="1108,368 1244,368 1246,482 1106,482" fill="#f6f1de" stroke="#9a906e" stroke-width="1.5"/>
+  <text x="1176" y="386" font-size="11" font-weight="bold" text-anchor="middle" font-family="'Courier New', Courier, monospace" fill="#1e1c16">HLÁŠENÍ</text>
+  <g font-family="'Courier New', Courier, monospace" font-size="8.5" fill="#2a2820">
+    <text x="1116" y="402">rtn. Doubek K., 37 let, A</text>
+    <text x="1116" y="414">běh 2 leh-sed 2 kliky 1</text>
+    <text x="1116" y="426">shyby 2  břemeno 3</text>
+    <text x="1116" y="444" fill="#3b4f8a">P. S. Pás u sektoru… – D.</text>
+  </g>
+  <rect x="1184" y="452" width="50" height="18" fill="none" stroke="#2f7a3a" stroke-width="2" transform="rotate(-8 1209 461)"/>
+  <text x="1209" y="465" font-size="10" font-weight="bold" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" fill="#2f7a3a" transform="rotate(-8 1209 461)">HOTOVO</text>
+  <rect x="1078" y="470" width="196" height="26" rx="12" fill="#222220"/>
+</svg>

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.11.4 – ukázka",
+    "version": "0.12 – ukázka",
     "totalGates": 9
   },
 
@@ -33,15 +33,18 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad"],
+      "rooms": ["sklad", "telocvicna"],
       "finish": {
-        "title": "Brána I je otevřená",
-        "text": "Za pancéřovými dveřmi vede schodiště nahoru, k tělocvičně. Na zábradlí visí přilba a v ní lísteček: „Dobrá práce, vojáku. Osm bran zbývá. – D.“",
+        "title": "Brána II je otevřená",
+        "text": "Za dveřmi tělocvičny vede chodba ven na cvičiště. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "cameraLabel": "Zkouška stability ověřená kamerou",
         "stats": [
           { "label": "Zkouška stability – volně", "value": "pánev {volne_panev} cm dozadu, ruce {volne_ruce} cm nad zemí", "requires": ["volne_panev"] },
-          { "label": "Zkouška stability – u zdi", "value": "pánev {zed_panev} cm dozadu, ruce {zed_ruce} cm nad zemí", "requires": ["zed_panev"] }
+          { "label": "Zkouška stability – u zdi", "value": "pánev {zed_panev} cm dozadu, ruce {zed_ruce} cm nad zemí", "requires": ["zed_panev"] },
+          { "label": "Kliky na decimální váze", "value": "ruce nesou {kliky_kg:1} kg ({kliky_procent} % hmotnosti)", "requires": ["kliky_kg"] },
+          { "label": "Goblet dřep (90 s)", "value": "{goblet_n} platných dřepů", "requires": ["goblet_n"] },
+          { "label": "Goblet dřep měřený kamerou", "bool": "goblet_kamera" }
         ]
       }
     },
@@ -498,6 +501,546 @@
           ] }
         ]
       }
+    },
+    "normy": {
+      "name": "Normy přezkoušení",
+      "icon": "assets/items/normy.svg",
+      "description": "Brožura s tabulkami norem pro výroční přezkoušení z fyzické zdatnosti. Na obálce razítko NÁVRH.",
+      "examine": [
+        {
+          "when": { "notFlags": ["normy_prectene"] },
+          "do": [
+            { "set": "normy_prectene" },
+            {
+              "note": "Normy: tabulka podle testu, pohlaví a zdravotní kategorie (A, BI, C); sloupec = věková kategorie (I do 30 let … VII 56+). Známka = výkon aspoň jako v řádku; u testů na čas naopak – čím méně, tím lépe.",
+              "noteKey": "normy"
+            }
+          ]
+        }
+      ],
+      "book": {
+        "title": "Normy – přezkoušení z fyzické zdatnosti",
+        "pages": [
+          {
+            "type": "title",
+            "blocks": [
+              { "heading": "NORMY" },
+              { "p": "Výroční přezkoušení z fyzické zdatnosti\nnávrh nových norem" },
+              { "note": "Čísla řeknou, kdo splnil. Proč – to musíš pochopit sám. – D." }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Jak číst tabulky" },
+              {
+                "p": "Zdravotní kategorie: A – bez omezení; BI a C – se zdravotním omezením (mají vlastní, mírnější tabulky, některé testy nedělají)."
+              },
+              { "p": "Věkové kategorie I–VII jsou sloupce tabulky (I = do 30 let … VII = 56 let a více)." },
+              { "p": "Známka 1, 2, 3 = výkon aspoň takový jako v řádku. Horší výkon než pro trojku: nesplnil(a)." },
+              {
+                "p": "U chůze, přenášení břemene a plavání se měří čas – tam platí opak: na známku stačí čas nejvýš takový jako v řádku, čím méně sekund, tím lépe. Výjimka je výdrž ve shybu: čím déle, tím lépe."
+              },
+              { "note": "Desetinná opakování (kategorie BI a C) jsou zaokrouhlena nahoru – půl dřepu neexistuje." }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Obsah" },
+              {
+                "toc": [
+                  ["Běh 12 min – muži", 4],
+                  ["Běh 12 min – ženy", 5],
+                  ["Leh-sed – muži", 6],
+                  ["Leh-sed – ženy", 7],
+                  ["Kliky – muži", 8],
+                  ["Shyby – muži", 9],
+                  ["Výdrž ve shybu – ženy", 10],
+                  ["Přenášení břemene – muži", 11],
+                  ["Přenášení břemene – ženy", 12],
+                  ["Plavání 300 m – muži", 13],
+                  ["Plavání 300 m – ženy", 14],
+                  ["Dřep se zátěží – muži", 15],
+                  ["Dřep se zátěží – ženy", 16],
+                  ["Odhod medicinbalu – muži", 17],
+                  ["Odhod medicinbalu – ženy", 18],
+                  ["Hod granátem (profesní)", 19]
+                ]
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Běh 12 min – muži" },
+              { "p": "A a BI: uběhnutá vzdálenost (m). C: chůze 2 km (čas v minutách)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "2900", "2800", "2700", "2600", "2500", "2300", "2100"],
+                    ["2", "2700", "2650", "2500", "2400", "2300", "2100", "1900"],
+                    ["3", "2550", "2450", "2400", "2200", "2000", "1800", "1600"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "2000", "1950", "1900", "1850", "1750", "1650", "1550"],
+                    ["2", "1900", "1850", "1800", "1750", "1650", "1550", "1450"],
+                    ["3", "1800", "1750", "1700", "1650", "1550", "1450", "1350"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "20", "21", "22", "23", "24", "25", "26"],
+                    ["2", "21", "22", "23", "24", "25", "26", "27"],
+                    ["3", "22", "23", "24", "25", "26", "27", "28"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Běh 12 min – ženy" },
+              { "p": "A a BI: uběhnutá vzdálenost (m). C: chůze 2 km (čas v minutách)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "2500", "2350", "2250", "2150", "1950", "1800", "1700"],
+                    ["2", "2300", "2150", "2050", "1950", "1850", "1700", "1600"],
+                    ["3", "2050", "1900", "1800", "1600", "1550", "1400", "1300"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "1800", "1750", "1700", "1650", "1550", "1500", "1450"],
+                    ["2", "1700", "1650", "1600", "1550", "1450", "1400", "1350"],
+                    ["3", "1600", "1550", "1500", "1450", "1350", "1300", "1250"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "20", "21", "22", "23", "24", "25", "26"],
+                    ["2", "21", "22", "23", "24", "25", "26", "27"],
+                    ["3", "22", "23", "24", "25", "26", "27", "28"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Leh-sed – muži" },
+              { "p": "Počet opakování." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "52", "51", "46", "43", "41", "38", "35"],
+                    ["2", "46", "45", "42", "41", "37", "34", "31"],
+                    ["3", "42", "40", "35", "33", "30", "27", "24"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "42", "41", "37", "35", "33", "31", "27"],
+                    ["2", "37", "36", "34", "33", "30", "28", "24"],
+                    ["3", "34", "32", "28", "27", "24", "22", "19"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "26", "25", "23", "22", "21", "19", "17"],
+                    ["2", "23", "22", "21", "20", "19", "17", "15"],
+                    ["3", "21", "20", "18", "17", "15", "14", "13"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Leh-sed – ženy" },
+              { "p": "Počet opakování." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "46", "38", "34", "29", "25", "23", "21"],
+                    ["2", "40", "33", "28", "26", "22", "19", "16"],
+                    ["3", "33", "28", "25", "22", "20", "17", "14"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "38", "36", "31", "28", "24", "20", "17"],
+                    ["2", "35", "30", "27", "23", "21", "18", "15"],
+                    ["3", "29", "24", "23", "20", "18", "16", "13"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "24", "22", "19", "17", "15", "13", "11"],
+                    ["2", "22", "19", "17", "14", "13", "11", "9"],
+                    ["3", "18", "15", "14", "13", "11", "9", "7"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Kliky – muži" },
+              { "p": "Počet opakování." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "32", "31", "28", "26", "24", "21", "18"],
+                    ["2", "28", "27", "25", "23", "20", "17", "14"],
+                    ["3", "22", "21", "19", "16", "14", "12", "9"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Shyby – muži" },
+              { "p": "Počet opakování." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "12", "11", "10", "9", "7", "5", "3"],
+                    ["2", "10", "9", "8", "7", "5", "3", "2"],
+                    ["3", "8", "7", "6", "5", "3", "2", "1"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Výdrž ve shybu – ženy" },
+              { "p": "Čas výdrže (s)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "50", "41", "25", "24", "20", "16", "12"],
+                    ["2", "31", "30", "21", "19", "14", "10", "8"],
+                    ["3", "13", "12", "10", "8", "6", "4", "3"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Přenášení břemene – muži" },
+              { "p": "Batoh 15 kg, čas (s)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "59", "62", "64", "68", "70", "75", "78"],
+                    ["2", "64", "67", "69", "74", "77", "84", "87"],
+                    ["3", "75", "78", "80", "89", "91", "98", "102"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Přenášení břemene – ženy" },
+              { "p": "Batoh 10 kg, čas (s)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "68", "71", "73", "75", "81", "84", "87"],
+                    ["2", "73", "76", "79", "82", "90", "94", "98"],
+                    ["3", "82", "89", "92", "96", "100", "106", "112"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Plavání 300 m – muži" },
+              { "p": "Čas (min:s)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "5:20", "5:30", "5:40", "6:00", "6:20", "6:40", "7:00"],
+                    ["2", "6:00", "6:10", "6:20", "6:50", "7:10", "7:40", "8:00"],
+                    ["3", "6:40", "6:50", "7:00", "7:40", "8:00", "8:40", "9:00"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "5:52", "6:03", "6:14", "6:36", "6:58", "7:20", "7:42"],
+                    ["2", "6:36", "6:47", "6:58", "7:31", "7:53", "8:26", "8:48"],
+                    ["3", "7:20", "7:31", "7:42", "8:26", "8:48", "9:32", "9:54"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "6:08", "6:19,5", "6:31", "6:54", "7:17", "7:40", "8:03"],
+                    ["2", "6:54", "7:05,5", "7:17", "7:51,5", "8:14,5", "8:49", "9:12"],
+                    ["3", "7:40", "7:51,5", "8:03", "8:49", "9:12", "9:58", "10:21"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Plavání 300 m – ženy" },
+              { "p": "Čas (min:s)." },
+              {
+                "table": {
+                  "caption": "Kategorie A",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "6:03", "6:14", "6:36", "6:58", "7:20", "7:42", "8:04"],
+                    ["2", "6:47", "6:58", "7:31", "7:53", "8:26", "8:48", "9:10"],
+                    ["3", "7:31", "7:42", "8:26", "8:48", "9:32", "9:54", "10:18"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "6:27,2", "6:39,3", "6:51,4", "7:15,6", "7:39,8", "8:04", "8:28,2"],
+                    ["2", "7:15,6", "7:27,7", "7:39,8", "8:16,1", "8:40,3", "9:16,6", "9:40,8"],
+                    ["3", "8:04", "8:16,1", "8:28,2", "9:16,6", "9:40,8", "10:29,2", "10:53,4"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "6:44,8", "6:57,45", "7:10,1", "7:35,4", "8:00,7", "8:26", "8:51,3"],
+                    ["2", "7:35,4", "7:48,05", "8:00,7", "8:38,65", "9:03,95", "9:41,9", "10:07,2"],
+                    ["3", "8:26", "8:38,65", "8:51,3", "9:41,9", "10:07,2", "10:57,8", "11:23,1"]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Dřep se zátěží – muži" },
+              { "p": "Goblet dřep s kettlebellem 5 kg, limit 90 s, počet dřepů." },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "40", "37", "34", "31", "28", "25", "22"],
+                    ["2", "35", "32", "29", "26", "23", "20", "17"],
+                    ["3", "30", "27", "24", "21", "18", "15", "12"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "28", "26", "24", "22", "20", "18", "15"],
+                    ["2", "26", "24", "22", "20", "18", "16", "13"],
+                    ["3", "24", "22", "20", "18", "16", "14", "11"]
+                  ]
+                }
+              },
+              {
+                "table": { "caption": "Rekruti", "head": ["", "do 31 let", "nad 31 let"], "rows": [["počet", "9", "6"]] }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Dřep se zátěží – ženy" },
+              { "p": "Goblet dřep s kettlebellem 5 kg, limit 90 s, počet dřepů." },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "36", "32", "29", "26", "23", "20", "17"],
+                    ["2", "30", "27", "24", "21", "18", "15", "12"],
+                    ["3", "25", "23", "20", "16", "12", "9", "6"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "22", "19", "17", "15", "13", "11", "9"],
+                    ["2", "19", "17", "14", "13", "11", "9", "7"],
+                    ["3", "15", "14", "13", "11", "9", "7", "5"]
+                  ]
+                }
+              },
+              {
+                "table": { "caption": "Rekruti", "head": ["", "do 31 let", "nad 31 let"], "rows": [["počet", "7", "4"]] }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Odhod medicinbalu – muži" },
+              { "p": "Medicinbal 4 kg, vzdálenost (cm)." },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "435", "430", "425", "420", "415", "390", "375"],
+                    ["2", "395", "390", "380", "375", "370", "360", "340"],
+                    ["3", "340", "335", "330", "325", "320", "315", "280"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "400", "395", "385", "380", "375", "360", "350"],
+                    ["2", "370", "365", "360", "350", "345", "335", "300"],
+                    ["3", "320", "315", "310", "290", "280", "270", "260"]
+                  ]
+                }
+              },
+              {
+                "table": { "caption": "Rekruti", "head": ["", "do 31 let", "nad 31 let"], "rows": [["cm", "300", "250"]] }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Odhod medicinbalu – ženy" },
+              { "p": "Medicinbal 3 kg, vzdálenost (cm)." },
+              {
+                "table": {
+                  "caption": "Kategorie BI",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "350", "335", "330", "320", "315", "290", "275"],
+                    ["2", "315", "300", "295", "285", "280", "265", "240"],
+                    ["3", "280", "270", "260", "240", "230", "220", "210"]
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "caption": "Kategorie C",
+                  "head": ["Známka", "I\ndo 30", "II\n31–35", "III\n36–40", "IV\n41–45", "V\n46–50", "VI\n51–55", "VII\n56+"],
+                  "rows": [
+                    ["1", "310", "295", "290", "285", "280", "260", "245"],
+                    ["2", "280", "265", "260", "255", "250", "240", "220"],
+                    ["3", "260", "245", "235", "210", "200", "190", "180"]
+                  ]
+                }
+              },
+              {
+                "table": { "caption": "Rekruti", "head": ["", "do 31 let", "nad 31 let"], "rows": [["cm", "250", "200"]] }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              { "heading": "Hod granátem (profesní test)" },
+              { "p": "Bez rozlišení věku a pohlaví, podle typu jednotky. Vzdálenost (m)." },
+              {
+                "table": {
+                  "caption": "Typ jednotky",
+                  "head": ["Známka", "A", "B", "C"],
+                  "rows": [["1", "42", "34", "27"], ["2", "37", "29", "22"], ["3", "32", "25", "18"]]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "klic_skrin": {
+      "name": "Klíček od skříně",
+      "icon": "assets/items/klic_skrin.svg",
+      "description": "Malý klíček s visačkou SKŘÍŇ – NÁČINÍ. Dojel po pásu."
+    },
+    "kettlebell": {
+      "name": "Kettlebell 5 kg",
+      "icon": "assets/items/kettlebell.svg",
+      "description": "Litinový kettlebell 5 kg. Při goblet dřepu se drží oběma rukama za ucho u hrudníku."
+    },
+    "zavazi": {
+      "name": "Závaží k váze",
+      "icon": "assets/items/zavazi.svg",
+      "description": "Mosazná závaží k decimální váze: 2, 1, 0,5, 0,2 a 0,1 kg. Na víčku krabičky: 1 : 10."
     }
   },
 
@@ -906,6 +1449,49 @@
           "text": "Kniha dveře neotevře. Ale to, co je v ní, ano."
         }
       ]
+    },
+    {
+      "item": "klic_skrin",
+      "on": "skrin",
+      "room": "telocvicna",
+      "do": [
+        { "set": "skrin_otevrena" },
+        { "remove": "klic_skrin" },
+        { "sound": "unlockDrawer" },
+        {
+          "text": "Klíček zapadl do zámku. Plechová dvířka se otevřela: uvnitř švihadla, kužely, kettlebelly a krabička se závažím k decimální váze. Bereš kettlebell 5 kg a závaží."
+        },
+        { "give": "kettlebell" },
+        { "give": "zavazi" }
+      ]
+    },
+    {
+      "item": "zavazi",
+      "on": "vaha",
+      "room": "telocvicna",
+      "do": [{ "text": "Rozložíš závaží vedle váhy." }, { "activity": "kliky" }]
+    },
+    {
+      "item": "kettlebell",
+      "on": "lavicka",
+      "room": "telocvicna",
+      "do": [{ "text": "Vezmeš kettlebell k hrudníku…" }, { "activity": "goblet" }]
+    },
+    {
+      "item": "kettlebell",
+      "on": "vaha",
+      "room": "telocvicna",
+      "do": [
+        {
+          "text": "Kettlebell na decimální váhu nepatří – na ni se opírají ruce v poloze kliku. Na vyvážení slouží malá závaží."
+        }
+      ]
+    },
+    {
+      "item": "normy",
+      "on": "psaci_stroj",
+      "room": "telocvicna",
+      "do": [{ "text": "Normy máš – teď z nich najdi Doubkovy známky a napiš je do hlášení (klikni na psací stroj)." }]
     }
   ],
 
@@ -4098,6 +4684,1515 @@
           },
           {
             "note": "LEVEL 2: výška výskoku z doby letu h = g · t² / 8 – tvůj skok z podřepu asi {=981*tl^2/8:0} cm (t = {tl:3} s). Rychlost × přesnost: menší a vzdálenější cíl = pomalejší pohyb. Na Měsíci bys se stejným odrazem vyskočil šestkrát výš."
+          }
+        ]
+      }
+    },
+
+    "telocvicna": {
+      "name": "Tělocvična – výroční přezkoušení",
+      "gateNumber": "II",
+      "tracks": [
+        "vojenska"
+      ],
+      "ambience": "telocvicna",
+      "enterText": "Schodiště vyústilo v tělocvičnu. Pod stropem bzučí zářivky, na parketách jsou čáry hřiště. V rohu stojí stůl zkušební komise a na tabuli je křídou: VÝROČNÍ PŘEZKOUŠENÍ Z FYZICKÉ ZDATNOSTI. Dveře za tebou zapadly.",
+      "enter": [
+        {
+          "when": {
+            "notFlags": [
+              "telocvicna_vstup"
+            ]
+          },
+          "do": [
+            {
+              "set": "telocvicna_vstup"
+            },
+            {
+              "sound": "doorSoft"
+            }
+          ]
+        }
+      ],
+      "_shortcut": "Odkaz pro vyučující ?mistnost=telocvicna: hra začne rovnou tady a hráč dostane, co by si přinesl ze skladu.",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš rovnou v Bráně II. Kalkulačku ze skladu máš u sebe."
+        }
+      ],
+      "startView": "stul",
+      "phone": {
+        "_poznamka": "Když tým idleSeconds sekund nepostoupí, telefon na zdi u stolu komise zazvoní (co řekne, je u objektu telefon).",
+        "flag": "telefon_tv_zvoni",
+        "idleSeconds": 240,
+        "ringEvery": 6,
+        "text": "Na zdi u stolu komise drnčí telefon."
+      },
+      "activities": {
+        "kliky": {
+          "type": "pushup",
+          "title": "Kliky na decimální váze",
+          "intro": "Voják je v poloze kliku: špičky na zemi, ruce na plošině decimální váhy. Kolik z jeho hmotnosti nesou ruce? Věš závaží na háček vahadla, dokud se váha nevyrovná. Váha je desetinná – 1 kg na háčku vyváží 10 kg na plošině.",
+          "weightsLabel": "Závaží na háček vahadla (1 kg vyváží 10 kg na plošině):",
+          "toleranceKg": 0.6,
+          "rounds": [
+            {
+              "name": "Klik",
+              "var": "kliky",
+              "bodyKg": 70,
+              "comM": 0.9,
+              "handsM": 1.3,
+              "text": "Voják 70 kg. Těžiště má 0,90 m od špiček, ruce 1,30 m od špiček. Špičky jsou osa, kolem které se tělo „otáčí“.",
+              "success": "Vyrovnáno!"
+            },
+            {
+              "name": "Klik s batohem 15 kg",
+              "var": "kliky_batoh",
+              "bodyKg": 70,
+              "comM": 0.9,
+              "handsM": 1.3,
+              "extra": [
+                {
+                  "label": "batoh",
+                  "kg": 15,
+                  "atM": 1.05
+                }
+              ],
+              "text": "Teď má voják na zádech batoh 15 kg (jako u přenášení břemene). Těžiště batohu je 1,05 m od špiček – blíž k rukám. Kolik ponesou ruce teď?",
+              "success": "Vyrovnáno! Z 15 kg batohu jdou na ruce asi čtyři pětiny – leží blíž k rukám než těžiště vojáka."
+            }
+          ],
+          "done": [
+            {
+              "set": "kliky_hotovo"
+            },
+            {
+              "note": "Kliky na decimální váze: ruce nesou {kliky_kg:1} kg z 70 kg ({kliky_procent} %), s batohem 15 kg {kliky_batoh_kg:1} kg. Rovnováha momentů kolem špiček: m · g · a = F · b → F = m · g · a / b.",
+              "noteKey": "kliky"
+            }
+          ]
+        },
+        "hod": {
+          "type": "throw",
+          "title": "Odhodový sektor",
+          "intro": "Hod je šikmý vrh: předmět letí po oblouku. Dolet záleží na rychlosti odhodu, na úhlu a na výšce, ze které předmět pustíš (odpor vzduchu zanedbáváme).",
+          "rounds": [
+            {
+              "name": "Odhod medicinbalu 4 kg",
+              "var": "hod_mb",
+              "object": "medicinbal",
+              "speed": 5.5,
+              "h0": 1.6,
+              "target": 4.35,
+              "targetLabel": "jednička: 4,35 m (muži BI, do 30 let)",
+              "xMax": 6,
+              "tick": 1,
+              "text": "Medicinbal vyletí rychlostí 5,5 m/s z výšky 1,6 m. Najdi úhel, při kterém doletí na jedničku – 4,35 m.",
+              "success": "Jednička! Všimni si úhlu: u krátkého hodu z výšky je nejlepší úhel hodně pod 45°."
+            },
+            {
+              "name": "Hod granátem",
+              "var": "hod_gr",
+              "object": "granat",
+              "speed": 20,
+              "h0": 2.0,
+              "target": 42,
+              "targetLabel": "jednička: 42 m (profesní test, jednotka A)",
+              "xMax": 50,
+              "tick": 5,
+              "text": "Cvičný granát vyletí rychlostí 20 m/s z výšky 2 m. Najdi úhel, při kterém doletí na 42 m.",
+              "success": "42 m! Nejdál granát letí těsně pod 45°: výška odhodu 2 m je proti 42 m malá, proto se nejlepší úhel blíží 45°."
+            }
+          ],
+          "shortTip": "krátké. Zkus jiný úhel.",
+          "freeLabel": "Zkusit jinou rychlost",
+          "freeText": "Teď můžeš měnit i rychlost. Zkus pod stejným úhlem 10 m/s a pak 20 m/s – dvojnásobná rychlost dá skoro čtyřnásobný dolet (rychlost je ve vzorci na druhou).",
+          "done": [
+            {
+              "set": "hod_hotovo"
+            },
+            {
+              "note": "Hod: medicinbal (5,5 m/s z výšky 1,6 m) doletí nejdál asi pod 35°, granát (20 m/s z 2 m) asi pod 44°. Čím vyšší odhod proti doletu, tím víc pod 45°. Dolet roste s druhou mocninou rychlosti.",
+              "noteKey": "hod"
+            }
+          ]
+        },
+        "goblet_sim": {
+          "type": "gobletsim",
+          "title": "Proč taková pravidla?",
+          "intro": "Panáček je v dolní poloze goblet dřepu – kyčel u lavičky ve výšce kolene. Kolena ani hlava nesmí přes svislici špiček a na lavičku se jen dosedá, takže rovnováhu musí udržet chodidla. Najdi polohu, ve které platí všechna tři pravidla.",
+          "success": "Platí všechna pravidla! Kettlebell vpředu posunul společné těžiště dopředu – boky mohly jít dozadu a kolena zůstala za špičkami. Sleduj momenty: kolena dopředu = větší moment v koleni, boky dozadu = víc práce pro kyčel a záda.",
+          "successNoKb": "Povedlo se i bez závaží – ale jen těsně. Zapni kettlebell a sleduj, jak posune těžiště dopředu.",
+          "tipBack": "Těžiště je za patou – na lavičku by ses svalil. Předkloň trup, nebo přidej závaží před hrudník.",
+          "tipFront": "Těžiště je až u špiček – skoro padáš dopředu.",
+          "tipKnee": "Koleno je před špičkou – sklop bérec, boky půjdou víc dozadu.",
+          "tipHead": "Hlava je před špičkou – tolik se nepředkláněj.",
+          "done": [
+            {
+              "set": "goblet_sim_hotovo"
+            },
+            {
+              "note": "Goblet dřep: kolena za špičkami → boky dozadu → těžiště by šlo za paty. Kettlebell před hrudníkem ho posune zpět nad chodidlo. Kolena dopředu = větší moment v koleni, boky dozadu = větší moment v kyčli.",
+              "noteKey": "goblet_sim"
+            }
+          ]
+        },
+        "goblet": {
+          "type": "goblet",
+          "title": "Dřep se zátěží – goblet dřep",
+          "duration": 90,
+          "intro": "Test kategorií BI a C: za 90 sekund co nejvíc platných dřepů s kettlebellem 5 kg drženým u hrudníku.",
+          "rules": [
+            "Za tebou stojí lavička nebo židle ve výšce kolene – na ni se jen DOSEDNE, nesedá se.",
+            "Kolena ani hlava nesmí být po celou dobu před špičkami.",
+            "Neplatný dřep se nepočítá – hra ti řekne proč."
+          ],
+          "safety": "Cvičí jeden člen týmu. Židle musí stát pevně (opřená o zeď), kolem volné místo. Kdo má potíže s koleny nebo se zády, test vynechá.",
+          "loadLabel": "S čím cvičíš?",
+          "loads": [
+            "Kettlebell 5 kg",
+            "Náhrada (láhev s vodou, batoh na hrudníku)",
+            "Bez zátěže"
+          ],
+          "camera": "S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru i s chodidly. Hra si ze stoje změří výšku kolene (= lavička) a kam míří špičky.",
+          "kneeTolCm": 2,
+          "headTolCm": 2,
+          "normsTitle": "Normy kategorie BI, do 30 let (orientačně):",
+          "norms": [
+            {
+              "label": "muži",
+              "limits": [
+                40,
+                35,
+                30
+              ]
+            },
+            {
+              "label": "ženy",
+              "limits": [
+                36,
+                30,
+                25
+              ]
+            }
+          ],
+          "orientText": "Bez kettlebellu 5 kg je výsledek jen orientační – normy platí pro kettlebell.",
+          "skipped": "Dřep vynecháváš. Dveře se zeptají jen na to, proč jsou pravidla taková.",
+          "doneCases": [
+            {
+              "when": {
+                "expr": "goblet_preskoceno == 1"
+              },
+              "do": [
+                {
+                  "note": "Goblet dřep: vynechán.",
+                  "noteKey": "goblet"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "note": "Goblet dřep (90 s): {goblet_n} platných dřepů.",
+                  "noteKey": "goblet"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "locks": {
+        "hlaseni": {
+          "title": "Psací stroj – hlášení",
+          "openFlag": "hlaseni_hotovo",
+          "steps": [
+            {
+              "type": "code",
+              "question": "V psacím stroji je založený formulář HLÁŠENÍ O PŘEZKOUŠENÍ. Chybí jen řádek „Známky rtn. Doubka – běh, leh-sed, kliky, shyby, břemeno:“ – pět číslic za sebou.",
+              "answer": 22123,
+              "feedback": {
+                "43233": "Díval ses do sloupce pro muže do 30 let. Doubkovi je 37 – patří do III. věkové kategorie (36–40 let).",
+                "33223": "To je sloupec 31–35 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
+                "21112": "To je sloupec 41–45 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
+                "22121": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
+                "22122": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku."
+              },
+              "wrong": "Stroj zarachotil a vysunul list zpátky. Některá známka nesedí.",
+              "hints": [
+                "Doubkovi je 37 let – patří do III. věkové kategorie (36–40 let). Hledej v brožuře Normy tabulky pro muže, kategorie A.",
+                "Známka 1 = výkon aspoň jako v řádku 1. U přenášení břemene je to naopak: čas nejvýš jako v řádku.",
+                "Běh 2, leh-sed 2, kliky 1, shyby 2, břemeno 3 → 22123."
+              ],
+              "success": "Ťuk, ťuk, ťuk… cink!"
+            }
+          ],
+          "open": [
+            {
+              "sound": "typewriter"
+            },
+            {
+              "text": "Psací stroj vyťuká celé hlášení. Pod poslední řádek se sám dopíše docentův dovětek: „P. S. Pás u odhodového sektoru se rozjede jen rychlostí, kterou by Doubek potřeboval na jedničku v běhu. – D.“"
+            },
+            {
+              "note": "Hlášení: rtn. Doubek – běh 2, leh-sed 2, kliky 1, shyby 2, břemeno 3. P. S.: pás u sektoru se rozjede rychlostí, kterou by Doubek potřeboval na jedničku v běhu.",
+              "noteKey": "hlaseni"
+            }
+          ]
+        },
+        "bezecky_pas": {
+          "title": "Konzole běžeckého pásu",
+          "openFlag": "pas_bezi",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Konzole pásu: ZADEJ RYCHLOST. Pod displejem lísteček: „Rychlost, kterou Doubek potřebuje na jedničku v běhu. – D.“",
+              "unit": "km/h",
+              "answer": 13.5,
+              "tolerance": 0.05,
+              "feedback": {
+                "14.5": "To je jednička pro muže do 30 let. Doubkovi je 37.",
+                "225": "225 metrů za minutu – pás chce kilometry za hodinu.",
+                "12.5": "2 500 m stačí jen na dvojku. Na jedničku je potřeba víc.",
+                "2.7": "2,7 km je vzdálenost za 12 minut. Kolik by to bylo za celou hodinu?",
+                "12": "12 je délka testu v minutách, ne rychlost."
+              },
+              "wrong": "Pás škubl a zase stojí. ŠPATNÁ RYCHLOST.",
+              "hints": [
+                "Doubkovi je 37, je to muž kategorie A. Kolik metrů musí uběhnout za 12 minut na jedničku? (brožura Normy, Běh 12 min – muži)",
+                "2 700 m za 12 minut. Hodina má 60 minut – to je pětkrát víc.",
+                "2 700 m × 5 = 13 500 m za hodinu = 13,5 km/h."
+              ],
+              "success": "Pás se rozjel."
+            }
+          ],
+          "open": [
+            {
+              "sound": "powerOn"
+            },
+            {
+              "text": "Pás se s hučením rozjel. Po chvíli k tobě po gumě dojede malý klíček s visačkou SKŘÍŇ – NÁČINÍ a cinkne o podlahu."
+            },
+            {
+              "give": "klic_skrin"
+            },
+            {
+              "note": "Běžecký pás: 2 700 m za 12 min = 13,5 km/h (průměrná rychlost v = s / t).",
+              "noteKey": "pas"
+            }
+          ]
+        }
+      },
+      "views": {
+        "stul": {
+          "name": "Stůl komise",
+          "background": "assets/rooms/telocvicna_stul.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "darkness": 0.45,
+          "dust": {
+            "count": 40,
+            "color": "235, 230, 210"
+          },
+          "left": "dvere",
+          "right": "hrazda",
+          "enterText": "Stůl zkušební komise: psací stroj, stopky, protokol a brožura s normami. Na zdi tabule a telefon.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 4,
+              "radius": 32,
+              "strength": 0.4,
+              "flicker": true
+            },
+            {
+              "x": 70.6,
+              "y": 50,
+              "radius": 12,
+              "strength": 0.55
+            },
+            {
+              "x": 22,
+              "y": 28,
+              "radius": 14,
+              "strength": 0.3
+            },
+            {
+              "x": 91,
+              "y": 39,
+              "radius": 6,
+              "strength": 0.35
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/telocvicna_stul_normy.svg",
+              "when": {
+                "flags": [
+                  "normy_vzaty"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/telocvicna_stul_hlaseni.svg",
+              "when": {
+                "flags": [
+                  "hlaseni_hotovo"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "tabule",
+              "name": "Tabule",
+              "area": [
+                7.2,
+                11.7,
+                29.9,
+                32.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na tabuli je křídou: VÝROČNÍ PŘEZKOUŠENÍ Z FYZICKÉ ZDATNOSTI. Pod tím stanoviště: běh 12 min, leh-sed, kliky, shyby, přenášení břemene. Dole docentovou rukou: „Kdo zná jen čísla, zná půlku. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hodiny",
+              "name": "Hodiny",
+              "area": [
+                59.2,
+                11.7,
+                7.2,
+                12.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Nástěnné hodiny se zastavily přesně na dvanáctce. Pod nimi cedulka: COOPERŮV TEST – 12 MINUT."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "normy",
+              "name": "Brožura s normami",
+              "area": [
+                41.3,
+                54.7,
+                9.0,
+                6.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "notFlags": [
+                      "normy_vzaty"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "set": "normy_vzaty"
+                    },
+                    {
+                      "sound": "book"
+                    },
+                    {
+                      "text": "Na stole leží brožura NORMY – tabulky pro výroční přezkoušení. Na obálce razítko NÁVRH. Bereš ji."
+                    },
+                    {
+                      "give": "normy"
+                    },
+                    {
+                      "openItem": "normy"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Tady ležela brožura s normami. Máš ji v inventáři – klikni na ni dvakrát a otevře se."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "protokol",
+              "name": "Protokol",
+              "area": [
+                50.8,
+                56.3,
+                10.2,
+                5.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "set": "protokol_viden"
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "PROTOKOL – VÝROČNÍ PŘEZKOUŠENÍ\nZ FYZICKÉ ZDATNOSTI\n\nrtn. Karel Doubek\nmuž, 37 let\nzdravotní kategorie A\n\nBěh 12 min ........... 2 520 m\nLeh-sed .............. 43\nKliky ................ 29\nShyby ................ 9\nPřenášení břemene .... 72 s\n\nZnámky dopíše komise.\n– D.",
+                        "font": "type",
+                        "caption": "Protokol na stole komise"
+                      }
+                    },
+                    {
+                      "note": "Protokol: rtn. Doubek, muž, 37 let, kategorie A – běh 2 520 m, leh-sed 43, kliky 29, shyby 9, přenášení břemene 72 s.",
+                      "noteKey": "protokol"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "psaci_stroj",
+              "name": "Psací stroj",
+              "area": [
+                62.8,
+                45.7,
+                15.0,
+                16.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "hlaseni_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Hlášení je napsané. Dole docentův dovětek: „Pás u odhodového sektoru se rozjede jen rychlostí, kterou by Doubek potřeboval na jedničku v běhu. – D.“"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "lock": "hlaseni"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "stopky",
+              "name": "Stopky",
+              "area": [
+                78.3,
+                56.3,
+                4.8,
+                5.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Stopky komise ukazují 12:00,0. Na zadní straně je fixou: v = s / t."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "telefon",
+              "name": "Telefon",
+              "area": [
+                87.9,
+                30.8,
+                6.0,
+                17.0
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "hlaseni_hotovo",
+                      "protokol_viden"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Na stole komise leží protokol a brožura s normami. Hlášení se píše na psacím stroji.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Na stole komise leží protokol a brožura s normami. Hlášení se píše na psacím stroji.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "hlaseni_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Doubkovi je 37 let – hledej v normách sloupec 36–40 let. A u břemene platí: čím méně sekund, tím lépe.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Doubkovi je 37 let – hledej v normách sloupec 36–40 let. A u břemene platí: čím méně sekund, tím lépe.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "pas_bezi"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Pás se rozjede rychlostí, kterou Doubek potřebuje na jedničku. Kolik metrů za 12 minut – a kolik by to bylo za hodinu?“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Pás se rozjede rychlostí, kterou Doubek potřebuje na jedničku. Kolik metrů za 12 minut – a kolik by to bylo za hodinu?",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "skrin_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Klíček od skříně s náčiním už máš. Vyber ho v inventáři a klikni na skříň u dveří.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Klíček od skříně s náčiním už máš. Vyber ho v inventáři a klikni na skříň u dveří.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "kliky_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Závaží patří k decimální váze u hrazdy. Věš je, dokud se váha nevyrovná.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Závaží patří k decimální váze u hrazdy. Věš je, dokud se váha nevyrovná.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "hod_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „V odhodovém sektoru zkoušej úhel. Nejdál to nemusí letět pod pětačtyřiceti stupni.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: V odhodovém sektoru zkoušej úhel. Nejdál to nemusí letět pod pětačtyřiceti stupni.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ],
+                    "notFlags": [
+                      "goblet_sim_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „U lavičky visí plakát s pravidly dřepu. Na panáčkovi zkus, proč voják drží kettlebell před hrudníkem.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: U lavičky visí plakát s pravidly dřepu. Na panáčkovi zkus, proč voják drží kettlebell před hrudníkem.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "telefon_tv_zvoni"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "unset": "telefon_tv_zvoni"
+                    },
+                    {
+                      "hint": true
+                    },
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Dveře se ptají na všechno, co jsi tu vyzkoušel. Zápisník si pamatuje čísla.“ Linka ztichne."
+                    },
+                    {
+                      "note": "Telefon: Dveře se ptají na všechno, co jsi tu vyzkoušel. Zápisník si pamatuje čísla.",
+                      "noteKey": "telefon"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Starý telefon na zdi. Sluchátko je studené a linka mlčí."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "hrazda": {
+          "name": "Hrazda a žíněnka",
+          "background": "assets/rooms/telocvicna_hrazda.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "darkness": 0.45,
+          "dust": {
+            "count": 40,
+            "color": "235, 230, 210"
+          },
+          "left": "stul",
+          "right": "sektor",
+          "enterText": "Dřevěné žebřiny, hrazda a modrá žíněnka. Na žíněnce stojí stará decimální váha.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 4,
+              "radius": 32,
+              "strength": 0.4,
+              "flicker": true
+            },
+            {
+              "x": 74.6,
+              "y": 75,
+              "radius": 14,
+              "strength": 0.4
+            },
+            {
+              "x": 70.9,
+              "y": 32,
+              "radius": 10,
+              "strength": 0.3
+            }
+          ],
+          "layers": [],
+          "hotspots": [
+            {
+              "id": "zebriny",
+              "name": "Žebřiny",
+              "area": [
+                5.4,
+                8.5,
+                19.7,
+                78.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Dřevěné žebřiny. Na jedné příčce visí švihadlo s cedulkou: ROZCVIČKA PŘED TESTEM POVINNÁ."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hrazda",
+              "name": "Hrazda",
+              "area": [
+                31.1,
+                11.7,
+                28.7,
+                12.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Hrazda pro shyby a výdrž ve shybu. Při shybu se celé tělo zvedá o kus výš – svaly konají práci. Při výdrži visí voják s bradou nad hrazdou a nehýbe se…"
+                    },
+                    {
+                      "note": "Hrazda: shyb – tělo se zvedne o výšku h, práce W = m · g · h. Výdrž ve shybu – tělo stojí na místě.",
+                      "noteKey": "hrazda"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plakat_shyby",
+              "name": "Plakát",
+              "area": [
+                63.4,
+                14.9,
+                14.4,
+                34.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "SHYBY × VÝDRŽ VE SHYBU\n\nShyb: brada nad hrazdu a zpět.\nPráce jednoho shybu:\nW = m · g · h\n(h = o kolik se tělo zvedne)\n\nVýdrž: brada nad hrazdou,\ntělo se nehýbe.\nMechanická práce W = F · s.\nKolik je s?\n\nSvaly přesto pracují – izometricky –\na spotřebovávají energii.",
+                        "font": "type",
+                        "caption": "Plakát u hrazdy"
+                      }
+                    },
+                    {
+                      "note": "Plakát u hrazdy: práce W = F · s. Shyb: W = m · g · h. Výdrž: tělo se nehýbe – a svaly přesto pracují (izometricky).",
+                      "noteKey": "plakat_shyby"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vaha",
+              "name": "Decimální váha",
+              "area": [
+                67.0,
+                59.5,
+                15.6,
+                31.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "kliky_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Chceš si kliky na váze zkusit znovu?"
+                    },
+                    {
+                      "activity": "kliky"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "items": [
+                      "zavazi"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Rozložíš závaží vedle váhy."
+                    },
+                    {
+                      "activity": "kliky"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Na žíněnce stojí stará decimální váha – na plošinu se dají opřít ruce v poloze kliku. Jenže chybí závaží, bez nich váha nic neukáže. Cedulka: ZÁVAŽÍ VE SKŘÍNI S NÁČINÍM."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "zinenka",
+              "name": "Žíněnka",
+              "area": [
+                31.1,
+                81.8,
+                35.3,
+                12.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Modrá žíněnka. Křídou jsou na ní obrysy rukou a špiček – poloha kliku: ruce pod rameny, tělo rovné jako prkno."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "sektor": {
+          "name": "Odhodový sektor",
+          "background": "assets/rooms/telocvicna_sektor.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "darkness": 0.45,
+          "dust": {
+            "count": 40,
+            "color": "235, 230, 210"
+          },
+          "left": "hrazda",
+          "right": "dvere",
+          "enterText": "Stojan s medicinbaly, bedna cvičných granátů a pásmo na podlaze. U zdi stojí běžecký pás.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 4,
+              "radius": 32,
+              "strength": 0.4,
+              "flicker": true
+            },
+            {
+              "x": 83.7,
+              "y": 45,
+              "radius": 12,
+              "strength": 0.35
+            },
+            {
+              "x": 83.7,
+              "y": 45,
+              "radius": 16,
+              "strength": 0.55,
+              "when": {
+                "flags": [
+                  "pas_bezi"
+                ]
+              }
+            },
+            {
+              "x": 54.4,
+              "y": 31,
+              "radius": 10,
+              "strength": 0.3
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/telocvicna_sektor_pas.svg",
+              "when": {
+                "flags": [
+                  "pas_bezi"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "plakat_cooper",
+              "name": "Plakát",
+              "area": [
+                45.5,
+                15.9,
+                17.9,
+                29.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "COOPERŮV TEST\n\n12 minut běhu – měří se,\nkolik metrů voják uběhne.\n\nPrůměrná rychlost:\nv = s / t\n\n12 minut = pětina hodiny.\n1 km/h = 1 000 m za hodinu.",
+                        "font": "type",
+                        "caption": "Plakát v sektoru"
+                      }
+                    },
+                    {
+                      "note": "Plakát Cooperův test: v = s / t; 12 minut = pětina hodiny.",
+                      "noteKey": "cooper"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "medicinbaly",
+              "name": "Medicinbaly",
+              "area": [
+                7.2,
+                59.5,
+                17.9,
+                29.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Stojan s medicinbaly 3 a 4 kg. Odhod se měří pásmem k místu dopadu."
+                    },
+                    {
+                      "activity": "hod"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "granaty",
+              "name": "Cvičné granáty",
+              "area": [
+                28.1,
+                73.3,
+                14.4,
+                14.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Dřevěná bedna s nápisem CVIČNÉ. Granáty jsou z gumy a plechu – na hod do dálky."
+                    },
+                    {
+                      "activity": "hod"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pasmo",
+              "name": "Pásmo",
+              "area": [
+                26.3,
+                90.3,
+                40.1,
+                5.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na podlaze je přilepené pásmo s metry."
+                    },
+                    {
+                      "activity": "hod"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pas",
+              "name": "Běžecký pás",
+              "area": [
+                68.8,
+                39.3,
+                27.5,
+                53.1
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "pas_bezi"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Pás tiše běží rychlostí 13,5 km/h. Na takovou jedničku by musel Doubek běžet celých 12 minut."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "switch"
+                    },
+                    {
+                      "lock": "bezecky_pas"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "dvere": {
+          "name": "Dřepová stanice a dveře",
+          "background": "assets/rooms/telocvicna_dvere.svg",
+          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "darkness": 0.45,
+          "dust": {
+            "count": 40,
+            "color": "235, 230, 210"
+          },
+          "left": "sektor",
+          "right": "stul",
+          "enterText": "Plechová skříň s náčiním, lavička ve výšce kolene s plakátem a těžké dveře tělocvičny s číselníkem.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 4,
+              "radius": 32,
+              "strength": 0.4,
+              "flicker": true
+            },
+            {
+              "x": 37.4,
+              "y": 32,
+              "radius": 10,
+              "strength": 0.35
+            },
+            {
+              "x": 85.5,
+              "y": 48,
+              "radius": 5,
+              "strength": 0.5
+            },
+            {
+              "x": 67.8,
+              "y": 50,
+              "radius": 22,
+              "strength": 0.6,
+              "when": {
+                "flags": [
+                  "brana_telocvicna_otevrena"
+                ]
+              }
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/telocvicna_dvere_skrin.svg",
+              "when": {
+                "flags": [
+                  "skrin_otevrena"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/telocvicna_dvere_otevrene.svg",
+              "when": {
+                "flags": [
+                  "brana_telocvicna_otevrena"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "skrin",
+              "name": "Skříň s náčiním",
+              "area": [
+                5.4,
+                18.1,
+                20.3,
+                70.1
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "skrin_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Skříň s náčiním je otevřená. Kettlebell a závaží už máš, zbytek jsou švihadla a kužely."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "locked"
+                    },
+                    {
+                      "text": "Plechová skříň s náčiním je zamčená. Na dvířkách: KETTLEBELLY 5 KG, ZÁVAŽÍ K DECIMÁLNÍ VÁZE. Klíček má komise."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plakat_goblet",
+              "name": "Plakát s pravidly",
+              "area": [
+                28.1,
+                15.9,
+                18.5,
+                31.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "goblet_sim_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Plakát DŘEP SE ZÁTĚŽÍ. Chceš si panáčka zkusit znovu?"
+                    },
+                    {
+                      "activity": "goblet_sim"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "text": "Plakát DŘEP SE ZÁTĚŽÍ (goblet): kettlebell 5 kg u hrudníku, lavička ve výšce kolene – jen dotyk, kolena a hlava za špičkami. Pod tím docentovou rukou: „Proč taková pravidla? Zkus to na panáčkovi.“"
+                    },
+                    {
+                      "activity": "goblet_sim"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "lavicka",
+              "name": "Lavička",
+              "area": [
+                29.9,
+                63.8,
+                20.3,
+                20.2
+              ],
+              "click": [
+                {
+                  "when": {
+                    "expr": "goblet_hotovo == 1"
+                  },
+                  "do": [
+                    {
+                      "text": "Chceš dřep zopakovat? Platit bude nové měření."
+                    },
+                    {
+                      "activity": "goblet"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "items": [
+                      "kettlebell"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Lavička ve výšce kolene. Vezmeš kettlebell k hrudníku…"
+                    },
+                    {
+                      "activity": "goblet"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Lavička ve výšce kolene. Tady se dělá dřep se zátěží – goblet dřep s kettlebellem 5 kg. Kettlebelly jsou zamčené ve skříni s náčiním."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "brana",
+              "name": "Dveře tělocvičny",
+              "area": [
+                53.8,
+                11.7,
+                28.1,
+                77.6
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_telocvicna_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Dveře jsou otevřené. Za nimi vede chodba ven na cvičiště."
+                    },
+                    {
+                      "leave": true
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Těžké dvoukřídlé dveře tělocvičny. Klika nepovolí – vedle je číselník."
+                    },
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "klavesnice",
+              "name": "Číselník",
+              "area": [
+                83.1,
+                41.4,
+                4.8,
+                12.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_telocvicna_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Číselník svítí zeleně: PŘEZKOUŠENÍ SPLNĚNO."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "gate": {
+        "title": "Dveře tělocvičny – Brána II",
+        "openFlag": "brana_telocvicna_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku svítí: „Rotný Doubek váží 80 kg. V poloze kliku má těžiště 0,90 m od špiček a ruce 1,30 m od špiček. Jakou silou tlačí ruce do podlahy? Zadej v newtonech.“",
+            "unit": "N",
+            "requiresVars": [
+              "kliky_kg"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV KLIKY NA VÁZE. Decimální váha je na žíněnce u hrazdy.",
+            "answer": "80*9.81*0.9/1.3",
+            "toleranceRel": 0.03,
+            "feedbackFormulas": [
+              {
+                "value": "80*9.81",
+                "text": "To je celá jeho tíha. Ruce nesou jen část – zbytek leží na špičkách."
+              },
+              {
+                "value": "80*0.9/1.3",
+                "text": "Správně – ale v kilogramech. Číselník chce newtony: vynásob 9,81."
+              },
+              {
+                "value": "80*9.81*1.3/0.9",
+                "text": "Prohozená ramena. Těžiště je blíž ke špičkám než ruce, takže ruce nesou MÉNĚ než celou tíhu."
+              },
+              {
+                "value": "80*9.81*0.9",
+                "text": "To je moment tíhy kolem špiček (N·m). Ještě ho vyděl ramenem rukou 1,30 m."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Je to stejné jako na decimální váze: rovnováha momentů kolem špiček.",
+              "m · g · a = F · b, tedy F = m · g · a / b.",
+              "80 · 9,81 · 0,90 / 1,30 ≈ 543 N."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Rotná Malá vydržela ve shybu 50 sekund. Bradu měla celou dobu nad hrazdou a tělo se nehnulo. Kolik mechanické práce přitom vykonaly její paže? Zadej v joulech.“",
+            "unit": "J",
+            "answer": 0,
+            "tolerance": 0.5,
+            "wrong": "Číselník zablikal červeně. Práce = síla × dráha.",
+            "hints": [
+              "Plakát u hrazdy: W = F · s.",
+              "Tělo se během výdrže nepohnulo. Jak dlouhá byla dráha s?",
+              "s = 0 m, takže W = 0 J."
+            ],
+            "success": "Zelená! Mechanická práce je nulová – a přesto výdrž unaví: svaly pracují izometricky a energie se mění v teplo. Další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Voják hází granát z výšky ramene. Pod jakým úhlem doletí nejdál, když neuvažujeme odpor vzduchu?“",
+            "requiresVars": [
+              "hod_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV ODHODOVÝ SEKTOR. Medicinbaly a granáty jsou u běžeckého pásu.",
+            "options": [
+              "Přesně pod 45°",
+              "O něco níž než 45° – předmět startuje nad zemí",
+              "O něco výš než 45° – poletí déle",
+              "Co nejníž – poletí rychleji"
+            ],
+            "correct": 1,
+            "feedback": {
+              "0": "45° platí, jen když předmět startuje i dopadá ve stejné výšce. Vzpomeň na medicinbal z výšky 1,6 m – tam bylo nejlepší asi 35°.",
+              "2": "Vyšší úhel prodlouží let, ale zmenší rychlost dopředu. V sektoru ti nejdál doletělo všechno pod 45°.",
+              "3": "Nízký hod rychle dopadne na zem. Zkus si to v sektoru."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na sektor: pod jakým úhlem doletěl medicinbal nejdál?",
+              "Předmět startuje nad zemí – dopadá níž, než vyletěl.",
+              "O něco níž než 45°."
+            ],
+            "success": "Zelená! Poslední otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Proč drží voják při goblet dřepu kettlebell před hrudníkem, když kolena ani hlava nesmí přes špičky?“",
+            "requiresVars": [
+              "goblet_sim",
+              "goblet_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV DŘEPOVÁ STANICE – plakát s pravidly a lavička vedle dveří.",
+            "options": [
+              "Závaží vpředu posune společné těžiště dopředu – boky můžou jít dozadu a voják přitom nespadne na lavičku",
+              "Závaží zvětší moment v koleni, takže víc posílí stehna",
+              "Závaží srovná trup do svislé polohy",
+              "Na rovnováhu nemá vliv, je to jen zátěž"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "Kolena za špičkami moment v koleni naopak zmenšují. Kettlebell hlavně posouvá těžiště.",
+              "2": "Trup zůstává v předklonu i s kettlebellem – bez předklonu by těžiště utekla za paty.",
+              "3": "Zkus panáčka na plakátu bez závaží – rovnováhu udržíš jen těžko."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Plakát u lavičky – zkus panáčka bez kettlebellu a s ním.",
+              "Kam se posune společné těžiště, když přidáš závaží před hrudník?",
+              "Dopředu – boky pak můžou dozadu a voják udrží rovnováhu na chodidlech."
+            ],
+            "success": "Zámek dveří cvakl. PŘEZKOUŠENÍ SPLNĚNO."
+          }
+        ],
+        "open": [
+          {
+            "sound": "levelUp"
+          },
+          {
+            "text": "Číselník zapípal a těžké dveře tělocvičny se odjistily. Za nimi vede chodba ven na cvičiště."
+          },
+          {
+            "note": "BRÁNA II: normy se čtou podle pohlaví, zdravotní a věkové kategorie (u času čím méně, tím lépe). Klik: ruce nesou F = m · g · a / b. Výdrž ve shybu: mechanická práce 0 J, svaly přesto pracují. Hod z výšky: nejlepší úhel je pod 45°. Goblet dřep: kettlebell vpředu drží těžiště nad chodidlem.",
+            "noteKey": "brana2"
           }
         ]
       }

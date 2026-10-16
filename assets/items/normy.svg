@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: brožura NORMY s razítkem NÁVRH -->
+  <rect x="12" y="6" width="42" height="54" rx="2" fill="#3b2a16" opacity="0.35"/>
+  <rect x="10" y="4" width="42" height="54" rx="2" fill="#efe7cc" stroke="#8a7d5c" stroke-width="1.5"/>
+  <rect x="10" y="4" width="5" height="54" fill="#c9bb92"/>
+  <text x="33" y="19" font-size="9.5" font-weight="bold" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" fill="#2a2418">NORMY</text>
+  <g stroke="#8a7d5c" stroke-width="1"><rect x="19" y="24" width="28" height="18" fill="none"/>
+    <line x1="19" y1="30" x2="47" y2="30"/><line x1="19" y1="36" x2="47" y2="36"/><line x1="26" y1="24" x2="26" y2="42"/><line x1="33" y1="24" x2="33" y2="42"/><line x1="40" y1="24" x2="40" y2="42"/></g>
+  <g transform="rotate(-10 34 51)"><rect x="21" y="45" width="26" height="11" fill="none" stroke="#b03024" stroke-width="1.6"/>
+    <text x="34" y="53.5" font-size="7" font-weight="bold" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" fill="#b03024">NÁVRH</text></g>
+</svg>

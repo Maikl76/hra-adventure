@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: brožura NORMY vzatá ze stolu (příznak normy_vzaty). Souřadnice odpovídají telocvicna_stul.svg. -->
+  <defs>
+    <linearGradient id="deskTop" gradientUnits="userSpaceOnUse" x1="0" y1="508" x2="0" y2="592">
+      <stop offset="0" stop-color="#8a6034"/>
+      <stop offset="1" stop-color="#a8773f"/>
+    </linearGradient>
+  </defs>
+  <polygon points="694,514 840,514 846,588 688,588" fill="url(#deskTop)"/>
+</svg>

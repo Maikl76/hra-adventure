@@ -1424,7 +1424,7 @@
 
   function renderPage(pageEl, page, number) {
     pageEl.innerHTML = '';
-    pageEl.className = pageEl.className.replace(/\s*title-page/, '');
+    pageEl.className = pageEl.className.replace(/\s*(title-page|has-table)/g, '');
     if (!page) {
       pageEl.classList.add('blank');
       return;
@@ -1445,6 +1445,30 @@
         el = document.createElement('img');
         el.src = block.image;
         el.alt = block.caption || '';
+      } else if (block.table) {
+        // tabulka (např. normy): { caption, head: [...], rows: [[...], …] }
+        const t = block.table;
+        el = document.createElement('table');
+        el.className = 'book-table';
+        if (t.caption) el.createCaption().textContent = t.caption;
+        if (t.head) {
+          const tr = el.createTHead().insertRow();
+          for (const h of t.head) {
+            const th = document.createElement('th');
+            th.textContent = h;
+            tr.appendChild(th);
+          }
+        }
+        const body = el.createTBody();
+        for (const r of t.rows || []) {
+          const tr = body.insertRow();
+          r.forEach((v, i) => {
+            const td = document.createElement(i === 0 ? 'th' : 'td');
+            td.textContent = v;
+            tr.appendChild(td);
+          });
+        }
+        pageEl.classList.add('has-table');
       } else if (block.toc) {
         // Obsah: název kapitoly … číslo strany
         el = document.createElement('div');
@@ -1553,6 +1577,10 @@
     else if (act.type === 'stance') openStance(act);
     else if (act.type === 'jump') openJump(act);
     else if (act.type === 'targets') openTargets(act);
+    else if (act.type === 'goblet') openGoblet(act);
+    else if (act.type === 'gobletsim') openGobletSim(act);
+    else if (act.type === 'pushup') openPushup(act);
+    else if (act.type === 'throw') openThrow(act);
   }
 
   function finishActivity(act, results) {
@@ -1703,7 +1731,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.11');
+          const mod = await import('./squats.js?v=0.12');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2565,7 +2593,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.11');
+          const mod = await import('./skok.js?v=0.12');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -2839,6 +2867,742 @@
     });
   }
 
+  /* Goblet dřep s kettlebellem (tělocvična): limit „duration“ s, lavička ve výšce kolene – jen dotyk,
+     kolena a hlava za špičkami. S kamerou měří js/goblet.js: neplatný dřep ukáže i s důvodem, ale
+     nezapočítá ho. Bez kamery hra stopuje čas a počet platných dřepů zadá kolega; kdo cvičit nemůže,
+     přeskočí. Hráč zvolí zátěž (kettlebell / náhrada / bez) – s náhradou nebo bez je výsledek orientační.
+     Nakonec orientační známky podle „norms“ (řádky { label, limits: [1, 2, 3] }).
+     Proměnné: goblet_n, goblet_neplatne, goblet_kamera, goblet_zatez (2 kettlebell, 1 náhrada, 0 bez),
+     goblet_preskoceno, goblet_hotovo. */
+  function openGoblet(act) {
+    const duration = act.duration || 90;
+    let load = 2;
+    openModal((box) => {
+      box.classList.add('activity-box', 'squat-box');
+      heading(box, act.title || 'Goblet dřep');
+      para(box, act.intro || '', 'question');
+      const choice = document.createElement('div');
+      choice.className = 'squat-choice';
+      box.appendChild(choice);
+      if (act.rules) {
+        const ul = document.createElement('ul');
+        ul.className = 'goblet-rules';
+        for (const r of act.rules) {
+          const li = document.createElement('li');
+          li.textContent = r;
+          ul.appendChild(li);
+        }
+        choice.appendChild(ul);
+      }
+      if (act.safety) para(choice, act.safety, 'lean-safety');
+      const lw = document.createElement('div');
+      lw.className = 'goblet-loads';
+      choice.appendChild(lw);
+      para(lw, act.loadLabel || 'S čím cvičíš?', 'muted');
+      (act.loads || ['Kettlebell 5 kg', 'Náhrada (láhev s vodou, batoh na hrudníku)', 'Bez zátěže']).forEach((name, i) => {
+        const l = document.createElement('label');
+        const r = document.createElement('input');
+        r.type = 'radio';
+        r.name = 'goblet-load';
+        r.checked = i === 0;
+        r.addEventListener('change', () => { load = 2 - i; });
+        l.append(r, document.createTextNode(` ${name}`));
+        lw.appendChild(l);
+      });
+      para(choice, act.camera || 'S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru i s chodidly.', 'muted');
+      para(choice, 'Obraz z kamery se zpracovává jen v tomto prohlížeči – nic se nenahrává ani neukládá.', 'muted small');
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      choice.appendChild(btns);
+
+      const stage = document.createElement('div');
+      stage.className = 'squat-stage';
+      stage.hidden = true;
+      const canvas = document.createElement('canvas');
+      const counter = document.createElement('div');
+      counter.className = 'squat-counter';
+      counter.textContent = '0';
+      const clock = document.createElement('div');
+      clock.className = 'goblet-clock';
+      clock.textContent = `${duration} s`;
+      stage.append(canvas, counter, clock);
+      box.appendChild(stage);
+      const status = para(box, '', 'feedback');
+      const log = document.createElement('ol');
+      log.className = 'goblet-log';
+      box.appendChild(log);
+      const results = document.createElement('div');
+      box.appendChild(results);
+      const setStatus = (text, kind) => {
+        status.textContent = text;
+        status.className = `feedback${kind === 'ok' ? ' good' : kind === 'bad' ? ' bad' : ''}`;
+      };
+      const grade = (n, limits) => {
+        for (let i = 0; i < limits.length; i++) if (n >= limits[i]) return String(i + 1);
+        return act.failLabel || 'nesplnil(a)';
+      };
+
+      function finish(vars, summary) {
+        sound.sfx('levelUp');
+        stage.hidden = true;
+        setStatus(summary, 'ok');
+        if (vars.goblet_n !== null && act.norms) {
+          if (act.normsTitle) para(results, act.normsTitle, 'muted');
+          const t = document.createElement('table');
+          t.className = 'lean-table';
+          const row = (cells, tag) => {
+            const tr = document.createElement('tr');
+            for (const c of cells) { const td = document.createElement(tag); td.textContent = c; tr.appendChild(td); }
+            t.appendChild(tr);
+          };
+          row(['', 'známka 1', '2', '3', `${vars.goblet_n} dřepů`], 'th');
+          for (const nr of act.norms) row([nr.label, ...nr.limits.map(String), grade(vars.goblet_n, nr.limits)], 'td');
+          results.appendChild(t);
+          if (load < 2) para(results, act.orientText || 'Orientačně – normy platí pro kettlebell 5 kg.', 'muted small');
+        }
+        button(box, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { ...vars, goblet_hotovo: 1 }));
+      }
+
+      // --- s kamerou ---
+      button(btns, 'S kamerou', 'btn primary', async () => {
+        choice.hidden = true;
+        stage.hidden = false;
+        let cancelled = false;
+        let timer = 0;
+        activityCleanup = () => { cancelled = true; clearInterval(timer); };
+        try {
+          const mod = await import('./goblet.js?v=0.12');
+          let ctrl = null;
+          const end = () => {
+            clearInterval(timer);
+            const r = ctrl.finish();
+            ctrl.stop();
+            const why = Object.entries(r.duvody).filter(([, v]) => v).map(([k, v]) => `${mod.REASONS[k]} ${v}×`).join(', ');
+            finish({ goblet_n: r.n, goblet_neplatne: r.neplatne, goblet_kamera: 1, goblet_zatez: load, goblet_preskoceno: 0 },
+              `Konec! Platných dřepů: ${r.n}. Neplatných: ${r.neplatne}${why ? ` (${why})` : ''}.`);
+          };
+          ctrl = await mod.startGoblet({
+            canvas, kneeTol: act.kneeTolCm, headTol: act.headTolCm,
+            onStatus: setStatus,
+            onReady: () => {
+              // odpočet 3–2–1, pak měření „duration“ sekund
+              let n = 3;
+              sound.sfx('key');
+              clock.textContent = `${n}…`;
+              timer = setInterval(() => {
+                n -= 1;
+                if (n > 0) { clock.textContent = `${n}…`; sound.sfx('key'); return; }
+                clearInterval(timer);
+                sound.sfx('reflexGo');
+                ctrl.start();
+                const t0 = performance.now();
+                timer = setInterval(() => {
+                  const left = duration - (performance.now() - t0) / 1000;
+                  clock.textContent = `${Math.max(0, Math.ceil(left))} s`;
+                  if (left <= 0) end();
+                }, 200);
+              }, 800);
+            },
+            onRep: (rep, st) => {
+              counter.textContent = String(st.n);
+              counter.classList.remove('bump'); void counter.offsetWidth; counter.classList.add('bump');
+              sound.sfx(rep.valid ? 'squatOk' : 'squatShallow');
+              if (!rep.valid) {
+                const li = document.createElement('li');
+                li.textContent = `Neplatný: ${rep.reasons.map((k) => mod.REASONS[k]).join(', ')}`;
+                log.prepend(li);
+                while (log.children.length > 4) log.lastChild.remove();
+              }
+            },
+          });
+          if (cancelled) { ctrl.stop(); return; }
+          activityCleanup = () => { clearInterval(timer); ctrl.stop(); };
+        } catch (e) {
+          if (cancelled) return;
+          console.error(e);
+          stage.hidden = true;
+          choice.hidden = false;
+          const msg = e && e.name === 'NotAllowedError' ? 'Přístup ke kameře byl odmítnut.'
+            : e && e.name === 'NotFoundError' ? 'Kamera nebyla nalezena.'
+            : 'Kameru se nepodařilo spustit.';
+          setStatus(`${msg} Můžeš cvičit bez kamery – počítá kolega.`, 'bad');
+        }
+      });
+
+      // --- bez kamery: hra stopuje, kolega počítá platné dřepy ---
+      button(btns, act.manualLabel || 'Bez kamery (počítá kolega)', 'btn', () => {
+        choice.hidden = true;
+        setStatus('');
+        const manual = document.createElement('div');
+        manual.className = 'squat-manual';
+        box.insertBefore(manual, status);
+        para(manual, act.manualText || `Kolega hlídá pravidla a počítá jen platné dřepy. Klikni Start – hra odměří ${duration} s.`, 'muted');
+        const clockP = para(manual, `${duration} s`, 'squat-clock');
+        let iv = 0;
+        const start = button(manual, 'Start', 'btn primary', () => {
+          start.disabled = true;
+          sound.sfx('reflexGo');
+          const t0 = performance.now();
+          iv = setInterval(() => {
+            const left = duration - (performance.now() - t0) / 1000;
+            clockP.textContent = `${Math.max(0, Math.ceil(left))} s`;
+            if (left <= 0) {
+              clearInterval(iv);
+              sound.sfx('squatOk');
+              const f = document.createElement('label');
+              f.className = 'jump-field';
+              const sp = document.createElement('span');
+              sp.textContent = 'Počet platných dřepů';
+              const inp = document.createElement('input');
+              inp.type = 'number'; inp.inputMode = 'numeric'; inp.min = 0; inp.max = 99;
+              f.append(sp, inp);
+              manual.appendChild(f);
+              button(manual, 'Hotovo', 'btn primary', () => {
+                const n = Math.round(Number(inp.value));
+                if (!inp.value || !Number.isFinite(n) || n < 0 || n > 99) { setStatus('Zadej počet platných dřepů (0–99).', 'bad'); return; }
+                manual.remove();
+                finish({ goblet_n: n, goblet_neplatne: null, goblet_kamera: 0, goblet_zatez: load, goblet_preskoceno: 0 }, `Platných dřepů: ${n}.`);
+              });
+              inp.focus();
+            }
+          }, 200);
+        });
+        activityCleanup = () => clearInterval(iv);
+      });
+
+      // --- nemohu cvičit ---
+      button(btns, act.skipLabel || 'Nemohu cvičit', 'btn', () => {
+        choice.hidden = true;
+        finish({ goblet_n: null, goblet_neplatne: null, goblet_kamera: 0, goblet_zatez: load, goblet_preskoceno: 1 }, act.skipped || 'Dřep vynecháváš.');
+      });
+    });
+  }
+
+  /* Proč taková pravidla (simulace goblet dřepu): panáček z boku v dolní poloze – kyčel u lavičky ve výšce
+     kolene. Hráč mění sklon bérce (kolena dopředu), předklon trupu a kettlebell u hrudníku. Kontroluje se:
+     koleno a hlava za svislicí přes špičky a průmět společného těžiště nad chodidlem (na lavičku se jen
+     dosedá – rovnováhu drží chodidla). Ukazují se momenty v koleni a v kyčli: tíha × vodorovná vzdálenost
+     kloubu od svislice přes těžiště. Splněno, když platí všechna tři pravidla. Proměnné: goblet_sim, goblet_sim_kb. */
+  function openGobletSim(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const M = act.bodyKg || 70, KBM = act.kbKg || 5;
+    // délky v metrech (postava asi 175 cm): chodidlo 26 cm, bérec, stehno, trup, krk a hlava
+    const TOE = 0.26, ANK = [0.07, 0.08], SHANK = 0.43, THIGH = 0.43, TRUNK = 0.52, NECK = 0.22, FACE = 0.07;
+    const HIP_Y = act.hipY || 0.60;         // kyčelní kloub při dotyku lavičky (lavička ve výšce kolene 0,51 m)
+    const KB_FWD = 0.25;                    // kettlebell před hrudníkem
+    const COM_LO = 0.03, COM_HI = TOE - 0.03;
+    const K = 230, X0 = 225, Y0 = 342;      // px na metr a počátek (pata, podlaha)
+    const X = (x) => X0 + x * K, Y = (y) => Y0 - y * K;
+    let shin = act.startShin ?? 34, trunk = act.startTrunk ?? 16, kb = false, done = false;
+
+    const pose = () => {
+      const a = shin * Math.PI / 180, b = trunk * Math.PI / 180;
+      const knee = [ANK[0] + SHANK * Math.sin(a), ANK[1] + SHANK * Math.cos(a)];
+      const dy = Math.max(-THIGH, Math.min(THIGH, HIP_Y - knee[1]));
+      const hip = [knee[0] - Math.sqrt(THIGH * THIGH - dy * dy), knee[1] + dy];
+      const u = [Math.sin(b), Math.cos(b)], fwd = [Math.cos(b), -Math.sin(b)];
+      const sh = [hip[0] + TRUNK * u[0], hip[1] + TRUNK * u[1]];
+      const head = [sh[0] + NECK * u[0], sh[1] + NECK * u[1]];
+      const hands = [sh[0] - 0.15 * u[0] + KB_FWD * fwd[0], sh[1] - 0.15 * u[1] + KB_FWD * fwd[1]];
+      const parts = [
+        [0.08 * M, head], [0.50 * M, [hip[0] + 0.45 * TRUNK * u[0], hip[1] + 0.45 * TRUNK * u[1]]],
+        [0.10 * M, [(sh[0] + hands[0]) / 2, (sh[1] + hands[1]) / 2]],
+        [0.20 * M, [(knee[0] + hip[0]) / 2, (knee[1] + hip[1]) / 2]],
+        [0.09 * M, [(ANK[0] + knee[0]) / 2, (ANK[1] + knee[1]) / 2]],
+        [0.03 * M, [0.11, 0.04]],
+      ];
+      if (kb) parts.push([KBM, hands]);
+      const mt = parts.reduce((s, p) => s + p[0], 0);
+      const com = [parts.reduce((s, p) => s + p[0] * p[1][0], 0) / mt, parts.reduce((s, p) => s + p[0] * p[1][1], 0) / mt];
+      const W = mt * g;
+      const faceX = head[0] + FACE;
+      return {
+        knee, hip, sh, head, hands, com, mt, faceX,
+        mk: W * Math.abs(knee[0] - com[0]), mh: W * Math.abs(hip[0] - com[0]),
+        okKnee: knee[0] <= TOE, okHead: faceX <= TOE, okCom: com[0] >= COM_LO && com[0] <= COM_HI,
+      };
+    };
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Proč taková pravidla?');
+      para(box, act.intro || '', 'question');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 420 360', class: 'pack-svg' }, wrap);
+      el('rect', { x: 0, y: 0, width: 420, height: 360, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+      // lavička ve výšce kolene za postavou
+      el('rect', { x: X(-0.62), y: Y(0.51), width: (0.52) * K, height: 10, fill: '#6a4a2b', stroke: '#2d1f10' }, svg);
+      el('rect', { x: X(-0.58), y: Y(0.51) + 10, width: 8, height: 0.51 * K - 10, fill: '#4a3420' }, svg);
+      el('rect', { x: X(-0.17), y: Y(0.51) + 10, width: 8, height: 0.51 * K - 10, fill: '#4a3420' }, svg);
+      el('text', { x: X(-0.36), y: Y(0.51) - 6, 'text-anchor': 'middle', 'font-size': 10, fill: '#d8cfae' }, svg, act.benchLabel || 'lavička – výška kolene');
+      el('line', { x1: 0, y1: Y0, x2: 420, y2: Y0, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+      const support = el('line', { x1: X(0), y1: Y0 + 4, x2: X(TOE), y2: Y0 + 4, 'stroke-width': 5, 'stroke-linecap': 'round' }, svg);
+      const toeLine = el('line', { x1: X(TOE), y1: Y0, x2: X(TOE), y2: 8, 'stroke-width': 2, 'stroke-dasharray': '6 5' }, svg);
+      el('text', { x: X(TOE) + 4, y: 20, 'font-size': 10, fill: '#d8cfae' }, svg, act.toeLabel || 'svislice špiček');
+      const fig = el('g', {}, svg);
+      const marks = el('g', { 'pointer-events': 'none' }, svg);
+
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const slider = (min, max, get, set, label) => {
+        const l = document.createElement('label');
+        l.className = 'stance-slider';
+        const t = document.createElement('span');
+        const r = document.createElement('input');
+        r.type = 'range'; r.min = min; r.max = max; r.step = 1; r.value = get();
+        const upd = () => { t.textContent = label(get()); };
+        r.addEventListener('input', () => { set(Number(r.value)); upd(); render(); });
+        upd();
+        l.append(t, r);
+        side.appendChild(l);
+      };
+      slider(0, 40, () => shin, (v) => { shin = v; }, (v) => `${act.shinLabel || 'Kolena dopředu (sklon bérce)'}: ${v}°`);
+      slider(0, 70, () => trunk, (v) => { trunk = v; }, (v) => `${act.trunkLabel || 'Předklon trupu'}: ${v}°`);
+      const kbBtn = button(side, act.kbLabel || 'Kettlebell 5 kg u hrudníku', 'btn lift-posture', () => {
+        kb = !kb;
+        sound.sfx('step');
+        render();
+      });
+      const checks = document.createElement('ul');
+      checks.className = 'stance-results gsim-checks';
+      side.appendChild(checks);
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      const line = (a, b, w, c) => el('line', { x1: X(a[0]), y1: Y(a[1]), x2: X(b[0]), y2: Y(b[1]), stroke: c, 'stroke-width': w, 'stroke-linecap': 'round' }, fig);
+
+      function render() {
+        const p = pose();
+        fig.innerHTML = '';
+        marks.innerHTML = '';
+        el('path', { d: `M${X(0)},${Y0} L${X(TOE)},${Y0} L${X(TOE) - 6},${Y0 - 8} L${X(ANK[0])},${Y(ANK[1]) - 4} L${X(0)},${Y0 - 10} Z`, fill: '#1c1915' }, fig);
+        line(ANK, p.knee, 12, '#454c32');
+        line(p.knee, p.hip, 14, '#4f5638');
+        line(p.hip, p.sh, 20, '#566040');
+        line(p.sh, p.hands, 7, '#c9b08a');
+        el('circle', { cx: X(p.head[0]), cy: Y(p.head[1]), r: 0.1 * K, fill: '#6b6650', stroke: p.okHead ? 'none' : '#e0805f', 'stroke-width': 3 }, fig);
+        el('circle', { cx: X(p.head[0]) + 0.06 * K, cy: Y(p.head[1]) - 3, r: 2.5, fill: '#1c1915' }, fig);
+        if (kb) {
+          el('circle', { cx: X(p.hands[0]), cy: Y(p.hands[1]) + 6, r: 13, fill: '#2a2a2a', stroke: '#111' }, fig);
+          el('path', { d: `M${X(p.hands[0]) - 8},${Y(p.hands[1]) - 4} q8,-14 16,0`, fill: 'none', stroke: '#2a2a2a', 'stroke-width': 4 }, fig);
+        }
+        el('circle', { cx: X(p.knee[0]), cy: Y(p.knee[1]), r: 5, fill: p.okKnee ? '#ffd28a' : '#e0805f' }, marks);
+        // společné těžiště a jeho průmět
+        const cx = X(p.com[0]), cy = Y(p.com[1]);
+        el('line', { x1: cx, y1: cy, x2: cx, y2: Y0, stroke: '#ffd28a', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }, marks);
+        el('circle', { cx, cy, r: 8, fill: 'none', stroke: '#ffd28a', 'stroke-width': 2 }, marks);
+        el('path', { d: `M${cx - 8},${cy} L${cx + 8},${cy} M${cx},${cy - 8} L${cx},${cy + 8}`, stroke: '#ffd28a', 'stroke-width': 1.5 }, marks);
+        el('circle', { cx, cy: Y0, r: 4, fill: p.okCom ? '#9fbf7a' : '#e0805f' }, marks);
+        support.setAttribute('stroke', p.okCom ? '#9fbf7a' : '#e0805f');
+        toeLine.setAttribute('stroke', p.okKnee && p.okHead ? '#9fbf7a' : '#e0805f');
+        kbBtn.classList.toggle('selected', kb);
+        checks.innerHTML = '';
+        for (const [ok, text] of [
+          [p.okKnee, act.checkKnee || 'Kolena za špičkami'],
+          [p.okHead, act.checkHead || 'Hlava za špičkami'],
+          [p.okCom, act.checkCom || 'Těžiště nad chodidlem (jen dotyk lavičky)'],
+        ]) {
+          const li = document.createElement('li');
+          li.className = ok ? 'ok' : 'bad';
+          li.textContent = `${ok ? '✓' : '✗'} ${text}`;
+          checks.appendChild(li);
+        }
+        readout.innerHTML = '';
+        for (const [k, v] of [
+          [`Hmotnost (${kb ? `s kettlebellem ${KBM} kg` : 'bez závaží'})`, `${fmt(p.mt)} kg`],
+          ['Moment v koleni', `${fmt(p.mk)} N·m`],
+          ['Moment v kyčli a zádech', `${fmt(p.mh)} N·m`],
+          ['Těžiště od paty', `${fmt(p.com[0] * 100)} cm (chodidlo 0–${fmt(TOE * 100)} cm)`],
+        ]) {
+          const d = document.createElement('div');
+          const a = document.createElement('span'); a.textContent = k;
+          const b = document.createElement('strong'); b.textContent = v;
+          d.append(a, b);
+          readout.appendChild(d);
+        }
+        const all = p.okKnee && p.okHead && p.okCom;
+        if (all && !done) {
+          done = true;
+          sound.sfx('unlock');
+          button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { goblet_sim: 1, goblet_sim_kb: kb ? 1 : 0 }));
+        }
+        if (all) {
+          status.textContent = kb ? (act.success || 'Platí všechna pravidla.') : (act.successNoKb || act.success || 'Platí všechna pravidla.');
+          status.className = 'feedback good';
+        } else {
+          status.textContent = !p.okCom ? (p.com[0] < COM_LO ? (act.tipBack || 'Těžiště je za patou – spadl bys dozadu na lavičku.') : (act.tipFront || 'Těžiště je před špičkami.'))
+            : !p.okKnee ? (act.tipKnee || 'Koleno je před špičkou.') : (act.tipHead || 'Hlava je před špičkou.');
+          status.className = 'feedback bad';
+        }
+      }
+      render();
+    });
+  }
+
+  /* Kliky na decimální váze: voják v poloze kliku z boku, špičky na zemi = osa otáčení, ruce na plošině
+     decimální váhy (1 : 10). Hráč věší závaží na vahadlo, až se vyrovná: plošina nese
+     F = Σ m·x / b (rovnováha momentů kolem špiček; x = vodorovná vzdálenost těžiště od špiček).
+     Kola „rounds“ (např. klik, klik s batohem): { name, text, bodyKg, comM, handsM, extra: [{ label, kg, atM }],
+     success, var }. Vyrovnáno, když se závaží × 10 liší od zatížení nejvýš o „toleranceKg“.
+     Proměnné: <var>_kg a <var>_procent pro každé kolo. */
+  function openPushup(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const tol = act.toleranceKg || 0.6;
+    const weights = act.weights || [2, 1, 0.5, 0.2, 0.1];
+    const K = 260, X0 = 40, Y0 = 268;
+    const X = (x) => X0 + x * K, Y = (y) => Y0 - y * K;
+    const PLAT = 0.10, SHOULDER = 0.68;           // výška plošiny a ramen nad zemí (m)
+    let idx = 0, hung = [], balanced = false;
+    const out = {};
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Kliky na decimální váze');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 600 320', class: 'pack-svg' }, wrap);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      para(side, act.weightsLabel || 'Závaží na háček vahadla (1 kg vyváží 10 kg na plošině):', 'muted');
+      const wbtns = document.createElement('div');
+      wbtns.className = 'pushup-weights';
+      side.appendChild(wbtns);
+      for (const w of weights) {
+        button(wbtns, `+${fmt(w, w < 1 ? 1 : 0)} kg`, 'btn', () => {
+          if (balanced) return;
+          hung.push(w);
+          sound.sfx('key');
+          render();
+        });
+      }
+      const rm = button(side, act.removeLabel || 'Sundat poslední', 'btn', () => {
+        if (balanced || !hung.length) return;
+        hung.pop();
+        sound.sfx('key');
+        render();
+      });
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      const round = () => act.rounds[idx];
+      const load = () => {
+        const r = round();
+        const mom = r.bodyKg * r.comM + (r.extra || []).reduce((s, e) => s + e.kg * e.atM, 0);
+        return mom / r.handsM;
+      };
+      const sum = () => Math.round(hung.reduce((s, w) => s + w, 0) * 10) / 10;
+
+      function render() {
+        const r = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${r.name}`;
+        svg.innerHTML = '';
+        el('rect', { x: 0, y: 0, width: 600, height: 320, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+        el('line', { x1: 0, y1: Y0, x2: 600, y2: Y0, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+        const b = r.handsM;
+        const bodyY = (x) => 0.05 + (x / b) * (SHOULDER - 0.05);
+        // decimální váha: plošina pod rukama, sloupek, vahadlo s háčkem
+        el('rect', { x: X(b - 0.13), y: Y(PLAT), width: 0.26 * K, height: PLAT * K, fill: '#5d6066', stroke: '#2a2c30', 'stroke-width': 2, rx: 2 }, svg);
+        const px = b + 0.22;
+        el('rect', { x: X(px) - 4, y: Y(0.62), width: 8, height: 0.62 * K, fill: '#4a4d52' }, svg);
+        const diff = sum() * 10 - load();
+        const tilt = Math.max(-1, Math.min(1, diff / (0.25 * load()))) * 12;
+        const beam = el('g', { transform: `rotate(${tilt} ${X(px)} ${Y(0.62)})` }, svg);
+        el('rect', { x: X(px) - 0.06 * K, y: Y(0.62) - 3, width: 0.40 * K, height: 6, fill: '#8a8f96', rx: 2 }, beam);
+        const hx = X(px + 0.33);
+        el('line', { x1: hx, y1: Y(0.62), x2: hx, y2: Y(0.62) + 16, stroke: '#8a8f96', 'stroke-width': 2 }, beam);
+        let wy = Y(0.62) + 16;
+        for (const w of hung) {
+          const hh = 4 + w * 5;
+          el('rect', { x: hx - 9, y: wy, width: 18, height: hh, fill: '#b08a3a', stroke: '#4a3818', rx: 1 }, beam);
+          wy += hh + 1;
+        }
+        el('circle', { cx: X(px), cy: Y(0.62), r: 5, fill: '#2a2c30' }, svg);
+        // ukazatel rovnováhy
+        el('path', { d: `M${X(px) + 0.30 * K},${Y(0.62) - 34} l-6,-10 h12 z`, fill: Math.abs(diff) <= tol ? '#9fbf7a' : '#e0805f' }, svg);
+        // voják: špičky, trup, hlava, paže na plošině
+        el('line', { x1: X(0), y1: Y(0.05), x2: X(b), y2: Y(SHOULDER), stroke: '#4f5638', 'stroke-width': 18, 'stroke-linecap': 'round' }, svg);
+        el('circle', { cx: X(b + 0.13), cy: Y(SHOULDER + 0.04), r: 0.1 * K, fill: '#6b6650' }, svg);
+        el('line', { x1: X(b), y1: Y(SHOULDER), x2: X(b), y2: Y(PLAT), stroke: '#c9b08a', 'stroke-width': 9, 'stroke-linecap': 'round' }, svg);
+        el('path', { d: `M${X(-0.02)},${Y0} l16,-12 l4,12 z`, fill: '#1c1915' }, svg);
+        for (const e of r.extra || []) {
+          el('rect', { x: X(e.atM) - 0.11 * K, y: Y(bodyY(e.atM)) - 0.17 * K, width: 0.22 * K, height: 0.16 * K, fill: '#5b5a3a', stroke: '#2a2a18', 'stroke-width': 2, rx: 4 }, svg);
+          el('text', { x: X(e.atM), y: Y(bodyY(e.atM)) - 0.07 * K, 'text-anchor': 'middle', 'font-size': 10, fill: '#e8e0c4' }, svg, `${e.kg} kg`);
+        }
+        const cx = X(r.comM), cy = Y(bodyY(r.comM));
+        el('circle', { cx, cy, r: 8, fill: 'none', stroke: '#ffd28a', 'stroke-width': 2 }, svg);
+        el('path', { d: `M${cx - 8},${cy} L${cx + 8},${cy} M${cx},${cy - 8} L${cx},${cy + 8}`, stroke: '#ffd28a', 'stroke-width': 1.5 }, svg);
+        el('text', { x: cx, y: cy - 14, 'text-anchor': 'middle', 'font-size': 11, fill: '#ffd28a' }, svg, `${r.bodyKg} kg`);
+        // kóty od špiček (osa otáčení)
+        const dims = [[r.comM, '#ffd28a'], ...(r.extra || []).map((e) => [e.atM, '#c8c49a']), [b, '#e8e0c4']];
+        dims.forEach(([x, c], i) => {
+          const y = Y0 + 12 + i * 13;
+          el('line', { x1: X(0), y1: y, x2: X(x), y2: y, stroke: c, 'stroke-width': 1 }, svg);
+          el('line', { x1: X(x), y1: Y0, x2: X(x), y2: y + 2, stroke: c, 'stroke-width': 1, 'stroke-dasharray': '2 3' }, svg);
+          el('text', { x: X(x) + 4, y: y + 4, 'font-size': 10, fill: c }, svg, `${fmt(x, 2)} m`);
+        });
+        el('text', { x: X(0) - 4, y: Y0 - 14, 'text-anchor': 'middle', 'font-size': 10, fill: '#d8cfae' }, svg, 'osa');
+        readout.innerHTML = '';
+        for (const [k, v] of [
+          ['Závaží na háčku', `${fmt(sum(), 1)} kg`],
+          ['Vyváží na plošině', `${fmt(sum() * 10, 0)} kg`],
+        ]) {
+          const d = document.createElement('div');
+          const a = document.createElement('span'); a.textContent = k;
+          const bb = document.createElement('strong'); bb.textContent = v;
+          d.append(a, bb);
+          readout.appendChild(d);
+        }
+        rm.disabled = balanced || !hung.length;
+        if (balanced) return;
+        if (Math.abs(diff) <= tol) {
+          balanced = true;
+          sound.sfx('unlock');
+          const F = load();
+          const pct = Math.round(F / (r.bodyKg + (r.extra || []).reduce((s, e) => s + e.kg, 0)) * 100);
+          out[`${r.var}_kg`] = Math.round(F * 10) / 10;
+          out[`${r.var}_procent`] = pct;
+          const terms = [`${r.bodyKg} · ${fmt(r.comM, 2)}`, ...(r.extra || []).map((e) => `${e.kg} · ${fmt(e.atM, 2)}`)].join(' + ');
+          status.textContent = `${r.success || 'Váha je vyrovnaná.'} Ruce nesou ${fmt(F, 1)} kg – ${pct} % hmotnosti. Momenty kolem špiček: (${terms}) · g = F · ${fmt(b, 2)} → F ≈ ${fmt(F * g)} N.`;
+          status.className = 'feedback good';
+          rm.disabled = true;
+          const last = idx + 1 >= act.rounds.length;
+          button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+            actions.innerHTML = '';
+            if (last) { finishActivity(act, out); return; }
+            idx += 1;
+            hung = [];
+            balanced = false;
+            status.textContent = round().text || '';
+            status.className = 'feedback';
+            render();
+          });
+        } else {
+          status.textContent = hung.length ? (diff < 0 ? (act.tipMore || 'Plošina je těžší – přidej závaží.') : (act.tipLess || 'Závaží převažuje – uber.')) : (round().text || '');
+          status.className = 'feedback';
+        }
+      }
+      status.textContent = round().text || '';
+      render();
+    });
+  }
+
+  /* Hod (šikmý vrh z výšky odhodu, bez odporu vzduchu). Kola „rounds“: { name, text, object, speed,
+     h0, target, targetLabel, xMax, tick, success, var } – rychlost je daná, hráč hledá úhel, při kterém
+     předmět doletí aspoň na normu. Po posledním kole lze zkoušet i jinou rychlost (dolet roste
+     s druhou mocninou rychlosti). Proměnné: hod_hotovo, <var>_uhel a <var>_m (nejlepší hod kola). */
+  function openThrow(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const X0 = 46, Y0 = 262;
+    let idx = 0, angleDeg = act.startAngle || 60, speed = act.rounds[0].speed, free = false, flying = false;
+    let throws = [], best = null, roundDone = false, raf = 0;
+    const out = { hod_hotovo: 1 };
+
+    const range = (v, a, h) => {
+      const r = a * Math.PI / 180, vx = v * Math.cos(r), vy = v * Math.sin(r);
+      const t = (vy + Math.sqrt(vy * vy + 2 * g * h)) / g;
+      return { d: vx * t, t, vx, vy };
+    };
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Hod');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const svg = el('svg', { viewBox: '0 0 600 300', class: 'pack-svg throw-svg' }, box);
+      const controls = document.createElement('div');
+      controls.className = 'throw-controls';
+      box.appendChild(controls);
+      const mk = (label, min, max, step, get, set) => {
+        const l = document.createElement('label');
+        l.className = 'stance-slider';
+        const t = document.createElement('span');
+        const r = document.createElement('input');
+        r.type = 'range'; r.min = min; r.max = max; r.step = step; r.value = get();
+        const upd = () => { t.textContent = label(get()); };
+        r.addEventListener('input', () => { set(Number(r.value)); upd(); drawScene(); });
+        upd();
+        l.append(t, r);
+        controls.appendChild(l);
+        return { r, upd };
+      };
+      const aS = mk((v) => `${act.angleLabel || 'Úhel odhodu'}: ${v}°`, 5, 85, 1, () => angleDeg, (v) => { angleDeg = v; });
+      const vS = mk((v) => `${act.speedLabel || 'Rychlost odhodu'}: ${fmt(v, 1)} m/s${free ? '' : ' (daná)'}`, 2, 30, 0.5, () => speed, (v) => { speed = v; });
+      const throwBtn = button(controls, act.throwLabel || 'Hodit', 'btn primary', () => doThrow());
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      const round = () => act.rounds[idx];
+      const K = () => (600 - X0 - 24) / round().xMax;
+      const SX = (x) => X0 + x * K(), SY = (y) => Y0 - y * K();
+
+      function drawScene(ball) {
+        const r = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${r.name}`;
+        svg.innerHTML = '';
+        el('rect', { x: 0, y: 0, width: 600, height: 300, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+        el('line', { x1: 0, y1: Y0, x2: 600, y2: Y0, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+        for (let x = 0; x <= r.xMax + 1e-9; x += r.tick) {
+          el('line', { x1: SX(x), y1: Y0, x2: SX(x), y2: Y0 + 6, stroke: '#8d7a58' }, svg);
+          el('text', { x: SX(x), y: Y0 + 18, 'text-anchor': 'middle', 'font-size': 10, fill: '#a39580' }, svg, `${fmt(x, x % 1 ? 1 : 0)}`);
+        }
+        el('text', { x: 590, y: Y0 + 32, 'text-anchor': 'end', 'font-size': 10, fill: '#a39580' }, svg, 'm');
+        // norma
+        el('line', { x1: SX(r.target), y1: Y0, x2: SX(r.target), y2: Y0 - 70, stroke: '#9fbf7a', 'stroke-width': 2 }, svg);
+        el('path', { d: `M${SX(r.target)},${Y0 - 70} l22,7 l-22,7 z`, fill: '#9fbf7a' }, svg);
+        el('text', { x: SX(r.target) + 4, y: Y0 - 76, 'font-size': 11, fill: '#9fbf7a' }, svg, r.targetLabel || `${fmt(r.target, 2)} m`);
+        // vrhač (výška ~1,8 m v měřítku, ale aspoň 40 px)
+        const hpx = Math.max(40, 1.8 * K()), relY = Y0 - Math.max(r.h0 * K(), hpx * (r.h0 / 1.8));
+        el('line', { x1: X0, y1: Y0, x2: X0, y2: Y0 - hpx * 0.55, stroke: '#4f5638', 'stroke-width': 6, 'stroke-linecap': 'round' }, svg);
+        el('line', { x1: X0, y1: Y0 - hpx * 0.55, x2: X0, y2: Y0 - hpx * 0.85, stroke: '#566040', 'stroke-width': 8, 'stroke-linecap': 'round' }, svg);
+        el('circle', { cx: X0, cy: Y0 - hpx * 0.93, r: Math.max(4, hpx * 0.07), fill: '#6b6650' }, svg);
+        el('line', { x1: X0, y1: Y0 - hpx * 0.8, x2: X0 + 6, y2: relY, stroke: '#c9b08a', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg);
+        // směr odhodu
+        const a = angleDeg * Math.PI / 180;
+        el('line', { x1: X0 + 6, y1: relY, x2: X0 + 6 + 46 * Math.cos(a), y2: relY - 46 * Math.sin(a), stroke: '#ffd28a', 'stroke-width': 2, 'stroke-dasharray': '4 3' }, svg);
+        // předchozí hody
+        throws.forEach((t, i) => {
+          const last = i === throws.length - 1;
+          el('path', { d: t.path, fill: 'none', stroke: last ? '#ffd28a' : 'rgba(255,210,138,0.3)', 'stroke-width': last ? 2 : 1.5 }, svg);
+          el('circle', { cx: SX(t.d), cy: Y0, r: 3, fill: t.d >= r.target ? '#9fbf7a' : '#e0805f' }, svg);
+          if (last) el('text', { x: SX(t.d), y: Y0 - 8, 'text-anchor': 'middle', 'font-size': 11, fill: '#ffd28a' }, svg, `${fmt(t.d, 2)} m · ${t.a}°`);
+        });
+        if (ball) el('circle', { cx: ball[0], cy: ball[1], r: r.object === 'granat' ? 4 : 7, fill: r.object === 'granat' ? '#55603a' : '#7a4a2a', stroke: '#111' }, svg);
+        readout.innerHTML = '';
+        for (const [k, v] of [
+          ['Výška odhodu', `${fmt(r.h0, 1)} m`],
+          ['Nejlepší hod', best ? `${fmt(best.d, 2)} m pod úhlem ${best.a}°` : '–'],
+        ]) {
+          const d = document.createElement('div');
+          const s1 = document.createElement('span'); s1.textContent = k;
+          const s2 = document.createElement('strong'); s2.textContent = v;
+          d.append(s1, s2);
+          readout.appendChild(d);
+        }
+        vS.r.disabled = !free;
+        vS.upd();
+      }
+
+      function doThrow() {
+        if (flying) return;
+        const r = round();
+        const res = range(speed, angleDeg, r.h0);
+        const pts = [];
+        const n = 40;
+        for (let i = 0; i <= n; i++) {
+          const t = res.t * i / n;
+          pts.push([SX(res.vx * t), SY(r.h0 + res.vy * t - g * t * t / 2)]);
+        }
+        const path = `M${pts.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' L')}`;
+        flying = true;
+        throwBtn.disabled = true;
+        sound.sfx('step');
+        const t0 = performance.now(), dur = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 900;
+        const step = () => {
+          const f = Math.min(1, (performance.now() - t0) / dur);
+          const i = Math.min(n, Math.floor(f * n));
+          drawScene(pts[i]);
+          if (f < 1) { raf = requestAnimationFrame(step); return; }
+          flying = false;
+          throwBtn.disabled = false;
+          const th = { d: res.d, a: angleDeg, v: speed, path };
+          throws.push(th);
+          if (throws.length > 6) throws.shift();
+          if (!free && (!best || res.d > best.d)) best = { d: res.d, a: angleDeg };
+          sound.sfx(res.d >= r.target ? 'squatOk' : 'squatShallow');
+          drawScene();
+          if (free) {
+            status.textContent = `${fmt(speed, 1)} m/s pod ${angleDeg}° → ${fmt(res.d, 2)} m. ${act.freeTip || ''}`;
+            status.className = 'feedback';
+            return;
+          }
+          if (res.d >= r.target && !roundDone) {
+            roundDone = true;
+            out[`${r.var}_uhel`] = angleDeg;
+            out[`${r.var}_m`] = Math.round(res.d * 100) / 100;
+            status.textContent = r.success || 'Norma splněna!';
+            status.className = 'feedback good';
+            sound.sfx('unlock');
+            const last = idx + 1 >= act.rounds.length;
+            button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+              actions.innerHTML = '';
+              if (last) { finishActivity(act, out); return; }
+              idx += 1;
+              throws = []; best = null; roundDone = false;
+              speed = round().speed;
+              status.textContent = round().text || '';
+              status.className = 'feedback';
+              drawScene();
+            });
+            if (last && act.freeLabel) {
+              button(actions, act.freeLabel, 'btn', () => {
+                free = true;
+                status.textContent = act.freeText || '';
+                status.className = 'feedback';
+                drawScene();
+              });
+            }
+          } else if (!roundDone) {
+            status.textContent = res.d < r.target ? `${fmt(res.d, 2)} m – ${act.shortTip || 'krátké. Zkus jiný úhel.'}` : '';
+            status.className = 'feedback bad';
+          }
+        };
+        raf = requestAnimationFrame(step);
+      }
+      activityCleanup = () => cancelAnimationFrame(raf);
+      status.textContent = round().text || '';
+      drawScene();
+    });
+  }
+
   /* Zkouška stability: předklon ke špičkám volně a patami u zdi. S kamerou měří js/predklon.js
      (pánev dozadu, ruce nad zemí, krok); bez kamery hráč jen odpoví, jak pokus dopadl. */
   function openLean(act) {
@@ -2916,7 +3680,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.11');
+          const mod = await import('./predklon.js?v=0.12');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

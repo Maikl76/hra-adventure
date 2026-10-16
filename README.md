@@ -21,6 +21,12 @@ Každý svět bude mít vlastních devět bran.
   patří těžké věci. Součástí je **zkouška stability**: předklon ke špičkám volně a patami
   u zdi, s kamerou i bez ní. Zatím se zástupnou grafikou (zadání obrázků:
   [`docs/zadani-obrazku-sklad.md`](docs/zadani-obrazku-sklad.md)).
+- **Vojenská tělovýchova – Brána II: Tělocvična** (výroční přezkoušení z fyzické zdatnosti):
+  brožura s normami (podle pohlaví, zdravotní a věkové kategorie), známky vojína z protokolu
+  na psacím stroji, rychlost běžeckého pásu z normy v běhu, kliky na decimální váze (páka kolem
+  špiček), hod medicinbalem a granátem (nejlepší úhel z výšky je pod 45°), proč se goblet dřep
+  dělá s kettlebellem vpředu a **goblet dřep 90 s** před kamerou. Zatím se zástupnou grafikou
+  (zadání obrázků: [`docs/zadani-obrazku-telocvicna.md`](docs/zadani-obrazku-telocvicna.md)).
 - **GSPORT – LEVEL 1: Stará herna** (práce a výkon při dřepech, sčítání wattů): stará laboratoř
   v suterénu předělaná na hernu, čtyři strany místnosti a řetěz úkolů – reflex test, UV
   svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
@@ -71,6 +77,18 @@ Každý svět bude mít vlastních devět bran.
 - Bez kamery hráč jen odpoví, jak pokusy dopadly; na závěrečné obrazovce je pak „Zkouška
   stability ověřená kamerou: ne“. Obraz se zpracovává jen v prohlížeči.
 
+## Vojenská tělovýchova: goblet dřep před webkamerou
+
+- Za 90 sekund co nejvíc platných dřepů s kettlebellem 5 kg u hrudníku. Za hráčem je lavička
+  nebo židle ve výšce kolene, na kterou **jen dosedne**; kolena ani hlava nesmí být po celou
+  dobu před špičkami.
+- Hráč stojí bokem ke kameře. Hra si ze stoje změří výšku kolene (= lavička) a svislici špiček.
+  Neplatný dřep se nepočítá a hra napíše proč (koleno nebo hlava před špičkami, nedosedl,
+  posadil se). Centimetry jsou přibližné.
+- Bez kamery hra jen odměří 90 s a platné dřepy počítá kolega. Bez kettlebellu (láhev s vodou,
+  batoh) je výsledek jen orientační. Kdo má potíže s koleny nebo se zády, test vynechá.
+- **Bezpečnost:** cvičí jeden člen týmu, židle stojí pevně (opřená o zeď), kolem volné místo.
+
 ## Oživení a „hmatatelné“ úlohy
 
 - **Prach ve světle:** v kabinetu, herně i skladu poletuje prach, který je vidět hlavně ve světle
@@ -111,13 +129,15 @@ Každý svět bude mít vlastních devět bran.
   začne rovnou v dané místnosti. Hodí se, když tým předchozí level dohrál minule nebo na jiném
   počítači, a pro vyzkoušení:
   - GSPORT – LEVEL 2 (Skokanská aréna): <https://maikl76.github.io/hra-adventure/?mistnost=arena>
+  - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
 
   Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč
   dostane automaticky (`"shortcut"` u místnosti v `game.json`). Na závěrečné obrazovce je řádek
   „Začátek“, takže je vidět, že čas, chyby a nápovědy platí až od této místnosti.
 - Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
-  naměřené dřepy, výkon, reakční dobu, dobu letu, výšku výskoku a časy z NEON AIM) – studenti ji vyfotí pro vyhodnocení.
+  naměřené dřepy, výkon, reakční dobu, dobu letu, výšku výskoku a časy z NEON AIM, ve vojenské
+  tělovýchově zkoušku stability, kliky na váze a goblet dřep) – studenti ji vyfotí pro vyhodnocení.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
   s hlasitým zvukem). Ve výchozím stavu jsou **vypnuté**; kdo chce, zapne si je v Menu →
   „Lekačky: zapnuté/vypnuté“. Obraz nebliká opakovaně, ale citlivější studenty je dobré
@@ -143,7 +163,7 @@ a otevřete `http://127.0.0.1:8765`.
 v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nahradit nahrávkami.
 
 Jediná knihovna je **MediaPipe Tasks Vision** (Google, licence Apache 2.0) pro odhad polohy
-těla z kamery (dřepy a výskok v GSPORT, zkouška stability ve vojenské tělovýchově). Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
+těla z kamery (dřepy a výskok v GSPORT, zkouška stability a goblet dřep ve vojenské tělovýchově). Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
 i s modelem, takže hra nestahuje nic z cizích serverů. Načte se, až když hráč zvolí měření
 s kamerou.
 

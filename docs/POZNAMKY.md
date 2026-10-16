@@ -38,8 +38,8 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
 - Po každé změně hru vyzkoušet v prohlížeči. Při výměně obrázku zkontrolovat klikací místa
   (Menu → Vyznačit objekty v místnosti) a světla (`lights`).
 - **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
-  importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`) a `skok.js`
-  i `predklon.js` importují `squats.js` také s `?v=`. Při každém nahrání změněného JS/CSS zvýšit
+  importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`, `goblet.js`) a `skok.js`,
+  `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo). Při každém nahrání změněného JS/CSS zvýšit
   spolu s `meta.version`, jinak prohlížeče hráčů míchají starý a nový kód.
 - Do repozitáře **nikdy**: složka `podklady/` (originály obrázků, pomocné nástroje, odborné
   podklady – jen u autora), soubor `CLAUDE.md` v kořeni (lokální poznámky se soukromými údaji),
@@ -62,6 +62,7 @@ js/brany.js         kresba bran v úvodním průletu
 js/squats.js        počítání dřepů kamerou (GSPORT, herna)
 js/skok.js          výskok z podřepu – doba letu (GSPORT, aréna)
 js/predklon.js      zkouška stability – předklon (vojenská tělovýchova, sklad)
+js/goblet.js        goblet dřep 90 s – platné a neplatné dřepy (vojenská tělovýchova, tělocvična)
 vendor/mediapipe/   MediaPipe Tasks Vision 0.10.14 + model pose_landmarker_lite (Apache 2.0)
 data/game.json      VEŠKERÝ obsah hry
 assets/             rooms/ (pohledy a vrstvy), items/, closeups/, book/, scares/
@@ -100,7 +101,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   typické chyby spočítané z hráčových hodnot), tři stupňovité `hints`.
 - Aktivity (`activities`, typ `type`): `reflex`, `squats`, `tape` (měření tahem), `pack`
   (balení batohu), `lift` (zvedání bedny), `stance` (postoj), `lean` (zkouška stability), `jump`
-  (výskok), `targets` (NEON AIM). Výsledky se uloží do `vars` a provedou se účinky `done`.
+  (výskok), `targets` (NEON AIM), `pushup` (kliky na decimální váze), `throw` (šikmý vrh –
+  medicinbal, granát), `gobletsim` (panáček v dolní poloze goblet dřepu), `goblet` (goblet dřep
+  90 s). Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
+  případ s podmínkou).
+- Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
+  a `table` (`caption`, `head`, `rows`; první buňka řádku je záhlaví) – tabulky norem v brožuře.
 - Lekačky `scares`: `image`, `sound` (`scareHit`/`scareStatic`/`scareRush`), `delay` (napětí,
   podkres ztichne), `duration`, `rush`, `position` (co zůstane v záběru na úzkém displeji),
   `after` (text připsaný potom). Každá jen jednou za hru.
@@ -121,8 +127,31 @@ plocha, slepení přelomené psí známky (kód skříňky), polní telefon s n�
 stability před kamerou. Zámek: posun těžiště **6 cm**, co s tím udělat, kam patří těžké věci.
 Všechny čtyři pohledy a otevřené dveře jsou od autora; zástupné zůstaly jen ikony klíčů, půlek
 známky a pásky (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
-**Odloženo do další vojenské místnosti** (nápady autor schválil, zatím nedělat): decimální váha
-(páka), protizávaží u přilby, hlášení na psacím stroji (shrnutí), mapa se svahem, nosítka.
+**Odloženo do dalších vojenských místností** (nápady autor schválil): protizávaží u přilby, mapa
+se svahem, nosítka. Decimální váha a psací stroj jsou v tělocvičně (Brána II).
+
+### Vojenská tělovýchova – Brána II: Tělocvična (`telocvicna`)
+Výroční přezkoušení z fyzické zdatnosti podle autorova návrhu nových norem (Excel, první list;
+soubor zůstává mimo repozitář, data jsou v brožuře **Normy** v `game.json`: 15 testů podle
+pohlaví, zdravotní kategorie A/BI/C a věku I–VII, plus hod granátem z profesních testů).
+Čtyři pohledy (stůl komise → hrazda → odhodový sektor → dřepová stanice a dveře).
+Řetěz: brožura Normy + protokol rtn. Doubka (muž, 37 let = III, kat. A) → hlášení na psacím
+stroji **22123** (cílené rady na špatný sloupec a na „čas – čím méně, tím lépe“) → P. S. →
+běžecký pás **13,5 km/h** (jednička v běhu 2 700 m / 12 min) → klíček → skříň s náčiním
+(kettlebell, závaží) → kliky na decimální váze (70 kg, těžiště 0,90 m, ruce 1,30 m od špiček;
+pak s batohem 15 kg) → odhodový sektor (medicinbal 5,5 m/s z 1,6 m na 4,35 m; granát 20 m/s
+z 2 m na 42 m) → panáček „Proč taková pravidla?“ → **goblet dřep 90 s** (kamerou, bez kamery
+počítá kolega, nebo vynechat). Brána: síla rukou při kliku `80*9.81*0.9/1.3` N (±3 %, cílené rady),
+práce při výdrži ve shybu **0 J**, úhel hodu z výšky (o něco níž než 45°), proč kettlebell vpředu.
+Polní telefon (`telefon_tv_zvoni`), zkratka `?mistnost=telocvicna`. Zástupná grafika
+(`docs/zadani-obrazku-telocvicna.md`).
+- Goblet dřep (zadání autora): kettlebell 5 kg u hrudníku, lavička ve výšce kolene – **jen dotyk**,
+  kolena ani hlava nesmí být po celou dobu před špičkami. Neplatný dřep se nepočítá, hra ukáže
+  důvod (koleno, hlava, nedosedl, posadil se). Kamera ze stoje změří výšku kolene (= lavička)
+  a svislici špiček; tolerance 2 cm (`kneeTolCm`, `headTolCm`). Náhrada kettlebellu (láhev,
+  batoh) nebo bez zátěže = výsledek „orientační“. Normy ukázané po testu: BI, do 30 let.
+- Normy přesně podle Excelu; opravena jen zřejmá chyba (plavání ženy VII 8:04 / 9:10 / 10:18)
+  a desetinná opakování v kategoriích BI a C zaokrouhlena nahoru (autor schválil).
 
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
@@ -181,8 +210,9 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
 - Testovací prohlížeč AI asistenta nemá kameru – ověřit jde jen cesta bez kamery; kameru zkouší
   autor u sebe.
-- **Zbývá ověřit skutečnou kamerou:** měření výskoku (`js/skok.js`, aréna) a zkoušku stability –
-  předklon (`js/predklon.js`, sklad). Zatím otestované jen na umělých datech (výskok: chyba
+- **Zbývá ověřit skutečnou kamerou:** měření výskoku (`js/skok.js`, aréna), zkoušku stability –
+  předklon (`js/predklon.js`, sklad) a goblet dřep (`js/goblet.js`, tělocvična – hlavně tolerance
+  kolen a hlavy a výška lavičky). Zatím otestované jen na umělých datech (výskok: chyba
   doby letu do 10 ms, skok s protipohybem se nepočítá).
 - **Po testu zavřít testovací záložky** – hra v nich hraje dál (podkres) i po zavření okna
   aplikace, protože aplikace na Windows běží v oznamovací oblasti.
