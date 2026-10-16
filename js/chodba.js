@@ -106,13 +106,16 @@ export class Corridor {
       moveMs: (sk.moveSeconds || 2.2) * 1000,
       wake: sk.wakeCells || 4,
       height: sk.height || 0.92,
+      tolerance: sk.tolerance == null ? 24 : sk.tolerance,   // px obrázku kostlivce: kolik smí prst minout kost
     };
+    this.hint = null;          // po chybě na chvíli blikne hledaná kost { s, bone, t0 }
     this.lives = this.cfg.lives;
     const dead = new Set(opts.defeated || []);
     this.skeletons = (def.skeletons || []).map((s) => ({
       id: s.id, bones: s.bones || [], home: { x: s.cell[0], y: s.cell[1] },
       x: s.cell[0], y: s.cell[1], rx: s.cell[0] + 0.5, ry: s.cell[1] + 0.5,
       alive: !dead.has(s.id), awake: false, progress: 0, nextMove: 0, nextAttack: 0, adjacent: false, tween: null, fallT: 0,
+      lunge: 0, wakePos: null,
     }));
   }
 
@@ -301,10 +304,18 @@ export class Corridor {
           busy = true;
         }
         if (s.fallT && now - s.fallT < 600) busy = true;
+        const want = s.alive && s.adjacent && !s.tween ? 1 : 0;
+        if (Math.abs(s.lunge - want) > 0.01) {
+          s.lunge += (want - s.lunge) * (this.reduced ? 1 : 0.18);
+          busy = true;
+        } else {
+          s.lunge = want;
+        }
         if (s.awake && s.alive) busy = true;   // kostlivec se pohupuje
       }
       if (this.beam && now - this.beam.t0 < 220) busy = true;
       if (this.hurt && now - this.hurt < 500) busy = true;
+      if (this.hint && now - this.hint.t0 < 2600) busy = true;
       const flick = this.hasFlicker && now - this.lastFlicker > 90;
       if (busy || this.dirty || flick) {
         if (busy && now - this.lastFrame < 14) return;
@@ -374,6 +385,7 @@ export class Corridor {
       const dist = Math.abs(s.x - this.pos.x) + Math.abs(s.y - this.pos.y);
       if (!s.awake && (this.sees(s) || dist <= 1)) {
         s.awake = true;
+        s.wakePos = { x: this.pos.x, y: this.pos.y, dir: this.pos.dir };
         s.nextMove = now + this.cfg.moveMs * 0.6;
         this.dirty = true;
         if (this.on.wake) this.on.wake(s);
@@ -404,21 +416,24 @@ export class Corridor {
     this.hurt = now;
     this.dirty = true;
     if (this.lives <= 0) {
-      if (this.on.death) this.on.death();
+      if (this.on.death) this.on.death(this.skeletons.find((k) => k.alive && k.adjacent) || null);
     } else if (this.on.attack) {
       this.on.attack(this.lives);
     }
   }
 
-  /* Po ztrátě všech životů: hráč zpět na start, živí kostlivci domů a „srostou“. */
-  resetAfterDeath() {
-    this.setPosition({ ...this.def.start, visited: [...this.visited] });
+  /* Po ztrátě všech životů: hráč zpět tam, kde ho kostlivec uviděl (bez kostlivce na start),
+     živí kostlivci domů a „srostou“. */
+  resetAfterDeath(killer) {
+    const back = (killer && killer.wakePos) || this.def.start;
+    this.setPosition({ ...back, visited: [...this.visited] });
     for (const s of this.skeletons) {
       if (!s.alive) continue;
-      Object.assign(s, { x: s.home.x, y: s.home.y, rx: s.home.x + 0.5, ry: s.home.y + 0.5, awake: false, progress: 0, adjacent: false, tween: null });
+      Object.assign(s, { x: s.home.x, y: s.home.y, rx: s.home.x + 0.5, ry: s.home.y + 0.5, awake: false, progress: 0, adjacent: false, tween: null, lunge: 0 });
     }
     this.lives = this.cfg.lives;
     this.hurt = 0;
+    this.hint = null;
     this.dirty = true;
   }
 
@@ -440,16 +455,27 @@ export class Corridor {
     const sx = fx * W, sy = fy * H;
     let found = null;
     const col = Math.max(0, Math.min(W - 1, Math.floor(sx)));
+    const spr = this.sprites.skeleton;
+    const sw = spr ? spr.w : 256, sh = spr ? spr.h : 512;
+    const tol = this.cfg.tolerance;
     for (const v of this.visibleSprites.slice().sort((a, b) => a.depth - b.depth)) {
       if (!v.s.alive) continue;
-      if (sx < v.x0 || sx > v.x1 || sy < v.y0 || sy > v.y1) continue;
+      const kx = (v.x1 - v.x0) / sw, ky = (v.y1 - v.y0) / sh;        // obrazovka / obrázek
+      const padX = tol * kx, padY = tol * ky;
+      if (sx < v.x0 - padX || sx > v.x1 + padX || sy < v.y0 - padY || sy > v.y1 + padY) continue;
       if (v.depth >= this.zbuf[col]) continue;   // za zdí
-      const u = (sx - v.x0) / (v.x1 - v.x0), w = (sy - v.y0) / (v.y1 - v.y0);
-      let bone = null;
+      // bod v pixelech obrázku kostlivce; vzdálenost k oblasti každé kosti (0 = uvnitř)
+      const ix = (sx - v.x0) / kx, iy = (sy - v.y0) / ky;
+      let bone = null, best = Infinity;
       for (const [id, rects] of Object.entries((this.def.skeleton || {}).zones || {})) {
-        if (rects.some(([x, y, rw, rh]) => u * 100 >= x && u * 100 <= x + rw && w * 100 >= y && w * 100 <= y + rh)) { bone = id; break; }
+        for (const [x, y, rw, rh] of rects) {
+          const x0 = x / 100 * sw, y0 = y / 100 * sh, x1 = (x + rw) / 100 * sw, y1 = (y + rh) / 100 * sh;
+          const dx = Math.max(x0 - ix, 0, ix - x1), dy = Math.max(y0 - iy, 0, iy - y1);
+          const d = Math.hypot(dx, dy);
+          if (d < best) { best = d; bone = id; }
+        }
       }
-      found = { skeleton: v.s, bone };
+      found = { skeleton: v.s, bone: best <= tol ? bone : null };
       break;
     }
     this.beam = { x: sx, y: sy, t0: performance.now(), hit: Boolean(found && found.bone) };
@@ -461,16 +487,16 @@ export class Corridor {
   hit(s, correct) {
     const now = performance.now();
     if (correct) {
+      this.hint = null;
       s.progress += 1;
       if (s.progress >= s.bones.length) {
         s.alive = false;
         s.fallT = now;
+        this.lives = this.cfg.lives;   // oddech po souboji
         if (this.on.defeat) this.on.defeat(s);
       }
-    } else if (s.adjacent) {
-      s.nextAttack = Math.min(s.nextAttack, now + 900);
     } else {
-      s.nextMove = Math.min(s.nextMove, now + 300);
+      this.hint = { s, bone: s.bones[s.progress], t0: now };
     }
     this.dirty = true;
   }
@@ -601,7 +627,10 @@ export class Corridor {
     for (const { s } of list) {
       const spr = s.alive ? this.sprites.skeleton : this.sprites.pile;
       if (!spr) continue;
-      const relX = s.rx - px, relY = s.ry - py;
+      // u hráče kostlivec přistoupí až k okraji políčka (větší terč)
+      const lx = s.lunge ? Math.sign(this.pos.x - s.x) * 0.32 * s.lunge : 0;
+      const ly = s.lunge ? Math.sign(this.pos.y - s.y) * 0.32 * s.lunge : 0;
+      const relX = s.rx + lx - px, relY = s.ry + ly - py;
       const tX = invDet * (dY * relX - dX * relY);
       const tY = invDet * (-plY * relX + plX * relY);
       if (tY <= 0.15) continue;
@@ -662,7 +691,9 @@ export class Corridor {
       this.canvas.style.cursor = fight ? 'crosshair' : 'pointer';
     }
     // laser
-    const muzzle = { x: W / 2 + 120, y: H - 118 };
+    const WPW = 300, WPH = 180;                         // puška vpravo dole (nezakrývá kostlivce)
+    const wpX = W - WPW - 6, wpY = H - WPH + 8;
+    const muzzle = { x: wpX + 180 * WPW / 400, y: wpY + 82 * WPH / 240 };
     if (armed && this.beam && now - this.beam.t0 < 220) {
       const k = 1 - (now - this.beam.t0) / 220;
       g.save();
@@ -686,7 +717,7 @@ export class Corridor {
     if (armed && wp) {
       const kick = this.beam && now - this.beam.t0 < 160 ? (1 - (now - this.beam.t0) / 160) * 14 : 0;
       const bob = this.anim && !this.anim.bounce ? Math.sin((now - this.anim.t0) / this.anim.ms * Math.PI) * 6 : 0;
-      g.drawImage(wp.img, W / 2 - 60 + kick * 0.3, H - 200 + kick + bob, 400, 240);
+      g.drawImage(wp.img, wpX + kick * 0.3, wpY + kick + bob, WPW, WPH);
     }
     // kompas nahoře uprostřed
     const [az, letter] = AZIMUTH[this.pos.dir];
@@ -702,14 +733,36 @@ export class Corridor {
     const tg = armed ? this.target() : null;
     const bones = (this.def.skeleton || {}).bones || {};
     if (tg && tg.bone) {
-      const name = (bones[tg.bone] && bones[tg.bone].name) || tg.bone;
-      const txt = `ZASÁHNI: ${name.toUpperCase()}`;
-      g.font = 'bold 22px Arial, sans-serif';
-      const tw = g.measureText(txt).width + 30;
-      g.fillStyle = 'rgba(20, 60, 30, 0.75)';
-      g.fillRect(W / 2 - tw / 2, 48, tw, 34);
+      const name = ((bones[tg.bone] && bones[tg.bone].name) || tg.bone).toUpperCase();
+      g.textAlign = 'left';
+      g.font = 'bold 24px Arial, sans-serif';
+      const tw = Math.max(g.measureText(name).width, 120) + 28;
+      g.fillStyle = 'rgba(20, 60, 30, 0.78)';
+      g.fillRect(12, 52, tw, 70);
+      g.fillStyle = '#c9f5d6';
+      g.font = 'bold 16px Arial, sans-serif';
+      g.fillText('ZASÁHNI:', 26, 72);
       g.fillStyle = '#8dffb0';
-      g.fillText(txt, W / 2, 66);
+      g.font = 'bold 24px Arial, sans-serif';
+      g.fillText(name, 26, 102);
+      g.textAlign = 'center';
+    }
+    // po chybě: hledaná kost na kostlivci bliká
+    const hint = this.hint;
+    if (hint && now - hint.t0 < 2600 && hint.s.alive) {
+      const v = this.visibleSprites.find((o) => o.s === hint.s);
+      const rects = ((this.def.skeleton || {}).zones || {})[hint.bone] || [];
+      if (v && Math.floor((now - hint.t0) / 260) % 2 === 0) {
+        g.save();
+        g.strokeStyle = '#ffe14a';
+        g.lineWidth = 3;
+        g.shadowColor = '#ffe14a';
+        g.shadowBlur = 10;
+        for (const [x, y, rw, rh] of rects) {
+          g.strokeRect(v.x0 + x / 100 * (v.x1 - v.x0) - 3, v.y0 + y / 100 * (v.y1 - v.y0) - 3, rw / 100 * (v.x1 - v.x0) + 6, rh / 100 * (v.y1 - v.y0) + 6);
+        }
+        g.restore();
+      }
     }
     // životy vlevo nahoře
     if (this.attacks && this.skeletons.length && (armed || this.skeletons.some((s) => s.awake))) {

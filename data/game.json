@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.14 – ukázka",
+    "version": "0.14.1 – ukázka",
     "totalGates": 9
   },
 
@@ -6542,8 +6542,9 @@
           "pile": "assets/chodba/kosti.svg",
           "height": 0.92,
           "lives": 3,
-          "attackSeconds": 4,
-          "firstAttackSeconds": 3,
+          "attackSeconds": 6,
+          "firstAttackSeconds": 5,
+          "tolerance": 24,
           "moveSeconds": 2.2,
           "wakeCells": 4,
           "zones": {
@@ -6789,11 +6790,11 @@
             "wakeNoWeapon": "Z šera se vynořil kostlivec! Bez laserové pušky na něj nic nezmůžeš – zbrojní skříň je u začátku chodby.",
             "hit": "Zásah – {name}!",
             "next": "Teď zasáhni: {name}.",
-            "defeated": "Kostlivec se rozsypal na hromádku kostí.",
-            "wrong": "Vedle – trefil jsi: {hit}. Hledej {name} – {where}.",
-            "between": "Laser prošel mezi kostmi. Hledej {name} – {where}.",
+            "defeated": "Kostlivec se rozsypal na hromádku kostí. Oddechneš si – životy doplněny.",
+            "wrong": "Vedle – trefil jsi: {hit}. Hledej {name} – {where}. Na kostlivci teď bliká.",
+            "between": "Laser prošel mezi kostmi. Hledej {name} – {where}. Na kostlivci teď bliká.",
             "attack": "Kostlivec tě praštil! Zbývá životů: {lives}.",
-            "death": "Kostlivci tě zahnali zpátky ke dveřím skladu. Zasažené kosti jim zase srostly – zkus to znovu."
+            "death": "Kostlivec tě srazil. Ustoupil jsi o kus zpátky – zasažené kosti mu zase srostly, zkus to znovu."
           }
         }
       },

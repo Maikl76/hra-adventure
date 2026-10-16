@@ -216,7 +216,12 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
   čéška + lýtková. Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
   a kde hledaná kost je. Plakát kostry ve slepé uličce (nápověda), lékárnička doplní životy.
   Kostlivec se probudí, když hráče uvidí (do 4 políček v přímé chodbě), jde k němu (1 políčko za
-  2,2 s) a u hráče útočí (první po 3 s, pak každé 4 s); chybná střela útok uspíší.
+  2,2 s) a u hráče útočí (první po 5 s, pak každé 6 s).
+- Po autorově zkoušce na tabletu („nemůžu trefit kost, pořád mě to vrací na začátek“): zásah počítá
+  kost nejbližší místu ťuknutí, když je do 24 px obrázku (`tolerance`); kostlivec u hráče přistoupí
+  k okraji políčka (větší terč); puška vpravo dole a nápis s kostí vlevo nezakrývají kostlivce;
+  po chybě hledaná kost na kostlivci 2,6 s bliká; po poraženém kostlivci se doplní životy; po ztrátě
+  životů se hráč vrátí jen tam, kde ho kostlivec uviděl (ne na start).
 - **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
   ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
 - Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
