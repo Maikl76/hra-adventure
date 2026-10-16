@@ -5643,8 +5643,8 @@
         },
         "sektor": {
           "name": "Odhodový sektor",
-          "background": "assets/rooms/telocvicna_sektor.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "background": "assets/rooms/telocvicna_sektor.webp",
+          "_obrazek": "Obrázky dodal autor projektu (16. 10. 2026): sektor a stejný záběr s rozjetým pásem (vrstva – displej a pás). Původní kresby: telocvicna_sektor*.svg.",
           "darkness": 0.45,
           "dust": {
             "count": 40,
@@ -5655,39 +5655,45 @@
           "enterText": "Stojan s medicinbaly, bedna cvičných granátů a pásmo na podlaze. U zdi stojí běžecký pás.",
           "lights": [
             {
-              "x": 50,
-              "y": 4,
-              "radius": 32,
-              "strength": 0.4,
+              "x": 28.8,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45
+            },
+            {
+              "x": 71.5,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45,
               "flicker": true
             },
             {
-              "x": 83.7,
-              "y": 45,
-              "radius": 12,
-              "strength": 0.35
+              "x": 54.5,
+              "y": 30,
+              "radius": 11,
+              "strength": 0.3
             },
             {
-              "x": 83.7,
-              "y": 45,
-              "radius": 16,
+              "x": 92.7,
+              "y": 42,
+              "radius": 5,
+              "strength": 0.3
+            },
+            {
+              "x": 92.7,
+              "y": 42,
+              "radius": 9,
               "strength": 0.55,
               "when": {
                 "flags": [
                   "pas_bezi"
                 ]
               }
-            },
-            {
-              "x": 54.4,
-              "y": 31,
-              "radius": 10,
-              "strength": 0.3
             }
           ],
           "layers": [
             {
-              "image": "assets/rooms/telocvicna_sektor_pas.svg",
+              "image": "assets/rooms/telocvicna_sektor_pas.webp",
               "when": {
                 "flags": [
                   "pas_bezi"
@@ -5700,10 +5706,10 @@
               "id": "plakat_cooper",
               "name": "Plakát",
               "area": [
-                45.5,
-                15.9,
-                17.9,
-                29.8
+                45.0,
+                14.3,
+                19.0,
+                31.0
               ],
               "click": [
                 {
@@ -5730,10 +5736,10 @@
               "id": "medicinbaly",
               "name": "Medicinbaly",
               "area": [
-                7.2,
-                59.5,
-                17.9,
-                29.8
+                6.5,
+                56.9,
+                18.4,
+                29.9
               ],
               "click": [
                 {
@@ -5752,10 +5758,10 @@
               "id": "granaty",
               "name": "Cvičné granáty",
               "area": [
-                28.1,
-                73.3,
-                14.4,
-                14.9
+                27.0,
+                68.2,
+                15.1,
+                18.2
               ],
               "click": [
                 {
@@ -5774,10 +5780,10 @@
               "id": "pasmo",
               "name": "Pásmo",
               "area": [
-                26.3,
-                90.3,
-                40.1,
-                5.8
+                26.2,
+                88.8,
+                39.7,
+                4.3
               ],
               "click": [
                 {
@@ -5796,10 +5802,10 @@
               "id": "pas",
               "name": "Běžecký pás",
               "area": [
-                68.8,
-                39.3,
-                27.5,
-                53.1
+                66.3,
+                37.9,
+                30.9,
+                51.3
               ],
               "click": [
                 {

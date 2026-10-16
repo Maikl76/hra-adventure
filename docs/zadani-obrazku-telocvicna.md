@@ -4,11 +4,11 @@ Až budou hotové vaše obrázky, vyměním je za zástupné kresby a doladím k
 Platí stejná pravidla jako u skladu.
 
 **Stav (16. 10. 2026):**
-- Hotovo (vaše obrázky jsou ve hře): **hrazda a žíněnka**, **dřepová stanice a dveře** včetně
-  otevřené skříně a otevřených dveří (vrstvy vyříznuté z vašich variant). Zelený displej
+- Hotovo (vaše obrázky jsou ve hře): **hrazda a žíněnka**, **odhodový sektor** včetně rozjetého
+  pásu, **dřepová stanice a dveře** včetně otevřené skříně a otevřených dveří (vrstvy vyříznuté
+  z vašich variant). Zelený displej
   číselníku u otevřených dveří je moje vrstva.
-- Zbývá: **stůl komise** (+ varianty bez brožury a s hlášením), **odhodový sektor** (+ rozjetý
-  pás), ikony předmětů (nepovinné).
+- Zbývá: **stůl komise** (+ varianty bez brožury a s hlášením), ikony předmětů (nepovinné).
 - Drobnost u hrazdy: nápis „1 : 10“ visí ve vzduchu vedle sloupku váhy. Nevadí, ale při
   případné úpravě ho stačí vynechat (nebo dát na štítek na sloupku).
 
