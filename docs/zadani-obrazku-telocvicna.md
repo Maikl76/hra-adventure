@@ -4,11 +4,14 @@ Až budou hotové vaše obrázky, vyměním je za zástupné kresby a doladím k
 Platí stejná pravidla jako u skladu.
 
 **Stav (16. 10. 2026):**
-- Hotovo (vaše obrázky jsou ve hře): **hrazda a žíněnka**, **odhodový sektor** včetně rozjetého
-  pásu, **dřepová stanice a dveře** včetně otevřené skříně a otevřených dveří (vrstvy vyříznuté
-  z vašich variant). Zelený displej
+- Hotovo (vaše obrázky jsou ve hře): **všechny čtyři strany** – stůl komise (+ bez brožury
+  a s napsaným hlášením), hrazda a žíněnka, odhodový sektor (+ rozjetý pás), dřepová stanice
+  a dveře (+ otevřená skříň a otevřené dveře). Varianty jsou vrstvy vyříznuté z vašich obrázků.
+- V hlášení jsem přepsal dva řádky na verzi bez shybů („běh 2 leh-sed 2 / kliky 1 břemeno 3“).
+  Tabule ukazuje seznam stanovišť (i se shyby); že muži volí běh, nebo plavání, a leh-sed
+  s kliky, nebo shyby, říká text po kliknutí na tabuli, protokol a brožura. Zelený displej
   číselníku u otevřených dveří je moje vrstva.
-- Zbývá: **stůl komise** (+ varianty bez brožury a s hlášením), ikony předmětů (nepovinné).
+- Zbývá: jen ikony předmětů (nepovinné).
 - Drobnost u hrazdy: nápis „1 : 10“ visí ve vzduchu vedle sloupku váhy. Nevadí, ale při
   případné úpravě ho stačí vynechat (nebo dát na štítek na sloupku).
 

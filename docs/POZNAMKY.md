@@ -144,8 +144,9 @@ pak s batohem 15 kg) → odhodový sektor (medicinbal 5,5 m/s z 1,6 m na 4,35 m;
 z 2 m na 42 m) → panáček „Proč taková pravidla?“ → **goblet dřep 90 s** (kamerou, bez kamery
 počítá kolega, nebo vynechat). Brána: síla rukou při kliku `80*9.81*0.9/1.3` N (±3 %, cílené rady),
 práce při výdrži ve shybu **0 J**, úhel hodu z výšky (o něco níž než 45°), proč kettlebell vpředu.
-Polní telefon (`telefon_tv_zvoni`), zkratka `?mistnost=telocvicna`. Od autora: hrazda, sektor
-(+ rozjetý pás), dveře (+ otevřená skříň a otevřené dveře jako vrstvy); zástupný zatím stůl komise
+Polní telefon (`telefon_tv_zvoni`), zkratka `?mistnost=telocvicna`. Všechny čtyři pohledy
+a varianty od autora (varianty jako vrstvy; v hlášení dva řádky přepsané bez shybů); zástupné
+zůstaly jen ikony předmětů
 (`docs/zadani-obrazku-telocvicna.md`).
 - Goblet dřep (zadání autora): kettlebell 5 kg u hrudníku, lavička ve výšce kolene – **jen dotyk**,
   kolena ani hlava nesmí být po celou dobu před špičkami. Neplatný dřep se nepočítá, hra ukáže
