@@ -147,6 +147,9 @@ těla z kamery (dřepy a výskok v GSPORT, zkouška stability ve vojenské tělo
 i s modelem, takže hra nestahuje nic z cizích serverů. Načte se, až když hráč zvolí měření
 s kamerou.
 
+Poznámky k vývoji (pravidla práce, formát `game.json`, stav místností, rozhodnutí autora):
+[`docs/POZNAMKY.md`](docs/POZNAMKY.md).
+
 ## Autor a licence
 
 - Autor: **Michal Vágner**, FTVS UK. Kód vznikl s pomocí AI asistenta Claude (Anthropic).

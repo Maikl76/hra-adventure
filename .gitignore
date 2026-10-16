@@ -7,8 +7,9 @@ desktop.ini
 .DS_Store
 .claude/settings.local.json
 
-# Pracovní poznámky pro Claude Code (obsahují soukromé údaje) – jen lokálně
-CLAUDE.md
+# Pracovní poznámky pro Claude Code v hlavní složce (obsahují soukromé údaje) – jen lokálně.
+# Veřejné poznámky jsou v docs/POZNAMKY.md, načítá je .claude/CLAUDE.md.
+/CLAUDE.md
 
 # Zkušební prototypy (např. zkousky/drepy.html) – jen lokálně
 zkousky/
