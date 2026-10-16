@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: číselník u otevřených dveří tělocvičny svítí zeleně (příznak brana_telocvicna_otevrena).
+       Souřadnice odpovídají telocvicna_dvere.webp. -->
+  <rect x="1406" y="401" width="49" height="16" rx="1.5" fill="#0f3a1c"/>
+  <text x="1430.5" y="413.5" font-size="12" font-weight="bold" text-anchor="middle" font-family="'Courier New', Courier, monospace" fill="#5dff8a">OK</text>
+  <circle cx="1455" cy="493" r="4.5" fill="#1a1d1e"/>
+  <circle cx="1455" cy="493" r="3.5" fill="#5dff8a"/>
+</svg>

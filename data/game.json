@@ -5460,8 +5460,8 @@
         },
         "hrazda": {
           "name": "Hrazda a žíněnka",
-          "background": "assets/rooms/telocvicna_hrazda.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "background": "assets/rooms/telocvicna_hrazda.webp",
+          "_obrazek": "Obrázek dodal autor projektu (16. 10. 2026). Původní kresba: telocvicna_hrazda.svg.",
           "darkness": 0.45,
           "dust": {
             "count": 40,
@@ -5469,20 +5469,26 @@
           },
           "left": "stul",
           "right": "sektor",
-          "enterText": "Dřevěné žebřiny, hrazda a modrá žíněnka. Na žíněnce stojí stará decimální váha.",
+          "enterText": "Dřevěné žebřiny, hrazda a modrá žíněnka. Vedle žíněnky stojí stará decimální váha.",
           "lights": [
             {
-              "x": 50,
-              "y": 4,
-              "radius": 32,
-              "strength": 0.4,
+              "x": 28.8,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45
+            },
+            {
+              "x": 71.5,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45,
               "flicker": true
             },
             {
-              "x": 74.6,
-              "y": 75,
-              "radius": 14,
-              "strength": 0.4
+              "x": 76,
+              "y": 72,
+              "radius": 12,
+              "strength": 0.35
             },
             {
               "x": 70.9,
@@ -5497,10 +5503,10 @@
               "id": "zebriny",
               "name": "Žebřiny",
               "area": [
-                5.4,
-                8.5,
-                19.7,
-                78.6
+                5.1,
+                7.2,
+                20.2,
+                67.4
               ],
               "click": [
                 {
@@ -5516,10 +5522,10 @@
               "id": "hrazda",
               "name": "Hrazda",
               "area": [
-                31.1,
+                31.5,
                 11.7,
-                28.7,
-                12.8
+                28.2,
+                13.0
               ],
               "click": [
                 {
@@ -5539,10 +5545,10 @@
               "id": "plakat_shyby",
               "name": "Plakát",
               "area": [
-                63.4,
-                14.9,
-                14.4,
-                34.0
+                63.3,
+                14.6,
+                14.8,
+                34.8
               ],
               "click": [
                 {
@@ -5569,10 +5575,10 @@
               "id": "vaha",
               "name": "Decimální váha",
               "area": [
-                67.0,
-                59.5,
-                15.6,
-                31.9
+                67.6,
+                54.7,
+                16.9,
+                37.7
               ],
               "click": [
                 {
@@ -5608,7 +5614,7 @@
                 {
                   "do": [
                     {
-                      "text": "Na žíněnce stojí stará decimální váha – na plošinu se dají opřít ruce v poloze kliku. Jenže chybí závaží, bez nich váha nic neukáže. Cedulka: ZÁVAŽÍ VE SKŘÍNI S NÁČINÍM."
+                      "text": "Vedle žíněnky stojí stará decimální váha – na plošinu se dají opřít ruce v poloze kliku. Jenže chybí závaží, bez nich váha nic neukáže. Cedulka: ZÁVAŽÍ VE SKŘÍNI S NÁČINÍM."
                     }
                   ]
                 }
@@ -5618,10 +5624,10 @@
               "id": "zinenka",
               "name": "Žíněnka",
               "area": [
-                31.1,
-                81.8,
-                35.3,
-                12.8
+                29.5,
+                82.0,
+                37.4,
+                13.0
               ],
               "click": [
                 {
@@ -5824,8 +5830,8 @@
         },
         "dvere": {
           "name": "Dřepová stanice a dveře",
-          "background": "assets/rooms/telocvicna_dvere.svg",
-          "_obrazek": "Zástupná kresba (1672 × 941). Zadání pro autorův obrázek: docs/zadani-obrazku-telocvicna.md.",
+          "background": "assets/rooms/telocvicna_dvere.webp",
+          "_obrazek": "Obrázky dodal autor projektu (16. 10. 2026): skříň, plakát, lavička a dveře; stejný záběr s otevřenou skříní a s otevřenými dveřmi (vrstvy). Zelený číselník je SVG vrstva. Původní kresby: telocvicna_dvere*.svg.",
           "darkness": 0.45,
           "dust": {
             "count": 40,
@@ -5836,29 +5842,46 @@
           "enterText": "Plechová skříň s náčiním, lavička ve výšce kolene s plakátem a těžké dveře tělocvičny s číselníkem.",
           "lights": [
             {
-              "x": 50,
-              "y": 4,
-              "radius": 32,
-              "strength": 0.4,
+              "x": 28.8,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45
+            },
+            {
+              "x": 71.5,
+              "y": 3,
+              "radius": 20,
+              "strength": 0.45,
               "flicker": true
             },
             {
               "x": 37.4,
               "y": 32,
               "radius": 10,
-              "strength": 0.35
+              "strength": 0.3
             },
             {
               "x": 85.5,
-              "y": 48,
-              "radius": 5,
-              "strength": 0.5
+              "y": 47,
+              "radius": 4,
+              "strength": 0.45
             },
             {
-              "x": 67.8,
-              "y": 50,
-              "radius": 22,
+              "x": 67,
+              "y": 42,
+              "radius": 16,
               "strength": 0.6,
+              "when": {
+                "flags": [
+                  "brana_telocvicna_otevrena"
+                ]
+              }
+            },
+            {
+              "x": 67,
+              "y": 70,
+              "radius": 14,
+              "strength": 0.35,
               "when": {
                 "flags": [
                   "brana_telocvicna_otevrena"
@@ -5868,7 +5891,7 @@
           ],
           "layers": [
             {
-              "image": "assets/rooms/telocvicna_dvere_skrin.svg",
+              "image": "assets/rooms/telocvicna_dvere_skrin.webp",
               "when": {
                 "flags": [
                   "skrin_otevrena"
@@ -5876,7 +5899,15 @@
               }
             },
             {
-              "image": "assets/rooms/telocvicna_dvere_otevrene.svg",
+              "image": "assets/rooms/telocvicna_dvere_otevrene.webp",
+              "when": {
+                "flags": [
+                  "brana_telocvicna_otevrena"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/telocvicna_dvere_ciselnik.svg",
               "when": {
                 "flags": [
                   "brana_telocvicna_otevrena"
@@ -5889,10 +5920,10 @@
               "id": "skrin",
               "name": "Skříň s náčiním",
               "area": [
-                5.4,
-                18.1,
-                20.3,
-                70.1
+                3.6,
+                17.0,
+                22.6,
+                71.2
               ],
               "click": [
                 {
@@ -5924,9 +5955,9 @@
               "name": "Plakát s pravidly",
               "area": [
                 28.1,
-                15.9,
-                18.5,
-                31.9
+                15.6,
+                18.7,
+                32.4
               ],
               "click": [
                 {
@@ -5963,10 +5994,10 @@
               "id": "lavicka",
               "name": "Lavička",
               "area": [
-                29.9,
-                63.8,
-                20.3,
-                20.2
+                30.2,
+                66.4,
+                20.2,
+                16.3
               ],
               "click": [
                 {
@@ -6010,10 +6041,10 @@
               "id": "brana",
               "name": "Dveře tělocvičny",
               "area": [
-                53.8,
-                11.7,
-                28.1,
-                77.6
+                53.2,
+                10.6,
+                29.4,
+                71.7
               ],
               "click": [
                 {
@@ -6048,9 +6079,9 @@
               "name": "Číselník",
               "area": [
                 83.1,
-                41.4,
-                4.8,
-                12.8
+                41.2,
+                4.7,
+                12.4
               ],
               "click": [
                 {
@@ -6088,7 +6119,7 @@
             "requiresVars": [
               "kliky_kg"
             ],
-            "missingText": "Číselník bliká: NEJDŘÍV KLIKY NA VÁZE. Decimální váha je na žíněnce u hrazdy.",
+            "missingText": "Číselník bliká: NEJDŘÍV KLIKY NA VÁZE. Decimální váha stojí u žíněnky pod hrazdou.",
             "answer": "80*9.81*0.9/1.3",
             "toleranceRel": 0.03,
             "feedbackFormulas": [
