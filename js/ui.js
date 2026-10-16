@@ -1731,7 +1731,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.12');
+          const mod = await import('./squats.js?v=0.12.1');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2593,7 +2593,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.12');
+          const mod = await import('./skok.js?v=0.12.1');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -2971,7 +2971,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.12');
+          const mod = await import('./goblet.js?v=0.12.1');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -2982,7 +2982,8 @@
               `Konec! Platných dřepů: ${r.n}. Neplatných: ${r.neplatne}${why ? ` (${why})` : ''}.`);
           };
           ctrl = await mod.startGoblet({
-            canvas, kneeTol: act.kneeTolCm, headTol: act.headTolCm,
+            canvas, kneeTol: act.kneeTolCm, headTol: act.headTolCm, seatTol: act.seatTolCm,
+            sitMs: act.sitSeconds ? act.sitSeconds * 1000 : undefined,
             onStatus: setStatus,
             onReady: () => {
               // odpočet 3–2–1, pak měření „duration“ sekund
@@ -3680,7 +3681,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.12');
+          const mod = await import('./predklon.js?v=0.12.1');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

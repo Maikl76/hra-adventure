@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.12 – ukázka",
+    "version": "0.12.1 – ukázka",
     "totalGates": 9
   },
 
@@ -4861,8 +4861,10 @@
             "Bez zátěže"
           ],
           "camera": "S kamerou: postav se 2–3 m od notebooku BOKEM ke kameře, celý v záběru i s chodidly. Hra si ze stoje změří výšku kolene (= lavička) a kam míří špičky.",
-          "kneeTolCm": 2,
-          "headTolCm": 2,
+          "kneeTolCm": 8,
+          "headTolCm": 8,
+          "seatTolCm": 8,
+          "sitSeconds": 1.5,
           "normsTitle": "Normy kategorie BI, do 30 let (orientačně):",
           "norms": [
             {

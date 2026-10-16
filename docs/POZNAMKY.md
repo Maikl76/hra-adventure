@@ -151,7 +151,10 @@ zůstaly jen ikony předmětů
 - Goblet dřep (zadání autora): kettlebell 5 kg u hrudníku, lavička ve výšce kolene – **jen dotyk**,
   kolena ani hlava nesmí být po celou dobu před špičkami. Neplatný dřep se nepočítá, hra ukáže
   důvod (koleno, hlava, nedosedl, posadil se). Kamera ze stoje změří výšku kolene (= lavička)
-  a svislici špiček; tolerance 2 cm (`kneeTolCm`, `headTolCm`). Náhrada kettlebellu (láhev,
+  a svislici špiček. Po autorově zkoušce (2 cm bylo „téměř nesplnitelné“) jsou tolerance
+  velkorysé: koleno a hlava smí přes čáru špiček až 8 cm a musí to trvat aspoň 5 snímků za sebou
+  (`kneeTolCm`, `headTolCm`), dotyk lavičky = kyčel do výšky kolene + 9 + 8 cm (`seatTolCm`),
+  „posadil se“ = dole déle než 1,5 s (`sitSeconds`). Doladit v `game.json` podle zkoušek. Náhrada kettlebellu (láhev,
   batoh) nebo bez zátěže = výsledek „orientační“. Normy ukázané po testu: BI, do 30 let.
 - **Muži volí** (zadání autora): silová část leh-sed + kliky, nebo shyby; vytrvalost běh 12 min,
   nebo plavání 300 m. Doubek zvolil běh a leh-sed + kliky, proto v hlášení shyby nejsou.

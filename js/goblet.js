@@ -9,19 +9,26 @@
  * Dotyk lavičky = kyčelní kloub klesne do výšky kolene ze stoje + asi 9 cm (kyčel je nad sedákem).
  * Neplatné opakování (koleno nebo hlava před špičkami, nedosedl, posadil se) se nezapočítá, ale hra
  * ho ukáže i s důvodem. Obraz se zpracovává jen v prohlížeči, nic se neukládá ani neposílá.
+ *
+ * Tolerance jsou záměrně velkorysé: model určuje body jen přibližně (koleno = střed kloubu, špička
+ * bývá odhadnutá u prstů), takže přísné centimetry dělaly z dobrých dřepů neplatné. Koleno a hlava
+ * musí být přes čáru špiček déle než pár snímků za sebou (ne jen záškub modelu). Doladit jde
+ * v game.json: kneeTolCm, headTolCm, seatTolCm, sitSeconds.
  */
-import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.12';
+import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.12.1';
 
 const VIS = 0.5;            // minimální viditelnost bodu
 const LEG_CM = 85;          // standardní vzdálenost kyčel–kotník pro přepočet pixelů na cm
 const CALIB_FRAMES = 15;    // snímků klidného stoje na kalibraci
 const HIP_ABOVE_SEAT = 9;   // kyčelní kloub je při dosednutí asi 9 cm nad sedákem
-const SEAT_TOL = 3;         // tolerance dosednutí (cm)
-const START_DROP = 10;      // kyčel níž o víc než 10 cm = začal dřep
-const STAND_TOL = 7;        // kyčel do 7 cm od stoje = stoj
-const KNEE_TOL = 2;         // koleno smí být nejvýš 2 cm „přes“ svislici špiček (šum modelu)
-const HEAD_TOL = 2;         // totéž pro hlavu
-const SIT_MS = 800;         // déle dole = posadil se
+const SEAT_TOL = 8;         // tolerance dosednutí (cm): kyčel stačí dostat do výšky kolene + 9 + 8 cm
+const START_DROP = 15;      // kyčel níž o víc než 15 cm = začal dřep
+const STAND_TOL = 8;        // kyčel do 8 cm od stoje = stoj (mezera proti začátku dřepu brání kmitání)
+const KNEE_TOL = 8;         // koleno smí být nejvýš 8 cm „přes“ svislici špiček (nepřesnost modelu)
+const HEAD_TOL = 8;         // totéž pro hlavu (nos)
+const BAD_FRAMES = 5;       // přes čáru aspoň 5 snímků za sebou (asi 0,2 s) = opravdu přes
+const SIT_ZONE = 3;         // „sedí“ = kyčel do 3 cm od polohy na sedáku…
+const SIT_MS = 1500;        // …déle než 1,5 s
 
 /* Body jedné strany těla: kyčel, koleno, kotník, pata, špička, rameno. */
 const SIDES = [
@@ -52,10 +59,12 @@ export const REASONS = {
  * Fáze: calib (stoj a měření) → ready (čeká na start()) → count (počítá) → done (po finish()).
  */
 export class GobletTracker {
-  /* opts: { kneeTol, headTol } v cm – tolerance svislice špiček (lze doladit v game.json) */
+  /* opts: { kneeTol, headTol, seatTol } v cm, sitMs v ms (lze doladit v game.json) */
   constructor(opts = {}) {
     this.kneeTol = opts.kneeTol ?? KNEE_TOL;
     this.headTol = opts.headTol ?? HEAD_TOL;
+    this.seatTol = opts.seatTol ?? SEAT_TOL;
+    this.sitMs = opts.sitMs ?? SIT_MS;
     this.reset();
   }
 
@@ -93,7 +102,7 @@ export class GobletTracker {
   guides() {
     if (!this.base) return null;
     const b = this.base;
-    return { toeX: b.toeX, seatHipY: b.ground - (b.kneeH + HIP_ABOVE_SEAT) / b.cm, dir: b.dir };
+    return { toeX: b.toeX, seatHipY: b.ground - (b.kneeH + HIP_ABOVE_SEAT + this.seatTol) / b.cm, dir: b.dir };
   }
 
   feed(lm, w, h, now) {
@@ -134,10 +143,12 @@ export class GobletTracker {
     }
 
     const b = this.base;
-    const hipH = this.ema('hipH', (b.ground - hip.y) * b.cm);
+    const hipRaw = (b.ground - hip.y) * b.cm;
+    const hipH = this.ema('hipH', hipRaw);
     const kneeFwd = this.ema('knee', (knee.x - b.toeX) * b.dir * b.cm);   // + = koleno před špičkami
     const headFwd = heads.length ? this.ema('head', (b.dir > 0 ? Math.max(...heads) : Math.min(...heads)) - b.toeX) * b.dir * b.cm : null;
-    const seatH = b.kneeH + HIP_ABOVE_SEAT + SEAT_TOL;                   // kyčel při dotyku lavičky
+    const seatH = b.kneeH + HIP_ABOVE_SEAT + this.seatTol;               // kyčel při dotyku lavičky
+    const sitH = b.kneeH + HIP_ABOVE_SEAT + SIT_ZONE;                     // kyčel na sedáku
     const standing = hipH >= b.hipH - STAND_TOL && kneeAng > 150;
 
     if (this.phase === 'ready') return { phase: 'ready', message: 'Připrav se…', kind: '' };
@@ -151,19 +162,23 @@ export class GobletTracker {
 
     if (!this.rep) {
       if (hipH < b.hipH - START_DROP) {
-        this.rep = { seated: false, bottomSince: null, reasons: new Set() };
+        this.rep = { seated: false, bottomSince: null, kneeBad: 0, headBad: 0, reasons: new Set() };
       } else {
         return { phase: 'count', message: 'Dřep: dosedni na lavičku a zase se postav.', kind: '' };
       }
     }
 
     const r = this.rep;
-    if (kneeFwd > this.kneeTol) r.reasons.add('koleno');
-    if (headFwd !== null && headFwd > this.headTol) r.reasons.add('hlava');
-    if (hipH <= seatH) {
-      r.seated = true;
+    // přes čáru špiček se počítá, až když to trvá několik snímků za sebou
+    r.kneeBad = kneeFwd > this.kneeTol ? r.kneeBad + 1 : 0;
+    r.headBad = headFwd !== null && headFwd > this.headTol ? r.headBad + 1 : 0;
+    if (r.kneeBad >= BAD_FRAMES) r.reasons.add('koleno');
+    if (r.headBad >= BAD_FRAMES) r.reasons.add('hlava');
+    // dotyk: stačí jednou (i nevyhlazená hodnota – rychlý dotyk vyhlazení „ořízne“)
+    if (Math.min(hipRaw, hipH) <= seatH) r.seated = true;
+    if (hipH <= sitH) {
       if (r.bottomSince === null) r.bottomSince = now;
-      else if (now - r.bottomSince > SIT_MS) r.reasons.add('sed');
+      else if (now - r.bottomSince > this.sitMs) r.reasons.add('sed');
     } else {
       r.bottomSince = null;
     }
@@ -193,7 +208,7 @@ export class GobletTracker {
 
 /**
  * Spustí kameru. Po kalibraci zavolá onReady(); měřit se začne až po start() (po odpočtu).
- * opts: { canvas, kneeTol, headTol, onStatus(text, kind), onReady(), onRep(rep, stav) }
+ * opts: { canvas, kneeTol, headTol, seatTol, sitMs, onStatus(text, kind), onReady(), onRep(rep, stav) }
  * Vrací { start(), finish() → výsledek, stop() }.
  */
 export async function startGoblet(opts) {
@@ -222,7 +237,7 @@ export async function startGoblet(opts) {
   canvas.height = video.videoHeight;
   const lib = poseLib();
   const draw = new lib.DrawingUtils(ctx);
-  const tracker = new GobletTracker({ kneeTol: opts.kneeTol, headTol: opts.headTol });
+  const tracker = new GobletTracker({ kneeTol: opts.kneeTol, headTol: opts.headTol, seatTol: opts.seatTol, sitMs: opts.sitMs });
   let raf = 0, lastTs = -1, stopped = false, readySent = false;
 
   function stop() {
