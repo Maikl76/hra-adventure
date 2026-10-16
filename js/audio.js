@@ -748,6 +748,40 @@
       this.click(dest, 1150, t + 0.14, 0.2);
     },
 
+    /* Cvičná laserová puška (laser game): krátké klesající „píí“. */
+    laser(dest, t) {
+      const g = this.gain(0, dest);
+      env(g.gain, t, 0.005, 0.12, 0.18);
+      const o = this.osc('square', 1800, this.filter('lowpass', 3200, 0.8, g), t, t + 0.2);
+      o.frequency.setValueAtTime(1800, t);
+      o.frequency.exponentialRampToValueAtTime(380, t + 0.18);
+    },
+
+    /* Chrastění kostí (kostlivec se probudil). */
+    kosti(dest, t) {
+      for (let i = 0; i < 10; i++) {
+        const w = t + i * 0.045 + Math.random() * 0.03;
+        this.click(dest, 1100 + Math.random() * 1500, w, 0.16);
+        this.thump(dest, w, 0.04, 220 + Math.random() * 120);
+      }
+    },
+
+    /* Kostlivec rozsypaný na hromádku: dopadající kosti. */
+    rozpad(dest, t) {
+      let dt = 0;
+      for (let i = 0; i < 12; i++) {
+        this.click(dest, 700 + Math.random() * 1400, t + dt, 0.2 * (1 - i / 14));
+        this.thump(dest, t + dt, 0.09 * (1 - i / 14), 160 + Math.random() * 80);
+        dt += 0.03 + Math.random() * 0.07;
+      }
+    },
+
+    /* Hráče zasáhl kostlivec: tupá rána. */
+    au(dest, t) {
+      this.thump(dest, t, 0.35, 70);
+      this.noiseBurst(dest, t, 0.12, 'lowpass', 600, 0.15);
+    },
+
     /* Psací stroj: rychlé údery kláves a na konci zvonek a posun válce. */
     typewriter(dest, t) {
       let dt = 0;

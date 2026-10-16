@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
+  <!-- Cvičná laserová puška (laser game) z vlastních očí. Ústí je v bodě (180, 82) – odtud vychází paprsek. -->
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2c3236"/><stop offset="0.5" stop-color="#4b555b"/><stop offset="1" stop-color="#22272a"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#b6ffcf"/><stop offset="0.5" stop-color="#3cff7a" stop-opacity="0.7"/><stop offset="1" stop-color="#3cff7a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <polygon points="168,92 192,92 236,240 130,240" fill="url(#body)" stroke="#111" stroke-width="3"/>
+  <polygon points="172,84 188,84 192,96 168,96" fill="#1a1d1f"/>
+  <polygon points="150,150 210,150 228,240 136,240" fill="#3a4247" stroke="#111" stroke-width="3"/>
+  <polygon points="160,170 200,170 206,200 154,200" fill="#e07a24"/>
+  <polygon points="146,214 214,214 220,240 140,240" fill="#e07a24" opacity="0.85"/>
+  <rect x="172" y="120" width="16" height="22" rx="3" fill="#0f2a18" stroke="#3cff7a" stroke-width="2"/>
+  <circle cx="180" cy="82" r="16" fill="url(#glow)"/>
+  <circle cx="180" cy="84" r="5" fill="#3cff7a"/>
+  <path d="M250,240 Q262,190 300,176 L330,190 Q300,206 292,240 Z" fill="#c9a07a" stroke="#6b4a2a" stroke-width="3"/>
+</svg>

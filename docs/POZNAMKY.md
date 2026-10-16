@@ -111,8 +111,14 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
 - **Chodba „z vlastních očí“** (`"type": "corridor"`, kreslí `js/chodba.js`): místo pohledů má
   `corridor` – `map` (řádky; `.` = chodba, jiné znaky = zdi), `start` {x, y, dir N/E/S/W}, `legend`
   (znak → textura, nebo seznam variant s `when`), `textures` (obrázky 512 × 512), `floor`, `ceiling`,
-  `lamps` (zářivky na stropě, `flicker` = bliká). Objekty jsou v `hotspots` s `cell` [x, y] místo
-  `area`: kliká se na zeď přímo před hráčem. Poloha hráče se ukládá (`state.places`).
+  `lamps` (zářivky na stropě, `flicker` = bliká). Znak v `legend` může být i `{ texture, openWhen }`
+  = zeď, která se při podmínce otevře (závora). Objekty jsou v `hotspots` s `cell` [x, y] místo
+  `area`: kliká se na zeď přímo před hráčem; `hidden` = hra je neohlašuje (uvolněná cihla).
+  Poloha hráče se ukládá (`state.places`). Kostlivci: `skeletons` (id, `cell`, `bones` = kosti
+  k zásahu v pořadí), `skeleton` (obrázky `image`/`pile`, `zones` = oblasti kostí v % obrázku,
+  `bones` = název a kde je, `texts` = hlášky, `lives`, `attackSeconds`, `firstAttackSeconds`,
+  `moveSeconds`, `wakeCells`), `weapon` = obrázek pušky; zbraň = předmět `weaponItem`
+  (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
 - **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
   odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
 - Lekačky `scares`: `image`, `sound` (`scareHit`/`scareStatic`/`scareRush`), `delay` (napětí,
@@ -191,20 +197,33 @@ okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze
 trvá déle → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
-### Zkouška: sklepní chodba „z vlastních očí“ (`chodba`)
-Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026). Zvolená varianta: chodby z vlastních očí,
-místnosti zůstávají s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně,
-jde ovládat i tlačítky na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení
-(žádný kód DOOMu – jeho licence by si vynutila změnu licence hry). Odkaz: `?mistnost=chodba` –
-nová hra začne v chodbě za výstrojním skladem, po schodech pokračuje do tělocvičny; běžná hra
-chodbu přeskakuje (`trialRooms` u světa vojenska). Ovládání: ↑ ↓ / W S krok, ← → / A D otočit,
-šipky na obrazovce, kliknutí do obrazu (vlevo / vpravo otočit, uprostřed krok), Enter = věc před
-hráčem. Malá mapa prošlých políček vpravo nahoře. Výukový úkol: mříž ke schodišti otevře práce
-vojáka s batohem při výstupu, W = m · g · h = 100 · 9,81 · 18 · 0,17 ≈ **3 000 J** (±3 %; cílené
-rady: bez batohu, jen batoh, jeden schod, centimetry, chybí g). Údaje: nástěnka (batoh 30 kg,
-W = m·g·h) a cedule u mříže (18 schodů × 17 cm). Zástupné textury ode mě
-(`docs/zadani-obrazku-chodba.md`). Kreslení ~15 ms na snímek v testovacím prohlížeči.
-Pokud se osvědčí: zařadit `chodba` do `rooms` vojenské sekce mezi sklad a tělocvičnu.
+### Zkouška: sklepní bludiště „z vlastních očí“ (`chodba`)
+Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026): chodby z vlastních očí, místnosti zůstávají
+s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně, jde ovládat i tlačítky
+na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení (žádný kód DOOMu – jeho
+licence by si vynutila změnu licence hry). Odkaz: `?mistnost=chodba` – nová hra začne za výstrojním
+skladem, po schodech pokračuje do tělocvičny; běžná hra bludiště přeskakuje (`trialRooms`).
+Po první zkoušce autor chtěl delší chodbu se zatáčkami a střelbu na kostlivce – zvolil (Menu otázek):
+**anatomie** (trefit jmenovanou kost), **cvičná laserová puška** (laser game, bez krve, kostlivec se
+rozsype na hromádku kostí), **kostlivci útočí, 3 životy** (po ztrátě všech zpět ke dveřím skladu;
+Menu → „Kostlivci útočí: ano/ne“), **bludiště s odbočkami**.
+Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 kroků (120 m), slepé uličky:
+- **Azimut a vzdálenost**: nástěnka u startu – klíč od zbrojní skříně „od hasicího přístroje 4,8 m na
+  azimut 0°, pak 9,6 m na azimut 90°, otoč se na 180°“ → uvolněná cihla (skrytý objekt). Kompas
+  nahoře (0° S, 90° V, 180° J, 270° Z).
+- Zbrojní skříň → **laserová puška**; závora s čidlem se otevře zásahem laserem.
+- **4 kostlivci** na cestě, každý 2 kosti: stehenní + pažní, klíční + pánev, hrudní + holenní,
+  čéška + lýtková. Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
+  a kde hledaná kost je. Plakát kostry ve slepé uličce (nápověda), lékárnička doplní životy.
+  Kostlivec se probudí, když hráče uvidí (do 4 políček v přímé chodbě), jde k němu (1 políčko za
+  2,2 s) a u hráče útočí (první po 3 s, pak každé 4 s); chybná střela útok uspíší.
+- **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
+  ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
+- Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
+Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
+otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
+Malá mapa prošlých políček. Zástupná grafika ode mě (`docs/zadani-obrazku-chodba.md`).
+Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědčí: zařadit `chodba` do `rooms`.
 
 ## Rozhodnutí autora (důležitá)
 
@@ -221,6 +240,9 @@ Pokud se osvědčí: zařadit `chodba` do `rooms` vojenské sekce mezi sklad a t
 - **Světlo ve výchozím stavu Rozsvíceno** (režim Baterka si hráč zapne tlačítkem).
 - Při prvním vstupu do hry **nápověda k tlačítkům vpravo nahoře** (znovu: Menu → Jak ovládat hru).
 - **Zvuk nikdy nenese informaci k řešení** (třída bez zvuku, neslyšící studenti).
+- **Zbraně:** jinak ve hře žádné; výjimka je sklepní bludiště – autor chtěl střelbu na kostlivce:
+  jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
+  se dají v Menu vypnout.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
 
 ## Obrázky od autora – postup

@@ -1,4 +1,4 @@
-# Zadání obrázků: Sklepní chodba „z vlastních očí“ (zkouška)
+# Zadání obrázků: Sklepní bludiště „z vlastních očí“ (zkouška)
 
 Chodba se nekreslí z hotových pohledů jako místnosti, ale z **textur**: malých čtvercových
 obrázků, kterými hra „tapetuje“ zdi, podlahu a strop. Hráč je vidí zblízka i z dálky a z boku
@@ -38,5 +38,22 @@ nahoře omítka, zářivky. Pohled **přímo zepředu, kolmo na zeď**, rovnomě
 | `mriz` | otvor ve zdi se schodištěm nahoru (tmavé), před ním zamčená ocelová mříž, malý číselník |
 | `schodiste` | stejný otvor, mříž odsunutá stranou, schodiště nahoru, shora teplé světlo |
 | `dvere_sklad` | otevřené pancéřové dveře skladu, za nimi tmavý sklad s regály |
+| `zbrojni_skrin` | zamčená plechová zbrojní skříň, prázdná cedulka |
+| `zbrojni_skrin_prazdna` | stejná skříň otevřená a prázdná (stejný záběr) |
+| `zavora` | otvor ve zdi zavřený ocelovou závorou (mříží) s červeným čidlem uprostřed |
+| `plakat_kostra` | zeď s plakátem kostry zepředu, popisky nechte prázdné |
+| `lekarnicka` | zeď s bílou lékárničkou s červeným křížem |
+
+## Postavy a puška (průhledné pozadí, PNG nebo WebP)
+
+| Soubor | Rozměr | Co na něm je |
+|---|---|---|
+| `kostlivec` | 256 × 512 | kostlivec **přesně zepředu**, celý od lebky po chodidla, ruce podél těla, kosti dobře rozlišitelné (holenní silnější uvnitř, lýtková tenká vně, čéška, klíční kosti, hrudní kost) |
+| `kosti` | 256 × 128 | hromádka kostí s lebkou (poražený kostlivec) |
+| `puska` | 400 × 240 | cvičná laserová puška (laser game, oranžovo-šedá) z vlastních očí: zespodu do obrazu, ústí nahoře uprostřed |
+
+Kostlivce kreslete **ve stejných proporcích jako můj zástupný** (lebka nahoře 3–20 % výšky, pánev
+kolem 55–62 %, kolena kolem 80 %) – podle něj jsou nastavené oblasti kostí pro zásah laserem.
+Po výměně je doladím.
 
 `mriz` a `schodiste` musí mít **stejný záběr** (liší se jen mříží a světlem).

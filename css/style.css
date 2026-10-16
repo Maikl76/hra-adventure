@@ -394,9 +394,9 @@ button:focus-visible, input:focus-visible {
 .scene.corridor .hotspots { pointer-events: none; }
 .scene.corridor .hotspot { pointer-events: auto; cursor: pointer; }
 .scene.corridor .hotspot:hover { outline: 1px dashed rgba(230, 198, 126, 0.45); }
-.nav-forward, .nav-backward { left: 50%; width: 64px; height: 36px; margin-left: -32px; font-size: 18px; line-height: 1; padding: 0; }
-.nav-forward { bottom: 52px; }
-.nav-backward { bottom: 10px; }
+.nav-forward, .nav-backward { bottom: 10px; width: 56px; height: 36px; font-size: 18px; line-height: 1; padding: 0; }
+.nav-forward { left: 10px; }
+.nav-backward { left: 72px; }
 
 .hotspot {
   position: absolute;

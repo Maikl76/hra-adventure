@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: cvičná laserová puška (laser game) -->
+  <g transform="rotate(-20 32 32)">
+    <rect x="8" y="26" width="40" height="12" rx="3" fill="#3f4a4f" stroke="#111" stroke-width="1.5"/>
+    <rect x="46" y="29" width="12" height="6" rx="2" fill="#2a3034"/>
+    <circle cx="59" cy="32" r="3" fill="#3cff7a"/>
+    <rect x="16" y="28" width="16" height="4" fill="#e07a24"/>
+    <path d="M14,38 l-4,14 h8 l4,-14 z" fill="#2a3034"/>
+    <path d="M30,38 l2,8 h6 l-2,-8 z" fill="#2a3034"/>
+  </g>
+</svg>

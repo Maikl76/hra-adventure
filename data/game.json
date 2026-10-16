@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.13 – ukázka",
+    "version": "0.14 – ukázka",
     "totalGates": 9
   },
 
@@ -46,7 +46,8 @@
           { "label": "Zkouška stability – u zdi", "value": "pánev {zed_panev} cm dozadu, ruce {zed_ruce} cm nad zemí", "requires": ["zed_panev"] },
           { "label": "Kliky na decimální váze", "value": "ruce nesou {kliky_kg:1} kg ({kliky_procent} % hmotnosti)", "requires": ["kliky_kg"] },
           { "label": "Goblet dřep (90 s)", "value": "{goblet_n} platných dřepů", "requires": ["goblet_n"] },
-          { "label": "Goblet dřep měřený kamerou", "bool": "goblet_kamera" }
+          { "label": "Goblet dřep měřený kamerou", "bool": "goblet_kamera" },
+          { "label": "Kostlivci – anatomie", "value": "{kosti_spravne} správných zásahů, {kosti_chybne} vedle", "requires": ["kosti_spravne"] }
         ]
       }
     },
@@ -1046,6 +1047,16 @@
       "name": "Závaží k váze",
       "icon": "assets/items/zavazi.svg",
       "description": "Mosazná závaží k decimální váze: 2, 1, 0,5, 0,2 a 0,1 kg. Na víčku krabičky: 1 : 10."
+    },
+    "laserova_puska": {
+      "name": "Laserová puška",
+      "icon": "assets/items/laserova_puska.svg",
+      "description": "Cvičná laserová puška (laser game) ze zbrojní skříně. Kostlivcům neublíží – míří se myší nebo prstem na kost, kterou puška ukáže."
+    },
+    "klic_zbrojni": {
+      "name": "Klíč od zbrojní skříně",
+      "icon": "assets/items/klic_zbrojni.svg",
+      "description": "Klíč s kovovou visačkou ZBROJ. Byl schovaný za uvolněnou cihlou."
     }
   },
 
@@ -1497,6 +1508,20 @@
       "on": "psaci_stroj",
       "room": "telocvicna",
       "do": [{ "text": "Normy máš – teď z nich najdi Doubkovy známky a napiš je do hlášení (klikni na psací stroj)." }]
+    },
+    {
+      "item": "klic_zbrojni",
+      "on": "zbrojni_skrin",
+      "room": "chodba",
+      "do": [
+        { "remove": "klic_zbrojni" },
+        { "set": "zbrojni_otevrena" },
+        { "sound": "unlockDrawer" },
+        {
+          "text": "Klíč pasuje. Ve skříni visí cvičná laserová puška s nápisem LASER GAME. Bereš ji – míří se myší nebo prstem."
+        },
+        { "give": "laserova_puska" }
+      ]
     }
   ],
 
@@ -6250,41 +6275,47 @@
     },
 
     "chodba": {
-      "name": "Sklepní chodba",
+      "name": "Sklepní bludiště",
       "gateLabel": "Sklep",
       "tracks": [
         "vojenska"
       ],
       "type": "corridor",
-      "_zkouska": "Zkušební chodba „z vlastních očí“ (js/chodba.js). Hraje se jen přes odkaz ?mistnost=chodba; po výstupu po schodech pokračuje hra v tělocvičně. Až se osvědčí, stačí ji ve světě vojenska zařadit do „rooms“ mezi sklad a tělocvičnu.",
+      "_zkouska": "Zkušební bludiště „z vlastních očí“ (js/chodba.js). Hraje se jen přes odkaz ?mistnost=chodba; po výstupu po schodech pokračuje hra v tělocvičně. Až se osvědčí, stačí ho ve světě vojenska zařadit do „rooms“ mezi sklad a tělocvičnu.",
       "ambience": "sklad",
       "darkness": 0,
-      "enterText": "Za pancéřovými dveřmi skladu vede dlouhá sklepní chodba. Pod stropem bzučí zářivky, jedna bliká. (Zkušební chodba: šipka ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se. Na věc před sebou klikni nebo stiskni Enter.)",
+      "enterText": "Za pancéřovými dveřmi skladu začíná sklepní bludiště. Pod stropem bzučí zářivky, některé blikají. (Zkouška: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
       "shortcut": [
         {
           "give": "kalkulacka"
         },
         {
-          "text": "Začínáš ve sklepní chodbě za výstrojním skladem (zkušební verze). Kalkulačku ze skladu máš u sebe."
+          "text": "Začínáš ve sklepě za výstrojním skladem (zkušební verze bludiště). Kalkulačku ze skladu máš u sebe."
         }
       ],
       "corridor": {
-        "_poznamka": "Mapa: „.“ = chodba, ostatní znaky = zdi s texturou podle „legend“ (varianta s „when“ podle stavu hry). Políčko měří asi 2,4 m. Lampy = zářivky na stropě (x, y políčka). Objekty na zdech jsou v „hotspots“ s „cell“ [x, y]; kliká se na zeď, před kterou hráč stojí.",
+        "_poznamka": "Mapa: „.“ = chodba, ostatní znaky = zdi s texturou podle „legend“ (varianta s „when“, nebo „openWhen“ = zeď, která se otevře). Deska podlahy (políčko) měří 2,4 m. Lampy = zářivky na stropě. Objekty na zdech jsou v „hotspots“ s „cell“ [x, y] („hidden“ = hra je neohlašuje). Kostlivci: „skeletons“ (políčko a kosti, které je třeba zasáhnout), vzhled a oblasti kostí v „skeleton“ (v % obrázku).",
         "map": [
-          "#A#####C##",
-          "#.......M#",
-          "#.##B#####",
-          "#.########",
-          "#.N#######",
-          "H.########",
-          "#.########",
-          "#.########",
-          "#.########",
-          "#D########"
+          "#################S###",
+          "###########.####...M#",
+          "###########.####.####",
+          "###########......####",
+          "#######A########.####",
+          "#######....G...#.####",
+          "#######.######.#.####",
+          "#Z#####.######.#....L",
+          "#.#####.######.###.##",
+          "#.#####.##K....###.##",
+          "#.......######.###.##",
+          "#.############.#...##",
+          "H......#######.P##.##",
+          "#.############.....##",
+          "#.N##################",
+          "#D###################"
         ],
         "start": {
           "x": 1,
-          "y": 8,
+          "y": 14,
           "dir": "N"
         },
         "cellMeters": 2.4,
@@ -6294,11 +6325,34 @@
         "legend": {
           "#": "zed",
           "A": "sipka",
-          "B": "potrubi",
-          "C": "cedule_schody",
+          "P": "potrubi",
+          "S": "cedule_schody",
           "H": "hasicak",
           "N": "nastenka",
           "D": "dvere_sklad",
+          "K": "plakat_kostra",
+          "L": "lekarnicka",
+          "Z": [
+            {
+              "when": {
+                "flags": [
+                  "zbrojni_otevrena"
+                ]
+              },
+              "texture": "zbrojni_skrin_prazdna"
+            },
+            {
+              "texture": "zbrojni_skrin"
+            }
+          ],
+          "G": {
+            "texture": "zavora",
+            "openWhen": {
+              "flags": [
+                "zavora_otevrena"
+              ]
+            }
+          },
           "M": [
             {
               "when": {
@@ -6324,36 +6378,424 @@
           "nastenka": "assets/chodba/nastenka.svg",
           "dvere_sklad": "assets/chodba/dvere_sklad.svg",
           "mriz": "assets/chodba/mriz.svg",
-          "schodiste": "assets/chodba/schodiste.svg"
+          "schodiste": "assets/chodba/schodiste.svg",
+          "zbrojni_skrin": "assets/chodba/zbrojni_skrin.svg",
+          "zbrojni_skrin_prazdna": "assets/chodba/zbrojni_skrin_prazdna.svg",
+          "zavora": "assets/chodba/zavora.svg",
+          "plakat_kostra": "assets/chodba/plakat_kostra.svg",
+          "lekarnicka": "assets/chodba/lekarnicka.svg"
         },
+        "weapon": "assets/chodba/puska.svg",
         "lamps": [
           {
             "x": 1,
-            "y": 7,
-            "strength": 0.85
-          },
-          {
-            "x": 1,
-            "y": 4,
-            "strength": 0.8,
-            "flicker": true
-          },
-          {
-            "x": 1,
-            "y": 1,
-            "strength": 0.75
-          },
-          {
-            "x": 4,
-            "y": 1,
+            "y": 13,
             "strength": 0.8
           },
           {
+            "x": 1,
+            "y": 10,
+            "strength": 0.8
+          },
+          {
+            "x": 1,
+            "y": 8,
+            "strength": 0.7
+          },
+          {
+            "x": 4,
+            "y": 10,
+            "strength": 0.7
+          },
+          {
             "x": 7,
+            "y": 8,
+            "strength": 0.7,
+            "flicker": true
+          },
+          {
+            "x": 7,
+            "y": 5,
+            "strength": 0.8
+          },
+          {
+            "x": 9,
+            "y": 5,
+            "strength": 0.7
+          },
+          {
+            "x": 13,
+            "y": 5,
+            "strength": 0.75
+          },
+          {
+            "x": 14,
+            "y": 8,
+            "strength": 0.7,
+            "flicker": true
+          },
+          {
+            "x": 14,
+            "y": 12,
+            "strength": 0.6
+          },
+          {
+            "x": 12,
+            "y": 9,
+            "strength": 0.5
+          },
+          {
+            "x": 16,
+            "y": 13,
+            "strength": 0.7
+          },
+          {
+            "x": 18,
+            "y": 11,
+            "strength": 0.6
+          },
+          {
+            "x": 18,
+            "y": 8,
+            "strength": 0.6
+          },
+          {
+            "x": 19,
+            "y": 7,
+            "strength": 0.8
+          },
+          {
+            "x": 16,
+            "y": 6,
+            "strength": 0.6
+          },
+          {
+            "x": 16,
+            "y": 3,
+            "strength": 0.7,
+            "flicker": true
+          },
+          {
+            "x": 13,
+            "y": 3,
+            "strength": 0.5
+          },
+          {
+            "x": 11,
+            "y": 2,
+            "strength": 0.4
+          },
+          {
+            "x": 17,
             "y": 1,
-            "strength": 1.0
+            "strength": 0.9
           }
-        ]
+        ],
+        "skeletons": [
+          {
+            "id": "k1",
+            "cell": [
+              14,
+              9
+            ],
+            "bones": [
+              "stehenni",
+              "pazni"
+            ]
+          },
+          {
+            "id": "k2",
+            "cell": [
+              17,
+              13
+            ],
+            "bones": [
+              "klicni",
+              "panev"
+            ]
+          },
+          {
+            "id": "k3",
+            "cell": [
+              18,
+              9
+            ],
+            "bones": [
+              "hrudni",
+              "holenni"
+            ]
+          },
+          {
+            "id": "k4",
+            "cell": [
+              16,
+              4
+            ],
+            "bones": [
+              "cesky",
+              "lytkova"
+            ]
+          }
+        ],
+        "skeleton": {
+          "image": "assets/chodba/kostlivec.svg",
+          "pile": "assets/chodba/kosti.svg",
+          "height": 0.92,
+          "lives": 3,
+          "attackSeconds": 4,
+          "firstAttackSeconds": 3,
+          "moveSeconds": 2.2,
+          "wakeCells": 4,
+          "zones": {
+            "cesky": [
+              [
+                35.2,
+                78.5,
+                7.8,
+                3.9
+              ],
+              [
+                57.0,
+                78.5,
+                7.8,
+                3.9
+              ]
+            ],
+            "klicni": [
+              [
+                26.6,
+                21.1,
+                22.7,
+                4.3
+              ],
+              [
+                50.8,
+                21.1,
+                22.7,
+                4.3
+              ]
+            ],
+            "hrudni": [
+              [
+                46.1,
+                25.0,
+                7.8,
+                17.6
+              ]
+            ],
+            "lebka": [
+              [
+                37.5,
+                2.7,
+                25.0,
+                17.6
+              ]
+            ],
+            "pazni": [
+              [
+                19.5,
+                25.0,
+                10.9,
+                20.7
+              ],
+              [
+                69.5,
+                25.0,
+                10.9,
+                20.7
+              ]
+            ],
+            "predlokti": [
+              [
+                14.1,
+                46.5,
+                12.5,
+                18.4
+              ],
+              [
+                73.4,
+                46.5,
+                12.5,
+                18.4
+              ]
+            ],
+            "ruka": [
+              [
+                10.9,
+                64.8,
+                16.4,
+                9.0
+              ],
+              [
+                72.7,
+                64.8,
+                16.4,
+                9.0
+              ]
+            ],
+            "zebra": [
+              [
+                31.2,
+                25.4,
+                15.6,
+                19.1
+              ],
+              [
+                53.1,
+                25.4,
+                15.6,
+                19.1
+              ]
+            ],
+            "pater": [
+              [
+                45.7,
+                19.5,
+                8.6,
+                4.3
+              ],
+              [
+                45.7,
+                42.6,
+                8.6,
+                9.8
+              ]
+            ],
+            "panev": [
+              [
+                32.8,
+                51.6,
+                34.4,
+                10.9
+              ]
+            ],
+            "stehenni": [
+              [
+                34.4,
+                62.1,
+                10.2,
+                16.4
+              ],
+              [
+                55.5,
+                62.1,
+                10.2,
+                16.4
+              ]
+            ],
+            "holenni": [
+              [
+                38.7,
+                82.4,
+                5.5,
+                12.9
+              ],
+              [
+                55.9,
+                82.4,
+                5.5,
+                12.9
+              ]
+            ],
+            "lytkova": [
+              [
+                32.8,
+                83.2,
+                5.1,
+                12.1
+              ],
+              [
+                62.1,
+                83.2,
+                5.1,
+                12.1
+              ]
+            ],
+            "chodidlo": [
+              [
+                31.2,
+                95.3,
+                14.8,
+                4.3
+              ],
+              [
+                53.9,
+                95.3,
+                14.8,
+                4.3
+              ]
+            ]
+          },
+          "bones": {
+            "lebka": {
+              "name": "lebka",
+              "where": "kost hlavy – chrání mozek"
+            },
+            "klicni": {
+              "name": "klíční kost",
+              "where": "vodorovná kost od hrudní kosti k rameni"
+            },
+            "hrudni": {
+              "name": "hrudní kost",
+              "where": "plochá kost uprostřed hrudníku, upínají se na ni žebra"
+            },
+            "zebra": {
+              "name": "žebra",
+              "where": "oblouky kolem hrudníku"
+            },
+            "pazni": {
+              "name": "pažní kost",
+              "where": "kost paže mezi ramenem a loktem"
+            },
+            "predlokti": {
+              "name": "kosti předloktí",
+              "where": "dvě kosti mezi loktem a zápěstím (vřetenní a loketní)"
+            },
+            "ruka": {
+              "name": "kosti ruky",
+              "where": "zápěstí, záprstí a prsty"
+            },
+            "pater": {
+              "name": "páteř",
+              "where": "obratle uprostřed těla – v krku a v bedrech"
+            },
+            "panev": {
+              "name": "pánev",
+              "where": "široká kost v bocích, nese trup"
+            },
+            "stehenni": {
+              "name": "stehenní kost",
+              "where": "nejdelší kost těla, mezi kyčlí a kolenem"
+            },
+            "cesky": {
+              "name": "čéška",
+              "where": "malá kost vpředu na koleni"
+            },
+            "holenni": {
+              "name": "holenní kost",
+              "where": "silnější kost bérce, na vnitřní straně (blíž ke středu těla)"
+            },
+            "lytkova": {
+              "name": "lýtková kost",
+              "where": "tenká kost bérce, na vnější straně"
+            },
+            "chodidlo": {
+              "name": "kosti nohy",
+              "where": "kotník, nárt a prsty"
+            }
+          },
+          "texts": {
+            "wake": "Z šera se vynořil kostlivec a chrastí kostmi! Zasáhni kost, kterou ukazuje puška: {name}.",
+            "wakeNoWeapon": "Z šera se vynořil kostlivec! Bez laserové pušky na něj nic nezmůžeš – zbrojní skříň je u začátku chodby.",
+            "hit": "Zásah – {name}!",
+            "next": "Teď zasáhni: {name}.",
+            "defeated": "Kostlivec se rozsypal na hromádku kostí.",
+            "wrong": "Vedle – trefil jsi: {hit}. Hledej {name} – {where}.",
+            "between": "Laser prošel mezi kostmi. Hledej {name} – {where}.",
+            "attack": "Kostlivec tě praštil! Zbývá životů: {lives}.",
+            "death": "Kostlivci tě zahnali zpátky ke dveřím skladu. Zasažené kosti jim zase srostly – zkus to znovu."
+          }
+        }
       },
       "hotspots": [
         {
@@ -6361,30 +6803,13 @@
           "name": "Dveře skladu",
           "cell": [
             1,
-            9
+            15
           ],
           "click": [
             {
               "do": [
                 {
-                  "text": "Otevřené pancéřové dveře výstrojního skladu. Brána I je za tebou – cesta vede chodbou dál."
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "hasicak",
-          "name": "Hasicí přístroj",
-          "cell": [
-            0,
-            5
-          ],
-          "click": [
-            {
-              "do": [
-                {
-                  "text": "Hasicí přístroj na háku. Revizní štítek je z doby, kdy tu docent ještě učil."
+                  "text": "Otevřené pancéřové dveře výstrojního skladu. Brána I je za tebou – cesta vede sklepem dál."
                 }
               ]
             }
@@ -6395,7 +6820,7 @@
           "name": "Nástěnka",
           "cell": [
             2,
-            4
+            14
           ],
           "click": [
             {
@@ -6405,14 +6830,126 @@
                 },
                 {
                   "closeup": {
-                    "note": "ROZPIS – VÝROČNÍ PŘEZKOUŠENÍ\n\nTělocvična: ze sklepa schodištěm nahoru.\nNastoupit v polní výstroji\n(batoh 30 kg).\n\nKdo nese plnou polní po schodech,\nať ví, co ho čeká:\nW = m · g · h\n– D.",
+                    "note": "ROZKAZ – SKLEP\n\nZ anatomického kabinetu utekli kostlivci\na toulají se sklepem. Projde jen ten,\nkdo kostem rozumí.\n\nVe zbrojní skříni je cvičná laserová puška.\nKostlivcům neublíží – jen je složí,\nkdyž zasáhneš kost, kterou ti puška ukáže.\n\nKlíč od skříně: od hasicího přístroje\n4,8 m na azimut 0°, pak 9,6 m na azimut 90°.\nTam se otoč na azimut 180°.\nDesky podlahy měří 2,4 m.\n– D.",
                     "font": "type",
-                    "caption": "Nástěnka ve sklepní chodbě"
+                    "caption": "Nástěnka u dveří skladu"
                   }
                 },
                 {
-                  "note": "Nástěnka: do tělocvičny se jde v polní výstroji (batoh 30 kg). Práce proti tíze W = m · g · h.",
-                  "noteKey": "nastenka_chodba"
+                  "note": "Nástěnka: klíč od zbrojní skříně – od hasicího přístroje 4,8 m na azimut 0°, pak 9,6 m na azimut 90°, tam se otočit na azimut 180°. Deska podlahy = 2,4 m. Azimut: 0° sever, 90° východ, 180° jih, 270° západ.",
+                  "noteKey": "nastenka_sklep"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hasicak",
+          "name": "Hasicí přístroj",
+          "cell": [
+            0,
+            12
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Hasicí přístroj na háku. Stojíš přímo před ním – odtud začíná docentova cesta ke klíči."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cihla",
+          "name": "Zeď",
+          "cell": [
+            5,
+            11
+          ],
+          "hidden": true,
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "klic_zbrojni_nalezen"
+                ]
+              },
+              "do": [
+                {
+                  "set": "klic_zbrojni_nalezen"
+                },
+                {
+                  "sound": "drawer"
+                },
+                {
+                  "text": "Jedna cihla se viklá. Vytáhneš ji – ve skrýši leží klíč s visačkou ZBROJ. Docentova cesta sedí: 2 desky na sever, 4 desky na východ."
+                },
+                {
+                  "give": "klic_zbrojni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Prázdná skrýš za uvolněnou cihlou."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zbrojni_skrin",
+          "name": "Zbrojní skříň",
+          "cell": [
+            1,
+            7
+          ],
+          "click": [
+            {
+              "when": {
+                "flags": [
+                  "zbrojni_otevrena"
+                ]
+              },
+              "do": [
+                {
+                  "text": "Prázdná zbrojní skříň. Laserovou pušku máš u sebe."
+                }
+              ]
+            },
+            {
+              "when": {
+                "items": [
+                  "klic_zbrojni"
+                ]
+              },
+              "do": [
+                {
+                  "remove": "klic_zbrojni"
+                },
+                {
+                  "set": "zbrojni_otevrena"
+                },
+                {
+                  "sound": "unlockDrawer"
+                },
+                {
+                  "text": "Klíč pasuje. Ve skříni visí cvičná laserová puška s nápisem LASER GAME. Bereš ji – míří se myší nebo prstem."
+                },
+                {
+                  "give": "laserova_puska"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "sound": "locked"
+                },
+                {
+                  "text": "Zamčená zbrojní skříň s nápisem CVIČNÉ LASERY. Klíč tu není – nástěnka u dveří skladu ví víc."
                 }
               ]
             }
@@ -6422,8 +6959,8 @@
           "id": "sipka",
           "name": "Nápis na zdi",
           "cell": [
-            1,
-            0
+            7,
+            4
           ],
           "click": [
             {
@@ -6436,17 +6973,103 @@
           ]
         },
         {
-          "id": "potrubi",
-          "name": "Potrubí",
+          "id": "zavora",
+          "name": "Závora s čidlem",
           "cell": [
-            4,
-            2
+            11,
+            5
+          ],
+          "click": [
+            {
+              "when": {
+                "items": [
+                  "laserova_puska"
+                ]
+              },
+              "do": [
+                {
+                  "set": "zavora_otevrena"
+                },
+                {
+                  "sound": "laser"
+                },
+                {
+                  "text": "Zamíříš na čidlo a stiskneš spoušť. Pííp – závora s rachotem vyjela ke stropu. Dál ve tmě je slyšet chrastění kostí…"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Ocelová závora s červeným čidlem. Cedulka: OTEVŘE JEN ZÁSAH LASEREM."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "plakat_kostra",
+          "name": "Plakát kostry",
+          "cell": [
+            10,
+            9
           ],
           "click": [
             {
               "do": [
                 {
-                  "text": "Potrubí ústředního topení s červeným ventilem. Ventil je zarezlý a trubky jsou teplé."
+                  "sound": "paper"
+                },
+                {
+                  "closeup": {
+                    "note": "KOSTRA ČLOVĚKA (zepředu)\n\nlebka – hlava\nklíční kost – vodorovně od hrudní kosti k rameni\nhrudní kost – uprostřed hrudníku\nžebra – oblouky kolem hrudníku\npažní kost – mezi ramenem a loktem\nkosti předloktí – mezi loktem a zápěstím\npáteř – obratle uprostřed těla\npánev – široká kost v bocích\nstehenní kost – nejdelší kost, mezi kyčlí a kolenem\nčéška – malá kost vpředu na koleni\nholenní kost – silnější kost bérce, vnitřní strana\nlýtková kost – tenká kost bérce, vnější strana",
+                    "font": "type",
+                    "caption": "Plakát ve slepé chodbě"
+                  }
+                },
+                {
+                  "note": "Plakát kostry: holenní kost je silnější a vnitřní, lýtková tenká a vnější; čéška vpředu na koleni; klíční kost od hrudní kosti k rameni.",
+                  "noteKey": "plakat_kostra"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lekarnicka",
+          "name": "Lékárnička",
+          "cell": [
+            20,
+            7
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "heal": true
+                },
+                {
+                  "sound": "pickup"
+                },
+                {
+                  "text": "Obvaz, náplast a hroznový cukr – životy doplněny."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "potrubi",
+          "name": "Potrubí",
+          "cell": [
+            15,
+            12
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Potrubí ústředního topení s červeným ventilem. Trubky jsou teplé a tiše bublají."
                 }
               ]
             }
@@ -6456,7 +7079,7 @@
           "id": "cedule_schody",
           "name": "Cedule u schodiště",
           "cell": [
-            7,
+            17,
             0
           ],
           "click": [
@@ -6481,7 +7104,7 @@
           "id": "mriz",
           "name": "Mříž ke schodišti",
           "cell": [
-            8,
+            19,
             1
           ],
           "click": [

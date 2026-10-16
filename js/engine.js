@@ -473,6 +473,7 @@
         // nápověda mimo zámky (např. z polního telefonu) – započítá se do statistik
         if ('hint' in effect) s.extraHints = (s.extraHints || 0) + 1;
         if ('leave' in effect) events.push({ type: 'leave' });
+        if ('heal' in effect) events.push({ type: 'heal' });   // chodba: doplnit životy (lékárnička)
       }
       events.push({ type: 'state' });
       this.save();
@@ -682,7 +683,7 @@
         if (!c.start || at(c.start.x, c.start.y) !== '.') problems.push(`Chodba „${roomId}“: start není na políčku chodby.`);
         for (const ch of new Set(map.join('').replace(/\./g, ''))) {
           const e = (c.legend || {})[ch];
-          const names = Array.isArray(e) ? e.map((v) => v.texture) : [e || c.wall];
+          const names = Array.isArray(e) ? e.map((v) => v.texture) : [e && typeof e === 'object' ? e.texture : e || c.wall];
           for (const n of names) if (!n || !(c.textures || {})[n]) problems.push(`Chodba „${roomId}“: znak „${ch}“ nemá texturu.`);
         }
         for (const h of r.hotspots || []) {

@@ -87,7 +87,7 @@
     if (id === 'room') startSceneLoop();
     else {
       stopSceneLoop();
-      if (corridor) corridor.stop();
+      if (corridor) { corridor.stop(); corridor.setPaused(true); }
       if (calc) calc.close();
       if ($('hud-help')) hideHudHelp();
     }
@@ -759,6 +759,11 @@
         e.stopPropagation();
         const r = c.getBoundingClientRect();
         const fx = (e.clientX - r.left) / r.width;
+        if (!corridor || !$('modal').hidden) return;
+        if (corridor.combat()) {
+          corridorShoot(fx, (e.clientY - r.top) / r.height);
+          return;
+        }
         if (fx < 0.25) corridorMove('turn', -1);
         else if (fx > 0.75) corridorMove('turn', 1);
         else corridorMove('step', 1);
@@ -785,21 +790,97 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.13');
-      const c = new mod.Corridor(canvas, room.corridor, { check: (w) => game.check(w), reducedMotion: reducedMotion.matches });
+      const mod = await import('./chodba.js?v=0.14');
+      const def = room.corridor;
+      const c = new mod.Corridor(canvas, def, {
+        check: (w) => game.check(w),
+        reducedMotion: reducedMotion.matches,
+        hasWeapon: () => game.hasItem(def.weaponItem || 'laserova_puska'),
+        attacks: Game.getSetting('kostlivciUtoci', true),
+        defeated: (def.skeletons || []).filter((k) => game.state.flags[`kostlivec_${k.id}`]).map((k) => k.id),
+        on: corridorEvents(def),
+      });
       await c.load();
       if (!game.state || game.roomId !== roomId) return;   // mezitím odešel
       corridor = c;
       corridorRoom = roomId;
+      canvas.__corridor = c;   // pro automatické testy (poloha kostlivců na obrazovce)
     }
     corridor.setFlashlight(flashlightOn);
     corridor.setPosition(game.corridorPos());
+    corridor.setPaused(!$('modal').hidden);
     corridor.start();
     updateCorridorFacing(false);
   }
 
+  /* Kostlivci: texty z game.json (corridor.skeleton.texts) s doplněním {name}, {where}, {hit}, {lives}. */
+  function skeletonText(def, keyName, vars = {}) {
+    const t = ((def.skeleton || {}).texts || {})[keyName] || '';
+    return t.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+  }
+
+  function boneInfo(def, id) {
+    return ((def.skeleton || {}).bones || {})[id] || { name: id || '', where: '' };
+  }
+
+  function corridorEvents(def) {
+    return {
+      wake: (s) => {
+        sound.sfx('kosti');
+        const armed = game.hasItem(def.weaponItem || 'laserova_puska');
+        showMessage([armed ? skeletonText(def, 'wake', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'wakeNoWeapon')]);
+      },
+      attack: (lives) => {
+        sound.sfx('au');
+        showMessage([skeletonText(def, 'attack', { lives })]);
+      },
+      death: () => {
+        sound.sfx('au');
+        setTimeout(() => {
+          if (!corridor) return;
+          corridor.resetAfterDeath();
+          game.setCorridorPos(corridor.position());
+          showMessage([skeletonText(def, 'death')]);
+          updateCorridorFacing(false);
+        }, 650);
+      },
+      defeat: (s) => {
+        sound.sfx('rozpad');
+        handleEvents(game.run([{ set: `kostlivec_${s.id}` }]));
+      },
+    };
+  }
+
+  /* Výstřel laserem do bodu obrazu (fx, fy 0–1): vyhodnotit, jestli hráč trefil správnou kost. */
+  function corridorShoot(fx, fy) {
+    const def = game.room.corridor;
+    const target = corridor.target();
+    const res = corridor.shoot(fx, fy);
+    sound.sfx('laser');
+    if (!target) return;
+    const want = boneInfo(def, target.bone);
+    const v = game.state.vars;
+    if (!res || res.skeleton !== target.skeleton) {
+      showMessage([skeletonText(def, 'between', want)]);
+      return;
+    }
+    if (res.bone === target.bone) {
+      game.setVars({ kosti_spravne: (v.kosti_spravne || 0) + 1, kosti_chybne: v.kosti_chybne || 0 });
+      const s = target.skeleton;
+      corridor.hit(s, true);
+      const lines = [skeletonText(def, 'hit', want)];
+      lines.push(s.alive ? skeletonText(def, 'next', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'defeated'));
+      showMessage(lines);
+      return;
+    }
+    game.setVars({ kosti_chybne: (v.kosti_chybne || 0) + 1, kosti_spravne: v.kosti_spravne || 0 });
+    corridor.hit(target.skeleton, false);
+    showMessage([res.bone ? skeletonText(def, 'wrong', { ...want, hit: boneInfo(def, res.bone).name }) : skeletonText(def, 'between', want)]);
+  }
+
   function leaveCorridor() {
     $('scene').classList.remove('corridor');
+    if (corridor) corridor.setPaused(true);
     $('scene-bg').hidden = false;
     const c = $('scene-corridor');
     if (c) c.hidden = true;
@@ -849,6 +930,7 @@
   }
 
   function corridorHotspotAt(cell) {
+    if (corridor && corridor.isFloor(cell.x, cell.y)) return null;   // otevřená závora apod.
     return (game.room.hotspots || []).find((h) => h.cell && h.cell[0] === cell.x && h.cell[1] === cell.y);
   }
 
@@ -863,13 +945,13 @@
     const front = corridorHotspotAt(f.front);
     const hs = $('hotspots');
     hs.innerHTML = '';
-    if (front) hs.appendChild(hotspotButton({ ...front, area: [14, 8, 72, 84] }));
+    if (front) hs.appendChild(hotspotButton({ ...front, area: [14, 20, 72, 72] }));
     const lines = [];
-    if (front) lines.push(`Před tebou: ${front.name} (klikni, nebo stiskni Enter).`);
+    if (front && !front.hidden) lines.push(`Před tebou: ${front.name} (klikni, nebo stiskni Enter).`);
     const left = corridorHotspotAt(f.left), right = corridorHotspotAt(f.right);
-    if (left) lines.push(`Vlevo: ${left.name}.`);
-    if (right) lines.push(`Vpravo: ${right.name}.`);
-    if (bumped) lines.unshift('Tudy cesta nevede.');
+    if (left && !left.hidden) lines.push(`Vlevo: ${left.name}.`);
+    if (right && !right.hidden) lines.push(`Vpravo: ${right.name}.`);
+    if (bumped) lines.unshift(corridor.skeletonAt(f.front.x, f.front.y) ? 'Cestu zastoupil kostlivec – zasáhni ho laserem.' : 'Tudy cesta nevede.');
     if (replace) showMessage([], lines);
     else lines.forEach((l) => appendMessage(l, true));
   }
@@ -1099,6 +1181,9 @@
           modal = null;
           leaveRoom();
           return;
+        case 'heal':
+          if (corridor) corridor.heal();
+          break;
         case 'state':
           break;
         default:
@@ -1396,6 +1481,7 @@
     build(box);
     $('modal').hidden = false;
     $('cursor-item').hidden = true;
+    if (corridor) corridor.setPaused(true);
   }
 
   function closeModal() {
@@ -1409,6 +1495,7 @@
     }
     reflexHit = null;
     unzoomScene();
+    if (corridor && game && game.state && game.room.type === 'corridor') corridor.setPaused(false);
   }
 
   function heading(box, text) {
@@ -1876,7 +1963,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.13');
+          const mod = await import('./squats.js?v=0.14');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2738,7 +2825,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.13');
+          const mod = await import('./skok.js?v=0.14');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3116,7 +3203,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.13');
+          const mod = await import('./goblet.js?v=0.14');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -3826,7 +3913,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.13');
+          const mod = await import('./predklon.js?v=0.14');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -3948,6 +4035,15 @@
         Game.setSetting('scares', !scaresOn());
         scareBtn.textContent = scaresLabel();
       });
+      if (game.room && game.room.type === 'corridor' && (game.room.corridor.skeletons || []).length) {
+        const atkLabel = () => `Kostlivci útočí: ${Game.getSetting('kostlivciUtoci', true) ? 'ano' : 'ne'}`;
+        const atkBtn = add(atkLabel(), () => {
+          const on = !Game.getSetting('kostlivciUtoci', true);
+          Game.setSetting('kostlivciUtoci', on);
+          if (corridor) corridor.setAttacks(on);
+          atkBtn.textContent = atkLabel();
+        });
+      }
       add('Hlavní nabídka', () => { closeModal(); game.save(); showTitle(); });
       const reset = add('Začít znovu (smaže postup)', () => {
         if (reset.dataset.confirm) {
