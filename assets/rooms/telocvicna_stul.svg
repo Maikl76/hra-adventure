@@ -103,9 +103,10 @@
   <g font-family="'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive" fill="#ecefe4" opacity="0.88">
     <text x="370" y="162" font-size="27" text-anchor="middle">VÝROČNÍ PŘEZKOUŠENÍ</text>
     <text x="370" y="196" font-size="23" text-anchor="middle">z fyzické zdatnosti</text>
-    <text x="156" y="248" font-size="20">• běh 12 min   • leh-sed   • kliky</text>
-    <text x="156" y="282" font-size="20">• shyby   • přenášení břemene</text>
-    <text x="156" y="316" font-size="20">• (BI, C: dřep se zátěží, medicinbal)</text>
+    <text x="156" y="244" font-size="19">muži: • běh 12 min, nebo plavání 300 m</text>
+    <text x="156" y="276" font-size="19">• leh-sed + kliky, nebo shyby</text>
+    <text x="156" y="308" font-size="19">• přenášení břemene</text>
+    <text x="156" y="340" font-size="16">(BI, C: dřep se zátěží, medicinbal)</text>
     <text x="596" y="392" font-size="17" text-anchor="end">Kdo zná jen čísla, zná půlku. – D.</text>
   </g>
   <rect x="118" y="426" width="504" height="10" fill="#4f361e"/>

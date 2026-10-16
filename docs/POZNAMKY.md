@@ -136,7 +136,8 @@ soubor zůstává mimo repozitář, data jsou v brožuře **Normy** v `game.json
 pohlaví, zdravotní kategorie A/BI/C a věku I–VII, plus hod granátem z profesních testů).
 Čtyři pohledy (stůl komise → hrazda → odhodový sektor → dřepová stanice a dveře).
 Řetěz: brožura Normy + protokol rtn. Doubka (muž, 37 let = III, kat. A) → hlášení na psacím
-stroji **22123** (cílené rady na špatný sloupec a na „čas – čím méně, tím lépe“) → P. S. →
+stroji **2213** – běh, leh-sed, kliky, břemeno (cílené rady na špatný sloupec, na „čas – čím
+méně, tím lépe“ a na shyby navíc) → P. S. →
 běžecký pás **13,5 km/h** (jednička v běhu 2 700 m / 12 min) → klíček → skříň s náčiním
 (kettlebell, závaží) → kliky na decimální váze (70 kg, těžiště 0,90 m, ruce 1,30 m od špiček;
 pak s batohem 15 kg) → odhodový sektor (medicinbal 5,5 m/s z 1,6 m na 4,35 m; granát 20 m/s
@@ -150,6 +151,8 @@ Polní telefon (`telefon_tv_zvoni`), zkratka `?mistnost=telocvicna`. Zástupná 
   důvod (koleno, hlava, nedosedl, posadil se). Kamera ze stoje změří výšku kolene (= lavička)
   a svislici špiček; tolerance 2 cm (`kneeTolCm`, `headTolCm`). Náhrada kettlebellu (láhev,
   batoh) nebo bez zátěže = výsledek „orientační“. Normy ukázané po testu: BI, do 30 let.
+- **Muži volí** (zadání autora): silová část leh-sed + kliky, nebo shyby; vytrvalost běh 12 min,
+  nebo plavání 300 m. Doubek zvolil běh a leh-sed + kliky, proto v hlášení shyby nejsou.
 - Normy přesně podle Excelu; opravena jen zřejmá chyba (plavání ženy VII 8:04 / 9:10 / 10:18)
   a desetinná opakování v kategoriích BI a C zaokrouhlena nahoru (autor schválil).
 

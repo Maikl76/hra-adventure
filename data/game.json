@@ -512,7 +512,7 @@
           "do": [
             { "set": "normy_prectene" },
             {
-              "note": "Normy: tabulka podle testu, pohlaví a zdravotní kategorie (A, BI, C); sloupec = věková kategorie (I do 30 let … VII 56+). Známka = výkon aspoň jako v řádku; u testů na čas naopak – čím méně, tím lépe.",
+              "note": "Normy: tabulka podle testu, pohlaví a zdravotní kategorie (A, BI, C); sloupec = věková kategorie (I do 30 let … VII 56+). Známka = výkon aspoň jako v řádku; u testů na čas naopak – čím méně, tím lépe. Muži volí: běh 12 min, nebo plavání 300 m; leh-sed a kliky, nebo shyby.",
               "noteKey": "normy"
             }
           ]
@@ -532,6 +532,9 @@
           {
             "blocks": [
               { "heading": "Jak číst tabulky" },
+              {
+                "p": "Muži si vybírají: vytrvalost – běh 12 min, nebo plavání 300 m; silová část – leh-sed a kliky, nebo shyby. Do hlášení se píšou známky z toho, co voják opravdu cvičil."
+              },
               {
                 "p": "Zdravotní kategorie: A – bez omezení; BI a C – se zdravotním omezením (mají vlastní, mírnější tabulky, některé testy nedělají)."
               },
@@ -4911,20 +4914,21 @@
           "steps": [
             {
               "type": "code",
-              "question": "V psacím stroji je založený formulář HLÁŠENÍ O PŘEZKOUŠENÍ. Chybí jen řádek „Známky rtn. Doubka – běh, leh-sed, kliky, shyby, břemeno:“ – pět číslic za sebou.",
-              "answer": 22123,
+              "question": "V psacím stroji je založený formulář HLÁŠENÍ O PŘEZKOUŠENÍ. Chybí jen řádek „Známky rtn. Doubka – běh, leh-sed, kliky, břemeno:“ – čtyři číslice za sebou.",
+              "answer": 2213,
               "feedback": {
-                "43233": "Díval ses do sloupce pro muže do 30 let. Doubkovi je 37 – patří do III. věkové kategorie (36–40 let).",
-                "33223": "To je sloupec 31–35 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
-                "21112": "To je sloupec 41–45 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
-                "22121": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
-                "22122": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku."
+                "4323": "Díval ses do sloupce pro muže do 30 let. Doubkovi je 37 – patří do III. věkové kategorie (36–40 let).",
+                "3323": "To je sloupec 31–35 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
+                "2112": "To je sloupec 41–45 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
+                "2211": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
+                "2212": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
+                "22123": "Shyby Doubek nedělal – v silové části si vybral leh-sed a kliky. Do hlášení patří čtyři známky: běh, leh-sed, kliky, břemeno."
               },
               "wrong": "Stroj zarachotil a vysunul list zpátky. Některá známka nesedí.",
               "hints": [
                 "Doubkovi je 37 let – patří do III. věkové kategorie (36–40 let). Hledej v brožuře Normy tabulky pro muže, kategorie A.",
-                "Známka 1 = výkon aspoň jako v řádku 1. U přenášení břemene je to naopak: čas nejvýš jako v řádku.",
-                "Běh 2, leh-sed 2, kliky 1, shyby 2, břemeno 3 → 22123."
+                "Známka 1 = výkon aspoň jako v řádku. U přenášení břemene je to naopak: čas nejvýš jako v řádku.",
+                "Běh 2, leh-sed 2, kliky 1, břemeno 3 → 2213."
               ],
               "success": "Ťuk, ťuk, ťuk… cink!"
             }
@@ -4937,7 +4941,7 @@
               "text": "Psací stroj vyťuká celé hlášení. Pod poslední řádek se sám dopíše docentův dovětek: „P. S. Pás u odhodového sektoru se rozjede jen rychlostí, kterou by Doubek potřeboval na jedničku v běhu. – D.“"
             },
             {
-              "note": "Hlášení: rtn. Doubek – běh 2, leh-sed 2, kliky 1, shyby 2, břemeno 3. P. S.: pás u sektoru se rozjede rychlostí, kterou by Doubek potřeboval na jedničku v běhu.",
+              "note": "Hlášení: rtn. Doubek – běh 2, leh-sed 2, kliky 1, břemeno 3. P. S.: pás u sektoru se rozjede rychlostí, kterou by Doubek potřeboval na jedničku v běhu.",
               "noteKey": "hlaseni"
             }
           ]
@@ -5057,7 +5061,7 @@
                 {
                   "do": [
                     {
-                      "text": "Na tabuli je křídou: VÝROČNÍ PŘEZKOUŠENÍ Z FYZICKÉ ZDATNOSTI. Pod tím stanoviště: běh 12 min, leh-sed, kliky, shyby, přenášení břemene. Dole docentovou rukou: „Kdo zná jen čísla, zná půlku. – D.“"
+                      "text": "Na tabuli je křídou: VÝROČNÍ PŘEZKOUŠENÍ Z FYZICKÉ ZDATNOSTI. Pod tím pro muže: vytrvalost – běh 12 min, nebo plavání 300 m; síla – leh-sed a kliky, nebo shyby; přenášení břemene. Dole docentovou rukou: „Kdo zná jen čísla, zná půlku. – D.“"
                     }
                   ]
                 }
@@ -5145,13 +5149,13 @@
                     },
                     {
                       "closeup": {
-                        "note": "PROTOKOL – VÝROČNÍ PŘEZKOUŠENÍ\nZ FYZICKÉ ZDATNOSTI\n\nrtn. Karel Doubek\nmuž, 37 let\nzdravotní kategorie A\n\nBěh 12 min ........... 2 520 m\nLeh-sed .............. 43\nKliky ................ 29\nShyby ................ 9\nPřenášení břemene .... 72 s\n\nZnámky dopíše komise.\n– D.",
+                        "note": "PROTOKOL – VÝROČNÍ PŘEZKOUŠENÍ\nZ FYZICKÉ ZDATNOSTI\n\nrtn. Karel Doubek\nmuž, 37 let\nzdravotní kategorie A\n\nVytrvalost (zvolil běh)\nBěh 12 min ........... 2 520 m\n\nSíla (zvolil leh-sed a kliky)\nLeh-sed .............. 43\nKliky ................ 29\n\nPřenášení břemene .... 72 s\n\nZnámky dopíše komise.\n– D.",
                         "font": "type",
                         "caption": "Protokol na stole komise"
                       }
                     },
                     {
-                      "note": "Protokol: rtn. Doubek, muž, 37 let, kategorie A – běh 2 520 m, leh-sed 43, kliky 29, shyby 9, přenášení břemene 72 s.",
+                      "note": "Protokol: rtn. Doubek, muž, 37 let, kategorie A – běh 12 min 2 520 m (zvolil běh, ne plavání), leh-sed 43 a kliky 29 (zvolil leh-sed a kliky, ne shyby), přenášení břemene 72 s.",
                       "noteKey": "protokol"
                     }
                   ]
