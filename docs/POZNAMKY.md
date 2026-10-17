@@ -229,14 +229,20 @@ Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ �
 otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
 Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
 cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin,
-zbrojni_skrin_prazdna, sipka – pruh podlahy pod soklem
+zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec – u zdí pruh podlahy pod soklem
 oříznut, jas srovnán podle `zed`, okraje prolnuté do společného okraje zdi (pás 40 px), aby zdi
 navazovaly v libovolném pořadí. Výjimky: u `potrubi` se řádky s trubkami neprolínají (trubka vede až
 k okraji, prolnutá vypadala rozmazaně); `schodiste` je vodorovně natažené, aby rám otvoru seděl
 s rámem mříže (po odemčení obraz neposkočí); na nástěnce generátor napsal ROZPIS – přepsáno na ROZKAZ
 (jako text po kliknutí). Nápisy, které generátor napsal správně (cedule, popisky plakátu, šablona
-TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), zůstaly. Podlaha, strop, kostlivec,
-kosti a puška jsou zatím zástupné SVG (`docs/zadani-obrazku-chodba.md`).
+TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), zůstaly. Podlaha a strop jen zmenšené
+(spára po okraji = hranice desek 2,4 m, podle nich hráč počítá kroky). Kostlivec: autor poslal dvě
+skoro stejné verze, použita druhá (světlejší, ve tmě lépe vidět); zmenšen na 256 × 512 (s vynásobenou
+průhledností, aby okraje neztmavly) a posunut o 32 px dolů (chodidla v 99,5 % výšky, stojí na podlaze).
+Oblasti kostí (`skeleton.zones`) změřené na novém obrázku; pánev ve dvou dílech (horní celá šíře,
+dolní jen střed), stehenní je v pořadí před pánví, aby hlavice stehenní kosti počítaly za stehenní.
+Kosti a puška jsou zatím zástupné SVG (`docs/zadani-obrazku-chodba.md`); u pušky je ústí v bodě
+(180, 82) obrázku 400 × 240 – podle něj vychází paprsek.
 Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědčí: zařadit `chodba` do `rooms`.
 
 ## Rozhodnutí autora (důležitá)
