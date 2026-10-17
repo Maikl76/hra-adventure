@@ -33,6 +33,8 @@
       this.wanted = null;   // jméno podkresu, který má hrát
       this.current = null;  // právě hrající podkres
       this.buffers = {};    // načtené zvukové soubory
+      this.stormWanted = null;   // bouřka venku: { place, level } nebo null
+      this.stormLayer = null;
     }
 
     /* Spuštění zvuku – prohlížeče ho dovolí až po kliknutí nebo stisku klávesy. */
@@ -49,6 +51,7 @@
       }
       if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
       if (this.enabled && this.wanted && !this.current) this.startAmbience(this.wanted);
+      if (this.enabled && this.stormWanted && !this.stormLayer) this.storm(this.stormWanted);
     }
 
     /* Mixážní pult: hudba a efekty → společný dozvuk (místnost) → hlavní hlasitost. */
@@ -129,10 +132,12 @@
       if (!this.ctx) return;
       this.master.gain.setTargetAtTime(on ? 0.9 : 0, this.ctx.currentTime, 0.15);
       if (on && this.wanted && !this.current) this.startAmbience(this.wanted);
+      if (on && this.stormWanted && !this.stormLayer) this.storm(this.stormWanted);
       if (!on && this.current) {
         this.current.stop(0.4);
         this.current = null;
       }
+      if (!on) this.stopStorm(0.4);
     }
 
     /* Napětí před lekačkou: podkres během „seconds“ skoro utichne… */
@@ -145,6 +150,112 @@
     release() {
       if (!this.ctx) return;
       this.music.gain.setTargetAtTime(0.55, this.ctx.currentTime + 0.6, 1.2);
+    }
+
+    /* ---------- Bouřka venku (vrstva pod podkresem místnosti) ----------
+       storm({ place, level }) zapne nebo upraví déšť a dunění, storm(null) je vypne.
+       place: „okno“ = déšť na skle, „budova“ = déšť na střeše (tlumeně), „sklep“ = jen hluboké
+       dunění přes zdi. level 0–1 = síla bouřky (u brány nejsilnější). Hromy hraje thunder(). */
+    storm(opts) {
+      this.stormWanted = opts || null;
+      if (!this.ctx || !this.enabled) return;
+      if (!opts) {
+        this.stopStorm(3);
+        return;
+      }
+      if (!this.stormLayer) this.startStorm();
+      const s = this.stormLayer;
+      const lvl = Math.max(0, Math.min(1, opts.level || 0));
+      const t = this.ctx.currentTime;
+      const P = { okno: [0.035, 0.05, 5200, 1], budova: [0.03, 0.05, 1600, 0.35], sklep: [0.006, 0.008, 320, 0] }[opts.place] || [0.03, 0.05, 1600, 0.35];
+      s.rain.gain.setTargetAtTime(P[0] + P[1] * lvl, t, 2);
+      s.rainTone.frequency.setTargetAtTime(P[2], t, 2);
+      s.rumble.gain.setTargetAtTime((opts.place === 'sklep' ? 0.05 : 0.035) + 0.04 * lvl, t, 3);
+      s.patter = P[3] * (0.4 + 0.6 * lvl);   // kapky na skle (jen u okna, na střeše slabě)
+    }
+
+    startStorm() {
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const group = this.gain(0.0001, this.music);
+      group.gain.setTargetAtTime(1, t, 2.5);
+      const h = { sources: [], timers: [] };
+      // déšť: šum bez nejhlubších a (podle místa) bez nejvyšších tónů
+      const rain = this.gain(0, group);
+      const rainTone = this.filter('lowpass', 1600, 0.5, rain);
+      h.sources.push(this.noiseSource(this.filter('highpass', 380, 0.5, rainTone), t, 0, this.noise, true));
+      this.lfo(rain.gain, 0.07, 0.008, t, h);   // déšť sílí a slábne
+      // vzdálené dunění bouřky: velmi hluboký šum, pomalu se vlní
+      const rumble = this.gain(0, group);
+      h.sources.push(this.noiseSource(this.filter('lowpass', 180, 0.6, rumble), t, 0, this.brown, true));   // pod ~150 Hz malé reproduktory nehrají
+      this.lfo(rumble.gain, 0.031, 0.02, t, h);
+      const layer = { group, h, rain, rainTone, rumble, patter: 0 };
+      // kapky na skle / na střeše: krátká tichá ťuknutí
+      let next = t + 0.5;
+      h.timers.push(setInterval(() => {
+        const now = ctx.currentTime;
+        while (next < now + 0.3) {
+          if (layer.patter > 0 && Math.random() < layer.patter) {
+            this.noiseBurst(group, Math.max(next, now + 0.02), 0.012, 'bandpass', 2500 + Math.random() * 3500, 0.03 * layer.patter);
+          }
+          next += 0.05 + Math.random() * 0.12;
+        }
+      }, 100));
+      this.stormLayer = layer;
+    }
+
+    stopStorm(fade) {
+      const s = this.stormLayer;
+      if (!s) return;
+      this.stormLayer = null;
+      const t = this.ctx.currentTime;
+      s.group.gain.cancelScheduledValues(t);
+      s.group.gain.setTargetAtTime(0.0001, t, Math.max(fade, 0.1) / 3);
+      setTimeout(() => {
+        s.h.timers.forEach(clearInterval);
+        s.h.sources.forEach((x) => {
+          try { x.stop(); } catch (e) { /* už skončil */ }
+        });
+        s.group.disconnect();
+      }, fade * 1000 + 300);
+    }
+
+    /* Hrom: distance v km (blesk bliká hned, hrom přijde po distance / 0,343 s – to hlídá hra),
+       place jako u storm(). Blízko: prásknutí a jasné dunění; daleko: jen hluboké převalování;
+       ve sklepě vždy tlumené. Hraje do sběrnice podkresu (lekačka ho ztiší jako hudbu). */
+    thunder(o) {
+      if (!this.ctx || !this.enabled) return;
+      const opts = o || {};
+      const t = this.ctx.currentTime + 0.02;
+      const d = Math.max(0.3, opts.distance || 3);
+      const muffle = { sklep: 0.6, budova: 0.8 }[opts.place] || 1;
+      const out = this.gain(Math.min(0.8, 0.75 / Math.pow(d, 0.7)) * muffle, this.music);
+      const cutoff = opts.place === 'sklep' ? 260 : Math.min(1600, 900 / Math.sqrt(d)) * (opts.place === 'budova' ? 0.65 : 1);
+      const tone = this.filter('lowpass', cutoff, 0.7, out);
+      // blízký úder: ostré prásknutí a praskání (jen nad zemí a když je blesk opravdu blízko)
+      if (d < 1.2 && opts.place !== 'sklep') {
+        const crack = this.gain(muffle * 0.9, out);
+        this.noiseBurst(crack, t, 0.18, 'highpass', 900, 0.6);
+        for (let i = 0; i < 5; i++) this.noiseBurst(crack, t + 0.05 + Math.random() * 0.45, 0.06, 'bandpass', 1200 + Math.random() * 2000, 0.25 * Math.random());
+      }
+      // dunění: nástup tím pomalejší, čím je bouřka dál; pak několik vln a dlouhé doznění
+      const dur = 3.2 + 1.1 * Math.min(d, 4) + Math.random() * 2;
+      const attack = 0.06 + 0.12 * Math.min(d, 5);
+      const g = this.gain(0.0001, tone);
+      this.noiseSource(g, t, t + dur + 0.5, this.brown, true);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(1, t + attack);
+      const waves = 3 + Math.floor(Math.random() * 3);
+      const span = dur - attack - 0.8;
+      let peak = 1;
+      for (let i = 0; i < waves; i++) {
+        const a = t + attack + span * ((i + 0.35 + Math.random() * 0.3) / waves);
+        peak *= 0.55 + Math.random() * 0.3;
+        g.gain.exponentialRampToValueAtTime(peak * (0.3 + Math.random() * 0.25), a);
+        g.gain.exponentialRampToValueAtTime(peak, a + 0.12 + Math.random() * 0.12);
+      }
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      setTimeout(() => out.disconnect(), (dur + 1) * 1000);
     }
 
     /* ---------- Podkresy ---------- */

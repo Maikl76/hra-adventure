@@ -382,6 +382,19 @@ button:focus-visible, input:focus-visible {
 
 .scene-dark { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .scene-dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* Bouřka: blesk (místnost s oknem) a probliknutí světel (bez oken, sklep). Měkké – nejvýš dvě změny
+   jasu za sekundu, --blesk = síla podle vzdálenosti; při „omezit pohyb“ vypnuté (viz konec souboru). */
+.scene-storm { position: absolute; inset: 0; pointer-events: none; opacity: 0; --blesk: 1; }
+.scene-storm.blesk { background: rgb(214, 226, 255); animation: blesk 0.9s ease-out both; }
+.scene-storm.probliknuti { background: #000; animation: probliknuti 0.75s linear both; }
+@keyframes blesk {
+  0% { opacity: 0; } 7% { opacity: calc(0.28 * var(--blesk)); } 18% { opacity: calc(0.06 * var(--blesk)); }
+  30% { opacity: calc(0.2 * var(--blesk)); } 100% { opacity: 0; }
+}
+@keyframes probliknuti {
+  0% { opacity: 0; } 8% { opacity: calc(0.55 * var(--blesk)); } 20% { opacity: calc(0.1 * var(--blesk)); }
+  34% { opacity: calc(0.45 * var(--blesk)); } 50%, 100% { opacity: 0; }
+}
 /* přiblížení scény k předmětu (např. před měřením metrem) */
 .scene.zooming { transition: transform 0.65s cubic-bezier(0.45, 0, 0.2, 1); }
 
@@ -1099,4 +1112,5 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .scene-storm { display: none; }
 }

@@ -695,6 +695,10 @@
           if (!t.rooms.includes(to)) problems.push(`Sekce „${t.id}“: zkušební místnost „${r}“ vede do „${to}“, která v sekci není.`);
         }
       }
+      // bouřka venku: místo musí být okno, budova nebo sklep
+      for (const [roomId, r] of Object.entries(d.rooms)) {
+        if (r.storm && !['okno', 'budova', 'sklep'].includes(r.storm.place)) problems.push(`Místnost „${roomId}“: storm.place má být okno, budova nebo sklep.`);
+      }
       // chodby „z vlastních očí“: mapa, start, textury, objekty na zdech
       for (const [roomId, r] of Object.entries(d.rooms)) {
         if (r.type !== 'corridor') continue;

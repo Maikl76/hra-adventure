@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.15 – ukázka",
+    "version": "0.16 – ukázka",
     "totalGates": 9
   },
 
@@ -1569,6 +1569,7 @@
       "gateNumber": "I",
       "tracks": ["civilni"],
       "ambience": "kabinet",
+      "storm": { "place": "okno", "steps": ["zmereno", "kniha_vzata", "klic_vzat", "kalkulacka_vzata"] },
       "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
       "startView": "u_stolu",
 
@@ -2153,6 +2154,10 @@
       "gateLabel": "LEVEL 1",
       "tracks": ["gsport"],
       "ambience": "herna",
+      "storm": {
+        "place": "budova",
+        "steps": ["suplik_odemcen", "reflex_hotovo", "drepy_hotovo", "vitrina_otevrena", "pojistky_otevreny", "stanice_proud", "karta_vlozena"]
+      },
       "enterText": "Stará herna v suterénu fakulty. Dřevěné obložení, staré stoly a knihovny – a mezi nimi monitory, kabely a neony. Dveře se za tebou tiše zavřely. Cvakl zámek.",
       "enter": [
         { "when": { "notFlags": ["herna_vstup"] }, "do": [ { "set": "herna_vstup" }, { "sound": "doorSoft" } ] }
@@ -2821,6 +2826,10 @@
       "gateNumber": "I",
       "tracks": ["vojenska"],
       "ambience": "sklad",
+      "storm": {
+        "place": "sklep",
+        "steps": ["figurina_zmerena", "bedna_zvednuta", "postoj_hotovo", "batoh_sbalen", "skrinka_otevrena", "stabilita_hotovo"]
+      },
       "enterText": "Výstrojní sklad v suterénu fakulty. Pach brezentu, gumy a strojního oleje. Pod stropem bzučí jediná žárovka. Dveře za tebou zapadly.",
       "enter": [
         { "when": { "notFlags": ["sklad_vstup"] }, "do": [ { "set": "sklad_vstup" }, { "sound": "doorSoft" } ] }
@@ -3485,6 +3494,10 @@
         "gsport"
       ],
       "ambience": "herna",
+      "storm": {
+        "place": "budova",
+        "steps": ["konektor_vzat", "skrinka_stena_otevrena", "skok_hotovo", "terce_hotovo"]
+      },
       "enterText": "Chodba skončila u dalších dveří. Za nimi je stará skokanská laboratoř předělaná na arkádu: automat JUMP s kontaktní deskou, neonová střelnice a dřevěná stěna s ryskami. Dveře za tebou cvakly.",
       "enter": [
         {
@@ -4726,6 +4739,10 @@
         "vojenska"
       ],
       "ambience": "telocvicna",
+      "storm": {
+        "place": "budova",
+        "steps": ["normy_vzaty", "kliky_hotovo", "hod_hotovo", "goblet_sim_hotovo", "hlaseni_hotovo", "skrin_otevrena"]
+      },
       "enterText": "Schodiště vyústilo v tělocvičnu. Pod stropem bzučí zářivky, na parketách jsou čáry hřiště. V rohu stojí stůl zkušební komise a na tabuli je křídou: VÝROČNÍ PŘEZKOUŠENÍ Z FYZICKÉ ZDATNOSTI. Dveře za tebou zapadly.",
       "enter": [
         {
@@ -6283,6 +6300,10 @@
       "type": "corridor",
       "_poznamka": "Bludiště „z vlastních očí“ (js/chodba.js). Ve světě vojenska mezi skladem a tělocvičnou (zařazeno 17. 10. 2026); samotné se dá spustit odkazem ?mistnost=chodba.",
       "ambience": "sklad",
+      "storm": {
+        "place": "sklep",
+        "steps": ["klic_zbrojni_nalezen", "zbrojni_otevrena", "zavora_otevrena", "kostlivec_k1", "kostlivec_k2", "kostlivec_k3", "kostlivec_k4", "mriz_otevrena"]
+      },
       "darkness": 0,
       "enterText": "Po schodech ze skladu jsi vystoupal do sklepních chodeb – tady začíná bludiště. Pod stropem bzučí zářivky, některé blikají. (Ovládání: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
       "shortcut": [

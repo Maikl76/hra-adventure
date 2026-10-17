@@ -56,7 +56,7 @@ index.html          obrazovky: vstup, úvod, titul, výběr světa, místnost, k
 css/style.css       vzhled (světy mají vlastní barevné téma: body[data-world])
 js/engine.js        herní logika – nic nevykresluje, vrací „události“ pro ui.js
 js/ui.js            vykreslování, okna (zámek, kniha, aktivity), lekačky, nápověda k tlačítkům
-js/audio.js         zvuk generovaný v prohlížeči (Web Audio): podkresy a efekty, bez souborů
+js/audio.js         zvuk generovaný v prohlížeči (Web Audio): podkresy, bouřka venku a efekty, bez souborů
 js/calc.js          plovoucí kalkulačka (vlastní rozbor výrazů, žádné eval)
 js/brany.js         kresba bran v úvodním průletu
 js/squats.js        počítání dřepů kamerou (GSPORT, herna)
@@ -74,7 +74,7 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   o kameru, pak model. **Obraz se zpracovává jen v prohlížeči**, nic se neukládá ani neposílá.
   Nic se nestahuje z cizích serverů (vše ve `vendor/`).
 - Postup hry v `localStorage`, zvlášť pro každý svět (`brany-biomechaniky-ulozeni-<svět>`);
-  nastavení (zvuk, světlo, lekačky, viděný úvod…) v `brany-biomechaniky-nastaveni`.
+  nastavení (zvuk, světlo, lekačky, bouřka, viděný úvod…) v `brany-biomechaniky-nastaveni`.
 - Lokální spuštění: ve složce hry `python -m http.server 8765`, otevřít `http://127.0.0.1:8765`
   (dvojklik na `index.html` nestačí – hra načítá `data/game.json`).
 
@@ -86,7 +86,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
 - Místnost: `name`, `gateNumber`/`gateLabel`, `tracks`, `ambience` (podkres), `enterText`,
   `enter` (účinky při vstupu), `startView`, `views`, `gate` (kroky zámku brány), `locks` (malé
   zámky), `activities`, `scares` (lekačky), `phone` (polní telefon), `shortcut` (zkratka pro
-  vyučující).
+  vyučující), `storm` (bouřka venku: `place` = `okno` | `budova` | `sklep`, `steps` = příznaky
+  postupu – bouřka s každým splněným sílí, u otevřené brány je nejsilnější).
 - Pohled: `background` (1672 × 941), `hotspots` (oblast v % obrázku, `click` = případy
   s podmínkou `when` a účinky `do`), `layers` (obrázky podle stavu), `lights`, `darkness`
   (síla tmy 0–1; tmavé obrázky autora ~0,6), `dust` (prach ve světle), sousedé `left`/`right`
@@ -273,6 +274,15 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 - **Světlo ve výchozím stavu Rozsvíceno** (režim Baterka si hráč zapne tlačítkem).
 - Při prvním vstupu do hry **nápověda k tlačítkům vpravo nahoře** (znovu: Menu → Jak ovládat hru).
 - **Zvuk nikdy nenese informaci k řešení** (třída bez zvuku, neslyšící studenti).
+- **Bouřka venku** (autor chtěl, 17. 10. 2026): ve všech světech, **ve výchozím stavu zapnutá**
+  (Menu → „Bouřka venku: ano/ne“), **sílí směrem k bráně**. Déšť a dunění pod podkresem místnosti,
+  blesk a po něm hrom se zpožděním podle vzdálenosti (1 km ≈ 3 s; jen atmosféra, k řešení se
+  nepoužívá). Okno (kabinet): měkký namodralý záblesk; budova (herna, aréna, tělocvična) a sklep
+  (sklad, bludiště): probliknou světla, ve sklepě jen hluboké tlumené dunění. Bezpečnost: záblesk
+  nejvýš jednou za 20 s, dvě změny jasu za sekundu, při „omezit pohyb“ žádný; během otevřeného
+  okna (úloha, zámek, zápisník) ani lekačky blesk nepřijde a blízký hrom se nepřehraje;
+  **blízké prásknutí hromu jen se zapnutými lekačkami**. Kabinet má v okně jasnou noc s měsícem –
+  k bouřce by se hodila varianta okna s deštěm (zatím neudělané).
 - **Zbraně:** jinak ve hře žádné; výjimka je sklepní bludiště – autor chtěl střelbu na kostlivce:
   jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).

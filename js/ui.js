@@ -92,6 +92,7 @@
       if ($('hud-help')) hideHudHelp();
     }
     if (id in SCREEN_AMBIENCE) sound.ambience(SCREEN_AMBIENCE[id]);
+    updateStorm();   // bouřka jen v místnostech
   }
 
   /* Vstupní obrazovka: kliknutí odemkne zvuk, pak úvod (poprvé) nebo titulní obrazovka. */
@@ -707,6 +708,7 @@
     $('scene-bg').src = view.background;
     $('scene-layers').innerHTML = '';
     sound.ambience(room.ambience || 'room');
+    updateStorm();
     hideTooltip();
     renderNav(view);
     if (direction) animateView(direction);
@@ -778,6 +780,7 @@
     $('hud-gate').textContent = room.gateLabel || '';
     $('hud-room').textContent = room.name;
     sound.ambience(room.ambience || 'room');
+    updateStorm();
     hideTooltip();
     $('scene').classList.add('corridor');
     $('scene-bg').hidden = true;
@@ -790,7 +793,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.15');
+      const mod = await import('./chodba.js?v=0.16');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1005,6 +1008,7 @@
      animate = nově objevená vrstva se ukáže animací (např. vysunutí šuplíku); při otočení ne. */
   function renderState(animate = true) {
     if (corridor && game.room.type === 'corridor') corridor.invalidate();
+    updateStorm();   // síla bouřky podle postupu v místnosti
     const layers = $('scene-layers');
     const wanted = game.visibleLayers();
     const wantedSrc = wanted.map((l) => l.image);
@@ -1626,6 +1630,76 @@
     }, (cfg.duration || 0.9) * 1000);
   }
 
+  /* ---------- Bouřka venku ----------
+     Podkres pod zvuky místnosti: déšť a dunění (audio.js storm), občas blesk a po něm hrom se
+     zpožděním podle vzdálenosti (zvuk urazí 1 km asi za 3 s). Místnost v game.json:
+     „storm“: { "place": "okno" | "budova" | "sklep", "steps": [příznaky postupu] } – bouřka sílí
+     s každým splněným krokem, u otevřené brány je nejsilnější. Bezpečnost: záblesk je měkký
+     a nejvýš jednou za 20 s, při „omezit pohyb“ žádný; během úlohy, zámku či lekačky (otevřené
+     okno přes hru) blesk ani blízký hrom nepřijde; prásknutí blízkého hromu jen se zapnutými
+     lekačkami. Menu → Bouřka: ano/ne (výchozí ano). Zvuk tu nenese žádnou informaci k řešení. */
+
+  const stormOn = () => Game.getSetting('storm', true);
+  let stormTimer = 0;
+
+  /* Místo a síla bouřky v aktuální místnosti (null = hráč není v místnosti). */
+  function stormInfo() {
+    if (!game || !game.state || $('room').hidden) return null;
+    const room = game.room;
+    const st = room.storm || {};
+    const steps = st.steps || [];
+    const done = steps.filter((f) => game.state.flags[f]).length;
+    let level = steps.length ? 0.15 + 0.85 * (done / steps.length) : 0.4;
+    if (room.gate && room.gate.openFlag && game.state.flags[room.gate.openFlag]) level = 1;
+    return { place: st.place || 'budova', level };
+  }
+
+  function updateStorm() {
+    const info = stormOn() ? stormInfo() : null;
+    sound.storm(info);
+    if (!info) {
+      clearTimeout(stormTimer);
+      stormTimer = 0;
+    } else if (!stormTimer) {
+      scheduleStrike(info.level, true);
+    }
+  }
+
+  function scheduleStrike(level, first) {
+    const wait = Math.max(20, (55 - 30 * level) * (0.75 + Math.random() * 0.5));   // u brány častěji
+    stormTimer = setTimeout(strike, wait * (first ? 0.5 : 1) * 1000);
+  }
+
+  const stormBusy = () => !$('modal').hidden || scareActive || Boolean(scareTimer) || document.hidden;
+
+  function strike() {
+    stormTimer = 0;
+    const info = stormOn() ? stormInfo() : null;
+    if (!info) return;
+    if (!stormBusy()) {
+      // blízko (pod 1 km, s prásknutím) jen se zapnutými lekačkami a u silné bouřky
+      const near = scaresOn() && info.level > 0.5 && Math.random() < 0.35;
+      const distance = near ? 0.4 + Math.random() * 0.6 : Math.max(1.3, (5.5 - 3.5 * info.level) * (0.7 + Math.random() * 0.6));
+      lightning(info.place, distance);
+      setTimeout(() => {
+        const now = stormOn() ? stormInfo() : null;
+        if (!now || (stormBusy() && distance < 2)) return;   // během úlohy žádné hlasité zahřmění
+        sound.thunder({ distance, place: now.place });
+      }, (distance / 0.343) * 1000);
+    }
+    scheduleStrike(info.level, false);
+  }
+
+  /* Blesk: u okna měkký záblesk, jinde (budova, sklep) probliknou světla. */
+  function lightning(place, distance) {
+    const el = $('scene-storm');
+    if (!el || reducedMotion.matches) return;
+    el.className = 'scene-storm';
+    void el.offsetWidth;   // znovu spustit animaci
+    el.style.setProperty('--blesk', Math.max(0.35, Math.min(1, 1.2 / distance)).toFixed(2));
+    el.className = `scene-storm ${place === 'okno' ? 'blesk' : 'probliknuti'}`;
+  }
+
   /* Efekt přes celou místnost (např. „blackout“ = výpadek proudu). */
   function sceneEffect(name) {
     const scene = $('scene');
@@ -1964,7 +2038,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.15');
+          const mod = await import('./squats.js?v=0.16');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2826,7 +2900,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.15');
+          const mod = await import('./skok.js?v=0.16');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3204,7 +3278,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.15');
+          const mod = await import('./goblet.js?v=0.16');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -3914,7 +3988,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.15');
+          const mod = await import('./predklon.js?v=0.16');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4035,6 +4109,12 @@
       const scareBtn = add(scaresLabel(), () => {
         Game.setSetting('scares', !scaresOn());
         scareBtn.textContent = scaresLabel();
+      });
+      const stormLabel = () => `Bouřka venku: ${stormOn() ? 'ano' : 'ne'}`;
+      const stormBtn = add(stormLabel(), () => {
+        Game.setSetting('storm', !stormOn());
+        updateStorm();
+        stormBtn.textContent = stormLabel();
       });
       if (game.room && game.room.type === 'corridor' && (game.room.corridor.skeletons || []).length) {
         const atkLabel = () => `Kostlivci útočí: ${Game.getSetting('kostlivciUtoci', true) ? 'ano' : 'ne'}`;
