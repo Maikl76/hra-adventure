@@ -120,6 +120,10 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `bones` = název a kde je, `texts` = hlášky, `lives`, `attackSeconds`, `firstAttackSeconds`,
   `moveSeconds`, `wakeCells`), `weapon` = obrázek pušky; zbraň = předmět `weaponItem`
   (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
+  Objekt s `pile: "<id kostlivce>"` místo `cell` = hromádka kostí na podlaze, kde kostlivec padl.
+- Aktivita `skeleton` (skládání kostry): `image` (kostra s mezerami), `slots` [{ `id`, `item`, `name`,
+  `image` (vyříznutá kost), `box` (její poloha v % obrázku), `marker` (otazník v %), `where`, `hint` }];
+  vrácená kost = příznak `kostra_<id>`, chyby `kostra_chybne`, po poslední kosti `done`.
 - **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
   odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
   (Teď nepoužito – bludiště bylo zkušební do 17. 10. 2026.)
@@ -183,7 +187,15 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
   životů se hráč vrátí jen tam, kde ho kostlivec uviděl (ne na start).
 - **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
   ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
-- Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
+- **Kostra z kabinetu** (autor zvolil 17. 10. 2026, varianta „vrátit kosti“): z každé hromádky po
+  kostlivci hráč vezme jednu kost – k1 stehenní, k2 klíční, k3 holenní, k4 lýtková – a vrátí je kostře
+  z anatomického kabinetu na stojanu u mříže (políčko X = 18,2, textury `stojan_kostra` / `_cela`).
+  Otazníky jsou odtažené od kostry (u bérce jeden uvnitř, druhý vně), špatně vrácená kost řekne, kam
+  patří a co na tom místě chybí. **Bez celé kostry se mříž neotevře** (z chodby se nedostane). Obrázky
+  (kostra s mezerami, kosti, ikony, stojan) jsou vyříznuté z autorova kostlivce podle obrysů kostí
+  (čéška zůstává na kostře); autor může později dodat vlastní obrázek stojanu.
+- Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`)
+  a „Kostra z kabinetu: složená, chyb při skládání …“ (`kostra_chybne`).
 Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
 otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
 Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
@@ -288,6 +300,7 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
 - **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična.
+  Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
 
 ## Obrázky od autora – postup

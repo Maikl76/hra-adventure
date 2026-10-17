@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.16.1 – ukázka",
+    "version": "0.17 – ukázka",
     "totalGates": 9
   },
 
@@ -47,7 +47,8 @@
           { "label": "Kliky na decimální váze", "value": "ruce nesou {kliky_kg:1} kg ({kliky_procent} % hmotnosti)", "requires": ["kliky_kg"] },
           { "label": "Goblet dřep (90 s)", "value": "{goblet_n} platných dřepů", "requires": ["goblet_n"] },
           { "label": "Goblet dřep měřený kamerou", "bool": "goblet_kamera" },
-          { "label": "Kostlivci – anatomie", "value": "{kosti_spravne} správných zásahů, {kosti_chybne} vedle", "requires": ["kosti_spravne"] }
+          { "label": "Kostlivci – anatomie", "value": "{kosti_spravne} správných zásahů, {kosti_chybne} vedle", "requires": ["kosti_spravne"] },
+          { "label": "Kostra z kabinetu", "value": "složená, chyb při skládání: {kostra_chybne}", "requires": ["kostra_chybne"] }
         ]
       }
     },
@@ -1057,6 +1058,26 @@
       "name": "Klíč od zbrojní skříně",
       "icon": "assets/items/klic_zbrojni.svg",
       "description": "Klíč s kovovou visačkou ZBROJ. Byl schovaný za uvolněnou cihlou."
+    },
+    "kost_stehenni": {
+      "name": "Stehenní kost",
+      "icon": "assets/items/kost_stehenni.webp",
+      "description": "Pravá stehenní kost z hromádky po kostlivci – nejdelší kost těla. Patří ke kostře z anatomického kabinetu."
+    },
+    "kost_klicni": {
+      "name": "Klíční kost",
+      "icon": "assets/items/kost_klicni.webp",
+      "description": "Levá klíční kost – tenká esovitá kost, která spojuje hrudní kost s ramenem."
+    },
+    "kost_holenni": {
+      "name": "Holenní kost",
+      "icon": "assets/items/kost_holenni.webp",
+      "description": "Levá holenní kost – silnější ze dvou kostí bérce; nese skoro celou váhu těla."
+    },
+    "kost_lytkova": {
+      "name": "Lýtková kost",
+      "icon": "assets/items/kost_lytkova.webp",
+      "description": "Levá lýtková kost – tenká kost bérce, váhu těla skoro nenese, slouží hlavně svalům a kotníku."
     }
   },
 
@@ -1522,7 +1543,11 @@
         },
         { "give": "laserova_puska" }
       ]
-    }
+    },
+    { "item": "kost_stehenni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_klicni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_holenni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_lytkova", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] }
   ],
 
   "combinations": [
@@ -6319,7 +6344,7 @@
         "map": [
           "#################S###",
           "###########.####...M#",
-          "###########.####.####",
+          "###########.####.#X##",
           "###########......####",
           "#######A########.####",
           "#######....G...#.####",
@@ -6386,6 +6411,19 @@
             {
               "texture": "mriz"
             }
+          ],
+          "X": [
+            {
+              "when": {
+                "flags": [
+                  "kostra_slozena"
+                ]
+              },
+              "texture": "stojan_kostra_cela"
+            },
+            {
+              "texture": "stojan_kostra"
+            }
           ]
         },
         "textures": {
@@ -6404,7 +6442,9 @@
           "zbrojni_skrin_prazdna": "assets/chodba/zbrojni_skrin_prazdna.webp",
           "zavora": "assets/chodba/zavora.webp",
           "plakat_kostra": "assets/chodba/plakat_kostra.webp",
-          "lekarnicka": "assets/chodba/lekarnicka.webp"
+          "lekarnicka": "assets/chodba/lekarnicka.webp",
+          "stojan_kostra": "assets/chodba/stojan_kostra.webp",
+          "stojan_kostra_cela": "assets/chodba/stojan_kostra_cela.webp"
         },
         "weapon": "assets/chodba/puska.webp",
         "lamps": [
@@ -6817,14 +6857,15 @@
             "wakeNoWeapon": "Z šera se vynořil kostlivec! Bez laserové pušky na něj nic nezmůžeš – zbrojní skříň je u začátku chodby.",
             "hit": "Zásah – {name}!",
             "next": "Teď zasáhni: {name}.",
-            "defeated": "Kostlivec se rozsypal na hromádku kostí. Oddechneš si – životy doplněny.",
+            "defeated": "Kostlivec se rozsypal na hromádku kostí. Oddechneš si – životy doplněny. Jedna kost z hromádky patří ke kostře z kabinetu – klikni na ni.",
             "wrong": "Vedle – trefil jsi: {hit}. Hledej {name} – {where}. Na kostlivci teď bliká.",
             "between": "Laser prošel mezi kostmi. Hledej {name} – {where}. Na kostlivci teď bliká.",
             "attack": "Kostlivec tě praštil! Zbývá životů: {lives}.",
             "death": "Kostlivec tě srazil. Ustoupil jsi o kus zpátky – zasažené kosti mu zase srostly, zkus to znovu."
           }
         },
-        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti a puska (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ; kostlivec posunutý o 1,8 % dolů, aby stál na podlaze, oblasti kostí změřené podle něj). Všechny textury jsou od autora."
+        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti a puska (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ; kostlivec posunutý o 1,8 % dolů, aby stál na podlaze, oblasti kostí změřené podle něj). Všechny textury jsou od autora.",
+        "_kostra": "Hromádky kostí (hotspoty s „pile“ = id kostlivce): z každé hráč vezme jednu kost (k1 stehenní, k2 klíční, k3 holenní, k4 lýtková) a vrátí je kostře z anatomického kabinetu na stojanu u mříže (X, aktivita „kostra“). Bez celé kostry se mříž neotevře (autor 17. 10. 2026)."
       },
       "hotspots": [
         {
@@ -6859,7 +6900,7 @@
                 },
                 {
                   "closeup": {
-                    "note": "ROZKAZ – SKLEP\n\nZ anatomického kabinetu utekli kostlivci\na toulají se sklepem. Projde jen ten,\nkdo kostem rozumí.\n\nVe zbrojní skříni je cvičná laserová puška.\nKostlivcům neublíží – jen je složí,\nkdyž zasáhneš kost, kterou ti puška ukáže.\n\nKlíč od skříně: od hasicího přístroje\n4,8 m na azimut 0°, pak 9,6 m na azimut 90°.\nTam se otoč na azimut 180°.\nDesky podlahy měří 2,4 m.\n– D.",
+                    "note": "ROZKAZ – SKLEP\n\nZ anatomického kabinetu utekli kostlivci\na toulají se sklepem. Projde jen ten,\nkdo kostem rozumí.\n\nVe zbrojní skříni je cvičná laserová puška.\nKostlivcům neublíží – jen je složí,\nkdyž zasáhneš kost, kterou ti puška ukáže.\n\nKlíč od skříně: od hasicího přístroje\n4,8 m na azimut 0°, pak 9,6 m na azimut 90°.\nTam se otoč na azimut 180°.\nDesky podlahy měří 2,4 m.\n\nKosti po kostlivcích vrať kostře z kabinetu –\nstojí u schodiště. Bez ní mříž neotevřu.\n– D.",
                     "font": "type",
                     "caption": "Nástěnka u dveří skladu"
                   }
@@ -7156,12 +7197,200 @@
               ]
             },
             {
+              "when": {
+                "notFlags": [
+                  "kostra_slozena"
+                ]
+              },
+              "do": [
+                {
+                  "sound": "locked"
+                },
+                {
+                  "text": "Číselník na mříži je tmavý. Pod ním visí lísteček: „Nejdřív vrať kosti kostře z kabinetu – stojí hned vedle na stojanu. – D.“"
+                }
+              ]
+            },
+            {
               "do": [
                 {
                   "sound": "locked"
                 },
                 {
                   "lock": "mriz"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k1",
+          "name": "Hromádka kostí",
+          "pile": "k1",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k1_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k1_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš stehenní kost – nejdelší kost těla. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_stehenni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k2",
+          "name": "Hromádka kostí",
+          "pile": "k2",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k2_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k2_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš klíční kost – vodorovnou kost mezi hrudní kostí a ramenem. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_klicni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k3",
+          "name": "Hromádka kostí",
+          "pile": "k3",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k3_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k3_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš holenní kost – silnější ze dvou kostí bérce. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_holenni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k4",
+          "name": "Hromádka kostí",
+          "pile": "k4",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k4_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k4_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš lýtkovou kost – tenčí ze dvou kostí bérce. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_lytkova"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "stojan_kostra",
+          "name": "Kostra z kabinetu",
+          "cell": [
+            18,
+            2
+          ],
+          "click": [
+            {
+              "when": {
+                "flags": [
+                  "kostra_slozena"
+                ]
+              },
+              "do": [
+                {
+                  "text": "Kostra z anatomického kabinetu je zase celá a visí na stojanu. Mříž ke schodišti je volná."
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "note": "Kostra z kabinetu na stojanu u mříže: chybějí jí čtyři kosti – leží na hromádkách po kostlivcích. Dokud nebude celá, mříž se neotevře.",
+                  "noteKey": "kostra_stojan"
+                },
+                {
+                  "activity": "kostra"
                 }
               ]
             }
@@ -7217,6 +7446,106 @@
             {
               "note": "Schodiště: voják 70 kg + batoh 30 kg, 18 schodů po 17 cm → W = m · g · h = 100 · 9,81 · 3,06 ≈ 3 000 J.",
               "noteKey": "schodiste_prace"
+            }
+          ]
+        }
+      },
+      "activities": {
+        "kostra": {
+          "type": "skeleton",
+          "title": "Kostra z anatomického kabinetu",
+          "intro": "Kostře na stojanu chybějí čtyři kosti. Vyber vpravo kost a klikni na otazník u místa, kam patří – čárkovaná čára vede k mezeře v kostře.",
+          "image": "assets/chodba/kostra/kostra_neuplna.webp",
+          "pickText": "Nejdřív vpravo vyber kost, kterou chceš vrátit.",
+          "rightText": "Správně – {name} je zpátky na svém místě.",
+          "missingText": "Kostře chybí ještě kostí: {n}. Leží na hromádkách po kostlivcích.",
+          "slots": [
+            {
+              "id": "stehenni",
+              "item": "kost_stehenni",
+              "name": "stehenní kost",
+              "image": "assets/chodba/kostra/kost_stehenni.webp",
+              "box": [
+                32.5,
+                51.42,
+                12.83,
+                19.75
+              ],
+              "marker": [
+                20,
+                74
+              ],
+              "where": "je to nejdelší kost těla a patří mezi kyčel a koleno",
+              "hint": "Tady chybí nejdelší kost těla – mezi kyčlí a kolenem."
+            },
+            {
+              "id": "klicni",
+              "item": "kost_klicni",
+              "name": "klíční kost",
+              "image": "assets/chodba/kostra/kost_klicni.webp",
+              "box": [
+                51.33,
+                18.67,
+                19.83,
+                2.08
+              ],
+              "marker": [
+                82,
+                12
+              ],
+              "where": "leží vodorovně mezi hrudní kostí a ramenem",
+              "hint": "Tady chybí vodorovná kost mezi hrudní kostí a ramenem."
+            },
+            {
+              "id": "holenni",
+              "item": "kost_holenni",
+              "name": "holenní kost",
+              "image": "assets/chodba/kostra/kost_holenni.webp",
+              "box": [
+                55.33,
+                71.17,
+                10.33,
+                19.0
+              ],
+              "marker": [
+                49,
+                84
+              ],
+              "where": "je to silnější kost bérce a patří na jeho vnitřní stranu (blíž ke druhé noze)",
+              "hint": "Tady chybí silnější kost bérce – na vnitřní straně, blíž ke druhé noze."
+            },
+            {
+              "id": "lytkova",
+              "item": "kost_lytkova",
+              "name": "lýtková kost",
+              "image": "assets/chodba/kostra/kost_lytkova.webp",
+              "box": [
+                61.67,
+                72.83,
+                4.67,
+                17.92
+              ],
+              "marker": [
+                84,
+                84
+              ],
+              "where": "je to tenká kost bérce a patří na jeho vnější stranu",
+              "hint": "Tady chybí tenká kost bérce – na vnější straně."
+            }
+          ],
+          "done": [
+            {
+              "set": "kostra_slozena"
+            },
+            {
+              "sound": "unlockDrawer"
+            },
+            {
+              "text": "Poslední kost zapadla na místo – kostra z kabinetu je zase celá. Od mříže se ozvalo cvaknutí a číselník se rozsvítil."
+            },
+            {
+              "note": "Kostra z kabinetu: stehenní kost mezi kyčlí a kolenem, klíční vodorovně od hrudní kosti k rameni, v bérci silnější holenní uvnitř (blíž ke druhé noze) a tenká lýtková vně.",
+              "noteKey": "kostra_slozena"
             }
           ]
         }

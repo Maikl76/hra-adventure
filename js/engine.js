@@ -713,6 +713,10 @@
           for (const n of names) if (!n || !(c.textures || {})[n]) problems.push(`Chodba „${roomId}“: znak „${ch}“ nemá texturu.`);
         }
         for (const h of r.hotspots || []) {
+          if (h.pile) {   // hromádka kostí po kostlivci (objekt na podlaze, kde kostlivec padl)
+            if (!(c.skeletons || []).some((k) => k.id === h.pile)) problems.push(`Chodba „${roomId}“, objekt „${h.id}“: kostlivec „${h.pile}“ neexistuje.`);
+            continue;
+          }
           const [x, y] = h.cell || [];
           if (at(x, y) === undefined || at(x, y) === '.') problems.push(`Chodba „${roomId}“, objekt „${h.id}“: „cell“ není zeď v mapě.`);
         }

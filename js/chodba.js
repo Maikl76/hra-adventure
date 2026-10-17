@@ -170,6 +170,12 @@ export class Corridor {
     return this.skeletons.find((s) => s.alive && s.x === x && s.y === y) || null;
   }
 
+  /* Hromádka kostí po poraženém kostlivci na políčku (id kostlivce, nebo null). */
+  pileAt(x, y) {
+    const s = this.skeletons.find((k) => !k.alive && k.x === x && k.y === y);
+    return s ? s.id : null;
+  }
+
   /* Textura zdi podle znaku v mapě; „legend“: název textury, { texture, openWhen }, nebo varianty s „when“. */
   wallTexture(x, y) {
     const e = this.legendEntry(x, y);

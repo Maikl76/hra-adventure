@@ -793,7 +793,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.16.1');
+      const mod = await import('./chodba.js?v=0.17');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -875,6 +875,7 @@
       const lines = [skeletonText(def, 'hit', want)];
       lines.push(s.alive ? skeletonText(def, 'next', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'defeated'));
       showMessage(lines);
+      if (!s.alive) updateCorridorFacing(false);   // hromádka kostí před hráčem jde hned sebrat
       return;
     }
     game.setVars({ kosti_chybne: (v.kosti_chybne || 0) + 1, kosti_spravne: v.kosti_spravne || 0 });
@@ -934,7 +935,11 @@
   }
 
   function corridorHotspotAt(cell) {
-    if (corridor && corridor.isFloor(cell.x, cell.y)) return null;   // otevřená závora apod.
+    if (corridor && corridor.isFloor(cell.x, cell.y)) {
+      // na podlaze: hromádka kostí po poraženém kostlivci („pile“ = id kostlivce)
+      const pile = corridor.pileAt(cell.x, cell.y);
+      return pile ? (game.room.hotspots || []).find((h) => h.pile === pile) || null : null;   // jinak otevřená závora apod.
+    }
     return (game.room.hotspots || []).find((h) => h.cell && h.cell[0] === cell.x && h.cell[1] === cell.y);
   }
 
@@ -1568,6 +1573,125 @@
     activityCleanup = () => clearTimeout(timer);
   }
 
+  /* ---------- Skládání kostry (bludiště) ----------
+     Kostře z anatomického kabinetu chybějí kosti; hráč je sebral z hromádek po kostlivcích.
+     Vybere kost dole a klikne na značku místa (značky jsou odtažené od kostry, aby šly snadno
+     trefit i prstem – u bérce jedna uvnitř, druhá vně). Správně: kost se vrátí na místo (příznak
+     kostra_<id>), špatně: vysvětlení, kam ta kost patří a co na tom místě chybí. Hotovo: „done“.
+     game.json: type „skeleton“, image (kostra s mezerami), slots [{ id, item, name, image, box
+     (poloha kosti v % obrázku), marker (značka v %), where (kam kost patří), hint (co tu chybí) }]. */
+  function openSkeleton(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const placed = (sl) => Boolean(game.state.flags[`kostra_${sl.id}`]);
+    let selected = null;
+    let errors = game.state.vars.kostra_chybne || 0;
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'skel-box');
+      heading(box, act.title || 'Kostra');
+      para(box, act.intro || '', 'question');
+      const wrap = document.createElement('div');
+      wrap.className = 'skel-wrap';
+      box.appendChild(wrap);
+      const fig = document.createElement('div');
+      fig.className = 'skel-fig';
+      wrap.appendChild(fig);
+      const side = document.createElement('div');
+      side.className = 'skel-side';
+      wrap.appendChild(side);
+      const feedback = para(box, '', 'skel-feedback');
+      feedback.setAttribute('aria-live', 'polite');
+
+      const draw = () => {
+        fig.innerHTML = '';
+        const base = document.createElement('img');
+        base.className = 'skel-base';
+        base.src = act.image;
+        base.alt = 'Kostra z anatomického kabinetu';
+        fig.appendChild(base);
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 100 200');
+        svg.setAttribute('preserveAspectRatio', 'none');
+        svg.classList.add('skel-lines');
+        fig.appendChild(svg);
+        for (const sl of act.slots) {
+          const [x, y, w, h] = sl.box;
+          if (placed(sl)) {
+            const img = document.createElement('img');
+            img.className = 'skel-bone';
+            img.src = sl.image;
+            img.alt = sl.name;
+            Object.assign(img.style, { left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%` });
+            fig.appendChild(img);
+            continue;
+          }
+          // čárkovaná čára od značky k mezeře
+          const line = document.createElementNS(NS, 'line');
+          line.setAttribute('x1', sl.marker[0]);
+          line.setAttribute('y1', sl.marker[1] * 2);
+          line.setAttribute('x2', x + w / 2);
+          line.setAttribute('y2', (y + h / 2) * 2);
+          svg.appendChild(line);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'skel-slot';
+          btn.textContent = '?';
+          btn.setAttribute('aria-label', sl.hint);
+          btn.title = sl.hint;
+          Object.assign(btn.style, { left: `${sl.marker[0]}%`, top: `${sl.marker[1]}%` });
+          btn.addEventListener('click', () => tryPlace(sl));
+          fig.appendChild(btn);
+        }
+        side.innerHTML = '';
+        const have = act.slots.filter((sl) => !placed(sl) && game.hasItem(sl.item));
+        const missing = act.slots.filter((sl) => !placed(sl) && !game.hasItem(sl.item)).length;
+        para(side, have.length ? 'Tvoje kosti:' : 'Nemáš u sebe žádnou kost, která by kostře chyběla.', 'skel-label');
+        for (const sl of have) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = `skel-pick${selected === sl ? ' selected' : ''}`;
+          b.setAttribute('aria-pressed', String(selected === sl));
+          const item = game.item(sl.item) || {};
+          const ic = document.createElement('img');
+          ic.src = item.icon || sl.image;
+          ic.alt = '';
+          b.append(ic, document.createTextNode(item.name || sl.name));
+          b.addEventListener('click', () => {
+            selected = selected === sl ? null : sl;
+            feedback.textContent = selected ? `Vybráno: ${item.name || sl.name}. Teď klikni na otazník, kam patří.` : '';
+            draw();
+          });
+          side.appendChild(b);
+        }
+        if (missing) para(side, (act.missingText || 'Chybí ještě kostí: {n}.').replace('{n}', missing), 'skel-missing');
+      };
+
+      const tryPlace = (sl) => {
+        if (!selected) {
+          feedback.textContent = act.pickText || 'Nejdřív vyber kost.';
+          return;
+        }
+        const chosen = selected;
+        if (chosen === sl) {
+          selected = null;
+          handleEvents(game.run([{ remove: sl.item }, { set: `kostra_${sl.id}` }]));
+          sound.sfx('kosti');
+          feedback.textContent = (act.rightText || '{name} je na svém místě.').replace('{name}', sl.name);
+          if (act.slots.every(placed)) {
+            setTimeout(() => finishActivity(act, { kostra_chybne: errors }), 900);
+          }
+        } else {
+          errors += 1;
+          game.setVars({ kostra_chybne: errors });
+          sound.sfx('wrong');
+          feedback.textContent = `${chosen.name[0].toUpperCase()}${chosen.name.slice(1)} sem nepatří – ${chosen.where}. ${sl.hint}`;
+        }
+        draw();
+      };
+      draw();
+    });
+  }
+
   /* ---------- Lekačky ----------
      Obrázek přes celou obrazovku, náraz zvuku a otřes. Předtím podkres ztichne (napětí).
      Jedno krátké objevení, žádné opakované blikání. Vypínají se v Menu. */
@@ -1888,6 +2012,7 @@
     else if (act.type === 'gobletsim') openGobletSim(act);
     else if (act.type === 'pushup') openPushup(act);
     else if (act.type === 'throw') openThrow(act);
+    else if (act.type === 'skeleton') openSkeleton(act);
   }
 
   function finishActivity(act, results) {
@@ -2038,7 +2163,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.16.1');
+          const mod = await import('./squats.js?v=0.17');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -2900,7 +3025,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.16.1');
+          const mod = await import('./skok.js?v=0.17');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3278,7 +3403,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.16.1');
+          const mod = await import('./goblet.js?v=0.17');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -3988,7 +4113,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.16.1');
+          const mod = await import('./predklon.js?v=0.17');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
