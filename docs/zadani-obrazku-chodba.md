@@ -7,18 +7,18 @@ obrázků, kterými hra „tapetuje“ zdi, podlahu a strop. Hráč je vidí zbl
 **Stav (17. 10. 2026):**
 - Hotovo (vaše textury jsou ve hře): `zed`, `hasicak`, `dvere_sklad`, `cedule_schody`,
   `lekarnicka`, `nastenka`, `mriz`, `plakat_kostra`, `potrubi`, `schodiste`, `zavora`,
-  `zbrojni_skrin`, `zbrojni_skrin_prazdna`, `sipka`, `podlaha`, `strop`, `kostlivec`. Zdi jsem
-  upravil jen technicky: oříznutý pruh podlahy pod soklem, srovnaný jas a prolnuté okraje vlevo
-  a vpravo, aby zdi na sebe navazovaly v jakémkoli pořadí.
+  `zbrojni_skrin`, `zbrojni_skrin_prazdna`, `sipka`, `podlaha`, `strop`, `kostlivec`, `kosti`,
+  `puska` – **všechno, bludiště je celé ve vaší grafice**. Zdi jsem upravil jen technicky:
+  oříznutý pruh podlahy pod soklem, srovnaný jas a prolnuté okraje vlevo a vpravo, aby zdi na
+  sebe navazovaly v jakémkoli pořadí.
 - Drobné úpravy: na nástěnce jsem nadpis ROZPIS přepsal na ROZKAZ (tak se list jmenuje po
   kliknutí). Schodiště jsem trochu roztáhl do šířky, aby jeho rám seděl s rámem mříže – po
   odemčení obraz neposkočí. Trubky na potrubí vedou až k okraji obrázku (neprolínám je).
 - Kostlivec: ze dvou skoro stejných verzí jsem použil druhou (je světlejší, ve tmě ho víc vidět).
   Posunul jsem ho o kousek dolů, aby stál na podlaze, a podle něj znovu změřil oblasti kostí pro
   zásah laserem.
-- Zbývá: `kosti` (hromádka kostí s lebkou) a `puska`. U pušky musí být ústí nahoře zhruba
-  uprostřed (v obrázku 400 × 240 kolem bodu 180, 82) – odtud vychází paprsek; když bude jinde,
-  posunu ho.
+- Hromádku kostí a pušku jsem jen zmenšil (z obou dvojic jsem vybral: kosti s více žebry, pušku
+  s výraznější zelenou září). Paprsek vychází přesně z ústí pušky.
 - Nápisy, které generátor napsal správně (cedule u schodiště, popisky na plakátu kostry, šablona
   TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), jsem nechal.
 

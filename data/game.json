@@ -6385,7 +6385,7 @@
           "plakat_kostra": "assets/chodba/plakat_kostra.webp",
           "lekarnicka": "assets/chodba/lekarnicka.webp"
         },
-        "weapon": "assets/chodba/puska.svg",
+        "weapon": "assets/chodba/puska.webp",
         "lamps": [
           {
             "x": 1,
@@ -6539,7 +6539,7 @@
         ],
         "skeleton": {
           "image": "assets/chodba/kostlivec.webp",
-          "pile": "assets/chodba/kosti.svg",
+          "pile": "assets/chodba/kosti.webp",
           "height": 0.92,
           "lives": 3,
           "attackSeconds": 6,
@@ -6803,7 +6803,7 @@
             "death": "Kostlivec tě srazil. Ustoupil jsi o kus zpátky – zasažené kosti mu zase srostly, zkus to znovu."
           }
         },
-        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka, podlaha, strop a kostlivec (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ; kostlivec posunutý o 1,8 % dolů, aby stál na podlaze, oblasti kostí změřené podle něj). Ostatní zatím zástupné SVG."
+        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti a puska (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ; kostlivec posunutý o 1,8 % dolů, aby stál na podlaze, oblasti kostí změřené podle něj). Všechny textury jsou od autora."
       },
       "hotspots": [
         {
