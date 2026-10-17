@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.14.1 – ukázka",
+    "version": "0.15 – ukázka",
     "totalGates": 9
   },
 
@@ -33,9 +33,9 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad", "telocvicna"],
-      "_zkusebni": "trialRooms: zkušební místnost → do které místnosti světa vede. Hraje se jen přes odkaz ?mistnost=<id>, běžná hra ji přeskočí.",
-      "trialRooms": { "chodba": "telocvicna" },
+      "rooms": ["sklad", "chodba", "telocvicna"],
+      "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
+      "roomsBefore": ["sklad", "telocvicna"],
       "finish": {
         "title": "Brána II je otevřená",
         "text": "Za dveřmi tělocvičny vede chodba ven na cvičiště. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
@@ -3360,7 +3360,7 @@
               "area": [30.5, 6, 39.5, 83],
               "click": [
                 { "when": { "flags": ["brana_sklad_otevrena"] }, "do": [
-                  { "text": "Dveře jsou otevřené. Za nimi vede úzké betonové schodiště nahoru, ke světlu. Na zábradlí visí přilba." },
+                  { "text": "Dveře jsou otevřené. Za nimi vede úzké betonové schodiště nahoru do sklepních chodeb. Na zábradlí visí přilba." },
                   { "leave": true }
                 ] },
                 { "do": [
@@ -3471,7 +3471,7 @@
         ],
         "open": [
           { "sound": "door" },
-          { "text": "Pancéřové dveře se pomalu otevřely. Za nimi vede schodiště nahoru – odněkud shora je slyšet vzdálené dunění, jako by v tělocvičně někdo běhal." },
+          { "text": "Pancéřové dveře se pomalu otevřely. Za nimi vede schodiště nahoru do sklepních chodeb – z jejich tmy je slyšet tiché chrastění, jako by se tam převalovaly kosti." },
           { "note": "Brána I (vojenská): batoh 30 kg posune společné těžiště vojáka (70 kg) o 6 cm dozadu. Voják to vyrovná předklonem – svislice z těžiště musí procházet opěrnou plochou. Nejtěžší věci patří co nejblíž k zádům." }
         ]
       }
@@ -6281,16 +6281,16 @@
         "vojenska"
       ],
       "type": "corridor",
-      "_zkouska": "Zkušební bludiště „z vlastních očí“ (js/chodba.js). Hraje se jen přes odkaz ?mistnost=chodba; po výstupu po schodech pokračuje hra v tělocvičně. Až se osvědčí, stačí ho ve světě vojenska zařadit do „rooms“ mezi sklad a tělocvičnu.",
+      "_poznamka": "Bludiště „z vlastních očí“ (js/chodba.js). Ve světě vojenska mezi skladem a tělocvičnou (zařazeno 17. 10. 2026); samotné se dá spustit odkazem ?mistnost=chodba.",
       "ambience": "sklad",
       "darkness": 0,
-      "enterText": "Za pancéřovými dveřmi skladu začíná sklepní bludiště. Pod stropem bzučí zářivky, některé blikají. (Zkouška: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
+      "enterText": "Po schodech ze skladu jsi vystoupal do sklepních chodeb – tady začíná bludiště. Pod stropem bzučí zářivky, některé blikají. (Ovládání: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
       "shortcut": [
         {
           "give": "kalkulacka"
         },
         {
-          "text": "Začínáš ve sklepě za výstrojním skladem (zkušební verze bludiště). Kalkulačku ze skladu máš u sebe."
+          "text": "Začínáš rovnou ve sklepním bludišti za výstrojním skladem. Kalkulačku ze skladu máš u sebe."
         }
       ],
       "corridor": {
@@ -6817,7 +6817,7 @@
             {
               "do": [
                 {
-                  "text": "Otevřené pancéřové dveře výstrojního skladu. Brána I je za tebou – cesta vede sklepem dál."
+                  "text": "Pancéřové dveře s římskou jedničkou – tudy jsi přišel ze skladu. Brána I je za tebou, cesta vede sklepem dál."
                 }
               ]
             }
@@ -7124,7 +7124,10 @@
               },
               "do": [
                 {
-                  "text": "Stoupáš po úzkém schodišti nahoru. Osmnáct schodů – s plnou polní je to znát…"
+                  "text": "Cvičnou laserovou pušku vrátíš do stojanu u mříže a stoupáš po úzkém schodišti nahoru. Osmnáct schodů – s plnou polní je to znát…"
+                },
+                {
+                  "remove": "laserova_puska"
                 },
                 {
                   "leave": true

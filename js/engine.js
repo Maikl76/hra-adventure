@@ -188,7 +188,25 @@
       const saved = storage.get(saveKey(trackId));
       if (!saved || saved.version !== SAVE_VERSION) return null;
       const track = data.tracks.find((t) => t.id === trackId);
+      Game.resolveRoom(saved, track);
       return saved.trialRoom || (track && track.rooms[saved.roomIndex]) || null;
+    }
+
+    /* Uložená hra po změně pořadí místností světa (např. zařazení bludiště): místnost se najde podle
+       id („roomId“; starší uložení ho nemají – pak podle „roomsBefore“ = dřívější pořadí v game.json). */
+    static resolveRoom(saved, track) {
+      if (!saved || !track || !track.rooms.length) return saved;
+      if (saved.trialRoom && !(track.trialRooms || {})[saved.trialRoom]) {
+        // zkušební místnost mezitím zařazená do světa: pokračovat v ní jako v běžné místnosti
+        if (track.rooms.includes(saved.trialRoom)) saved.roomIndex = track.rooms.indexOf(saved.trialRoom);
+        delete saved.trialRoom;
+      } else {
+        const id = saved.roomId || (track.roomsBefore || track.rooms)[saved.roomIndex];
+        if (track.rooms.includes(id)) saved.roomIndex = track.rooms.indexOf(id);
+      }
+      saved.roomIndex = Math.max(0, Math.min(saved.roomIndex || 0, track.rooms.length - 1));
+      saved.roomId = track.rooms[saved.roomIndex];
+      return saved;
     }
 
     /* Starší verze ukládala jedinou hru pod společný klíč – převést na uložení podle světa. */
@@ -214,13 +232,16 @@
       const saved = id ? storage.get(saveKey(id)) : null;
       if (!saved || saved.version !== SAVE_VERSION) return false;
       if (!saved.vars) saved.vars = {};
+      Game.resolveRoom(saved, this.data.tracks.find((t) => t.id === saved.trackId));
       this.state = saved;
+      this.save();   // opravené místo hned uložit
       Game.setSetting('lastTrack', saved.trackId);
       return true;
     }
 
     save() {
       if (!this.state) return;
+      this.state.roomId = this.track.rooms[this.state.roomIndex];   // místnost i podle id (pořadí se může změnit)
       storage.set(saveKey(this.state.trackId), this.state);
       Game.setSetting('lastTrack', this.state.trackId);
     }
@@ -668,6 +689,7 @@
       const d = this.data;
       for (const t of d.tracks) {
         for (const r of t.rooms) if (!d.rooms[r]) problems.push(`Sekce „${t.id}“ odkazuje na neexistující místnost „${r}“.`);
+        for (const r of t.roomsBefore || []) if (!d.rooms[r]) problems.push(`Sekce „${t.id}“: „roomsBefore“ uvádí neexistující místnost „${r}“.`);
         for (const [r, to] of Object.entries(t.trialRooms || {})) {
           if (!d.rooms[r]) problems.push(`Sekce „${t.id}“: neexistující zkušební místnost „${r}“.`);
           if (!t.rooms.includes(to)) problems.push(`Sekce „${t.id}“: zkušební místnost „${r}“ vede do „${to}“, která v sekci není.`);

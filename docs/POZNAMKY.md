@@ -121,6 +121,11 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
 - **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
   odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
+  (Teď nepoužito – bludiště bylo zkušební do 17. 10. 2026.)
+- **Změna pořadí místností** ve světě: uložená hra si pamatuje i id místnosti (`roomId`), takže
+  pokračuje ve správné místnosti. Starší uložení `roomId` nemají – pro ně u sekce `roomsBefore` =
+  pořadí před změnou (vojenska: `["sklad", "telocvicna"]`, než přibylo bludiště). Uložená zkušební
+  místnost, která je mezitím běžnou místností, se převede na běžnou.
 - Lekačky `scares`: `image`, `sound` (`scareHit`/`scareStatic`/`scareRush`), `delay` (napětí,
   podkres ztichne), `duration`, `rush`, `position` (co zůstane v záběru na úzkém displeji),
   `after` (text připsaný potom). Každá jen jednou za hru.
@@ -143,6 +148,62 @@ Všechny čtyři pohledy a otevřené dveře jsou od autora; zástupné zůstaly
 známky a pásky (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
 **Odloženo do dalších vojenských místností** (nápady autor schválil): protizávaží u přilby, mapa
 se svahem, nosítka. Decimální váha a psací stroj jsou v tělocvičně (Brána II).
+
+### Vojenská tělovýchova – Sklep: Sklepní bludiště (`chodba`)
+Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026): chodby z vlastních očí, místnosti zůstávají
+s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně, jde ovládat i tlačítky
+na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení (žádný kód DOOMu – jeho
+licence by si vynutila změnu licence hry). Nejdřív zkušební místnost (`trialRooms`, jen přes odkaz);
+**17. 10. 2026 autor schválil zařazení**: svět vojenska = sklad → bludiště → tělocvična. Ze skladu
+vede schodiště nahoru do sklepních chodeb, z bludiště schodiště do tělocvičny. Odkaz
+`?mistnost=chodba` začne rovnou v bludišti (s kalkulačkou). Laserovou pušku hráč u mříže vrátí do
+stojanu (`remove`) – do tělocvičny se nenosí. Pozor na obrázky: otevřené dveře skladu ukazují
+schodiště nahoru, ale textura `dvere_sklad` v bludišti ukazuje za dveřmi rovnou regály skladu –
+texty to překlenují („tudy jsi přišel ze skladu“), čisté řešení by byla nová textura nebo vrstva.
+Starší uložené hry: viz `roomsBefore` / `roomId` ve formátu game.json.
+Po první zkoušce autor chtěl delší chodbu se zatáčkami a střelbu na kostlivce – zvolil (Menu otázek):
+**anatomie** (trefit jmenovanou kost), **cvičná laserová puška** (laser game, bez krve, kostlivec se
+rozsype na hromádku kostí), **kostlivci útočí, 3 životy** (po ztrátě všech zpět ke dveřím skladu;
+Menu → „Kostlivci útočí: ano/ne“), **bludiště s odbočkami**.
+Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 kroků (120 m), slepé uličky:
+- **Azimut a vzdálenost**: nástěnka u startu – klíč od zbrojní skříně „od hasicího přístroje 4,8 m na
+  azimut 0°, pak 9,6 m na azimut 90°, otoč se na 180°“ → uvolněná cihla (skrytý objekt). Kompas
+  nahoře (0° S, 90° V, 180° J, 270° Z).
+- Zbrojní skříň → **laserová puška**; závora s čidlem se otevře zásahem laserem.
+- **4 kostlivci** na cestě, každý 2 kosti: stehenní + pažní, klíční + pánev, hrudní + holenní,
+  čéška + lýtková. Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
+  a kde hledaná kost je. Plakát kostry ve slepé uličce (nápověda), lékárnička doplní životy.
+  Kostlivec se probudí, když hráče uvidí (do 4 políček v přímé chodbě), jde k němu (1 políčko za
+  2,2 s) a u hráče útočí (první po 5 s, pak každé 6 s).
+- Po autorově zkoušce na tabletu („nemůžu trefit kost, pořád mě to vrací na začátek“): zásah počítá
+  kost nejbližší místu ťuknutí, když je do 24 px obrázku (`tolerance`); kostlivec u hráče přistoupí
+  k okraji políčka (větší terč); puška vpravo dole a nápis s kostí vlevo nezakrývají kostlivce;
+  po chybě hledaná kost na kostlivci 2,6 s bliká; po poraženém kostlivci se doplní životy; po ztrátě
+  životů se hráč vrátí jen tam, kde ho kostlivec uviděl (ne na start).
+- **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
+  ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
+- Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
+Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
+otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
+Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
+cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin,
+zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti, puska (všechny) – u zdí pruh podlahy pod soklem
+oříznut, jas srovnán podle `zed`, okraje prolnuté do společného okraje zdi (pás 40 px), aby zdi
+navazovaly v libovolném pořadí. Výjimky: u `potrubi` se řádky s trubkami neprolínají (trubka vede až
+k okraji, prolnutá vypadala rozmazaně); `schodiste` je vodorovně natažené, aby rám otvoru seděl
+s rámem mříže (po odemčení obraz neposkočí); na nástěnce generátor napsal ROZPIS – přepsáno na ROZKAZ
+(jako text po kliknutí). Nápisy, které generátor napsal správně (cedule, popisky plakátu, šablona
+TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), zůstaly. Podlaha a strop jen zmenšené
+(spára po okraji = hranice desek 2,4 m, podle nich hráč počítá kroky). Kostlivec: autor poslal dvě
+skoro stejné verze, použita druhá (světlejší, ve tmě lépe vidět); zmenšen na 256 × 512 (s vynásobenou
+průhledností, aby okraje neztmavly) a posunut o 32 px dolů (chodidla v 99,5 % výšky, stojí na podlaze).
+Oblasti kostí (`skeleton.zones`) změřené na novém obrázku; pánev ve dvou dílech (horní celá šíře,
+dolní jen střed), stehenní je v pořadí před pánví, aby hlavice stehenní kosti počítaly za stehenní.
+Hromádka kostí (256 × 128) a puška (400 × 240) jen zmenšené (z dvojic skoro stejných verzí: kosti
+s více žebry, puška s výraznější zelenou září). Lebka na hromádce je stejně velká jako u stojícího
+kostlivce. Ústí pušky vyšlo na (180, 78), hra počítá s (180, 82) – rozdíl pod 3 px, kód beze změny.
+Zástupná SVG v `assets/chodba/` zůstala jako záloha (hra je nenačítá).
+Kreslení ~15–20 ms na snímek v testovacím prohlížeči.
 
 ### Vojenská tělovýchova – Brána II: Tělocvična (`telocvicna`)
 Výroční přezkoušení z fyzické zdatnosti podle autorova návrhu nových norem (Excel, první list;
@@ -197,56 +258,6 @@ okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze
 trvá déle → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
-### Zkouška: sklepní bludiště „z vlastních očí“ (`chodba`)
-Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026): chodby z vlastních očí, místnosti zůstávají
-s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně, jde ovládat i tlačítky
-na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení (žádný kód DOOMu – jeho
-licence by si vynutila změnu licence hry). Odkaz: `?mistnost=chodba` – nová hra začne za výstrojním
-skladem, po schodech pokračuje do tělocvičny; běžná hra bludiště přeskakuje (`trialRooms`).
-Po první zkoušce autor chtěl delší chodbu se zatáčkami a střelbu na kostlivce – zvolil (Menu otázek):
-**anatomie** (trefit jmenovanou kost), **cvičná laserová puška** (laser game, bez krve, kostlivec se
-rozsype na hromádku kostí), **kostlivci útočí, 3 životy** (po ztrátě všech zpět ke dveřím skladu;
-Menu → „Kostlivci útočí: ano/ne“), **bludiště s odbočkami**.
-Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 kroků (120 m), slepé uličky:
-- **Azimut a vzdálenost**: nástěnka u startu – klíč od zbrojní skříně „od hasicího přístroje 4,8 m na
-  azimut 0°, pak 9,6 m na azimut 90°, otoč se na 180°“ → uvolněná cihla (skrytý objekt). Kompas
-  nahoře (0° S, 90° V, 180° J, 270° Z).
-- Zbrojní skříň → **laserová puška**; závora s čidlem se otevře zásahem laserem.
-- **4 kostlivci** na cestě, každý 2 kosti: stehenní + pažní, klíční + pánev, hrudní + holenní,
-  čéška + lýtková. Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
-  a kde hledaná kost je. Plakát kostry ve slepé uličce (nápověda), lékárnička doplní životy.
-  Kostlivec se probudí, když hráče uvidí (do 4 políček v přímé chodbě), jde k němu (1 políčko za
-  2,2 s) a u hráče útočí (první po 5 s, pak každé 6 s).
-- Po autorově zkoušce na tabletu („nemůžu trefit kost, pořád mě to vrací na začátek“): zásah počítá
-  kost nejbližší místu ťuknutí, když je do 24 px obrázku (`tolerance`); kostlivec u hráče přistoupí
-  k okraji políčka (větší terč); puška vpravo dole a nápis s kostí vlevo nezakrývají kostlivce;
-  po chybě hledaná kost na kostlivci 2,6 s bliká; po poraženém kostlivci se doplní životy; po ztrátě
-  životů se hráč vrátí jen tam, kde ho kostlivec uviděl (ne na start).
-- **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
-  ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
-- Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
-Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
-otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
-Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
-cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin,
-zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti, puska (všechny) – u zdí pruh podlahy pod soklem
-oříznut, jas srovnán podle `zed`, okraje prolnuté do společného okraje zdi (pás 40 px), aby zdi
-navazovaly v libovolném pořadí. Výjimky: u `potrubi` se řádky s trubkami neprolínají (trubka vede až
-k okraji, prolnutá vypadala rozmazaně); `schodiste` je vodorovně natažené, aby rám otvoru seděl
-s rámem mříže (po odemčení obraz neposkočí); na nástěnce generátor napsal ROZPIS – přepsáno na ROZKAZ
-(jako text po kliknutí). Nápisy, které generátor napsal správně (cedule, popisky plakátu, šablona
-TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), zůstaly. Podlaha a strop jen zmenšené
-(spára po okraji = hranice desek 2,4 m, podle nich hráč počítá kroky). Kostlivec: autor poslal dvě
-skoro stejné verze, použita druhá (světlejší, ve tmě lépe vidět); zmenšen na 256 × 512 (s vynásobenou
-průhledností, aby okraje neztmavly) a posunut o 32 px dolů (chodidla v 99,5 % výšky, stojí na podlaze).
-Oblasti kostí (`skeleton.zones`) změřené na novém obrázku; pánev ve dvou dílech (horní celá šíře,
-dolní jen střed), stehenní je v pořadí před pánví, aby hlavice stehenní kosti počítaly za stehenní.
-Hromádka kostí (256 × 128) a puška (400 × 240) jen zmenšené (z dvojic skoro stejných verzí: kosti
-s více žebry, puška s výraznější zelenou září). Lebka na hromádce je stejně velká jako u stojícího
-kostlivce. Ústí pušky vyšlo na (180, 78), hra počítá s (180, 82) – rozdíl pod 3 px, kód beze změny.
-Zástupná SVG v `assets/chodba/` zůstala jako záloha (hra je nenačítá).
-Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědčí: zařadit `chodba` do `rooms`.
-
 ## Rozhodnutí autora (důležitá)
 
 - **Každá věc, která se v místnosti dělá nebo skládá, má mít výukový význam** – student se tím
@@ -264,7 +275,8 @@ Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědč�
 - **Zvuk nikdy nenese informaci k řešení** (třída bez zvuku, neslyšící studenti).
 - **Zbraně:** jinak ve hře žádné; výjimka je sklepní bludiště – autor chtěl střelbu na kostlivce:
   jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
-  se dají v Menu vypnout.
+  se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
+- **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
 
 ## Obrázky od autora – postup
