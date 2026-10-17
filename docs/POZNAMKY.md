@@ -39,8 +39,11 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
   (Menu → Vyznačit objekty v místnosti) a světla (`lights`).
 - **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
   importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`, `goblet.js`) a `skok.js`,
-  `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo). Při každém nahrání změněného JS/CSS zvýšit
-  spolu s `meta.version`, jinak prohlížeče hráčů míchají starý a nový kód.
+  `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo; také `chodba.js`
+  a `basket.js` v `js/ui.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
+  prohlížeče hráčů míchají starý a nový kód. **První slovo `meta.version` musí být stejné jako `?v=`
+  u `ui.js`**: když se liší (stará stránka z mezipaměti – GitHub Pages ji drží až 10 minut, autor tak
+  17. 10. 2026 neotevřel basketbalový automat), hra se jednou sama znovu načte s `?v=<verze>`.
 - Do repozitáře **nikdy**: složka `podklady/` (originály obrázků, pomocné nástroje, odborné
   podklady – jen u autora), soubor `CLAUDE.md` v kořeni (lokální poznámky se soukromými údaji),
   `zkousky/` (lokální prototypy). Vše je v `.gitignore`.
@@ -104,7 +107,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
 - Aktivity (`activities`, typ `type`): `reflex`, `squats`, `tape` (měření tahem), `pack`
   (balení batohu), `lift` (zvedání bedny), `stance` (postoj), `lean` (zkouška stability), `jump`
   (výskok), `targets` (NEON AIM), `pushup` (kliky na decimální váze), `throw` (šikmý vrh –
-  medicinbal, granát), `gobletsim` (panáček v dolní poloze goblet dřepu), `goblet` (goblet dřep
+  medicinbal, granát; kolo má `speed`, `h0` = výška odhodu, `target`, volitelně `pose: "sed"`
+  = postava sedí u stěny a `x0` = jak daleko před stěnou míč opouští ruku, dolet se měří od stěny), `gobletsim` (panáček v dolní poloze goblet dřepu), `goblet` (goblet dřep
   90 s). Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
@@ -239,7 +243,9 @@ stroji **2213** – běh, leh-sed, kliky, břemeno (cílené rady na špatný sl
 méně, tím lépe“ a na shyby navíc) → P. S. →
 běžecký pás **13,5 km/h** (jednička v běhu 2 700 m / 12 min) → klíček → skříň s náčiním
 (kettlebell, závaží) → kliky na decimální váze (70 kg, těžiště 0,90 m, ruce 1,30 m od špiček;
-pak s batohem 15 kg) → odhodový sektor (medicinbal 5,5 m/s z 1,6 m na 4,35 m; granát 20 m/s
+pak s batohem 15 kg) → odhodový sektor (odhod medicinbalu 4 kg **vsedě u stěny** – záda opřená,
+nohy natažené, od hrudníku obloukem: 5,5 m/s z výšky 0,9 m, 0,5 m před stěnou, měří se od stěny;
+jednička 4,35 m vyjde asi pod 35–42°, nejdál 4,38 m pod 38°, 45° dá jen 4,31 m; granát 20 m/s
 z 2 m na 42 m) → panáček „Proč taková pravidla?“ → **goblet dřep 90 s** (kamerou, bez kamery
 počítá kolega, nebo vynechat). Brána: síla rukou při kliku `80*9.81*0.9/1.3` N (±3 %, cílené rady),
 práce při výdrži ve shybu **0 J**, úhel hodu z výšky (o něco níž než 45°), proč kettlebell vpředu.

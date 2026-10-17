@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.19 – ukázka",
+    "version": "0.20 – ukázka",
     "totalGates": 9
   },
 
@@ -960,7 +960,7 @@
           {
             "blocks": [
               { "heading": "Odhod medicinbalu – muži" },
-              { "p": "Medicinbal 4 kg, vzdálenost (cm)." },
+              { "p": "Medicinbal 4 kg, odhod od hrudníku vsedě, záda u stěny, nohy natažené; vzdálenost od stěny (cm)." },
               {
                 "table": {
                   "caption": "Kategorie BI",
@@ -991,7 +991,7 @@
           {
             "blocks": [
               { "heading": "Odhod medicinbalu – ženy" },
-              { "p": "Medicinbal 3 kg, vzdálenost (cm)." },
+              { "p": "Medicinbal 3 kg, odhod od hrudníku vsedě, záda u stěny, nohy natažené; vzdálenost od stěny (cm)." },
               {
                 "table": {
                   "caption": "Kategorie BI",
@@ -4950,17 +4950,19 @@
           "intro": "Hod je šikmý vrh: předmět letí po oblouku. Dolet záleží na rychlosti odhodu, na úhlu a na výšce, ze které předmět pustíš (odpor vzduchu zanedbáváme).",
           "rounds": [
             {
-              "name": "Odhod medicinbalu 4 kg",
+              "name": "Odhod medicinbalu 4 kg vsedě u stěny",
               "var": "hod_mb",
               "object": "medicinbal",
+              "pose": "sed",
               "speed": 5.5,
-              "h0": 1.6,
+              "h0": 0.9,
+              "x0": 0.5,
               "target": 4.35,
-              "targetLabel": "jednička: 4,35 m (muži BI, do 30 let)",
+              "targetLabel": "jednička: 4,35 m od stěny (muži BI, do 30 let)",
               "xMax": 6,
               "tick": 1,
-              "text": "Medicinbal vyletí rychlostí 5,5 m/s z výšky 1,6 m. Najdi úhel, při kterém doletí na jedničku – 4,35 m.",
-              "success": "Jednička! Všimni si úhlu: u krátkého hodu z výšky je nejlepší úhel hodně pod 45°."
+              "text": "Sedíš zády opřený o stěnu, nohy natažené. Medicinbal odhodíš obouruč od hrudníku obloukem dopředu – vyletí rychlostí 5,5 m/s z výšky 0,9 m, asi půl metru před stěnou. Měří se od stěny k místu dopadu. Najdi úhel, při kterém doletí na jedničku – 4,35 m.",
+              "success": "Jednička! Nejdál míč letí kolem 38° – pod 45°, protože startuje výš (0,9 m), než dopadá; pod 45° by na jedničku nedoletěl. Opřená záda a natažené nohy vyřadí švih trupu a nohou, takže test měří výbušnou sílu paží, ramen a prsních svalů."
             },
             {
               "name": "Hod granátem",
@@ -4984,7 +4986,7 @@
               "set": "hod_hotovo"
             },
             {
-              "note": "Hod: medicinbal (5,5 m/s z výšky 1,6 m) doletí nejdál asi pod 35°, granát (20 m/s z 2 m) asi pod 44°. Čím vyšší odhod proti doletu, tím víc pod 45°. Dolet roste s druhou mocninou rychlosti.",
+              "note": "Hod: medicinbal vsedě u stěny (5,5 m/s z výšky 0,9 m, půl metru před stěnou) doletí nejdál asi pod 38°, granát (20 m/s z 2 m) asi pod 44°. Čím vyšší odhod proti doletu, tím víc pod 45°. Dolet roste s druhou mocninou rychlosti.",
               "noteKey": "hod"
             }
           ]
@@ -5919,7 +5921,7 @@
                 {
                   "do": [
                     {
-                      "text": "Stojan s medicinbaly 3 a 4 kg. Odhod se měří pásmem k místu dopadu."
+                      "text": "Stojan s medicinbaly 3 a 4 kg. Odhazuje se vsedě, zády opřený o stěnu a s nataženýma nohama; měří se pásmem od stěny k místu dopadu."
                     },
                     {
                       "activity": "hod"
@@ -6357,7 +6359,7 @@
             ],
             "correct": 1,
             "feedback": {
-              "0": "45° platí, jen když předmět startuje i dopadá ve stejné výšce. Vzpomeň na medicinbal z výšky 1,6 m – tam bylo nejlepší asi 35°.",
+              "0": "45° platí, jen když předmět startuje i dopadá ve stejné výšce. Vzpomeň na medicinbal vsedě u stěny – vyletěl z výšky 0,9 m, nejdál doletěl asi pod 38° a pod 45° na jedničku nedoletěl.",
               "2": "Vyšší úhel prodlouží let, ale zmenší rychlost dopředu. V sektoru ti nejdál doletělo všechno pod 45°.",
               "3": "Nízký hod rychle dopadne na zem. Zkus si to v sektoru."
             },

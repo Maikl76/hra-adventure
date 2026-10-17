@@ -15,7 +15,7 @@
  * musí být přes čáru špiček déle než pár snímků za sebou (ne jen záškub modelu). Doladit jde
  * v game.json: kneeTolCm, headTolCm, seatTolCm, sitSeconds.
  */
-import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.19';
+import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.20';
 
 const VIS = 0.5;            // minimální viditelnost bodu
 const LEG_CM = 85;          // standardní vzdálenost kyčel–kotník pro přepočet pixelů na cm

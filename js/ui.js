@@ -21,6 +21,28 @@
    * Spuštění
    * ==================================================================== */
 
+  /* Stará stránka z mezipaměti prohlížeče: game.json se načítá vždy čerstvý, ale index.html a skripty
+     mohou být z mezipaměti (GitHub Pages je drží až 10 minut) – pak nový obsah narazí na starý kód
+     (např. aktivita, kterou starý kód nezná, se neotevře). Když se verze skriptů (?v= u ui.js)
+     neshoduje s verzí v game.json, stránka se jednou znovu načte s ?v=<verze>, aby prohlížeč vzal novou. */
+  function reloadIfStale(d) {
+    const want = String((d.meta && d.meta.version) || '').split(' ')[0];
+    const el = document.querySelector('script[src*="js/ui.js"]');
+    const have = el ? new URL(el.src, location.href).searchParams.get('v') : null;
+    if (!want || !have || want === have) return false;
+    try {
+      const key = `brany-biomechaniky-obnoveno-${want}`;
+      if (sessionStorage.getItem(key)) return false;   // jen jednou (žádné nekonečné obnovování)
+      sessionStorage.setItem(key, '1');
+    } catch (e) {
+      return false;
+    }
+    const url = new URL(location.href);
+    url.searchParams.set('v', want);
+    location.replace(url.toString());
+    return true;
+  }
+
   async function init() {
     try {
       const response = await fetch('data/game.json', { cache: 'no-cache' });
@@ -39,6 +61,7 @@
       return;
     }
 
+    if (reloadIfStale(data)) return;
     Game.migrateSave();   // starší jediné uložení → uložení podle světa
     game = new Game(data);
     const problems = game.validate();
@@ -793,7 +816,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.19');
+      const mod = await import('./chodba.js?v=0.20');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1665,7 +1688,7 @@
         }
       };
 
-      import('./basket.js?v=0.19').then((mod) => {
+      import('./basket.js?v=0.20').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2288,7 +2311,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.19');
+          const mod = await import('./squats.js?v=0.20');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3150,7 +3173,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.19');
+          const mod = await import('./skok.js?v=0.20');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3528,7 +3551,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.19');
+          const mod = await import('./goblet.js?v=0.20');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -3999,10 +4022,11 @@
     let throws = [], best = null, roundDone = false, raf = 0;
     const out = { hod_hotovo: 1 };
 
-    const range = (v, a, h) => {
+    // dolet měřený od místa, odkud se měří (u hodu vsedě od stěny): x0 = kde předmět opustí ruce
+    const range = (v, a, h, x0 = 0) => {
       const r = a * Math.PI / 180, vx = v * Math.cos(r), vy = v * Math.sin(r);
       const t = (vy + Math.sqrt(vy * vy + 2 * g * h)) / g;
-      return { d: vx * t, t, vx, vy };
+      return { d: x0 + vx * t, t, vx, vy };
     };
 
     openModal((box) => {
@@ -4057,15 +4081,33 @@
         el('line', { x1: SX(r.target), y1: Y0, x2: SX(r.target), y2: Y0 - 70, stroke: '#9fbf7a', 'stroke-width': 2 }, svg);
         el('path', { d: `M${SX(r.target)},${Y0 - 70} l22,7 l-22,7 z`, fill: '#9fbf7a' }, svg);
         el('text', { x: SX(r.target) + 4, y: Y0 - 76, 'font-size': 11, fill: '#9fbf7a' }, svg, r.targetLabel || `${fmt(r.target, 2)} m`);
-        // vrhač (výška ~1,8 m v měřítku, ale aspoň 40 px)
-        const hpx = Math.max(40, 1.8 * K()), relY = Y0 - Math.max(r.h0 * K(), hpx * (r.h0 / 1.8));
-        el('line', { x1: X0, y1: Y0, x2: X0, y2: Y0 - hpx * 0.55, stroke: '#4f5638', 'stroke-width': 6, 'stroke-linecap': 'round' }, svg);
-        el('line', { x1: X0, y1: Y0 - hpx * 0.55, x2: X0, y2: Y0 - hpx * 0.85, stroke: '#566040', 'stroke-width': 8, 'stroke-linecap': 'round' }, svg);
-        el('circle', { cx: X0, cy: Y0 - hpx * 0.93, r: Math.max(4, hpx * 0.07), fill: '#6b6650' }, svg);
-        el('line', { x1: X0, y1: Y0 - hpx * 0.8, x2: X0 + 6, y2: relY, stroke: '#c9b08a', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg);
+        let relX, relY;
+        if (r.pose === 'sed') {
+          // odhod vsedě: záda opřená o stěnu, nohy natažené, míč od hrudníku (souřadnice v metrech)
+          const P = (x, y) => [SX(x), SY(y)];
+          const line = (a, b, color, w) => el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: color, 'stroke-width': w, 'stroke-linecap': 'round' }, svg);
+          el('rect', { x: SX(0) - 10, y: SY(2.2), width: 10, height: SY(0) - SY(2.2), fill: '#3a3a30', stroke: '#5a5a48' }, svg);
+          el('text', { x: SX(0) - 14, y: SY(2.05), 'text-anchor': 'end', 'font-size': 10, fill: '#a39580' }, svg, 'stěna');
+          const hip = P(0.16, 0.1), sh = P(0.12, 0.6), hand = P(r.x0 || 0, r.h0);
+          line(hip, P(1.05, 0.05), '#4f5638', 7);                          // natažené nohy
+          line(hip, sh, '#566040', 9);                                      // záda u stěny
+          el('circle', { cx: SX(0.13), cy: SY(0.76), r: 0.09 * K(), fill: '#6b6650' }, svg);
+          line(sh, hand, '#c9b08a', 4);                                     // paže k míči
+          [relX, relY] = hand;
+        } else {
+          // vrhač ve stoje (výška ~1,8 m v měřítku, ale aspoň 40 px)
+          const hpx = Math.max(40, 1.8 * K());
+          relX = SX(r.x0 || 0) + 6;
+          relY = Y0 - Math.max(r.h0 * K(), hpx * (r.h0 / 1.8));
+          el('line', { x1: X0, y1: Y0, x2: X0, y2: Y0 - hpx * 0.55, stroke: '#4f5638', 'stroke-width': 6, 'stroke-linecap': 'round' }, svg);
+          el('line', { x1: X0, y1: Y0 - hpx * 0.55, x2: X0, y2: Y0 - hpx * 0.85, stroke: '#566040', 'stroke-width': 8, 'stroke-linecap': 'round' }, svg);
+          el('circle', { cx: X0, cy: Y0 - hpx * 0.93, r: Math.max(4, hpx * 0.07), fill: '#6b6650' }, svg);
+          el('line', { x1: X0, y1: Y0 - hpx * 0.8, x2: relX, y2: relY, stroke: '#c9b08a', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg);
+        }
         // směr odhodu
         const a = angleDeg * Math.PI / 180;
-        el('line', { x1: X0 + 6, y1: relY, x2: X0 + 6 + 46 * Math.cos(a), y2: relY - 46 * Math.sin(a), stroke: '#ffd28a', 'stroke-width': 2, 'stroke-dasharray': '4 3' }, svg);
+        el('line', { x1: relX, y1: relY, x2: relX + 46 * Math.cos(a), y2: relY - 46 * Math.sin(a), stroke: '#ffd28a', 'stroke-width': 2, 'stroke-dasharray': '4 3' }, svg);
+        if (!ball && !flying) el('circle', { cx: relX, cy: relY, r: r.object === 'granat' ? 4 : 7, fill: r.object === 'granat' ? '#55603a' : '#7a4a2a', stroke: '#111' }, svg);
         // předchozí hody
         throws.forEach((t, i) => {
           const last = i === throws.length - 1;
@@ -4076,7 +4118,7 @@
         if (ball) el('circle', { cx: ball[0], cy: ball[1], r: r.object === 'granat' ? 4 : 7, fill: r.object === 'granat' ? '#55603a' : '#7a4a2a', stroke: '#111' }, svg);
         readout.innerHTML = '';
         for (const [k, v] of [
-          ['Výška odhodu', `${fmt(r.h0, 1)} m`],
+          ['Výška odhodu', `${fmt(r.h0, 1)} m${r.x0 ? `, ${fmt(r.x0, 1)} m před stěnou` : ''}`],
           ['Nejlepší hod', best ? `${fmt(best.d, 2)} m pod úhlem ${best.a}°` : '–'],
         ]) {
           const d = document.createElement('div');
@@ -4092,12 +4134,13 @@
       function doThrow() {
         if (flying) return;
         const r = round();
-        const res = range(speed, angleDeg, r.h0);
+        const x0 = r.x0 || 0;
+        const res = range(speed, angleDeg, r.h0, x0);
         const pts = [];
         const n = 40;
         for (let i = 0; i <= n; i++) {
           const t = res.t * i / n;
-          pts.push([SX(res.vx * t), SY(r.h0 + res.vy * t - g * t * t / 2)]);
+          pts.push([SX(x0 + res.vx * t), SY(r.h0 + res.vy * t - g * t * t / 2)]);
         }
         const path = `M${pts.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' L')}`;
         flying = true;
@@ -4238,7 +4281,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.19');
+          const mod = await import('./predklon.js?v=0.20');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
