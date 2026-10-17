@@ -153,9 +153,9 @@
     }
 
     /* ---------- Bouřka venku (vrstva pod podkresem místnosti) ----------
-       storm({ place, level }) zapne nebo upraví déšť a dunění, storm(null) je vypne.
-       place: „okno“ = déšť na skle, „budova“ = déšť na střeše (tlumeně), „sklep“ = jen hluboké
-       dunění přes zdi. level 0–1 = síla bouřky (u brány nejsilnější). Hromy hraje thunder(). */
+       storm({ place, level }) zapne nebo upraví vzdálené dunění, storm(null) ho vypne. Déšť záměrně
+       není (autorovi šumění vadilo). place: „okno“, „budova“, „sklep“ (ve sklepě dunění silnější
+       a hromy tlumené); level 0–1 = síla bouřky (u brány nejsilnější). Hromy hraje thunder(). */
     storm(opts) {
       this.stormWanted = opts || null;
       if (!this.ctx || !this.enabled) return;
@@ -167,11 +167,7 @@
       const s = this.stormLayer;
       const lvl = Math.max(0, Math.min(1, opts.level || 0));
       const t = this.ctx.currentTime;
-      const P = { okno: [0.035, 0.05, 5200, 1], budova: [0.03, 0.05, 1600, 0.35], sklep: [0.006, 0.008, 320, 0] }[opts.place] || [0.03, 0.05, 1600, 0.35];
-      s.rain.gain.setTargetAtTime(P[0] + P[1] * lvl, t, 2);
-      s.rainTone.frequency.setTargetAtTime(P[2], t, 2);
       s.rumble.gain.setTargetAtTime((opts.place === 'sklep' ? 0.05 : 0.035) + 0.04 * lvl, t, 3);
-      s.patter = P[3] * (0.4 + 0.6 * lvl);   // kapky na skle (jen u okna, na střeše slabě)
     }
 
     startStorm() {
@@ -180,28 +176,11 @@
       const group = this.gain(0.0001, this.music);
       group.gain.setTargetAtTime(1, t, 2.5);
       const h = { sources: [], timers: [] };
-      // déšť: šum bez nejhlubších a (podle místa) bez nejvyšších tónů
-      const rain = this.gain(0, group);
-      const rainTone = this.filter('lowpass', 1600, 0.5, rain);
-      h.sources.push(this.noiseSource(this.filter('highpass', 380, 0.5, rainTone), t, 0, this.noise, true));
-      this.lfo(rain.gain, 0.07, 0.008, t, h);   // déšť sílí a slábne
       // vzdálené dunění bouřky: velmi hluboký šum, pomalu se vlní
       const rumble = this.gain(0, group);
       h.sources.push(this.noiseSource(this.filter('lowpass', 180, 0.6, rumble), t, 0, this.brown, true));   // pod ~150 Hz malé reproduktory nehrají
       this.lfo(rumble.gain, 0.031, 0.02, t, h);
-      const layer = { group, h, rain, rainTone, rumble, patter: 0 };
-      // kapky na skle / na střeše: krátká tichá ťuknutí
-      let next = t + 0.5;
-      h.timers.push(setInterval(() => {
-        const now = ctx.currentTime;
-        while (next < now + 0.3) {
-          if (layer.patter > 0 && Math.random() < layer.patter) {
-            this.noiseBurst(group, Math.max(next, now + 0.02), 0.012, 'bandpass', 2500 + Math.random() * 3500, 0.03 * layer.patter);
-          }
-          next += 0.05 + Math.random() * 0.12;
-        }
-      }, 100));
-      this.stormLayer = layer;
+      this.stormLayer = { group, h, rumble };
     }
 
     stopStorm(fade) {
