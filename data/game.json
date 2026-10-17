@@ -6371,7 +6371,7 @@
           "zed": "assets/chodba/zed.webp",
           "podlaha": "assets/chodba/podlaha.svg",
           "strop": "assets/chodba/strop.svg",
-          "sipka": "assets/chodba/sipka.svg",
+          "sipka": "assets/chodba/sipka.webp",
           "potrubi": "assets/chodba/potrubi.webp",
           "cedule_schody": "assets/chodba/cedule_schody.webp",
           "hasicak": "assets/chodba/hasicak.webp",
@@ -6379,9 +6379,9 @@
           "dvere_sklad": "assets/chodba/dvere_sklad.webp",
           "mriz": "assets/chodba/mriz.webp",
           "schodiste": "assets/chodba/schodiste.webp",
-          "zbrojni_skrin": "assets/chodba/zbrojni_skrin.svg",
-          "zbrojni_skrin_prazdna": "assets/chodba/zbrojni_skrin_prazdna.svg",
-          "zavora": "assets/chodba/zavora.svg",
+          "zbrojni_skrin": "assets/chodba/zbrojni_skrin.webp",
+          "zbrojni_skrin_prazdna": "assets/chodba/zbrojni_skrin_prazdna.webp",
+          "zavora": "assets/chodba/zavora.webp",
           "plakat_kostra": "assets/chodba/plakat_kostra.webp",
           "lekarnicka": "assets/chodba/lekarnicka.webp"
         },
@@ -6797,7 +6797,7 @@
             "death": "Kostlivec tě srazil. Ustoupil jsi o kus zpátky – zasažené kosti mu zase srostly, zkus to znovu."
           }
         },
-        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ). Ostatní zatím zástupné SVG."
+        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ). Ostatní zatím zástupné SVG."
       },
       "hotspots": [
         {

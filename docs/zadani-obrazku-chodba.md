@@ -6,16 +6,16 @@ obrázků, kterými hra „tapetuje“ zdi, podlahu a strop. Hráč je vidí zbl
 
 **Stav (17. 10. 2026):**
 - Hotovo (vaše textury jsou ve hře): `zed`, `hasicak`, `dvere_sklad`, `cedule_schody`,
-  `lekarnicka`, `nastenka`, `mriz`, `plakat_kostra`, `potrubi`, `schodiste`. Upravil jsem je jen
-  technicky: oříznutý pruh podlahy pod soklem, srovnaný jas a prolnuté okraje vlevo a vpravo, aby
-  zdi na sebe navazovaly v jakémkoli pořadí.
+  `lekarnicka`, `nastenka`, `mriz`, `plakat_kostra`, `potrubi`, `schodiste`, `zavora`,
+  `zbrojni_skrin`, `zbrojni_skrin_prazdna`, `sipka`. Upravil jsem je jen technicky: oříznutý
+  pruh podlahy pod soklem, srovnaný jas a prolnuté okraje vlevo a vpravo, aby zdi na sebe
+  navazovaly v jakémkoli pořadí.
 - Drobné úpravy: na nástěnce jsem nadpis ROZPIS přepsal na ROZKAZ (tak se list jmenuje po
   kliknutí). Schodiště jsem trochu roztáhl do šířky, aby jeho rám seděl s rámem mříže – po
   odemčení obraz neposkočí. Trubky na potrubí vedou až k okraji obrázku (neprolínám je).
-- Zbývá: `podlaha`, `strop`, `sipka`, `zbrojni_skrin`, `zbrojni_skrin_prazdna`, `zavora`
-  a postavy `kostlivec`, `kosti`, `puska`.
-- Nápisy, které generátor napsal správně (cedule u schodiště, popisky na plakátu kostry), jsem
-  nechal.
+- Zbývá: `podlaha`, `strop` a postavy `kostlivec`, `kosti`, `puska`.
+- Nápisy, které generátor napsal správně (cedule u schodiště, popisky na plakátu kostry, šablona
+  TĚLOCVIČNA – SCHODIŠTĚ, štítky ČIDLO a ZBROJNÍ SKŘÍŇ), jsem nechal.
 
 Vyzkoušet: <https://maikl76.github.io/hra-adventure/?mistnost=chodba>
 
