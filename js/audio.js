@@ -666,6 +666,25 @@
    * ==================================================================== */
 
   const SFX = {
+    /* Basketbal: míč prolétl síťkou (šustnutí). */
+    swish(dest, t) {
+      this.noiseBurst(dest, t, 0.22, 'bandpass', 3200, 0.12);
+      this.noiseBurst(dest, t + 0.05, 0.18, 'bandpass', 2200, 0.06);
+    },
+
+    /* Basketbal: míč ťukl do obroučky (kovové cinknutí). */
+    rim(dest, t) {
+      this.ping(dest, 880, t, 0.09, 0.5);
+      this.ping(dest, 1390, t, 0.05, 0.35);
+      this.thump(dest, t, 0.08, 120);
+    },
+
+    /* Basketbal: míč dopadl na podlahu. */
+    bounce(dest, t) {
+      this.thump(dest, t, 0.22, 85);
+      this.thump(dest, t + 0.42, 0.1, 85);
+    },
+
     /* Klávesa číselníku. */
     key(dest, t) {
       this.click(dest, 3200, t, 0.2);

@@ -121,6 +121,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `moveSeconds`, `wakeCells`), `weapon` = obrázek pušky; zbraň = předmět `weaponItem`
   (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
   Objekt s `pile: "<id kostlivce>"` místo `cell` = hromádka kostí na podlaze, kde kostlivec padl.
+- Aktivita `basket` (basketbalový automat, `js/basket.js`): trestný hod z boku ve skutečných rozměrech
+  (odhod z 2,2 m, obroučka 305 cm ve 4,225 m, průměr 45 cm, míč 24 cm, odrazy od obroučky a desky).
+  Prak (tah od míče), šipky / tlačítka ± úhel a rychlost, „Hodit“ = znovu se stejným nastavením.
+  `throws`, `need` (výhra), `hintAfter` + `hint` (nápověda po neúspěšných kolech); výsledek `kose`
+  (nejlepší kolo), `kos_uhel`, `kos_rychlost`. Po hodu: kde míč prošel výškou obroučky a pod jakým
+  úhlem (otvor = 45 cm · sin úhlu; pod 32° menší než míč). Funguje třeba 55° a 7,2 m/s.
 - Aktivita `skeleton` (skládání kostry): `image` (kostra s mezerami), `slots` [{ `id`, `item`, `name`,
   `image` (vyříznutá kost), `box` (její poloha v % obrázku), `marker` (otazník v %), `where`, `hint` }];
   vrácená kost = příznak `kostra_<id>`, chyby `kostra_chybne`, po poslední kosti `done`.
@@ -273,7 +279,8 @@ Doba letu a výška výskoku, rychlost a přesnost pohybu. Automat JUMP (konekto
 okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze značek na stěně) →
 **výskok z podřepu (SJ)** kamerou, nebo „jump and reach“ bez kamery → výška h = g·t²/8 (zámek
 `981*tl^2/8` cm) → NEON AIM (Fittsův zákon, ID = log₂(D/W + 1)) → otázka, proč malý vzdálený terč
-trvá déle → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
+trvá déle → **basketbalový automat** (trestný hod, povinně aspoň 3 koše z 10) → otázka, proč se hází
+vysokým obloukem → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 
 ## Rozhodnutí autora (důležitá)
@@ -306,6 +313,8 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
 - **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična.
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
+- **Basketbal v aréně** (17. 10. 2026): ovládání jako prak, 10 hodů, **povinně aspoň 3 koše** (bez nich
+  dveře LEVEL 2 nepustí), po dvou neúspěšných kolech automat napoví úhel a rychlost.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
 
 ## Obrázky od autora – postup

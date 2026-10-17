@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.18 – ukázka",
+    "version": "0.19 – ukázka",
     "totalGates": 9
   },
 
@@ -67,7 +67,8 @@
           { "label": "Reflex test – nejlepší", "value": "{reflex_best} ms", "requires": ["reflex_best"] },
           { "label": "Výskok z podřepu (SJ)", "value": "doba letu {tl:3} s → {=981*tl^2/8:0} cm", "requires": ["tl"] },
           { "label": "Výskok ověřený kamerou", "bool": "skok_kamera" },
-          { "label": "NEON AIM", "value": "velké blízké {terce_a} ms, malé vzdálené {terce_b} ms", "requires": ["terce_a", "terce_b"] }
+          { "label": "NEON AIM", "value": "velké blízké {terce_a} ms, malé vzdálené {terce_b} ms", "requires": ["terce_a", "terce_b"] },
+          { "label": "Basketbal – trestné hody", "value": "{kose} košů z 10", "requires": ["kose"] }
         ]
       }
     }
@@ -3545,7 +3546,7 @@
       "ambience": "herna",
       "storm": {
         "place": "budova",
-        "steps": ["konektor_vzat", "skrinka_stena_otevrena", "skok_hotovo", "terce_hotovo"]
+        "steps": ["konektor_vzat", "skrinka_stena_otevrena", "skok_hotovo", "terce_hotovo", "kos_hotovo"]
       },
       "enterText": "Chodba skončila u dalších dveří. Za nimi je stará skokanská laboratoř předělaná na arkádu: automat JUMP s kontaktní deskou, neonová střelnice a dřevěná stěna s ryskami. Dveře za tebou cvakly.",
       "enter": [
@@ -3682,6 +3683,30 @@
                   "give": "konektor"
                 }
               ]
+            }
+          ]
+        },
+        "kos": {
+          "type": "basket",
+          "title": "Basketbalový automat – trestné hody",
+          "intro": "Hází se z čáry trestného hodu (4,225 m od středu obroučky), obroučka je ve skutečné výšce 305 cm. Táhni od míče dozadu jako prak – směr je úhel odhodu, délka tahu rychlost – a pusť. Dobrý hod zopakuješ tlačítkem Hodit, doladíš šipkami. 10 hodů, na výhru stačí 3 koše.",
+          "throws": 10,
+          "need": 3,
+          "hintAfter": 2,
+          "hint": "Automat napovídá: ZKUS ÚHEL 55° A RYCHLOST 7,2 M/S – A PAK TEN HOD OPAKUJ.",
+          "done": [
+            {
+              "set": "kos_hotovo"
+            },
+            {
+              "sound": "levelUp"
+            },
+            {
+              "text": "Automat vydal lístek s nápisem VÝHRA. Na zadní straně je docentovým písmem: „Čím strměji míč padá, tím větší je pro něj obroučka. – D.“"
+            },
+            {
+              "note": "Basketbal (trestný hod 4,225 m, obroučka 305 cm, průměr 45 cm, míč 24 cm): strmě padající míč „vidí“ větší otvor – 45 cm · sin(úhlu dopadu); pod 32° je otvor menší než míč. Vysoký oblouk (odhod kolem 50–55°) potřebuje nejmenší rychlost a odpustí chyby v úhlu, rychlost ale musí sedět na desetinu m/s. Můj první koš: {kos_uhel}° a {kos_rychlost:1} m/s.",
+              "noteKey": "kos"
             }
           ]
         }
@@ -4477,9 +4502,30 @@
               ],
               "click": [
                 {
+                  "when": {
+                    "flags": [
+                      "kos_hotovo"
+                    ]
+                  },
                   "do": [
                     {
-                      "text": "Basketbalový automat. Obroučka je podle cedulky ve výšce 305 cm. Na desce je přilepený lísteček: „Nedosáhl jsem na ni ani ve výskoku. Ani s rukou nahoře. – D.“"
+                      "text": "Basketbalový automat: NEJVÍC KOŠŮ {kose} Z 10. Chceš házet znovu? Platit bude lepší výsledek."
+                    },
+                    {
+                      "activity": "kos"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "sound": "powerOn"
+                    },
+                    {
+                      "text": "Basketbalový automat. Obroučka je podle cedulky ve výšce 305 cm. Na desce je přilepený lísteček: „Nedosáhl jsem na ni ani ve výskoku. Ani s rukou nahoře. – D.“ Na automatu svítí: TRESTNÉ HODY – 10 POKUSŮ, VÝHRA OD 3 KOŠŮ."
+                    },
+                    {
+                      "activity": "kos"
                     }
                   ]
                 }
@@ -4744,6 +4790,33 @@
               "Čím rychleji pohyb děláš, tím je méně přesný. Malý vzdálený cíl ale přesnost vyžaduje…",
               "K malému a vzdálenému cíli musí pohyb zpomalit a na konci se dorovnat (Fittsův zákon)."
             ],
+            "success": "Zelená! A další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„BASKET: {kose} z 10. Proč se na koš hází vysokým obloukem?“",
+            "requiresVars": [
+              "kose"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV BASKET. Basketbalový automat je u stěny s ryskami – aspoň 3 koše z 10.",
+            "options": [
+              "Míč letí rychleji, a proto do koše spíš propadne",
+              "Míč padá do obroučky strměji, takže je pro něj otvor větší – projde víc hodů",
+              "Vysoký oblouk vždycky potřebuje menší rychlost než nízký",
+              "Míč ve vzduchu déle rotuje a obroučka ho vtáhne"
+            ],
+            "correct": 1,
+            "feedback": {
+              "0": "Rychlejší míč spíš přeletí. Rozhoduje úhel, pod kterým do obroučky padá – automat ho po každém hodu napíše, i s velikostí otvoru.",
+              "2": "Vždycky ne: hodně vysoký oblouk potřebuje zase víc rychlosti (zkus 75°). Nejmenší rychlost stačí kolem 50°. Hlavní výhoda vysokého oblouku je v úhlu dopadu.",
+              "3": "Rotace pomáhá při odrazu od obroučky, ale hlavní důvod je geometrie: strmě padající míč vidí obroučku jako větší otvor."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Automat po každém hodu napíše, pod jakým úhlem míč padal do obroučky a jak velký otvor pro něj měl.",
+              "Při plochém dopadu se obroučka míči „zúží“: otvor je 45 cm · sin(úhlu dopadu), míč má 24 cm.",
+              "Strmý dopad = větší otvor = víc hodů projde. Proto vysoký oblouk."
+            ],
             "success": "Zelená! Poslední otázka…"
           },
           {
@@ -4775,7 +4848,7 @@
             "text": "Dveře se se syčením otevřely. Za nimi je další chodba a na jejím konci bliká obrazovka: LEVEL 3."
           },
           {
-            "note": "LEVEL 2: výška výskoku z doby letu h = g · t² / 8 – tvůj skok z podřepu asi {=981*tl^2/8:0} cm (t = {tl:3} s). Rychlost × přesnost: menší a vzdálenější cíl = pomalejší pohyb. Na Měsíci bys se stejným odrazem vyskočil šestkrát výš."
+            "note": "LEVEL 2: výška výskoku z doby letu h = g · t² / 8 – tvůj skok z podřepu asi {=981*tl^2/8:0} cm (t = {tl:3} s). Rychlost × přesnost: menší a vzdálenější cíl = pomalejší pohyb. Basketbal: vysoký oblouk = strmější dopad = větší otvor obroučky. Na Měsíci bys se stejným odrazem vyskočil šestkrát výš."
           }
         ]
       }

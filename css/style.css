@@ -939,6 +939,19 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .pack-readout div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 2px 0; }
 .pack-readout span { color: var(--muted); }
 .pack-readout strong { color: var(--gold-bright); font-weight: normal; font-family: var(--digits); }
+/* Basketbalový automat (aréna) */
+.modal-box.basket-box { width: min(100%, 860px); }
+.basket-canvas { display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 58vh; object-fit: contain; border-radius: 8px; background: #0b0714; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.basket-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.basket-readout { flex: 1 1 220px; font-family: var(--digits); color: var(--gold-bright); font-size: 17px; }
+.basket-btn { padding: 6px 12px; font-size: 15px; }
+.basket-feedback { min-height: 2.6em; margin: 10px 0 0; }
+.basket-hint { margin: 4px 0 0; color: #7dd3e8; }
+.basket-hint:empty { display: none; }
+.basket-after { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+.basket-after p { margin: 0; }
+.basket-win { color: var(--ok); }
+.basket-lose { color: var(--danger); }
 /* Skládání kostry (bludiště) */
 .modal-box.skel-box { width: min(100%, 760px); }
 .skel-wrap { display: flex; gap: 16px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }

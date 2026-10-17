@@ -793,7 +793,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.18');
+      const mod = await import('./chodba.js?v=0.19');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1573,6 +1573,129 @@
     activityCleanup = () => clearTimeout(timer);
   }
 
+  /* ---------- Basketbalový automat (aréna) ----------
+     Trestný hod z boku (js/basket.js): tah od míče dozadu jako prak, nebo šipky a tlačítka ± úhel
+     a rychlost a „Hodit“ (hodí znovu se stejným nastavením – dobrý hod jde zopakovat). Kolo má
+     act.throws hodů, výhra od act.need košů; po act.hintAfter neúspěšných kolech automat napoví
+     (act.hint). Výsledek do „done“: kose (nejvíc košů v kole), kos_uhel a kos_rychlost (první koš). */
+  let basketKey = null;
+
+  function openBasket(act) {
+    const need = act.need || 3;
+    const hintAfter = act.hintAfter || 2;
+    let failed = game.state.vars.kos_kola_neuspesna || 0;
+    let first = null;
+    let ctl = null;
+    const fmt = (v, d = 1) => v.toFixed(d).replace('.', ',');
+    const kose = (n) => `${n} ${n === 1 ? 'koš' : n >= 2 && n <= 4 ? 'koše' : 'košů'}`;
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'basket-box');
+      heading(box, act.title || 'Basketbalový automat');
+      para(box, act.intro || '', 'question');
+      const canvas = document.createElement('canvas');
+      canvas.className = 'basket-canvas';
+      canvas.setAttribute('aria-label', 'Hřiště s košem z boku. Táhni od míče dozadu jako prak a pusť.');
+      box.appendChild(canvas);
+      const bar = document.createElement('div');
+      bar.className = 'basket-bar';
+      box.appendChild(bar);
+      const readout = document.createElement('span');
+      readout.className = 'basket-readout';
+      bar.appendChild(readout);
+      const ctrl = (label, title, fn) => {
+        const b = button(bar, label, 'btn basket-btn', () => { if (ctl) fn(); });
+        b.title = title;
+        b.setAttribute('aria-label', title);
+        return b;
+      };
+      ctrl('◀ úhel', 'Snížit úhel o 1° (šipka vlevo)', () => ctl.adjust(-1, 0));
+      ctrl('úhel ▶', 'Zvýšit úhel o 1° (šipka vpravo)', () => ctl.adjust(1, 0));
+      ctrl('− rychlost', 'Snížit rychlost o 0,1 m/s (šipka dolů)', () => ctl.adjust(0, -0.1));
+      ctrl('+ rychlost', 'Zvýšit rychlost o 0,1 m/s (šipka nahoru)', () => ctl.adjust(0, 0.1));
+      const throwBtn = ctrl('Hodit', 'Hodit s tímto nastavením (mezerník)', () => ctl.throw());
+      throwBtn.classList.add('primary');
+      const feedback = para(box, '', 'basket-feedback');
+      feedback.setAttribute('aria-live', 'polite');
+      const hint = para(box, failed >= hintAfter ? act.hint || '' : '', 'basket-hint');
+      const after = document.createElement('div');
+      after.className = 'basket-after';
+      box.appendChild(after);
+
+      const describe = (res) => {
+        const entry = res.cross ? Math.round(res.cross.entry) : 0;
+        const open = Math.round(res.opening * 100);
+        const miss = res.miss == null ? 0 : Math.round(Math.abs(res.miss) * 100);
+        const where = res.miss < 0 ? 'před středem obroučky' : 'za středem obroučky';
+        const opening = `Míč padal do obroučky pod úhlem ${entry}° – otvor pro něj měl ${open} cm (míč má 24 cm).`;
+        const flat = entry < 32 && res.cross ? ' Při tak plochém dopadu je otvor menší než míč – čistě projít nemůže.' : '';
+        switch (res.result) {
+          case 'cisty': return `Čistý koš! ${opening}`;
+          case 'kos': return `Koš – po odrazu od ${res.board ? 'desky' : 'obroučky'}. ${opening}${flat}`;
+          case 'obroucka': return `Obroučka – míč šel o ${miss} cm ${where} a odrazil se ven. ${opening}${flat}`;
+          case 'deska': return `Deska – míč letěl o ${miss} cm ${where} a odrazil se mimo. Uber rychlost.`;
+          case 'kratky': return `Krátký – míč prošel výškou obroučky o ${miss} cm ${where}. Přidej rychlost.${flat}`;
+          case 'dlouhy': return `Dlouhý – míč prošel výškou obroučky o ${miss} cm ${where}. Uber rychlost.`;
+          default: return 'Nízko – míč ani nevystoupal do výšky obroučky (305 cm). Přidej rychlost nebo zvedni úhel.';
+        }
+      };
+
+      const endRound = (score) => {
+        throwBtn.disabled = true;
+        after.innerHTML = '';
+        if (score.made >= need) {
+          const best = Math.max(score.made, game.state.vars.kose || 0);
+          para(after, `Výhra! ${kose(score.made)} z ${score.of}. Automat zablikal: VÝHRA!`, 'basket-win');
+          button(after, 'Pokračovat', 'btn primary', () => finishActivity(act, {
+            kose: best, kos_uhel: first ? first.angle : null, kos_rychlost: first ? first.speed : null,
+          }));
+          ctl.disabled = true;
+          ctl.draw();
+        } else {
+          failed += 1;
+          game.setVars({ kos_kola_neuspesna: failed });
+          para(after, `Jen ${kose(score.made)} z ${score.of}. Na výhru potřebuješ aspoň ${kose(need)}.`, 'basket-lose');
+          if (failed >= hintAfter && act.hint) hint.textContent = act.hint;
+          button(after, 'Nové kolo', 'btn primary', () => {
+            after.innerHTML = '';
+            throwBtn.disabled = false;
+            first = null;
+            ctl.newRound();
+          });
+        }
+      };
+
+      import('./basket.js?v=0.19').then((mod) => {
+        if (!canvas.isConnected) return;
+        ctl = new mod.Basket(canvas, {
+          throws: act.throws || 10,
+          reducedMotion: reducedMotion.matches,
+          onAim: (aim) => { readout.textContent = `Úhel ${aim.angle}° · rychlost ${fmt(aim.speed)} m/s`; },
+          onThrow: (res, score, aim) => {
+            sound.sfx(res.made ? 'swish' : res.rim ? 'rim' : 'bounce');
+            if (res.made && !first) first = aim;
+            feedback.textContent = describe(res);
+            if (score.throw >= score.of) endRound(score);
+          },
+        });
+        readout.textContent = `Úhel ${ctl.aim.angle}° · rychlost ${fmt(ctl.aim.speed)} m/s`;
+        activityCleanup = () => { ctl.destroy(); basketKey = null; };
+        basketKey = (e) => {
+          const k = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 0.1], ArrowDown: [0, -0.1] }[e.key];
+          if (k) { ctl.adjust(k[0], k[1]); return true; }
+          if (e.key === ' ' || e.key === 'Enter') {
+            // jiné tlačítko v okně (Pokračovat, Nové kolo, zavřít) si klávesu vezme samo; jinak = hod
+            const btn = e.target && e.target.closest ? e.target.closest('button') : null;
+            if (btn && $('modal').contains(btn) && !btn.classList.contains('basket-btn')) return false;
+            if (!e.repeat && !throwBtn.disabled) ctl.throw();
+            return true;
+          }
+          return false;
+        };
+      });
+    });
+  }
+
   /* ---------- Skládání kostry (bludiště) ----------
      Kostře z anatomického kabinetu chybějí kosti; hráč je sebral z hromádek po kostlivcích.
      Vybere kost dole a klikne na značku místa (značky jsou odtažené od kostry, aby šly snadno
@@ -2014,6 +2137,7 @@
     else if (act.type === 'pushup') openPushup(act);
     else if (act.type === 'throw') openThrow(act);
     else if (act.type === 'skeleton') openSkeleton(act);
+    else if (act.type === 'basket') openBasket(act);
   }
 
   function finishActivity(act, results) {
@@ -2164,7 +2288,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.18');
+          const mod = await import('./squats.js?v=0.19');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3026,7 +3150,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.18');
+          const mod = await import('./skok.js?v=0.19');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3404,7 +3528,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.18');
+          const mod = await import('./goblet.js?v=0.19');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4114,7 +4238,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.18');
+          const mod = await import('./predklon.js?v=0.19');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4489,6 +4613,11 @@
       return;
     }
     const modalOpen = !$('modal').hidden;
+    // basketbalový automat: šipky = úhel a rychlost, mezerník / Enter = hod
+    if (modalOpen && basketKey && basketKey(e)) {
+      e.preventDefault();
+      return;
+    }
     // reflex test: mezerník (bez automatického opakování při držení klávesy)
     if (modalOpen && reflexHit && (e.key === ' ' || e.code === 'Space')) {
       e.preventDefault();
