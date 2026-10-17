@@ -175,8 +175,12 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
   azimut 0°, pak 9,6 m na azimut 90°, otoč se na 180°“ → uvolněná cihla (skrytý objekt). Kompas
   nahoře (0° S, 90° V, 180° J, 270° Z).
 - Zbrojní skříň → **laserová puška**; závora s čidlem se otevře zásahem laserem.
-- **4 kostlivci** na cestě, každý 2 kosti: stehenní + pažní, klíční + pánev, hrudní + holenní,
-  čéška + lýtková. Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
+- **8 kostlivců** (autor chtěl víc, 17. 10. 2026), každý 2 kosti:
+  k1 (14,9) stehenní + pažní, k6 (12,9, slepá chodba s plakátem) žebra + předloktí,
+  k2 (17,13) klíční + pánev, k3 (18,9) hrudní + holenní, k4 (16,4) čéška + lýtková,
+  k8 (11,3) páteř + hrudní, k5 (11,1, slepá chodba) lebka + pažní, k7 (18,1, u mříže) kosti nohy + čéška.
+  Rozmístění tak, aby se dva nebudili naráz (k8 je až na konci řady 3, z cesty k mříži ho hráč
+  neprobudí). Oblasti kostí na obrázku kostlivce (`zones`); chybný zásah řekne, co hráč trefil
   a kde hledaná kost je. Plakát kostry ve slepé uličce (nápověda), lékárnička doplní životy.
   Kostlivec se probudí, když hráče uvidí (do 4 políček v přímé chodbě), jde k němu (1 políčko za
   2,2 s) a u hráče útočí (první po 5 s, pak každé 6 s).
@@ -188,7 +192,8 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
 - **Mříž ke schodišti**: práce vojáka s batohem při výstupu W = m · g · h = 100 · 9,81 · 18 · 0,17
   ≈ **3 000 J** (±3 %; cílené rady), údaje na nástěnce a na ceduli (18 schodů × 17 cm).
 - **Kostra z kabinetu** (autor zvolil 17. 10. 2026, varianta „vrátit kosti“): z každé hromádky po
-  kostlivci hráč vezme jednu kost – k1 stehenní, k2 klíční, k3 holenní, k4 lýtková – a vrátí je kostře
+  kostlivci hráč vezme jednu kost (vždy jednu z těch, na které střílel) – k1 stehenní, k2 klíční,
+  k3 holenní, k4 lýtková, k5 pažní, k6 kosti předloktí, k7 čéška, k8 hrudní – a vrátí je kostře
   z anatomického kabinetu na stojanu u mříže (políčko X = 18,2, textury `stojan_kostra` / `_cela`).
   Otazníky jsou odtažené od kostry (u bérce jeden uvnitř, druhý vně), špatně vrácená kost řekne, kam
   patří a co na tom místě chybí. **Bez celé kostry se mříž neotevře** (z chodby se nedostane). Obrázky

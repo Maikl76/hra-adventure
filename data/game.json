@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.17 – ukázka",
+    "version": "0.18 – ukázka",
     "totalGates": 9
   },
 
@@ -1078,6 +1078,26 @@
       "name": "Lýtková kost",
       "icon": "assets/items/kost_lytkova.webp",
       "description": "Levá lýtková kost – tenká kost bérce, váhu těla skoro nenese, slouží hlavně svalům a kotníku."
+    },
+    "kost_pazni": {
+      "name": "Pažní kost",
+      "icon": "assets/items/kost_pazni.webp",
+      "description": "Pravá pažní kost – dlouhá kost paže; nahoře kloub s lopatkou (rameno), dole loket."
+    },
+    "kost_predlokti": {
+      "name": "Kosti předloktí",
+      "icon": "assets/items/kost_predlokti.webp",
+      "description": "Levé předloktí – dvě kosti vedle sebe: vřetenní (na straně palce) a loketní (na straně malíčku)."
+    },
+    "kost_ceska": {
+      "name": "Čéška",
+      "icon": "assets/items/kost_ceska.webp",
+      "description": "Pravá čéška – malá kost ve šlaše čtyřhlavého svalu stehna, chrání koleno zepředu."
+    },
+    "kost_hrudni": {
+      "name": "Hrudní kost",
+      "icon": "assets/items/kost_hrudni.webp",
+      "description": "Hrudní kost – plochá kost uprostřed hrudníku; nahoře se k ní připojují klíční kosti, po stranách žebra."
     }
   },
 
@@ -1547,7 +1567,11 @@
     { "item": "kost_stehenni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
     { "item": "kost_klicni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
     { "item": "kost_holenni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
-    { "item": "kost_lytkova", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] }
+    { "item": "kost_lytkova", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_pazni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_predlokti", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_ceska", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] },
+    { "item": "kost_hrudni", "on": "stojan_kostra", "room": "chodba", "do": [{ "activity": "kostra" }] }
   ],
 
   "combinations": [
@@ -6327,7 +6351,10 @@
       "ambience": "sklad",
       "storm": {
         "place": "sklep",
-        "steps": ["klic_zbrojni_nalezen", "zbrojni_otevrena", "zavora_otevrena", "kostlivec_k1", "kostlivec_k2", "kostlivec_k3", "kostlivec_k4", "mriz_otevrena"]
+        "steps": [
+          "klic_zbrojni_nalezen", "zbrojni_otevrena", "zavora_otevrena", "kostlivec_k1", "kostlivec_k2", "kostlivec_k3",
+          "kostlivec_k4", "kostlivec_k5", "kostlivec_k6", "kostlivec_k7", "kostlivec_k8", "kostra_slozena", "mriz_otevrena"
+        ]
       },
       "darkness": 0,
       "enterText": "Po schodech ze skladu jsi vystoupal do sklepních chodeb – tady začíná bludiště. Pod stropem bzučí zářivky, některé blikají. (Ovládání: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
@@ -6595,6 +6622,50 @@
             "bones": [
               "cesky",
               "lytkova"
+            ]
+          },
+          {
+            "id": "k5",
+            "cell": [
+              11,
+              1
+            ],
+            "bones": [
+              "lebka",
+              "pazni"
+            ]
+          },
+          {
+            "id": "k6",
+            "cell": [
+              12,
+              9
+            ],
+            "bones": [
+              "zebra",
+              "predlokti"
+            ]
+          },
+          {
+            "id": "k7",
+            "cell": [
+              18,
+              1
+            ],
+            "bones": [
+              "chodidlo",
+              "cesky"
+            ]
+          },
+          {
+            "id": "k8",
+            "cell": [
+              11,
+              3
+            ],
+            "bones": [
+              "pater",
+              "hrudni"
             ]
           }
         ],
@@ -6865,7 +6936,7 @@
           }
         },
         "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste, zavora, zbrojni_skrin, zbrojni_skrin_prazdna, sipka, podlaha, strop, kostlivec, kosti a puska (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly; schodiste vodorovně natažené na rám mříže; na nástěnce nadpis ROZKAZ; kostlivec posunutý o 1,8 % dolů, aby stál na podlaze, oblasti kostí změřené podle něj). Všechny textury jsou od autora.",
-        "_kostra": "Hromádky kostí (hotspoty s „pile“ = id kostlivce): z každé hráč vezme jednu kost (k1 stehenní, k2 klíční, k3 holenní, k4 lýtková) a vrátí je kostře z anatomického kabinetu na stojanu u mříže (X, aktivita „kostra“). Bez celé kostry se mříž neotevře (autor 17. 10. 2026)."
+        "_kostra": "Hromádky kostí (hotspoty s „pile“ = id kostlivce): z každé hráč vezme jednu kost – k1 stehenní, k2 klíční, k3 holenní, k4 lýtková, k5 pažní, k6 kosti předloktí, k7 čéška, k8 hrudní – a vrátí je kostře z anatomického kabinetu na stojanu u mříže (X, aktivita „kostra“). Bez celé kostry se mříž neotevře (autor 17. 10. 2026; 8 kostlivců na přání autora)."
       },
       "hotspots": [
         {
@@ -7364,6 +7435,146 @@
           ]
         },
         {
+          "id": "kosti_k5",
+          "name": "Hromádka kostí",
+          "pile": "k5",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k5_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k5_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš pažní kost – kost paže mezi ramenem a loktem. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_pazni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k6",
+          "name": "Hromádka kostí",
+          "pile": "k6",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k6_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k6_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš obě kosti předloktí – vřetenní a loketní. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_predlokti"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k7",
+          "name": "Hromádka kostí",
+          "pile": "k7",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k7_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k7_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš čéšku – malou kost z přední strany kolena. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_ceska"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kosti_k8",
+          "name": "Hromádka kostí",
+          "pile": "k8",
+          "click": [
+            {
+              "when": {
+                "notFlags": [
+                  "kost_k8_vzata"
+                ]
+              },
+              "do": [
+                {
+                  "set": "kost_k8_vzata"
+                },
+                {
+                  "sound": "kosti"
+                },
+                {
+                  "text": "Z hromádky vytáhneš hrudní kost – plochou kost ze středu hrudníku. Patří ke kostře z anatomického kabinetu."
+                },
+                {
+                  "give": "kost_hrudni"
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "text": "Zbytek kostí necháš ležet – ke kostře z kabinetu patří jen ta, kterou už máš."
+                }
+              ]
+            }
+          ]
+        },
+        {
           "id": "stojan_kostra",
           "name": "Kostra z kabinetu",
           "cell": [
@@ -7386,7 +7597,7 @@
             {
               "do": [
                 {
-                  "note": "Kostra z kabinetu na stojanu u mříže: chybějí jí čtyři kosti – leží na hromádkách po kostlivcích. Dokud nebude celá, mříž se neotevře.",
+                  "note": "Kostra z kabinetu na stojanu u mříže: chybí jí osm kostí – leží na hromádkách po kostlivcích. Dokud nebude celá, mříž se neotevře.",
                   "noteKey": "kostra_stojan"
                 },
                 {
@@ -7454,12 +7665,85 @@
         "kostra": {
           "type": "skeleton",
           "title": "Kostra z anatomického kabinetu",
-          "intro": "Kostře na stojanu chybějí čtyři kosti. Vyber vpravo kost a klikni na otazník u místa, kam patří – čárkovaná čára vede k mezeře v kostře.",
+          "intro": "Kostře na stojanu chybí osm kostí. Vyber vpravo kost a klikni na otazník u místa, kam patří – čárkovaná čára vede k mezeře v kostře.",
           "image": "assets/chodba/kostra/kostra_neuplna.webp",
           "pickText": "Nejdřív vpravo vyber kost, kterou chceš vrátit.",
           "rightText": "Správně – {name} je zpátky na svém místě.",
           "missingText": "Kostře chybí ještě kostí: {n}. Leží na hromádkách po kostlivcích.",
           "slots": [
+            {
+              "id": "klicni",
+              "item": "kost_klicni",
+              "name": "klíční kost",
+              "image": "assets/chodba/kostra/kost_klicni.webp",
+              "box": [
+                51.33,
+                18.67,
+                19.83,
+                2.08
+              ],
+              "marker": [
+                82,
+                12
+              ],
+              "where": "leží vodorovně mezi hrudní kostí a ramenem",
+              "hint": "Tady chybí vodorovná kost mezi hrudní kostí a ramenem."
+            },
+            {
+              "id": "hrudni",
+              "item": "kost_hrudni",
+              "name": "hrudní kost",
+              "image": "assets/chodba/kostra/kost_hrudni.webp",
+              "box": [
+                46.5,
+                20.08,
+                7.67,
+                12.17
+              ],
+              "marker": [
+                28,
+                12
+              ],
+              "where": "je to plochá kost uprostřed hrudníku a upínají se na ni žebra",
+              "hint": "Tady chybí plochá kost uprostřed hrudníku, na kterou se upínají žebra."
+            },
+            {
+              "id": "pazni",
+              "item": "kost_pazni",
+              "name": "pažní kost",
+              "image": "assets/chodba/kostra/kost_pazni.webp",
+              "box": [
+                20.83,
+                20.17,
+                12.67,
+                19.83
+              ],
+              "marker": [
+                8,
+                34
+              ],
+              "where": "je to kost paže a patří mezi rameno a loket",
+              "hint": "Tady chybí kost paže – mezi ramenem a loktem."
+            },
+            {
+              "id": "predlokti",
+              "item": "kost_predlokti",
+              "name": "kosti předloktí",
+              "image": "assets/chodba/kostra/kost_predlokti.webp",
+              "box": [
+                71.17,
+                40.17,
+                11.33,
+                15.42
+              ],
+              "marker": [
+                92,
+                44
+              ],
+              "where": "jsou to dvě kosti (vřetenní a loketní) a patří mezi loket a zápěstí",
+              "hint": "Tady chybějí dvě kosti mezi loktem a zápěstím.",
+              "rightText": "Správně – kosti předloktí jsou zpátky na svém místě."
+            },
             {
               "id": "stehenni",
               "item": "kost_stehenni",
@@ -7479,22 +7763,22 @@
               "hint": "Tady chybí nejdelší kost těla – mezi kyčlí a kolenem."
             },
             {
-              "id": "klicni",
-              "item": "kost_klicni",
-              "name": "klíční kost",
-              "image": "assets/chodba/kostra/kost_klicni.webp",
+              "id": "cesky",
+              "item": "kost_ceska",
+              "name": "čéška",
+              "image": "assets/chodba/kostra/kost_ceska.webp",
               "box": [
-                51.33,
-                18.67,
-                19.83,
-                2.08
+                36.0,
+                68.75,
+                6.5,
+                3.92
               ],
               "marker": [
-                82,
-                12
+                50,
+                64
               ],
-              "where": "leží vodorovně mezi hrudní kostí a ramenem",
-              "hint": "Tady chybí vodorovná kost mezi hrudní kostí a ramenem."
+              "where": "je to malá kost vpředu na koleni – leží ve šlaše čtyřhlavého svalu stehna",
+              "hint": "Tady chybí malá kost vpředu na koleni."
             },
             {
               "id": "holenni",

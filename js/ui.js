@@ -793,7 +793,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.17');
+      const mod = await import('./chodba.js?v=0.18');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1579,7 +1579,8 @@
      trefit i prstem – u bérce jedna uvnitř, druhá vně). Správně: kost se vrátí na místo (příznak
      kostra_<id>), špatně: vysvětlení, kam ta kost patří a co na tom místě chybí. Hotovo: „done“.
      game.json: type „skeleton“, image (kostra s mezerami), slots [{ id, item, name, image, box
-     (poloha kosti v % obrázku), marker (značka v %), where (kam kost patří), hint (co tu chybí) }]. */
+     (poloha kosti v % obrázku), marker (značka v %), where (kam kost patří), hint (co tu chybí),
+     rightText (jen kde nesedí tvar „… je na svém místě“, např. množné číslo) }]. */
   function openSkeleton(act) {
     const NS = 'http://www.w3.org/2000/svg';
     const placed = (sl) => Boolean(game.state.flags[`kostra_${sl.id}`]);
@@ -1676,7 +1677,7 @@
           selected = null;
           handleEvents(game.run([{ remove: sl.item }, { set: `kostra_${sl.id}` }]));
           sound.sfx('kosti');
-          feedback.textContent = (act.rightText || '{name} je na svém místě.').replace('{name}', sl.name);
+          feedback.textContent = (sl.rightText || act.rightText || '{name} je na svém místě.').replace('{name}', sl.name);
           if (act.slots.every(placed)) {
             setTimeout(() => finishActivity(act, { kostra_chybne: errors }), 900);
           }
@@ -2163,7 +2164,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.17');
+          const mod = await import('./squats.js?v=0.18');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3025,7 +3026,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.17');
+          const mod = await import('./skok.js?v=0.18');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3403,7 +3404,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.17');
+          const mod = await import('./goblet.js?v=0.18');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4113,7 +4114,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.17');
+          const mod = await import('./predklon.js?v=0.18');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
