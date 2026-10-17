@@ -227,7 +227,10 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
 - Závěrečná obrazovka: „Kostlivci – anatomie: … správných zásahů, … vedle“ (`kosti_spravne`, `kosti_chybne`).
 Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
 otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
-Malá mapa prošlých políček. Zástupná grafika ode mě (`docs/zadani-obrazku-chodba.md`).
+Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
+cedule_schody, lekarnicka – pruh podlahy pod soklem oříznut, jas srovnán podle `zed`, okraje
+prolnuté do společného okraje zdi (pás 40 px), aby zdi navazovaly v libovolném pořadí; ostatní zatím zástupné SVG,
+`docs/zadani-obrazku-chodba.md`).
 Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědčí: zařadit `chodba` do `rooms`.
 
 ## Rozhodnutí autora (důležitá)

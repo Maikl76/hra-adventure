@@ -6368,22 +6368,22 @@
           ]
         },
         "textures": {
-          "zed": "assets/chodba/zed.svg",
+          "zed": "assets/chodba/zed.webp",
           "podlaha": "assets/chodba/podlaha.svg",
           "strop": "assets/chodba/strop.svg",
           "sipka": "assets/chodba/sipka.svg",
           "potrubi": "assets/chodba/potrubi.svg",
-          "cedule_schody": "assets/chodba/cedule_schody.svg",
-          "hasicak": "assets/chodba/hasicak.svg",
+          "cedule_schody": "assets/chodba/cedule_schody.webp",
+          "hasicak": "assets/chodba/hasicak.webp",
           "nastenka": "assets/chodba/nastenka.svg",
-          "dvere_sklad": "assets/chodba/dvere_sklad.svg",
+          "dvere_sklad": "assets/chodba/dvere_sklad.webp",
           "mriz": "assets/chodba/mriz.svg",
           "schodiste": "assets/chodba/schodiste.svg",
           "zbrojni_skrin": "assets/chodba/zbrojni_skrin.svg",
           "zbrojni_skrin_prazdna": "assets/chodba/zbrojni_skrin_prazdna.svg",
           "zavora": "assets/chodba/zavora.svg",
           "plakat_kostra": "assets/chodba/plakat_kostra.svg",
-          "lekarnicka": "assets/chodba/lekarnicka.svg"
+          "lekarnicka": "assets/chodba/lekarnicka.webp"
         },
         "weapon": "assets/chodba/puska.svg",
         "lamps": [
@@ -6796,7 +6796,8 @@
             "attack": "Kostlivec tě praštil! Zbývá životů: {lives}.",
             "death": "Kostlivec tě srazil. Ustoupil jsi o kus zpátky – zasažené kosti mu zase srostly, zkus to znovu."
           }
-        }
+        },
+        "_textury": "Textury od autora (17. 10. 2026): zed, hasicak, dvere_sklad, cedule_schody, lekarnicka (WebP, oříznutý pruh podlahy, srovnaný jas, okraje prolnuté, aby zdi navazovaly). Ostatní zatím zástupné SVG."
       },
       "hotspots": [
         {
