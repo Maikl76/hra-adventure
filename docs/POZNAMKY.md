@@ -228,9 +228,13 @@ Bludiště 21 × 16 políček (deska podlahy 2,4 m), cesta start → mříž 50 
 Ovládání: ↑ ↓ / W S krok, ← → / A D otočit, tlačítka ▲ ▼ ‹ ›, kliknutí do obrazu (vlevo / vpravo
 otočit, uprostřed krok; když je vidět kostlivec, kliknutí střílí), Enter = věc před hráčem.
 Malá mapa prošlých políček. Textury od autora (WebP 1024 × 1024): zed, hasicak, dvere_sklad,
-cedule_schody, lekarnicka – pruh podlahy pod soklem oříznut, jas srovnán podle `zed`, okraje
-prolnuté do společného okraje zdi (pás 40 px), aby zdi navazovaly v libovolném pořadí; ostatní zatím zástupné SVG,
-`docs/zadani-obrazku-chodba.md`).
+cedule_schody, lekarnicka, nastenka, mriz, plakat_kostra, potrubi, schodiste – pruh podlahy pod soklem
+oříznut, jas srovnán podle `zed`, okraje prolnuté do společného okraje zdi (pás 40 px), aby zdi
+navazovaly v libovolném pořadí. Výjimky: u `potrubi` se řádky s trubkami neprolínají (trubka vede až
+k okraji, prolnutá vypadala rozmazaně); `schodiste` je vodorovně natažené, aby rám otvoru seděl
+s rámem mříže (po odemčení obraz neposkočí); na nástěnce generátor napsal ROZPIS – přepsáno na ROZKAZ
+(jako text po kliknutí). Nápisy, které generátor napsal správně (cedule, popisky plakátu), zůstaly.
+Ostatní zatím zástupné SVG (`docs/zadani-obrazku-chodba.md`).
 Kreslení ~15–20 ms na snímek v testovacím prohlížeči. Pokud se osvědčí: zařadit `chodba` do `rooms`.
 
 ## Rozhodnutí autora (důležitá)
