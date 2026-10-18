@@ -25,7 +25,7 @@
   "tracks": [
     {
       "id": "civilni",
-      "name": "Civilní studium",
+      "name": "Laboratoře",
       "description": "Sport, výuka, zdraví. Brány tělovýchovy a sportu.",
       "rooms": ["kabinet"]
     },

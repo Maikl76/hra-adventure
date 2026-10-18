@@ -14,7 +14,7 @@ pochopením biomechanického principu.
 
 Každý svět bude mít vlastních devět bran.
 
-- **Civilní studium – Brána I: Anatomický kabinet** (moment síly, rovnováha momentů, druhy pák):
+- **Laboratoře – Brána I: Anatomický kabinet** (moment síly, rovnováha momentů, druhy pák):
   hotová.
 - **Vojenská tělovýchova – Brána I: Výstrojní sklad** (těžiště a stabilita se zátěží): voják
   70 kg s batohem 30 kg – o kolik se posune společné těžiště, jak to vyrovnat a kam do batohu

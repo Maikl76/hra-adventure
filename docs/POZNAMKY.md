@@ -13,8 +13,9 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
   repozitář <https://github.com/Maikl76/hra-adventure> (veřejný, větev `main`, GitHub Pages).
 - Příběh: docent, který léta učil biomechaniku, zmizel; zanechal „Devět bran. Otevřou se jen
   těm, kdo pohybu skutečně rozumějí.“ Vzkazy podepisuje „– D.“.
-- Tři světy (sekce), každý bude mít vlastních devět bran: **Civilní studium**, **Vojenská
-  tělovýchova**, **GSPORT** (hra a pohyb, „levely“ místo bran).
+- Tři světy (sekce), každý bude mít vlastních devět bran: **Laboratoře** (dříve „Civilní studium“;
+  id světa zůstává `civilni` kvůli uloženým hrám), **Vojenská tělovýchova**, **GSPORT** (hra
+  a pohyb, „levely“ místo bran).
 - Projekt je zcela oddělený od KinemaLab (jiný repozitář, jiný účel).
 
 ## Jak pracovat (pravidla)
@@ -148,7 +149,7 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
 
 ## Světy a místnosti (stav)
 
-### Civilní studium – Brána I: Anatomický kabinet (`kabinet`)
+### Laboratoře – Brána I: Anatomický kabinet (`kabinet`)
 Moment síly a páky. Šuplík zamčený klíčkem z kapsy docentova pláště → pravítko a lísteček
 (závaží 50 N) → měření na modelu paže tahem (závaží 30 cm, úpon bicepsu 3 cm od lokte) → kniha
 Základy biomechaniky (řešený příklad na jiných číslech) → zámek **500 N** + druh páky (3. druh).
