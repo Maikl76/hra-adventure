@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.20 – ukázka",
+    "version": "0.21 – ukázka",
     "totalGates": 9
   },
 
@@ -36,6 +36,7 @@
       "rooms": ["sklad", "chodba", "telocvicna"],
       "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
       "roomsBefore": ["sklad", "telocvicna"],
+      "trialRooms": { "prekazky": "telocvicna" },
       "finish": {
         "title": "Brána II je otevřená",
         "text": "Za dveřmi tělocvičny vede chodba ven na cvičiště. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
@@ -7907,6 +7908,255 @@
               "noteKey": "kostra_slozena"
             }
           ]
+        }
+      }
+    },
+
+    "prekazky": {
+      "name": "Chodba na cvičiště (ukázka 3D)",
+      "gateLabel": "Ukázka",
+      "tracks": ["vojenska"],
+      "type": "world3d",
+      "_poznamka": "Zkušební 3D chodba (19. 10. 2026): autor chtěl skákat, lézt a bojovat se svalovcem; volný pohyb (myš a klávesy), svalovec z tvarů v kódu, boj cvičným laserem. Hraje se jen přes odkaz ?mistnost=prekazky. Kreslí js/chodba3d.js a js/svalovec.js (three.js ve vendor/three).",
+      "ambience": "sklad",
+      "storm": {
+        "place": "budova",
+        "steps": ["svalovec_porazen"]
+      },
+      "darkness": 0,
+      "enterText": "Z tělocvičny vede široká chodba ven na cvičiště. Stojí v ní bedny, u plošiny žebřiny a vzadu v šeru… něco jako anatomický model. (Ovládání: klikni do obrazu a rozhlížej se myší, chůze W A S D nebo šipkami, mezerník = skok – drž ho déle pro delší odraz, C = podřep, E = akce. Na tabletu páčka vlevo a tlačítka vpravo.)",
+      "shortcut": [
+        {
+          "text": "Ukázka 3D chodby: zkus vyskočit na bedny, vylézt po žebřinách na plošinu, seskočit z ní – a pak svalovce. Výpočty se ukážou tady dole."
+        }
+      ],
+      "world": {
+        "_poznamka": "Rozměry v metrech: x doleva/doprava, z dopředu je záporné. blocks = bedny a plošina (h = výška), ladder = žebřiny na čele plošiny, zone3 = kde se pohybuje svalovec, checkpoint = kam se hráč vrátí po porážce (x, z, natočení °). player.force = síla odrazu nad tíhu (N), pushMax = nejdelší odraz (s).",
+        "hall": {
+          "x": [-3, 3],
+          "z": [-32, 0.5],
+          "height": 4.2
+        },
+        "texMeters": 2.4,
+        "pipesEvery": 4,
+        "textures": {
+          "wall": "assets/chodba/zed.webp",
+          "floor": "assets/chodba/podlaha.webp",
+          "ceiling": "assets/chodba/strop.webp",
+          "pipes": "assets/chodba/potrubi.webp",
+          "gun": "assets/chodba/puska.webp"
+        },
+        "player": {
+          "start": [0, -1.2],
+          "yaw": 0,
+          "kg": 70,
+          "force": 420,
+          "pushMax": 0.6
+        },
+        "checkpoint": [0, -17.4, 0],
+        "backpack": {
+          "at": [2.2, -2.6],
+          "kg": 15
+        },
+        "blocks": [
+          {
+            "kind": "bedna",
+            "x": [-2.2, -1.2],
+            "z": [-6.2, -5.2],
+            "h": 0.4,
+            "label": "0,4 m"
+          },
+          {
+            "kind": "bedna",
+            "x": [1.0, 2.0],
+            "z": [-7.4, -6.4],
+            "h": 0.6,
+            "label": "0,6 m"
+          },
+          {
+            "kind": "bedna",
+            "x": [1.2, 2.4],
+            "z": [-13, -12],
+            "h": 1.2,
+            "label": "1,2 m"
+          },
+          {
+            "kind": "plosina",
+            "x": [-3, 3],
+            "z": [-16, -13],
+            "h": 2.0,
+            "label": "2,0 m"
+          }
+        ],
+        "ladder": {
+          "x": [-2.4, -1.4],
+          "z": -13,
+          "top": 2.0
+        },
+        "edgeSign": {
+          "at": [0, -15.6],
+          "text": "SESKOK 2 m – PŘI DOPADU DRŽ C (PODŘEP)"
+        },
+        "rack": {
+          "at": [-2.95, -18.6],
+          "label": "CVIČNÁ LASEROVÁ PUŠKA"
+        },
+        "door": {
+          "x": [-0.75, 0.75],
+          "height": 2.3,
+          "label": "CVIČIŠTĚ"
+        },
+        "lamps": [
+          [0, -3],
+          [0, -10],
+          [0, -19],
+          [0, -27, true]
+        ],
+        "zone3": {
+          "x": [-2.6, 2.6],
+          "z": [-31.3, -16.6]
+        },
+        "svalovec": {
+          "at": [0, -26.5],
+          "attacks": ["kop", "sevreni", "uder"],
+          "windup": 2.4,
+          "speed": 1.0
+        },
+        "attacks": {
+          "kop": {
+            "name": "kop",
+            "target": "quadriceps",
+            "prompt": "Svalovec zvedá koleno ke kopu! Zasáhni sval, který kop provede – natáhne koleno."
+          },
+          "sevreni": {
+            "name": "sevření",
+            "target": "pectoralis",
+            "prompt": "Svalovec rozpažil – chce tě sevřít! Zasáhni sval, který přitáhne paže k sobě před tělo."
+          },
+          "uder": {
+            "name": "úder pěstí",
+            "target": "triceps",
+            "prompt": "Svalovec se napřahuje k úderu pěstí! Zasáhni sval, který úder provede – natáhne loket."
+          }
+        },
+        "muscles": {
+          "deltoideus": {
+            "name": "deltový sval",
+            "does": "zvedá paži – předpažení, upažení i zapažení"
+          },
+          "pectoralis": {
+            "name": "velký sval prsní",
+            "does": "přitahuje paži k tělu a před tělo (objetí, tlak na prsa)"
+          },
+          "biceps": {
+            "name": "dvojhlavý sval pažní (biceps)",
+            "does": "ohýbá loket a otáčí předloktí dlaní nahoru"
+          },
+          "triceps": {
+            "name": "trojhlavý sval pažní (triceps)",
+            "does": "natahuje loket (úder, klik)"
+          },
+          "predlokti": {
+            "name": "svaly předloktí",
+            "does": "ohýbají a natahují zápěstí a prsty (stisk ruky)"
+          },
+          "latissimus": {
+            "name": "široký sval zádový",
+            "does": "stahuje paži dolů a dozadu (přítah, šplh)"
+          },
+          "trapezius": {
+            "name": "trapézový sval",
+            "does": "zvedá a přitahuje lopatky (krčení ramen)"
+          },
+          "zdvihac": {
+            "name": "zdvihač hlavy",
+            "does": "otáčí a předklání hlavu"
+          },
+          "rectus_abdominis": {
+            "name": "přímý sval břišní",
+            "does": "předklání trup (leh-sed)"
+          },
+          "obliquus": {
+            "name": "zevní šikmý sval břišní",
+            "does": "otáčí a uklání trup"
+          },
+          "vzprimovac": {
+            "name": "vzpřimovač páteře",
+            "does": "narovnává a zaklání trup"
+          },
+          "gluteus": {
+            "name": "velký sval hýžďový",
+            "does": "natahuje kyčel (zanožení, vstávání ze dřepu, odraz)"
+          },
+          "quadriceps": {
+            "name": "čtyřhlavý sval stehenní",
+            "does": "natahuje koleno (kop, výskok); jeho přímá hlava ohýbá i kyčel"
+          },
+          "hamstringy": {
+            "name": "zadní svaly stehna (hamstringy)",
+            "does": "ohýbají koleno a natahují kyčel"
+          },
+          "adduktory": {
+            "name": "přitahovače stehna",
+            "does": "přitahují stehno k druhé noze"
+          },
+          "lytkovy": {
+            "name": "trojhlavý sval lýtkový",
+            "does": "propíná kotník – výpon na špičky, odraz"
+          },
+          "tibialis": {
+            "name": "přední sval holenní",
+            "does": "zvedá špičku nohy (přitahuje nárt)"
+          }
+        },
+        "texts": {
+          "mouse": "Klikni do obrazu – pak se rozhlížíš myší (Esc myš uvolní).",
+          "help": "Ve 3D chodbě klikni do obrazu a rozhlížej se myší; chůze W A S D nebo šipkami, mezerník = skok, C = podřep, E = akce. Klávesou Esc myš uvolníš – pak jde klikat na tlačítka nahoře.",
+          "noWebgl": "Tento prohlížeč neumí 3D grafiku (WebGL), takže 3D chodbu nezobrazí. Zkus jiný prohlížeč nebo počítač.",
+          "charge": "odraz {t} s · impulz {J} N·s · výskok {h} m",
+          "jump": "Odraz {t} s × síla {F} N = impulz {J} N·s. Rychlost odrazu v = impulz : hmotnost = {J} : {m} = {v} m/s, výška výskoku h = v² : 2g = {h} m.",
+          "pushLimit": "Déle než {tmax} s se odrážet nejde – pak už máš nohy propnuté.",
+          "jumpOnto": "Na bednu {label} jsi vyskočil: těžiště musíš zvednout o {box} m, k tomu potřebuješ rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, tedy impulz aspoň {Jneed} N·s.",
+          "jumpShort": "Na bednu {label} to nestačilo: těžiště musíš zvednout o {box} m – potřebuješ rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, tedy impulz aspoň {Jneed} N·s. Drž mezerník déle.",
+          "jumpImpossible": "Na {label} nevyskočíš: ani nejdelší odraz ({Jmax} N·s) tě s hmotností {m} kg nezvedne o {box} m, nejvýš asi o {hmax} m. {extra}",
+          "tryNoPack": "Zkus to bez batohu.",
+          "climbInstead": "Sem musíš vylézt (E), nebo najít jinou cestu.",
+          "packOn": "Bereš batoh {kg} kg – teď vážíš {m} kg. Stejný odraz (stejný impulz) ti dá menší rychlost, takže vyskočíš níž. Batoh odložíš klávesou E.",
+          "packOff": "Batoh odložen – vážíš zase {m} kg.",
+          "packHud": "Batoh {kg} kg · celkem {m} kg",
+          "landSoft": "Seskok z {H} m: dopadová rychlost v = √(2g·h) = {v} m/s. Doskok do podřepu – brzdíš {dt} s, průměrná síla F = m·v : t + m·g = {F} kN, to je asi {ratio}× tvoje tíha. Pokrčená kolena prodloužila brzdění, a proto je síla menší.",
+          "landHard": "Seskok z {H} m: dopadová rychlost v = √(2g·h) = {v} m/s. Propnutá kolena – brzdíš jen {dt} s, průměrná síla F = m·v : t + m·g = {F} kN, to je asi {ratio}× tvoje tíha!",
+          "landHurt": "Au – ztrácíš život (zbývá {lives}). Příště drž při dopadu C (podřep).",
+          "climb": "Vylezl jsi po žebřinách o {h} m za {t} s. Práce W = m·g·h = {m} · 9,81 · {h} = {W} J, výkon P = W : t = {P} W.",
+          "mantle": "Vytáhl ses nahoru o {h} m. Práce W = m·g·h = {m} · 9,81 · {h} = {W} J.",
+          "tooHigh": "Tady je to {h} m vysoko – na to nevylezeš.",
+          "jumpHere": "Na {h} m se nešplhá – vyskoč: drž mezerník a pusť.",
+          "promptJump": "Bedna {h} m: drž mezerník (delší odraz = větší impulz)",
+          "promptMantle": "E – vylézt nahoru ({h} m)",
+          "promptGun": "E – vzít cvičnou laserovou pušku",
+          "promptPack": "E – vzít batoh {kg} kg",
+          "promptLadder": "Žebřiny: jdi dopředu (W) a lez nahoru",
+          "promptClimbing": "W nahoru · S dolů · mezerník = pustit se",
+          "promptEdge": "Seskok 2 m – při dopadu drž C (podřep)!",
+          "promptDoor": "Dveře na cvičiště – zamčeno",
+          "gunTaken": "Bereš cvičnou laserovou pušku (laser game – bez krve). Vzadu v šeru se něco pohnulo…",
+          "wake": "Svalovec se probral! Sleduj, k jakému pohybu se chystá, a zasáhni sval, který ten pohyb provede. Míříš křížkem uprostřed obrazu, střílíš klikem, Enterem nebo X.",
+          "wakeNoGun": "Svalovec se probral! Bez laserové pušky na něj nic nezmůžeš – stojan je u levé stěny.",
+          "correct": "Zásah! {muscle} – {does}. Útok „{attack}“ už svalovec neudělá.",
+          "remaining": "Zbývá vypnout: {list}.",
+          "wrong": "Vedle – trefil jsi: {muscle} – {does}. {prompt}",
+          "notNow": "Trefil jsi: {muscle} – {does}. Teď ale nepracuje. Zasáhni ho, až se svalovec chystá k pohybu, který tenhle sval provádí.",
+          "info": "Trefil jsi: {muscle} – {does}.",
+          "disabled": "Tenhle sval ({muscle}) už je vypnutý.",
+          "bone": "Laser zasáhl kost – míř na svaly.",
+          "hitPlayer": "Svalovec tě zasáhl ({attack})! Zbývá životů: {lives}.",
+          "hitNoDamage": "Svalovec tě zasáhl ({attack}) – útoky jsou v Menu vypnuté, nic se ti nestalo.",
+          "death": "Svalovec tě srazil. Začínáš znovu pod plošinou – svaly mu zase naskočily, zkus to znovu.",
+          "deathFall": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu pod plošinou.",
+          "deathStart": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu na začátku chodby.",
+          "defeated": "Svalovec se zhroutil! Vypnul jsi všechny svaly, které jeho útoky prováděly. Dveře na cvičiště se otevírají.",
+          "doorLocked": "Dveře na cvičiště jsou zamčené. Otevřou se, až svalovec padne.",
+          "end": "Konec ukázky 3D chodby. Dál povede cvičiště s překážkovou dráhou (zatím neudělané)."
         }
       }
     }

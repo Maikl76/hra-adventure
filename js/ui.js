@@ -111,6 +111,7 @@
     else {
       stopSceneLoop();
       if (corridor) { corridor.stop(); corridor.setPaused(true); }
+      if (world3d) { world3d.stop(); world3d.setPaused(true); }
       if (calc) calc.close();
       if ($('hud-help')) hideHudHelp();
     }
@@ -497,6 +498,12 @@
     selectedItem = null;
     newItems.clear();
     const start = shortcut && shortcut.track.id === trackId ? shortcut.roomId : undefined;
+    if (world3d) {
+      // nová hra = 3D chodba od začátku
+      world3d.destroy();
+      world3d = null;
+      world3dRoom = null;
+    }
     const events = game.newGame(trackId, $('team-name').value, start);
     applyWorld(game.state.trackId);
     showScreen('room');
@@ -558,7 +565,8 @@
     }
     panel.appendChild(dl);
     const tip = document.createElement('p');
-    tip.textContent = 'Na věci v místnosti klikej. Šipkami ‹ › po stranách se otáčíš.';
+    const help3d = game && game.state && game.room.type === 'world3d' && (game.room.world.texts || {}).help;
+    tip.textContent = help3d || 'Na věci v místnosti klikej. Šipkami ‹ › po stranách se otáčíš.';
     panel.appendChild(tip);
     const ok = document.createElement('button');
     ok.type = 'button';
@@ -721,10 +729,17 @@
   function renderRoom(direction) {
     const room = game.room;
     if (room.type === 'corridor') {
+      leaveWorld3d();
       renderCorridor();
       return;
     }
+    if (room.type === 'world3d') {
+      leaveCorridor();
+      renderWorld3d();
+      return;
+    }
     leaveCorridor();
+    leaveWorld3d();
     const view = game.view;
     $('hud-gate').textContent = room.gateLabel || `Brána ${room.gateNumber || ''}`;
     $('hud-room').textContent = view !== room && view.name ? `${room.name} · ${view.name}` : room.name;
@@ -816,7 +831,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.20');
+      const mod = await import('./chodba.js?v=0.21');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -986,6 +1001,87 @@
     if (bumped) lines.unshift(corridor.skeletonAt(f.front.x, f.front.y) ? 'Cestu zastoupil kostlivec – zasáhni ho laserem.' : 'Tudy cesta nevede.');
     if (replace) showMessage([], lines);
     else lines.forEach((l) => appendMessage(l, true));
+  }
+
+  /* ---------- 3D chodba (ukázka; kreslí js/chodba3d.js a js/svalovec.js přes three.js) ----------
+     Volný pohyb: myš + W A S D / šipky, mezerník skok, C podřep, E akce, klik / Enter / X laser;
+     na dotykovém displeji páčka a tlačítka. Klávesy obsluhuje modul sám, sem jen hlásí události. */
+  let world3d = null;         // instance World3D
+  let world3dRoom = null;     // id místnosti, pro kterou je načtená (nová hra ji zahodí)
+
+  async function renderWorld3d() {
+    const room = game.room;
+    const roomId = game.roomId;
+    $('hud-gate').textContent = room.gateLabel || '';
+    $('hud-room').textContent = room.name;
+    sound.ambience(room.ambience || 'room');
+    updateStorm();
+    hideTooltip();
+    $('scene').classList.add('world3d');
+    $('scene-bg').hidden = true;
+    $('scene-layers').innerHTML = '';
+    $('hotspots').innerHTML = '';
+    $('scene-nav').innerHTML = '';
+    renderState(false);
+    let box = $('scene-3d');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'scene-3d';
+      box.className = 'scene-3d';
+      $('scene-bg').after(box);
+    }
+    box.hidden = false;
+    if (!world3d || world3dRoom !== roomId) {
+      if (world3d) world3d.destroy();
+      world3d = null;
+      const save = game.state;
+      let w;
+      try {
+        const mod = await import('./chodba3d.js?v=0.21');
+        w = new mod.World3D(box, room.world, {
+          reducedMotion: reducedMotion.matches,
+          attacks: Game.getSetting('kostlivciUtoci', true),
+          on: world3dEvents(),
+        });
+        await w.load();
+      } catch (err) {
+        console.error(err);
+        if (w) w.destroy();
+        showMessage([(room.world.texts || {}).noWebgl || 'Tento prohlížeč neumí 3D grafiku (WebGL).']);
+        return;
+      }
+      if (!game.state || game.state !== save || game.roomId !== roomId || $('room').hidden) {
+        w.destroy();
+        return;
+      }
+      world3d = w;
+      world3dRoom = roomId;
+      box.__world3d = w;   // pro automatické testy
+    }
+    world3d.setFlashlight(flashlightOn);
+    world3d.setAttacks(Game.getSetting('kostlivciUtoci', true));
+    world3d.start();
+    world3d.setPaused(!$('modal').hidden);
+  }
+
+  function world3dEvents() {
+    return {
+      message: (lines) => showMessage(lines),
+      sfx: (name) => sound.sfx(name),
+      stats: (vals) => game.setVars(vals),
+      defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }])),
+      end: () => handleEvents(game.run([{ set: 'prekazky_konec' }])),
+    };
+  }
+
+  function leaveWorld3d() {
+    $('scene').classList.remove('world3d');
+    const box = $('scene-3d');
+    if (box) box.hidden = true;
+    if (world3d) {
+      world3d.setPaused(true);
+      world3d.stop();
+    }
   }
 
   /* Šipky pro otočení v místnosti a návrat ze zvětšeného pohledu. */
@@ -1484,6 +1580,7 @@
     flashlightOn = !flashlightOn;
     Game.setSetting('flashlight', flashlightOn);
     if (corridor) corridor.setFlashlight(flashlightOn);
+    if (world3d) world3d.setFlashlight(flashlightOn);
     updateLightButton();
   }
 
@@ -1515,6 +1612,7 @@
     $('modal').hidden = false;
     $('cursor-item').hidden = true;
     if (corridor) corridor.setPaused(true);
+    if (world3d) world3d.setPaused(true);
   }
 
   function closeModal() {
@@ -1529,6 +1627,10 @@
     reflexHit = null;
     unzoomScene();
     if (corridor && game && game.state && game.room.type === 'corridor') corridor.setPaused(false);
+    if (world3d && game && game.state && game.room.type === 'world3d' && !$('room').hidden) {
+      world3d.setAttacks(Game.getSetting('kostlivciUtoci', true));
+      world3d.setPaused(false);
+    }
   }
 
   function heading(box, text) {
@@ -1688,7 +1790,7 @@
         }
       };
 
-      import('./basket.js?v=0.20').then((mod) => {
+      import('./basket.js?v=0.21').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2311,7 +2413,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.20');
+          const mod = await import('./squats.js?v=0.21');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3173,7 +3275,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.20');
+          const mod = await import('./skok.js?v=0.21');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3551,7 +3653,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.20');
+          const mod = await import('./goblet.js?v=0.21');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4281,7 +4383,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.20');
+          const mod = await import('./predklon.js?v=0.21');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4409,12 +4511,13 @@
         updateStorm();
         stormBtn.textContent = stormLabel();
       });
-      if (game.room && game.room.type === 'corridor' && (game.room.corridor.skeletons || []).length) {
+      if (game.room && ((game.room.type === 'corridor' && (game.room.corridor.skeletons || []).length) || game.room.type === 'world3d')) {
         const atkLabel = () => `Kostlivci útočí: ${Game.getSetting('kostlivciUtoci', true) ? 'ano' : 'ne'}`;
         const atkBtn = add(atkLabel(), () => {
           const on = !Game.getSetting('kostlivciUtoci', true);
           Game.setSetting('kostlivciUtoci', on);
           if (corridor) corridor.setAttacks(on);
+          if (world3d) world3d.setAttacks(on);
           atkBtn.textContent = atkLabel();
         });
       }
@@ -4698,6 +4801,8 @@
         }
       }
     }
+    // 3D chodba si klávesy obsluhuje sama (js/chodba3d.js).
+    if (!modalOpen && !$('room').hidden && world3d && game.room && game.room.type === 'world3d') return;
     // Otáčení v místnosti šipkami (← → otočení, ↓ zpět ze zvětšeného pohledu).
     if (!modalOpen && !$('room').hidden && !e.target.matches('input, textarea')) {
       const dir = { ArrowLeft: 'left', ArrowRight: 'right', ArrowDown: 'back' }[e.key];

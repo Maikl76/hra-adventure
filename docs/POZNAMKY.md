@@ -40,8 +40,8 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
   (Menu → Vyznačit objekty v místnosti) a světla (`lights`).
 - **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
   importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`, `goblet.js`) a `skok.js`,
-  `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo; také `chodba.js`
-  a `basket.js` v `js/ui.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
+  `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo; také `chodba.js`,
+  `chodba3d.js` a `basket.js` v `js/ui.js` a `svalovec.js` v `js/chodba3d.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
   prohlížeče hráčů míchají starý a nový kód. **První slovo `meta.version` musí být stejné jako `?v=`
   u `ui.js`**: když se liší (stará stránka z mezipaměti – GitHub Pages ji drží až 10 minut, autor tak
   17. 10. 2026 neotevřel basketbalový automat), hra se jednou sama znovu načte s `?v=<verze>`.
@@ -68,7 +68,10 @@ js/skok.js          výskok z podřepu – doba letu (GSPORT, aréna)
 js/predklon.js      zkouška stability – předklon (vojenská tělovýchova, sklad)
 js/goblet.js        goblet dřep 90 s – platné a neplatné dřepy (vojenská tělovýchova, tělocvična)
 js/chodba.js        chodba „z vlastních očí“ – chůze po krocích, kreslení jako DOOM (zkouška: sklep)
+js/chodba3d.js      3D chodba (ukázka) – volný pohyb, skok s impulzem, doskok, lezení, laser (three.js)
+js/svalovec.js      svalovec – kostra se svaly z tvarů v kódu, pózy a chování (three.js)
 vendor/mediapipe/   MediaPipe Tasks Vision 0.10.14 + model pose_landmarker_lite (Apache 2.0)
+vendor/three/       three.js 0.186.1, zmenšené (MIT) – jen pro 3D chodbu, načte se až v ní
 data/game.json      VEŠKERÝ obsah hry
 assets/             rooms/ (pohledy a vrstvy), items/, closeups/, book/, scares/, chodba/ (textury)
 docs/               tyto poznámky a zadání obrázků pro autora (zadani-obrazku-*.md)
@@ -126,6 +129,16 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `moveSeconds`, `wakeCells`), `weapon` = obrázek pušky; zbraň = předmět `weaponItem`
   (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
   Objekt s `pile: "<id kostlivce>"` místo `cell` = hromádka kostí na podlaze, kde kostlivec padl.
+- **3D chodba** (`"type": "world3d"`, kreslí `js/chodba3d.js` + `js/svalovec.js` přes three.js): místo
+  pohledů má `world` – rozměry v metrech (x vlevo/vpravo, dopředu je −z): `hall` (x, z, výška),
+  `textures` (zeď, podlaha, strop, potrubí, puška), `player` (`start`, `yaw`, `kg`, `force` = síla
+  odrazu nad tíhu v N, `pushMax` = nejdelší odraz v s), `checkpoint` (návrat po porážce), `backpack`,
+  `blocks` (bedny a plošina: `x`, `z`, `h`, `label`), `ladder` (žebřiny na čele plošiny), `edgeSign`,
+  `rack` (stojan s puškou), `door`, `lamps` ([x, z, bliká]), `zone3` (kde chodí svalovec), `svalovec`
+  (`at`, `attacks`, `windup` = délka nápřahu v s, `speed`), `attacks` (název, `target` = sval, který útok
+  provádí, `prompt`), `muscles` (název a funkce svalu), `texts` (všechny hlášky s {proměnnými}).
+  Svaly svalovce (id) a jejich úpony jsou v `js/svalovec.js`. Příznaky: `svalovec_porazen`,
+  `prekazky_konec`; proměnné `svaly_spravne`, `svaly_chybne`, `skok_max`.
 - Aktivita `basket` (basketbalový automat, `js/basket.js`): trestný hod z boku ve skutečných rozměrech
   (odhod z 2,2 m, obroučka 305 cm ve 4,225 m, průměr 45 cm, míč 24 cm, odrazy od obroučky a desky).
   Prak (tah od míče), šipky / tlačítka ± úhel a rychlost, „Hodit“ = znovu se stejným nastavením.
@@ -137,7 +150,7 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   vrácená kost = příznak `kostra_<id>`, chyby `kostra_chybne`, po poslední kosti `done`.
 - **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
   odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
-  (Teď nepoužito – bludiště bylo zkušební do 17. 10. 2026.)
+  Teď: `prekazky` (3D chodba, ukázka od 19. 10. 2026; bludiště bylo zkušební do 17. 10. 2026).
 - **Změna pořadí místností** ve světě: uložená hra si pamatuje i id místnosti (`roomId`), takže
   pokračuje ve správné místnosti. Starší uložení `roomId` nemají – pro ně u sekce `roomsBefore` =
   pořadí před změnou (vojenska: `["sklad", "telocvicna"]`, než přibylo bludiště). Uložená zkušební
@@ -267,6 +280,40 @@ zůstaly jen ikony předmětů
 - Normy přesně podle Excelu; opravena jen zřejmá chyba (plavání ženy VII 8:04 / 9:10 / 10:18)
   a desetinná opakování v kategoriích BI a C zaokrouhlena nahoru (autor schválil).
 
+### Vojenská tělovýchova – Ukázka 3D: Chodba na cvičiště (`prekazky`)
+Autor chtěl chodbu, kde se dá skákat, někam vylézt a bojovat s kostrou pokrytou svaly, která se
+pohybuje jako ve 3D (19. 10. 2026). Zvolil (Menu otázek): **nová chodba za tělocvičnou** (tělocvična
+končí „chodbou ven na cvičiště“), **volný pohyb jako v moderních hrách** (myš + klávesy; na tabletu
+páčka a tlačítka), **svalovec postavený v kódu** (kosti + svaly jako vřetena mezi začátkem a úponem;
+realistické modely mají licenci CC BY-SA, generované modely nejsou anatomicky přesné),
+**boj cvičným laserem** (laser game, bez krve). Zatím **zkušební místnost** (`trialRooms`, jen
+odkaz `?mistnost=prekazky`), do světa se nezařazuje. Knihovna three.js (MIT) je ve `vendor/three/`.
+Řetěz (chodba 32 × 6 m, strop 4,2 m): bedny **0,4 m a 0,6 m** (skok) a batoh **15 kg** → bedna **1,2 m**
+(vylézt, E) nebo **žebřiny** → plošina **2,0 m** → **seskok** (drž C = podřep) → stojan s puškou →
+**svalovec** → dveře na cvičiště (otevřou se, až svalovec padne) → konec ukázky.
+- **Skok = impulz:** mezerník se drží (odraz), impulz J = F · t (F = 420 N nad tíhu, t nejvýš 0,6 s
+  → 252 N·s), v = J : m, h = v² : 2g → bez batohu nejvýš 0,66 m (0,6 m stačí odraz ≥ 0,57 s),
+  s batohem (85 kg) jen 0,45 m – na 0,6 m nevyskočí, na 0,4 m těsně ano. Hláška po každém skoku
+  s čísly; na bednu před hráčem: potřebná rychlost √(2gh) a impulz m · v.
+- **Lezení = práce:** žebřiny 2,0 m (W = m · g · h = 1 373 J, výkon W : t), vylézt (E) na výšku
+  0,65–1,35 m (1,2 m = 824 J, z bedny na plošinu 0,8 m = 549 J); na 2 m ze země „nevylezeš“.
+- **Doskok:** pád z výšky ≥ 0,9 m → dopadová rychlost √(2gh), průměrná síla F = m · v : t + m · g;
+  s podřepem (C) brzdění 0,3 s, jinak 0,05 s. Ze 2 m: 2,1 kN (3× tíha), resp. 9,5 kN (14×) → nad
+  12× tíhy ztráta života (jen když jsou v Menu útoky zapnuté).
+- **Svalovec (výukově funkce svalů):** útoky **kop** → čtyřhlavý sval stehenní (natahuje koleno),
+  **sevření** → velký sval prsní (přitahuje paže před tělo), **úder pěstí** → trojhlavý sval pažní
+  (natahuje loket). Při nápřahu (2,4 s) puška napíše pohyb, hráč zasáhne sval, který ho **provede**
+  (sval se při nápřahu natahuje, při úderu zkrátí, ztluští a rozzáří). Správně = útok vypnutý (sval
+  zešedne), po všech třech se svalovec zhroutí. Vedle = název a funkce trefeného svalu; mimo útok
+  „teď nepracuje“. Úder svalovce = život (3), po porážce zpět pod plošinu a svalovci svaly
+  „naskočí“. Menu → „Kostlivci útočí“ platí i pro svalovce.
+- Ovládání: klik do obrazu = rozhlížení myší (Esc uvolní – pak jdou tlačítka nahoře), W A S D /
+  šipky, mezerník, C, E, laser klik / Enter / X; PageUp/PageDown nebo R/F = pohled nahoru/dolů.
+  Dotyk: páčka vlevo, tah prstem = rozhlížení, klepnutí = výstřel, tlačítka Skok, Podřep, Akce, Laser.
+  Pomalý počítač: hra sama sníží rozlišení. Bez WebGL hláška `noWebgl`.
+- **Zbývá:** autor má vyzkoušet na svém počítači a tabletu (ovládání, nevolnost, rychlost), pak
+  rozhodnout o zařazení do světa (Brána III?) a o dalších svalech a útocích (výskok → lýtkový sval).
+
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
 a neony; čtyři pohledy (stůl → knihovna → kostra a stanice → dveře) + přiblížená pojistková skříň.
@@ -318,6 +365,8 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 - **Zbraně:** jinak ve hře žádné; výjimka je sklepní bludiště – autor chtěl střelbu na kostlivce:
   jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
+  Druhá výjimka (19. 10. 2026, autor odsouhlasil boj laserem): zkušební 3D chodba se svalovcem –
+  zase jen cvičný laser, výukový smysl funkce svalů; puška leží ve stojanu v chodbě.
 - **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična.
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
 - **Basketbal v aréně** (17. 10. 2026): ovládání jako prak, 10 hodů, **povinně aspoň 3 koše** (bez nich

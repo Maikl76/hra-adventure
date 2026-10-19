@@ -130,6 +130,7 @@ Každý svět bude mít vlastních devět bran.
   počítači, a pro vyzkoušení:
   - GSPORT – LEVEL 2 (Skokanská aréna): <https://maikl76.github.io/hra-adventure/?mistnost=arena>
   - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
+  - Vojenská tělovýchova – ukázka 3D chodby (skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
 
   Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč
@@ -162,10 +163,13 @@ a otevřete `http://127.0.0.1:8765`.
 Čisté HTML, CSS a JavaScript – bez serveru a bez sestavování. Zvuk se generuje přímo
 v prohlížeči (Web Audio API); generované zvuky lze v `game.json` nahradit nahrávkami.
 
-Jediná knihovna je **MediaPipe Tasks Vision** (Google, licence Apache 2.0) pro odhad polohy
-těla z kamery (dřepy a výskok v GSPORT, zkouška stability a goblet dřep ve vojenské tělovýchově). Je uložená ve složce [`vendor/mediapipe`](vendor/mediapipe)
-i s modelem, takže hra nestahuje nic z cizích serverů. Načte se, až když hráč zvolí měření
-s kamerou.
+Knihovny jsou dvě a obě jsou uložené ve složce `vendor/`, takže hra nestahuje nic z cizích serverů:
+
+- **MediaPipe Tasks Vision** (Google, licence Apache 2.0) pro odhad polohy těla z kamery (dřepy
+  a výskok v GSPORT, zkouška stability a goblet dřep ve vojenské tělovýchově) – ve složce
+  [`vendor/mediapipe`](vendor/mediapipe) i s modelem. Načte se, až když hráč zvolí měření s kamerou.
+- **three.js** (licence MIT) pro 3D grafiku – ve složce [`vendor/three`](vendor/three). Načte se,
+  až když hráč vstoupí do 3D chodby.
 
 Poznámky k vývoji (pravidla práce, formát `game.json`, stav místností, rozhodnutí autora):
 [`docs/POZNAMKY.md`](docs/POZNAMKY.md).
@@ -177,3 +181,4 @@ Poznámky k vývoji (pravidla práce, formát `game.json`, stav místností, roz
 - **Obsah** – obrázky, texty a hádanky (`assets/`, `data/`): licence
   [CC BY 4.0](LICENSE-obsah.md) – volné použití s uvedením autora.
 - **MediaPipe** (`vendor/mediapipe/`): © Google, licence [Apache 2.0](vendor/mediapipe/LICENSE).
+- **three.js** (`vendor/three/`): © three.js authors, licence [MIT](vendor/three/LICENSE).
