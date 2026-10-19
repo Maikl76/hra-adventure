@@ -10,7 +10,7 @@
  * Když se hráč po výdrži ještě znovu spustí dolů (protipohyb), skok se nepočítá – nebyl by to SJ.
  * Obraz se zpracovává jen v prohlížeči, nic se neukládá ani neposílá.
  */
-import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.22';
+import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.23';
 
 const VIS = 0.5;          // minimální viditelnost bodu
 const LEG_CM = 85;        // standardní vzdálenost kyčel–kotník (pro přepočet pixelů na cm)

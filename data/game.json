@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.22 – ukázka",
+    "version": "0.23 – ukázka",
     "totalGates": 9
   },
 
@@ -33,13 +33,12 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad", "chodba", "telocvicna"],
+      "rooms": ["sklad", "chodba", "telocvicna", "prekazky"],
       "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
       "roomsBefore": ["sklad", "telocvicna"],
-      "trialRooms": { "prekazky": "telocvicna" },
       "finish": {
         "title": "Brána II je otevřená",
-        "text": "Za dveřmi tělocvičny vede chodba ven na cvičiště. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
+        "text": "Chodba z tělocvičny je za tebou – svalovec leží a dveře na cvičiště jsou otevřené. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "cameraLabel": "Zkouška stability ověřená kamerou",
         "stats": [
@@ -49,7 +48,10 @@
           { "label": "Goblet dřep (90 s)", "value": "{goblet_n} platných dřepů", "requires": ["goblet_n"] },
           { "label": "Goblet dřep měřený kamerou", "bool": "goblet_kamera" },
           { "label": "Kostlivci – anatomie", "value": "{kosti_spravne} správných zásahů, {kosti_chybne} vedle", "requires": ["kosti_spravne"] },
-          { "label": "Kostra z kabinetu", "value": "složená, chyb při skládání: {kostra_chybne}", "requires": ["kostra_chybne"] }
+          { "label": "Kostra z kabinetu", "value": "složená, chyb při skládání: {kostra_chybne}", "requires": ["kostra_chybne"] },
+          { "label": "Svalovec – funkce svalů", "value": "správné zásahy: {svaly_spravne}, vedle: {svaly_chybne}", "requires": ["svaly_spravne"] },
+          { "label": "Nejvyšší výskok (chodba na cvičiště)", "value": "{skok_max:2} m", "requires": ["skok_max"] },
+          { "label": "Chodba na cvičiště", "value": "přeskočená – prohlížeč neuměl 3D grafiku", "requires": ["prekazky_preskoceno"] }
         ]
       }
     },
@@ -7913,21 +7915,21 @@
     },
 
     "prekazky": {
-      "name": "Chodba na cvičiště (ukázka 3D)",
-      "gateLabel": "Ukázka",
+      "name": "Chodba na cvičiště",
+      "gateLabel": "Chodba",
       "tracks": ["vojenska"],
       "type": "world3d",
-      "_poznamka": "Zkušební 3D chodba (19. 10. 2026): autor chtěl skákat, lézt a bojovat se svalovcem; volný pohyb (myš a klávesy), svalovec z tvarů v kódu, boj cvičným laserem. Hraje se jen přes odkaz ?mistnost=prekazky. Kreslí js/chodba3d.js a js/svalovec.js (three.js ve vendor/three).",
+      "_poznamka": "3D chodba (19. 10. 2026): autor chtěl skákat, lézt a bojovat se svalovcem; volný pohyb (myš a klávesy), svalovec z tvarů v kódu, boj cvičným laserem. Nejdřív zkušební místnost, týž den zařazená za tělocvičnu. Odkaz ?mistnost=prekazky. Kreslí js/chodba3d.js a js/svalovec.js (three.js ve vendor/three).",
       "ambience": "sklad",
       "storm": {
         "place": "budova",
         "steps": ["svalovec_porazen"]
       },
       "darkness": 0,
-      "enterText": "Z tělocvičny vede široká chodba ven na cvičiště. Stojí v ní bedny, u plošiny žebřiny a vzadu v šeru… něco jako anatomický model. (Ovládání: klikni do obrazu a rozhlížej se myší, chůze W A S D nebo šipkami, mezerník = skok – drž ho déle pro delší odraz, C = podřep, E = akce. Na tabletu páčka vlevo a tlačítka vpravo.)",
+      "enterText": "Za dveřmi tělocvičny je široká chodba ven na cvičiště. Stojí v ní bedny, u plošiny žebřiny a vzadu v šeru… něco jako anatomický model. (Ovládání: klikni do obrazu a rozhlížej se myší, chůze W A S D nebo šipkami, mezerník = skok – drž ho déle pro delší odraz, C = podřep, E = akce. Na tabletu páčka vlevo a tlačítka vpravo.)",
       "shortcut": [
         {
-          "text": "Ukázka 3D chodby: zkus vyskočit na bedny, vylézt po žebřinách na plošinu, seskočit z ní – a pak svalovce. Výpočty se ukážou tady dole."
+          "text": "Začínáš rovnou v chodbě z tělocvičny na cvičiště (3D). Zkus vyskočit na bedny, vylézt po žebřinách na plošinu, seskočit z ní – a pak svalovce. Výpočty se ukážou tady dole."
         }
       ],
       "world": {
@@ -8115,7 +8117,8 @@
         "texts": {
           "mouse": "Klikni do obrazu – pak se rozhlížíš myší (Esc myš uvolní).",
           "help": "Ve 3D chodbě klikni do obrazu a rozhlížej se myší; chůze W A S D nebo šipkami, mezerník = skok, C = podřep, E = akce. Klávesou Esc myš uvolníš – pak jde klikat na tlačítka nahoře.",
-          "noWebgl": "Tento prohlížeč neumí 3D grafiku (WebGL), takže 3D chodbu nezobrazí. Zkus jiný prohlížeč nebo počítač.",
+          "noWebgl": "Tento prohlížeč neumí 3D grafiku (WebGL), takže chodbu na cvičiště nezobrazí. Zkus jiný prohlížeč nebo počítač – nebo chodbu přeskoč (na závěrečné obrazovce to bude uvedené).",
+          "skipButton": "Přeskočit chodbu ›",
           "charge": "odraz {t} s · impulz {J} N·s · výskok {h} m",
           "jump": "Odraz {t} s × síla {F} N = impulz {J} N·s. Rychlost odrazu v = impulz : hmotnost = {J} : {m} = {v} m/s, výška výskoku h = v² : 2g = {h} m.",
           "pushLimit": "Déle než {tmax} s se odrážet nejde – pak už máš nohy propnuté.",
@@ -8168,7 +8171,7 @@
           "deathStart": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu na začátku chodby.",
           "defeated": "Svalovec se zhroutil! Vypnul jsi všechny svaly, které jeho útoky prováděly. Dveře na cvičiště se otevírají.",
           "doorLocked": "Dveře na cvičiště jsou zamčené. Otevřou se, až svalovec padne.",
-          "end": "Konec ukázky 3D chodby. Dál povede cvičiště s překážkovou dráhou (zatím neudělané)."
+          "end": "Prošel jsi dveřmi ven na cvičiště."
         }
       }
     }

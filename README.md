@@ -27,6 +27,11 @@ Každý svět bude mít vlastních devět bran.
   špiček), hod medicinbalem a granátem (nejlepší úhel z výšky je pod 45°), proč se goblet dřep
   dělá s kettlebellem vpředu a **goblet dřep 90 s** před kamerou. Zatím se zástupnou grafikou
   (zadání obrázků: [`docs/zadani-obrazku-telocvicna.md`](docs/zadani-obrazku-telocvicna.md)).
+  Mezi skladem a tělocvičnou je **sklepní bludiště** z vlastních očí (kostlivci, anatomie kostí).
+- **Vojenská tělovýchova – Chodba na cvičiště (3D)**: volný pohyb jako v moderních hrách – skok
+  (impulz odrazu, batoh 15 kg sníží výskok), lezení po žebřinách (práce a výkon), seskok z plošiny
+  (doskok do podřepu zmenší sílu) a **svalovec**: zasáhnout cvičným laserem sval, který jeho útok
+  provede. Na tabletu dotykové ovládání.
 - **GSPORT – LEVEL 1: Stará herna** (práce a výkon při dřepech, sčítání wattů): stará laboratoř
   v suterénu předělaná na hernu, čtyři strany místnosti a řetěz úkolů – reflex test, UV
   svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
@@ -130,7 +135,7 @@ Každý svět bude mít vlastních devět bran.
   počítači, a pro vyzkoušení:
   - GSPORT – LEVEL 2 (Skokanská aréna): <https://maikl76.github.io/hra-adventure/?mistnost=arena>
   - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
-  - Vojenská tělovýchova – ukázka 3D chodby (skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
+  - Vojenská tělovýchova – Chodba na cvičiště (3D: skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
 
   Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč

@@ -150,7 +150,7 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   vrácená kost = příznak `kostra_<id>`, chyby `kostra_chybne`, po poslední kosti `done`.
 - **Zkušební místnost** světa: `trialRooms` u sekce ({ místnost: kam vede }). Hraje se jen přes
   odkaz `?mistnost=<id>`, běžná hra ji přeskočí; po odchodu pokračuje hra místností, kam vede.
-  Teď: `prekazky` (3D chodba, ukázka od 19. 10. 2026; bludiště bylo zkušební do 17. 10. 2026).
+  (Teď nepoužito – bludiště bylo zkušební do 17. 10. 2026, 3D chodba na cvičiště 19. 10. 2026.)
 - **Změna pořadí místností** ve světě: uložená hra si pamatuje i id místnosti (`roomId`), takže
   pokračuje ve správné místnosti. Starší uložení `roomId` nemají – pro ně u sekce `roomsBefore` =
   pořadí před změnou (vojenska: `["sklad", "telocvicna"]`, než přibylo bludiště). Uložená zkušební
@@ -183,7 +183,8 @@ Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026): chodby z vlastních o
 s obrázky. Chůze **po krocích** a otočení o 90° (méně se z toho dělá špatně, jde ovládat i tlačítky
 na tabletu), krátká animace (při „omezit pohyb“ okamžitě). Vlastní kreslení (žádný kód DOOMu – jeho
 licence by si vynutila změnu licence hry). Nejdřív zkušební místnost (`trialRooms`, jen přes odkaz);
-**17. 10. 2026 autor schválil zařazení**: svět vojenska = sklad → bludiště → tělocvična. Ze skladu
+**17. 10. 2026 autor schválil zařazení**: svět vojenska = sklad → bludiště → tělocvična (od 19. 10. 2026
+ještě → 3D chodba na cvičiště). Ze skladu
 vede schodiště nahoru do sklepních chodeb, z bludiště schodiště do tělocvičny. Odkaz
 `?mistnost=chodba` začne rovnou v bludišti (s kalkulačkou). Laserovou pušku hráč u mříže vrátí do
 stojanu (`remove`) – do tělocvičny se nenosí. Pozor na obrázky: otevřené dveře skladu ukazují
@@ -280,14 +281,19 @@ zůstaly jen ikony předmětů
 - Normy přesně podle Excelu; opravena jen zřejmá chyba (plavání ženy VII 8:04 / 9:10 / 10:18)
   a desetinná opakování v kategoriích BI a C zaokrouhlena nahoru (autor schválil).
 
-### Vojenská tělovýchova – Ukázka 3D: Chodba na cvičiště (`prekazky`)
+### Vojenská tělovýchova – Chodba na cvičiště, 3D (`prekazky`)
 Autor chtěl chodbu, kde se dá skákat, někam vylézt a bojovat s kostrou pokrytou svaly, která se
 pohybuje jako ve 3D (19. 10. 2026). Zvolil (Menu otázek): **nová chodba za tělocvičnou** (tělocvična
 končí „chodbou ven na cvičiště“), **volný pohyb jako v moderních hrách** (myš + klávesy; na tabletu
 páčka a tlačítka), **svalovec postavený v kódu** (kosti + svaly jako vřetena mezi začátkem a úponem;
 realistické modely mají licenci CC BY-SA, generované modely nejsou anatomicky přesné),
-**boj cvičným laserem** (laser game, bez krve). Zatím **zkušební místnost** (`trialRooms`, jen
-odkaz `?mistnost=prekazky`), do světa se nezařazuje. Knihovna three.js (MIT) je ve `vendor/three/`.
+**boj cvičným laserem** (laser game, bez krve). Nejdřív zkušební místnost, **týž den autor schválil
+zařazení za tělocvičnu**: vojenska = sklad → bludiště → tělocvična → chodba na cvičiště. Brána II
+v tělocvičně vede do chodby, dveře na cvičiště (po svalovci) na závěrečnou obrazovku světa (text
+upravený: „Chodba z tělocvičny je za tebou…“, lísteček od D. beze změny; řádky svalovec a nejvyšší
+výskok). **Bez WebGL** hláška `noWebgl` a tlačítko „Přeskočit chodbu“ (proměnná
+`prekazky_preskoceno`, řádek na závěrečné obrazovce). Odkaz `?mistnost=prekazky` začne rovnou
+v chodbě. Knihovna three.js (MIT) je ve `vendor/three/`.
 Řetěz (chodba 32 × 6 m, strop 4,2 m): bedny **0,4 m a 0,6 m** (skok) a batoh **15 kg** → bedna **1,2 m**
 (vylézt, E) nebo **žebřiny** → plošina **2,0 m** → **seskok** (drž C = podřep) → stojan s puškou →
 **svalovec** → dveře na cvičiště (otevřou se, až svalovec padne) → konec ukázky.
@@ -317,9 +323,11 @@ odkaz `?mistnost=prekazky`), do světa se nezařazuje. Knihovna three.js (MIT) j
   Dotyk: chůze = prst **kamkoli do levé části obrazu** a táhnout (páčka se objeví pod prstem – pevné
   kolečko autorovi na tabletu šlo hůř), tah prstem vpravo = rozhlížení, klepnutí = výstřel, tlačítka
   Skok, Podřep, Akce, Laser.
-  Pomalý počítač: hra sama sníží rozlišení. Bez WebGL hláška `noWebgl`.
-- **Zbývá:** autor má vyzkoušet na svém počítači a tabletu (ovládání, nevolnost, rychlost), pak
-  rozhodnout o zařazení do světa (Brána III?) a o dalších svalech a útocích (výskok → lýtkový sval).
+  Pomalý počítač: hra sama sníží rozlišení.
+- Zkouška autora (19. 10. 2026): běží plynule; svalovce „skoro nešlo zabít“ a kolečko na tabletu šlo
+  hůř → úpravy ve verzi 0.22 (viz výše).
+- **Zbývá:** další svaly a útoky (např. výskok → trojhlavý sval lýtkový), případně uložení polohy
+  v chodbě (teď se po zavření prohlížeče začíná na začátku chodby).
 
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
@@ -372,9 +380,10 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
 - **Zbraně:** jinak ve hře žádné; výjimka je sklepní bludiště – autor chtěl střelbu na kostlivce:
   jen cvičná laserová puška (laser game), žádná krev, výukový smysl anatomie, útoky kostlivců
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
-  Druhá výjimka (19. 10. 2026, autor odsouhlasil boj laserem): zkušební 3D chodba se svalovcem –
+  Druhá výjimka (19. 10. 2026, autor odsouhlasil boj laserem): 3D chodba na cvičiště se svalovcem –
   zase jen cvičný laser, výukový smysl funkce svalů; puška leží ve stojanu v chodbě.
-- **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična.
+- **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična,
+  **od 19. 10. 2026 ještě → 3D chodba na cvičiště** (svalovec; dveře na cvičiště = konec světa).
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
 - **Basketbal v aréně** (17. 10. 2026): ovládání jako prak, 10 hodů, **povinně aspoň 3 koše** (bez nich
   dveře LEVEL 2 nepustí), po dvou neúspěšných kolech automat napoví úhel a rychlost.

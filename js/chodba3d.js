@@ -10,7 +10,7 @@
  * Rozvržení a texty jsou v game.json (místnost → „world“); hra jen hlásí události (on.message…).
  */
 import * as THREE from '../vendor/three/three.module.min.js';
-import { Svalovec } from './svalovec.js?v=0.22';
+import { Svalovec } from './svalovec.js?v=0.23';
 
 const G = 9.81;
 const EYE = 1.65, EYE_CROUCH = 1.12, R = 0.3, HEIGHT = 1.8;
@@ -996,7 +996,9 @@ export class World3D {
   }
 
   pushStats() {
-    if (this.on.stats) this.on.stats({ ...this.stats });
+    const s = { ...this.stats };
+    if (!s.skok_max) delete s.skok_max;   // neskákal – řádek na závěrečné obrazovce vynechat
+    if (this.on.stats) this.on.stats(s);
   }
 
   /* Události svalovce. */

@@ -831,7 +831,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.22');
+      const mod = await import('./chodba.js?v=0.23');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1037,7 +1037,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.22');
+        const mod = await import('./chodba3d.js?v=0.23');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1047,7 +1047,7 @@
       } catch (err) {
         console.error(err);
         if (w) w.destroy();
-        showMessage([(room.world.texts || {}).noWebgl || 'Tento prohlížeč neumí 3D grafiku (WebGL).']);
+        if (game.state && game.roomId === roomId && !$('room').hidden) showSkipWorld3d(room);
         return;
       }
       if (!game.state || game.state !== save || game.roomId !== roomId || $('room').hidden) {
@@ -1070,8 +1070,30 @@
       sfx: (name) => sound.sfx(name),
       stats: (vals) => game.setVars(vals),
       defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }])),
-      end: () => handleEvents(game.run([{ set: 'prekazky_konec' }])),
+      // dveřmi ven: další místnost světa, nebo závěrečná obrazovka
+      end: () => {
+        const roomId = game.roomId;
+        handleEvents(game.run([{ set: 'prekazky_konec' }]));
+        setTimeout(() => {
+          if (game.state && game.roomId === roomId && !$('room').hidden) leaveRoom();
+        }, 1400);
+      },
     };
+  }
+
+  /* Prohlížeč bez 3D grafiky: chodbu jde přeskočit, aby šla hra dohrát (uvede se na konci). */
+  function showSkipWorld3d(room) {
+    const texts = room.world.texts || {};
+    showMessage([texts.noWebgl || 'Tento prohlížeč neumí 3D grafiku (WebGL).']);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn go';
+    btn.textContent = texts.skipButton || 'Přeskočit ›';
+    btn.addEventListener('click', () => {
+      game.setVars({ prekazky_preskoceno: 1 });
+      leaveRoom();
+    });
+    $('message').lastElementChild.appendChild(btn);
   }
 
   function leaveWorld3d() {
@@ -1790,7 +1812,7 @@
         }
       };
 
-      import('./basket.js?v=0.22').then((mod) => {
+      import('./basket.js?v=0.23').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2413,7 +2435,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.22');
+          const mod = await import('./squats.js?v=0.23');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3275,7 +3297,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.22');
+          const mod = await import('./skok.js?v=0.23');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3653,7 +3675,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.22');
+          const mod = await import('./goblet.js?v=0.23');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4383,7 +4405,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.22');
+          const mod = await import('./predklon.js?v=0.23');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
