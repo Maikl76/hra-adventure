@@ -114,7 +114,7 @@ const MUSCLES = [
 
 /* Útoky: který sval útok provádí (cíl) a které svaly při úderu pracují. */
 const ATTACK_MUSCLES = {
-  uder: { triceps: 1, pectoralis: 0.5, deltoideus: 0.6 },
+  uder: { triceps: 1, latissimus: 0.6, pectoralis: 0.3 },
   kop: { quadriceps: 1 },
   sevreni: { pectoralis: 1, deltoideus: 0.4, biceps: 0.5 },
 };
@@ -125,8 +125,8 @@ const ATTACK_MUSCLES = {
 const POSES = {
   stand: { 'spine.flex': 2, 'chest.flex': 3, 'neck.flex': 6, 'head.flex': 4, 'shoulder.abd': 6, 'elbow.flex': 14, 'knee.flex': 5, 'hip.flex': 2 },
   sleep: { 'spine.flex': 6, 'chest.flex': 12, 'neck.flex': 28, 'head.flex': 30, 'shoulder.abd': 3, 'shoulder.flex': 6, 'elbow.flex': 8, 'knee.flex': 9, 'hip.flex': 4, 'pelvis.y': -0.02 },
-  uder_windup: { 'chest.twist': -35, 'spine.twist': -12, 'shoulder_r.flex': 8, 'shoulder_r.abd': 18, 'elbow_r.flex': 145, 'shoulder_l.flex': 38, 'shoulder_l.abd': 15, 'elbow_l.flex': 125, 'hip.flex': 12, 'knee.flex': 18, 'spine.flex': 6, 'neck.flex': 2, 'pelvis.y': -0.04 },
-  uder_strike: { 'chest.twist': 24, 'spine.twist': 8, 'shoulder_r.flex': 88, 'shoulder_r.abd': 6, 'elbow_r.flex': 4, 'shoulder_l.flex': 34, 'elbow_l.flex': 122, 'spine.flex': 12, 'hip.flex': 14, 'knee.flex': 20, 'pelvis.z': 0.45, 'pelvis.y': -0.05 },
+  uder_windup: { 'shoulder_r.flex': 165, 'shoulder_r.abd': 12, 'elbow_r.flex': 125, 'chest.twist': -12, 'spine.flex': -6, 'chest.flex': -4, 'shoulder_l.flex': 40, 'shoulder_l.abd': 20, 'elbow_l.flex': 100, 'hip.flex': 10, 'knee.flex': 16, 'neck.flex': -4, 'pelvis.y': -0.03 },
+  uder_strike: { 'shoulder_r.flex': 55, 'shoulder_r.abd': 8, 'elbow_r.flex': 6, 'chest.twist': 14, 'spine.flex': 20, 'chest.flex': 8, 'shoulder_l.flex': 20, 'shoulder_l.abd': 25, 'elbow_l.flex': 60, 'hip.flex': 16, 'knee.flex': 22, 'pelvis.z': 0.4, 'pelvis.y': -0.06 },
   kop_windup: { 'hip_r.flex': 95, 'knee_r.flex': 105, 'ankle_r.dorsi': 10, 'hip_l.flex': 4, 'knee_l.flex': 16, 'spine.flex': -8, 'chest.flex': -4, 'shoulder.abd': 38, 'elbow.flex': 60, 'pelvis.x': 0.07, 'pelvis.y': -0.03 },
   kop_strike: { 'hip_r.flex': 86, 'knee_r.flex': 4, 'ankle_r.dorsi': -25, 'hip_l.flex': 2, 'knee_l.flex': 12, 'spine.flex': -14, 'shoulder.abd': 42, 'elbow.flex': 50, 'pelvis.x': 0.07, 'pelvis.z': 0.3 },
   sevreni_windup: { 'shoulder.abd': 88, 'shoulder.hor': -28, 'elbow.flex': 22, 'spine.flex': 8, 'chest.flex': 6, 'neck.flex': -6, 'head.flex': -6, 'knee.flex': 14, 'hip.flex': 8, 'pelvis.y': -0.03 },
@@ -539,6 +539,7 @@ export class Svalovec {
       const act = this.activation[part.id] || 0;
       const k = Math.min(1.45, Math.max(0.72, Math.sqrt(part.L0 / L)));
       const w = part.w * k * (1 + 0.3 * act) * this.scale;
+      part.wNow = w;
       // „kam sval kouká“ otáčet s kloubem začátku
       const jointA = part.a === 'patella' ? `knee_${part.side}` : part.a.joint;
       n.copy(part.n).applyQuaternion(this.joints[jointA].getWorldQuaternion(this._q1));
@@ -566,10 +567,27 @@ export class Svalovec {
     this.current = null;
     this.cooldown = 1.2;
     this.phase = 0;
-    this.lastStrike = 0;
     this.pose = { ...EXPANDED.sleep };
+    this.hintMuscle = null;
     for (const k of Object.keys(this.materials)) this.setMuscleOff(k, false);
     for (const k of Object.keys(this.activation)) this.activation[k] = 0;
+  }
+
+  /* Hráč padl: svalovec zpátky na své místo a spát; vypnuté svaly zůstanou vypnuté. */
+  respawn() {
+    this.state = 'sleep';
+    this.t = 0;
+    this.current = null;
+    this.cooldown = 1.2;
+    this.pose = { ...EXPANDED.sleep };
+    this.hintMuscle = null;
+    for (const k of Object.keys(this.activation)) this.activation[k] = 0;
+    this.place(this.home.x, this.home.z, this.home.yaw);
+  }
+
+  /* Nápověda: sval, který právě útok provede, bliká (null = nic). */
+  setHint(id) {
+    this.hintMuscle = id;
   }
 
   /* Umístění a natočení (yaw: 0 = dívá se k +z). */
@@ -595,9 +613,9 @@ export class Svalovec {
     return this.state !== 'sleep';
   }
 
-  /* Je útok ve fázi, kdy jde zastavit (nápřah nebo úder)? */
+  /* Je útok ve fázi, kdy jde zastavit (nápřah, úder a chvilka po něm)? */
   get attacking() {
-    return this.state === 'windup' || this.state === 'strike' ? this.current : null;
+    return ['windup', 'strike', 'recover'].includes(this.state) ? this.current : null;
   }
 
   wake() {
@@ -643,14 +661,30 @@ export class Svalovec {
     if (this.materials[id]) this.flashes[id] = { color: new THREE.Color(color), t: 0.45 };
   }
 
-  /* Zásah paprskem: { muscle, side, point } nebo { bone: true, point } nebo null. */
-  hitTest(raycaster) {
+  /* Zásah paprskem: { muscle, side, point } nebo { bone: true, point } nebo null.
+     Trefený sval platí vždy; když paprsek trefí kost nebo jde těsně vedle, platí nejbližší sval,
+     kolem jehož osy prošel do vzdálenosti „tol“ (i sval kousek za kostí) – míření je tak shovívavější. */
+  hitTest(raycaster, tol = 0.05) {
     const meshes = this.parts.map((p) => p.mesh).concat(this.boneMeshes);
-    const hits = raycaster.intersectObjects(meshes, false);
-    if (!hits.length) return null;
-    const h = hits[0];
-    if (h.object.userData.muscle) return { muscle: h.object.userData.muscle, side: h.object.userData.side, point: h.point, distance: h.distance };
-    return { bone: true, point: h.point, distance: h.distance };
+    const exact = raycaster.intersectObjects(meshes, false)[0];
+    if (exact && exact.object.userData.muscle) {
+      return { muscle: exact.object.userData.muscle, side: exact.object.userData.side, point: exact.point, distance: exact.distance };
+    }
+    const ray = raycaster.ray;
+    let best = null;
+    for (const part of this.parts) {
+      if (part.id === 'slacha') continue;
+      const e = part.mesh.matrixWorld.elements;
+      this._a.set(e[12], e[13], e[14]);
+      this._b.set(e[12] + e[4], e[13] + e[5], e[14] + e[6]);
+      const r = (part.wNow || part.w) + tol;
+      if (ray.distanceSqToSegment(this._a, this._b, this._v1, this._v2) > r * r) continue;
+      const s = this._v1.distanceTo(ray.origin);
+      if (!best || s < best.distance) best = { muscle: part.id, side: part.side, point: this._v2.clone(), distance: s };
+    }
+    if (best && (!exact || best.distance < exact.distance + 0.3)) return best;
+    if (exact) return { bone: true, point: exact.point, distance: exact.distance };
+    return null;
   }
 
   /* Dosah úderu: kde je svalovec po výpadu (střed) a kam se dívá. */
@@ -667,6 +701,7 @@ export class Svalovec {
   /* Jeden krok simulace. env: { player: {x, y, z}, bounds: {x: [a, b], z: [a, b]}, see: bool, speed } */
   update(dt, env) {
     this.t += dt;
+    this.clock = (this.clock || 0) + dt;
     this.cooldown = Math.max(0, this.cooldown - dt);
     const pos = this.root.position;
     const dx = env.player.x - pos.x, dz = env.player.z - pos.z;
@@ -727,7 +762,7 @@ export class Svalovec {
         break;
       }
       case 'windup': {
-        turn(1.2);
+        turn(0.6);
         target = EXPANDED[`${this.current}_windup`];
         rate = 4;
         if (this.t > (env.windup || 2.4)) {
@@ -757,7 +792,7 @@ export class Svalovec {
         target = EXPANDED.stand;
         rate = 5;
         if (this.t > 0.8) {
-          this.cooldown = 1.6;
+          this.cooldown = 2.0;
           this.go('chase');
         }
         break;
@@ -809,6 +844,9 @@ export class Svalovec {
         f.t -= dt;
         mat.emissive.copy(f.color).multiplyScalar(Math.max(0, f.t / 0.45) * 0.8);
         if (f.t <= 0) delete this.flashes[id];
+      } else if (id === this.hintMuscle && !this.isOff(id)) {
+        const k = 0.5 + 0.5 * Math.sin(this.clock * 7);
+        mat.emissive.setRGB(0.75 * k, 0.6 * k, 0.15 * k);
       } else if (id !== 'slacha') {
         mat.emissive.setRGB(0.55 * this.activation[id], 0.04 * this.activation[id], 0.02 * this.activation[id]);
       }

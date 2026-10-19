@@ -10,7 +10,7 @@
  * Centimetry jsou přibližné: přepočet přes standardní délku nohy (jako 70 kg u dřepů).
  * Kamera a model jsou stejné jako u dřepů (squats.js). Nic se neukládá ani neposílá.
  */
-import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.21';
+import { loadModel, poseLib, angle, facingCamera } from './squats.js?v=0.22';
 
 const VIS = 0.5;          // minimální viditelnost bodu
 const LEG_CM = 85;        // standardní vzdálenost kyčel–kotník (hráč asi 175 cm) pro přepočet na cm

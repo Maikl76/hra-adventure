@@ -831,7 +831,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.21');
+      const mod = await import('./chodba.js?v=0.22');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1037,7 +1037,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.21');
+        const mod = await import('./chodba3d.js?v=0.22');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1790,7 +1790,7 @@
         }
       };
 
-      import('./basket.js?v=0.21').then((mod) => {
+      import('./basket.js?v=0.22').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2413,7 +2413,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.21');
+          const mod = await import('./squats.js?v=0.22');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3275,7 +3275,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.21');
+          const mod = await import('./skok.js?v=0.22');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3653,7 +3653,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.21');
+          const mod = await import('./goblet.js?v=0.22');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4383,7 +4383,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.21');
+          const mod = await import('./predklon.js?v=0.22');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

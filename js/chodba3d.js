@@ -10,13 +10,14 @@
  * Rozvržení a texty jsou v game.json (místnost → „world“); hra jen hlásí události (on.message…).
  */
 import * as THREE from '../vendor/three/three.module.min.js';
-import { Svalovec } from './svalovec.js?v=0.21';
+import { Svalovec } from './svalovec.js?v=0.22';
 
 const G = 9.81;
 const EYE = 1.65, EYE_CROUCH = 1.12, R = 0.3, HEIGHT = 1.8;
 const WALK = 3.2, CROUCH_WALK = 1.5, CLIMB = 0.9;
 const MANTLE_MIN = 0.65, MANTLE_MAX = 1.35;
 const SOFT_BRAKE = 0.3, HARD_BRAKE = 0.05, HURT_RATIO = 12;
+const STICK_R = 60;   // poloměr dotykové páčky (px)
 
 /* Číslo po česku (desetinná čárka, mezera mezi tisíci). */
 function num(n, d = 2) {
@@ -175,6 +176,7 @@ export class World3D {
     this.paused = true;
     this.running = false;
     this.stats = { svaly_spravne: 0, svaly_chybne: 0, skok_max: 0 };
+    this.hints = new Set();   // útoky, u kterých už bliká nápověda (po chybě nebo po prvním úderu)
     this.time = 0;
     this.frameBound = (t) => this.frame(t);
   }
@@ -204,9 +206,17 @@ export class World3D {
     ui.chargeBar = el('div', 'w3d-charge-bar', ui.charge);
     ui.chargeText = el('span', 'w3d-charge-text', ui.charge);
     ui.hint = el('div', 'w3d-hint');
+    ui.banner = el('div', 'w3d-banner');
+    ui.bannerTitle = el('div', 'w3d-banner-title', ui.banner);
+    ui.bannerText = el('div', 'w3d-banner-text', ui.banner);
+    ui.bannerHint = el('div', 'w3d-banner-hint', ui.banner);
+    ui.bannerBar = el('div', 'w3d-banner-bar', ui.banner);
+    ui.bannerFill = el('div', 'w3d-banner-fill', ui.bannerBar);
+    ui.toast = el('div', 'w3d-toast');
     ui.flash = el('div', 'w3d-flash');
     ui.fade = el('div', 'w3d-fade');
     ui.touch = el('div', 'w3d-touch');
+    ui.moveZone = el('div', 'w3d-movezone', ui.touch);
     ui.stick = el('div', 'w3d-stick', ui.touch);
     ui.knob = el('div', 'w3d-knob', ui.stick);
     const btn = (cls, label) => {
@@ -219,11 +229,32 @@ export class World3D {
     ui.bCrouch = btn('w3d-b-crouch', 'Podřep');
     ui.bAction = btn('w3d-b-action', 'Akce');
     ui.bFire = btn('w3d-b-fire', 'Laser');
-    for (const k of ['cross', 'gun', 'pack', 'charge', 'bFire']) ui[k].hidden = true;
+    for (const k of ['cross', 'gun', 'pack', 'charge', 'bFire', 'banner', 'toast']) ui[k].hidden = true;
+    ui.bannerHint.textContent = this.texts.bannerHint || '';
     ui.touch.hidden = !this.touchMode;
     ui.hint.textContent = this.texts.mouse || 'Klikni do obrazu – pak se rozhlížíš myší (Esc myš uvolní).';
     ui.hint.hidden = this.touchMode;
     this.ui = ui;
+    if (this.touchMode) this.showTouchHint();
+  }
+
+  /* Na tabletu krátce ukázat, jak se chodí a rozhlíží. */
+  showTouchHint() {
+    if (!this.texts.touch) return;
+    this.ui.hint.textContent = this.texts.touch;
+    this.ui.hint.hidden = false;
+    clearTimeout(this.touchHintTimer);
+    this.touchHintTimer = setTimeout(() => { if (this.touchMode) this.ui.hint.hidden = true; }, 9000);
+  }
+
+  /* Krátká hláška uprostřed obrazu (výsledek zásahu); kind: ok / bad / info. */
+  toast(text, kind = 'info') {
+    const el = this.ui.toast;
+    el.textContent = text;
+    el.className = `w3d-toast w3d-toast-${kind}`;
+    el.hidden = !text;
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => { el.hidden = true; }, 2600);
   }
 
   /* ---------- Načtení a stavba světa ---------- */
@@ -542,10 +573,12 @@ export class World3D {
       this.doorOpen = 0;
       this.doorOpening = false;
     }
-    if (this.sval.alive || first) {
+    if (first) {
       this.sval.reset();
       this.sval.place(this.sval.home.x, this.sval.home.z, 0);
-    }
+    } else if (this.sval.alive) this.sval.respawn();
+    this.hints.clear();
+    this.sval.setHint(null);
     this.updateHud();
   }
 
@@ -659,23 +692,37 @@ export class World3D {
       if (this.locked && this.active()) this.look(e.movementX * 0.0024, e.movementY * 0.0024);
     });
 
-    // dotyk: páčka (chůze) a tlačítka
-    const stick = this.ui.stick;
-    on(stick, 'pointerdown', (e) => {
+    // dotyk: chůze – prst kamkoli do levé části obrazu (páčka se objeví pod ním); klepnutí = výstřel
+    const zone = this.ui.moveZone;
+    on(zone, 'pointerdown', (e) => {
+      if (!this.active() || this.stickTouch) return;
       e.preventDefault();
-      capture(stick, e);
-      this.stickId = e.pointerId;
-      this.moveStick(e);
+      capture(zone, e);
+      this.setTouchMode(true);
+      this.stickTouch = { id: e.pointerId, cx: e.clientX, cy: e.clientY, t: performance.now(), moved: 0 };
+      const r = this.container.getBoundingClientRect();
+      const st = this.ui.stick.style;
+      st.left = `${e.clientX - r.left - STICK_R}px`;
+      st.top = `${e.clientY - r.top - STICK_R}px`;
+      st.bottom = 'auto';
+      this.ui.stick.classList.add('w3d-stick-live');
     });
-    on(stick, 'pointermove', (e) => { if (this.stickId === e.pointerId) this.moveStick(e); });
-    const stickUp = (e) => {
-      if (this.stickId !== e.pointerId) return;
-      this.stickId = null;
+    on(zone, 'pointermove', (e) => {
+      const s = this.stickTouch;
+      if (s && s.id === e.pointerId) this.moveStick(e.clientX - s.cx, e.clientY - s.cy);
+    });
+    const zoneUp = (e) => {
+      const s = this.stickTouch;
+      if (!s || s.id !== e.pointerId) return;
+      if (s.moved < 10 && performance.now() - s.t < 300) this.shootAt(e.clientX, e.clientY);
+      this.stickTouch = null;
       this.stick.x = this.stick.y = 0;
       this.ui.knob.style.transform = '';
+      this.ui.stick.removeAttribute('style');
+      this.ui.stick.classList.remove('w3d-stick-live');
     };
-    on(stick, 'pointerup', stickUp);
-    on(stick, 'pointercancel', stickUp);
+    on(zone, 'pointerup', zoneUp);
+    on(zone, 'pointercancel', zoneUp);
     const hold = (b, down, upFn) => {
       on(b, 'pointerdown', (e) => { e.preventDefault(); capture(b, e); if (this.active()) down(); });
       on(b, 'pointerup', (e) => { e.preventDefault(); upFn(); });
@@ -693,17 +740,20 @@ export class World3D {
     this.touchMode = on;
     this.ui.touch.hidden = !on;
     this.ui.hint.hidden = on || this.locked;
+    if (on) this.showTouchHint();
   }
 
-  moveStick(e) {
-    const r = this.ui.stick.getBoundingClientRect();
-    const rad = r.width / 2;
-    let x = (e.clientX - (r.left + rad)) / rad, y = (e.clientY - (r.top + rad)) / rad;
-    const len = Math.hypot(x, y);
-    if (len > 1) { x /= len; y /= len; }
-    this.stick.x = x;
-    this.stick.y = y;
-    this.ui.knob.style.transform = `translate(${x * rad * 0.6}px, ${y * rad * 0.6}px)`;
+  /* Páčka: posun prstu od místa dotyku (px) → směr chůze; uprostřed mrtvá zóna. */
+  moveStick(dx, dy) {
+    const s = this.stickTouch;
+    if (s) s.moved = Math.max(s.moved, Math.hypot(dx, dy));
+    let x = dx / STICK_R, y = dy / STICK_R;
+    let len = Math.hypot(x, y);
+    if (len > 1) { x /= len; y /= len; len = 1; }
+    this.ui.knob.style.transform = `translate(${x * STICK_R}px, ${y * STICK_R}px)`;
+    const k = len < 0.15 ? 0 : (len - 0.15) / 0.85 / len;
+    this.stick.x = x * k;
+    this.stick.y = y * k;
   }
 
   /* Klávesa: true = zpracováno (zabrání posunu stránky / stisku tlačítka). */
@@ -902,6 +952,7 @@ export class World3D {
     if (!sv.awake) sv.wake();
     if (hit.bone) {
       this.message([this.t('bone')]);
+      this.toast(this.t('toastBone'));
       return;
     }
     const id = hit.muscle;
@@ -910,11 +961,15 @@ export class World3D {
     const current = sv.attacking;
     if (sv.isOff(id)) {
       this.message([this.t('disabled', info)]);
+      this.toast(this.t('toastDisabled', info));
       return;
     }
     if (current && attacks[current] && attacks[current].target === id) {
       this.stats.svaly_spravne += 1;
       sv.flash(id, 0x50ff70);
+      sv.setHint(null);
+      this.hints.delete(current);
+      this.toast(this.t('toastCorrect', info), 'ok');
       sv.interrupt();
       sv.disableAttack(current, id);
       const lines = [this.t('correct', { ...info, attack: attacks[current].name })];
@@ -924,15 +979,20 @@ export class World3D {
       this.pushStats();
       return;
     }
-    sv.flash(id, 0xffd040);
+    sv.flash(id, 0xff5030);
     if (current) {
+      // vedle: od teď bliká sval, který útok provede
       this.stats.svaly_chybne += 1;
-      this.message([this.t('wrong', { ...info, prompt: (attacks[current] || {}).prompt || '' })]);
+      this.hints.add(current);
+      sv.setHint((attacks[current] || {}).target || null);
+      this.message([this.t('wrong', { ...info, prompt: (attacks[current] || {}).prompt || '' }), this.t('hint')]);
+      this.toast(this.t('toastWrong', info), 'bad');
       this.pushStats();
       return;
     }
     const isTarget = sv.attacks.some((a) => (attacks[a] || {}).target === id);
     this.message([isTarget ? this.t('notNow', info) : this.t('info', info)]);
+    this.toast(isTarget ? this.t('toastNotNow', info) : this.t('toastInfo', info));
   }
 
   pushStats() {
@@ -946,8 +1006,12 @@ export class World3D {
       this.sfx('kosti');
       this.message([this.hasGun ? this.t('wake') : this.t('wakeNoGun')]);
     } else if (ev === 'attack') {
-      this.message([(attacks[data] || {}).prompt || '']);
+      const a = attacks[data] || {};
+      const hint = this.hints.has(data);
+      this.sval.setHint(hint ? a.target : null);
+      this.message([a.prompt || '', hint ? this.t('hint') : '']);
     } else if (ev === 'strike') {
+      this.hints.add(data.attack);   // útok proběhl bez zásahu – příště bude cílový sval blikat
       if (!data.hit || this.dead) return;
       const name = (attacks[data.attack] || {}).name || data.attack;
       // odhodí hráče kousek dozadu
@@ -1028,6 +1092,7 @@ export class World3D {
       this.pos.z = this.sval.root.position.z + (dz / dist) * 0.7;
     }
     if (inZone && !this.checkpoint) this.checkpoint = true;
+    this.updateBanner();
 
     // dveře
     if (this.doorOpening && this.doorOpen < 1) {
@@ -1240,6 +1305,34 @@ export class World3D {
       if (x + R > s.min[0] && x - R < s.max[0] && z + R > s.min[2] && z - R < s.max[2]) g = s.max[1];
     }
     return g;
+  }
+
+  /* Pruh nahoře v obraze: jaký útok svalovec chystá, co zasáhnout, kolik zbývá času. */
+  updateBanner() {
+    const sv = this.sval;
+    const ui = this.ui;
+    const id = sv.alive ? sv.attacking : null;
+    if (!id) {
+      if (!ui.banner.hidden) {
+        ui.banner.hidden = true;
+        this.container.classList.remove('w3d-banner-on');
+      }
+      if (sv.hintMuscle) sv.setHint(null);
+      this.bannerFor = null;
+      return;
+    }
+    const a = (this.def.attacks || {})[id] || {};
+    if (this.bannerFor !== id) {
+      this.bannerFor = id;
+      ui.bannerTitle.textContent = a.name || id;
+      ui.bannerText.textContent = a.short || a.prompt || '';
+      ui.banner.hidden = false;
+      this.container.classList.add('w3d-banner-on');   // hláška o zásahu pod pruh, ne přes svalovce
+    }
+    const W = (this.def.svalovec || {}).windup || 2.4;
+    const left = sv.state === 'windup' ? Math.max(0, 1 - sv.t / W) : 0;
+    ui.bannerFill.style.width = `${left * 100}%`;
+    ui.bannerHint.hidden = !sv.hintMuscle;
   }
 
   updatePrompt() {

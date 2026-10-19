@@ -425,8 +425,20 @@ button:focus-visible, input:focus-visible {
 .w3d-charge[hidden] { display: none; }
 .w3d-charge-bar { width: 0; height: 100%; background: linear-gradient(90deg, #6fae5a, #e6c67e, #e0603a); }
 .w3d-charge-text { position: absolute; left: -40px; right: -40px; top: -22px; text-align: center; color: #f2e6c2; font-size: 13px; text-shadow: 0 0 4px #000; white-space: nowrap; }
-.w3d-hint { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); padding: 4px 10px; background: rgba(15, 13, 10, 0.72); border-radius: 4px; color: #d8cba8; font-size: 13px; white-space: nowrap; pointer-events: none; }
+.w3d-hint { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); max-width: 86%; padding: 4px 10px; background: rgba(15, 13, 10, 0.72); border-radius: 4px; color: #d8cba8; font-size: 13px; text-align: center; pointer-events: none; }
 .w3d-hint[hidden] { display: none; }
+.w3d-banner { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); width: min(560px, 84%); padding: 6px 14px 8px; background: rgba(42, 12, 9, 0.84); border: 1px solid rgba(255, 128, 98, 0.75); border-radius: 6px; color: #fbe9dc; text-align: center; pointer-events: none; }
+.w3d-banner[hidden], .w3d-banner-hint[hidden] { display: none; }
+.w3d-banner-title { color: #ff9c7c; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+.w3d-banner-text { margin-top: 2px; font-size: 17px; }
+.w3d-banner-hint { margin-top: 2px; color: #ffe48a; font-size: 13px; }
+.w3d-banner-bar { height: 5px; margin-top: 6px; overflow: hidden; border-radius: 3px; background: rgba(255, 255, 255, 0.15); }
+.w3d-banner-fill { width: 0; height: 100%; background: #ff7a5a; }
+.w3d-toast { position: absolute; left: 50%; top: 44px; transform: translateX(-50%); max-width: 90%; padding: 6px 14px; border: 1px solid rgba(230, 198, 126, 0.5); border-radius: 4px; background: rgba(15, 13, 10, 0.86); color: #f2e6c2; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.w3d-toast[hidden] { display: none; }
+.w3d-banner-on .w3d-toast { top: 146px; }
+.w3d-toast-ok { border-color: #6fbf5a; color: #c9f2b8; }
+.w3d-toast-bad { border-color: #ff7a50; color: #ffc9a8; }
 .w3d-flash { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse at center, rgba(160, 0, 0, 0) 40%, rgba(170, 10, 0, 0.75) 100%); pointer-events: none; }
 .w3d-hurt { animation: w3d-hurt 0.7s ease-out; }
 @keyframes w3d-hurt { from { opacity: 1; } to { opacity: 0; } }
@@ -434,7 +446,9 @@ button:focus-visible, input:focus-visible {
 .w3d-fade.w3d-dark { opacity: 1; }
 .w3d-touch { position: absolute; inset: 0; pointer-events: none; }
 .w3d-touch[hidden] { display: none; }
-.w3d-stick { position: absolute; left: 14px; bottom: 14px; width: 120px; height: 120px; border: 2px solid rgba(230, 198, 126, 0.45); border-radius: 50%; background: rgba(230, 198, 126, 0.12); pointer-events: auto; touch-action: none; }
+.w3d-movezone { position: absolute; left: 0; bottom: 0; width: 45%; height: 78%; pointer-events: auto; touch-action: none; }
+.w3d-stick { position: absolute; left: 14px; bottom: 14px; width: 120px; height: 120px; border: 2px solid rgba(230, 198, 126, 0.35); border-radius: 50%; background: rgba(230, 198, 126, 0.08); pointer-events: none; }
+.w3d-stick-live { border-color: rgba(230, 198, 126, 0.7); background: rgba(230, 198, 126, 0.16); }
 .w3d-knob { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%; background: rgba(230, 198, 126, 0.5); }
 .w3d-btn { position: absolute; width: 74px; height: 50px; padding: 0; border: 1px solid rgba(230, 198, 126, 0.6); border-radius: 10px; background: rgba(20, 18, 12, 0.72); color: #f2e6c2; font-size: 14px; pointer-events: auto; touch-action: none; }
 .w3d-btn[hidden] { display: none; }

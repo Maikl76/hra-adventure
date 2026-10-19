@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.21 – ukázka",
+    "version": "0.22 – ukázka",
     "totalGates": 9
   },
 
@@ -8019,24 +8019,27 @@
         "svalovec": {
           "at": [0, -26.5],
           "attacks": ["kop", "sevreni", "uder"],
-          "windup": 2.4,
+          "windup": 4.0,
           "speed": 1.0
         },
         "attacks": {
           "kop": {
             "name": "kop",
             "target": "quadriceps",
-            "prompt": "Svalovec zvedá koleno ke kopu! Zasáhni sval, který kop provede – natáhne koleno."
+            "prompt": "Svalovec zvedá koleno ke kopu! Zasáhni sval, který kop provede – natáhne koleno.",
+            "short": "Zasáhni sval, který natáhne koleno."
           },
           "sevreni": {
             "name": "sevření",
             "target": "pectoralis",
-            "prompt": "Svalovec rozpažil – chce tě sevřít! Zasáhni sval, který přitáhne paže k sobě před tělo."
+            "prompt": "Svalovec rozpažil – chce tě sevřít! Zasáhni sval, který přitáhne paže k sobě před tělo.",
+            "short": "Zasáhni sval, který přitáhne paže před tělo."
           },
           "uder": {
-            "name": "úder pěstí",
+            "name": "úder shora",
             "target": "triceps",
-            "prompt": "Svalovec se napřahuje k úderu pěstí! Zasáhni sval, který úder provede – natáhne loket."
+            "prompt": "Svalovec zvedá ruku nad hlavu k úderu shora! Zasáhni sval, který úder provede – natáhne loket.",
+            "short": "Zasáhni sval, který natáhne loket."
           }
         },
         "muscles": {
@@ -8149,9 +8152,18 @@
           "info": "Trefil jsi: {muscle} – {does}.",
           "disabled": "Tenhle sval ({muscle}) už je vypnutý.",
           "bone": "Laser zasáhl kost – míř na svaly.",
+          "hint": "Na svalovci teď bliká sval, který útok provede.",
+          "bannerHint": "Nápověda: sval, který útok provede, bliká",
+          "toastCorrect": "Zásah! {muscle}",
+          "toastWrong": "Vedle – {muscle}: {does}",
+          "toastNotNow": "{muscle} – teď nepracuje",
+          "toastInfo": "{muscle} – {does}",
+          "toastBone": "Kost – míř na svaly",
+          "toastDisabled": "{muscle} – už je vypnutý",
+          "touch": "Chůze: polož prst kamkoli do levé části obrazu a táhni. Rozhlížení: táhni prstem vpravo. Klepnutí = výstřel.",
           "hitPlayer": "Svalovec tě zasáhl ({attack})! Zbývá životů: {lives}.",
           "hitNoDamage": "Svalovec tě zasáhl ({attack}) – útoky jsou v Menu vypnuté, nic se ti nestalo.",
-          "death": "Svalovec tě srazil. Začínáš znovu pod plošinou – svaly mu zase naskočily, zkus to znovu.",
+          "death": "Svalovec tě srazil. Začínáš znovu pod plošinou – svaly, které už jsi vypnul, zůstaly vypnuté.",
           "deathFall": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu pod plošinou.",
           "deathStart": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu na začátku chodby.",
           "defeated": "Svalovec se zhroutil! Vypnul jsi všechny svaly, které jeho útoky prováděly. Dveře na cvičiště se otevírají.",

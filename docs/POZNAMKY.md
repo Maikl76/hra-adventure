@@ -301,15 +301,22 @@ odkaz `?mistnost=prekazky`), do světa se nezařazuje. Knihovna three.js (MIT) j
   s podřepem (C) brzdění 0,3 s, jinak 0,05 s. Ze 2 m: 2,1 kN (3× tíha), resp. 9,5 kN (14×) → nad
   12× tíhy ztráta života (jen když jsou v Menu útoky zapnuté).
 - **Svalovec (výukově funkce svalů):** útoky **kop** → čtyřhlavý sval stehenní (natahuje koleno),
-  **sevření** → velký sval prsní (přitahuje paže před tělo), **úder pěstí** → trojhlavý sval pažní
-  (natahuje loket). Při nápřahu (2,4 s) puška napíše pohyb, hráč zasáhne sval, který ho **provede**
-  (sval se při nápřahu natahuje, při úderu zkrátí, ztluští a rozzáří). Správně = útok vypnutý (sval
-  zešedne), po všech třech se svalovec zhroutí. Vedle = název a funkce trefeného svalu; mimo útok
-  „teď nepracuje“. Úder svalovce = život (3), po porážce zpět pod plošinu a svalovci svaly
-  „naskočí“. Menu → „Kostlivci útočí“ platí i pro svalovce.
+  **sevření** → velký sval prsní (přitahuje paže před tělo), **úder shora** → trojhlavý sval pažní
+  (natahuje loket; ruka nad hlavou, takže zadní strana paže je vidět zepředu – úder pěstí to neuměl).
+  Při nápřahu (**4 s**) se nahoře v obraze ukáže pruh: název útoku, co zasáhnout a ubývající čas;
+  hráč zasáhne sval, který útok **provede** (sval se při nápřahu natahuje, při úderu zkrátí, ztluští
+  a rozzáří). Zásah platí při nápřahu, úderu i chvilku po něm. Správně = útok vypnutý (sval zešedne),
+  po všech třech se svalovec zhroutí. Vedle = název a funkce trefeného svalu (i krátce v obraze);
+  mimo útok „teď nepracuje“. **Nápověda:** po chybě (nebo když útok proběhne bez zásahu) cílový sval
+  žlutě bliká – jako v bludišti bliká hledaná kost. **Shovívavé míření:** platí i výstřel těsně vedle
+  svalu (do 5 cm od jeho okraje) nebo do kosti, za kterou sval leží. Úder svalovce = život (3), po
+  porážce zpět pod plošinu, **vypnuté svaly zůstanou vypnuté**. Menu → „Kostlivci útočí“ platí
+  i pro svalovce. (Úpravy 19. 10. 2026 po zkoušce autora: svalovec „skoro nešel zabít“.)
 - Ovládání: klik do obrazu = rozhlížení myší (Esc uvolní – pak jdou tlačítka nahoře), W A S D /
   šipky, mezerník, C, E, laser klik / Enter / X; PageUp/PageDown nebo R/F = pohled nahoru/dolů.
-  Dotyk: páčka vlevo, tah prstem = rozhlížení, klepnutí = výstřel, tlačítka Skok, Podřep, Akce, Laser.
+  Dotyk: chůze = prst **kamkoli do levé části obrazu** a táhnout (páčka se objeví pod prstem – pevné
+  kolečko autorovi na tabletu šlo hůř), tah prstem vpravo = rozhlížení, klepnutí = výstřel, tlačítka
+  Skok, Podřep, Akce, Laser.
   Pomalý počítač: hra sama sníží rozlišení. Bez WebGL hláška `noWebgl`.
 - **Zbývá:** autor má vyzkoušet na svém počítači a tabletu (ovládání, nevolnost, rychlost), pak
   rozhodnout o zařazení do světa (Brána III?) a o dalších svalech a útocích (výskok → lýtkový sval).
