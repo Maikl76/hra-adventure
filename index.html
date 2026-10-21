@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#070605">
   <title>Devět bran k pochopení pohybu</title>
-  <link rel="stylesheet" href="css/style.css?v=0.24">
+  <link rel="stylesheet" href="css/style.css?v=0.25">
 </head>
 <body>
   <div id="app">
@@ -46,10 +46,16 @@
     <section id="track" class="screen" hidden>
       <div class="track-wrap">
         <h2>Kdo vstupuje?</h2>
-        <label class="team">
-          <span>Název týmu <small>(nepovinné)</small></span>
-          <input id="team-name" maxlength="40" autocomplete="off" spellcheck="false">
-        </label>
+        <div class="team-row">
+          <label class="team">
+            <span>Název týmu <small>(nepovinné)</small></span>
+            <input id="team-name" maxlength="40" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="team code">
+            <span>Kód třídy <small>(nepovinné – stejný kód = stejná čísla v úlohách)</small></span>
+            <input id="class-code" maxlength="12" autocomplete="off" spellcheck="false" inputmode="numeric">
+          </label>
+        </div>
         <div class="tracks" id="tracks"></div>
         <button class="link" id="track-back" type="button">‹ Zpět</button>
         <button class="link track-all" id="track-all" type="button" hidden>Všechny světy od začátku</button>
@@ -121,10 +127,10 @@
   <div class="toast" id="toast" hidden></div>
   <div class="cursor-item" id="cursor-item" hidden><img alt=""></div>
 
-  <script src="js/engine.js?v=0.24"></script>
-  <script src="js/audio.js?v=0.24"></script>
-  <script src="js/calc.js?v=0.24"></script>
-  <script src="js/brany.js?v=0.24"></script>
-  <script src="js/ui.js?v=0.24"></script>
+  <script src="js/engine.js?v=0.25"></script>
+  <script src="js/audio.js?v=0.25"></script>
+  <script src="js/calc.js?v=0.25"></script>
+  <script src="js/brany.js?v=0.25"></script>
+  <script src="js/ui.js?v=0.25"></script>
 </body>
 </html>

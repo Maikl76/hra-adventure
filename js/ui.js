@@ -67,6 +67,11 @@
     const problems = game.validate();
     if (problems.length) console.warn('Problémy v data/game.json:\n' + problems.join('\n'));
     shortcut = readShortcut();
+    try {
+      // ?kod=… předvyplní kód třídy (odkaz pro vyučující: všichni stejná čísla)
+      const kod = new URLSearchParams(location.search).get('kod');
+      if (kod) $('class-code').value = kod.slice(0, 12);
+    } catch (e) { /* bez parametrů */ }
 
     const audioConfig = data.audio || {};
     sound = new Sound(audioConfig);
@@ -504,7 +509,7 @@
       world3d = null;
       world3dRoom = null;
     }
-    const events = game.newGame(trackId, $('team-name').value, start);
+    const events = game.newGame(trackId, $('team-name').value, start, $('class-code').value);
     applyWorld(game.state.trackId);
     showScreen('room');
     handleEvents(events);
@@ -650,6 +655,7 @@
     // hra začala zkratkou v pozdější místnosti – čas, chyby a nápovědy platí až od ní
     const startRoom = game.state.startRoom && data.rooms[game.state.startRoom];
     if (startRoom) rows.push(['Začátek', `${roomLabel(startRoom)} (odkaz pro vyučující)`]);
+    if (game.state.seed) rows.push(['Kód úlohy', game.state.seed]);
     rows.push(
       ['Čas', formatTime(st.playMs)],
       ['Chybné pokusy', String(st.errors)],
@@ -892,7 +898,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.24');
+      const mod = await import('./chodba.js?v=0.25');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1103,7 +1109,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.24');
+        const mod = await import('./chodba3d.js?v=0.25');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1900,7 +1906,7 @@
         }
       };
 
-      import('./basket.js?v=0.24').then((mod) => {
+      import('./basket.js?v=0.25').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2523,7 +2529,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.24');
+          const mod = await import('./squats.js?v=0.25');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3385,7 +3391,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.24');
+          const mod = await import('./skok.js?v=0.25');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3763,7 +3769,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.24');
+          const mod = await import('./goblet.js?v=0.25');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4493,7 +4499,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.24');
+          const mod = await import('./predklon.js?v=0.25');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

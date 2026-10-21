@@ -110,6 +110,18 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (`when` → `text`), při dalším zaseknutí další v pořadí; obecný vzkaz bez `when` až když žádný cílený
   nesedí. Říkají, kam se podívat, ne řešení, a **do nápověd se nepočítají** (telefon ve skladu
   a tělocvičně zůstal, jak ho autor napsal – ten se počítá, `{"hint": true}`).
+- **Sady čísel** (`variants` u místnosti = seznam sad hodnot, **první sada = původní čísla**): při nové
+  hře se pro každou místnost vybere sada z **kódu úlohy** (`state.seed`: kód třídy zadaný na obrazovce
+  „Kdo vstupuje?“ nebo z odkazu `?kod=…`, jinak náhodné čtyřmístné číslo; výběr = hash kódu a id
+  místnosti, `Game.variantIndex`). Hodnoty se uloží do proměnných hráče: v textech `{v_…}`
+  (i textové, např. `{v_sloupec}`), v odpovědích zámků jako vzorec (`"answer": "v_tiha*10"`), cílené
+  rady přes `feedbackFormulas` s `tolerance`/`toleranceRel`. Starší uložení bez kódu dostane sadu 0.
+  Sady mají: kabinet (tíha závaží 50/40/60 N → síla bicepsu 500/400/600 N), tělocvična (rtn. Doubek
+  37 let III / 33 let II / 44 let IV → hlášení 2213/2221/1222, pás 13,5/14,0/13,0 km/h, klik v bráně
+  80 kg 0,90/1,30 m → 543 N, 75 kg 0,85/1,25 → 500 N, 85 kg 0,95/1,35 → 587 N; známky ověřené podle
+  brožury Normy, muži A), bludiště (schodiště 18×17 / 16×18 / 20×16 cm → 3 002 / 2 825 / 3 139 J).
+  Kódy pro testy: 1022 = všude sada 0, 1067 = všude sada 1, 1051 = všude sada 2. Diplom ukazuje
+  řádek „Kód úlohy“. Herna, aréna a 3D chodba mají čísla z vlastního měření, ta se liší sama.
 - **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
   výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
   Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
@@ -404,8 +416,13 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   dveře LEVEL 2 nepustí), po dvou neúspěšných kolech automat napoví úhel a rychlost.
 - **Větší zábava** (21. 10. 2026, autor schválil návrh a pořadí): 1) odznaky, hvězdičky a diplom,
   3) méně čtení („Proč?“) a vzkazy od D. při zaseknutí, 5) humor a postavy – hotovo ve verzi 0.24;
-  dál 2) **jiná čísla pro každý tým** (autor povolil měnit hodnoty úloh) a 4) příběh docenta D. s deníkem
-  a mapou bran (příběh navrhne asistent). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
+  2) **jiná čísla pro každý tým** (autor povolil měnit hodnoty úloh) – hotovo ve verzi 0.25 jako sady čísel
+  s kódem třídy (viz formát); dál 4) příběh docenta D. s deníkem a mapou bran – **návrh autor schválil
+  21. 10. 2026**: D. po třiceti letech na fakultě zmizel v den zrušení své poslední laboratoře a nechal
+  devět bran = devět věcí k zapamatování; za každou branou stránka deníku (lekce + kousek života);
+  mapa fakulty s branami napříč světy; zvrat: D. branami kdysi sám prošel, postavil mu je jeho učitel
+  (fotografie katedry); konec: devátá brána vede na střechu za svítání, klobouk, klíč od laboratoře
+  a lístek „Devět bran jsem kdysi prošel já. Teď vy. Nezavírejte je. – D.“ D. je naživu, jen odešel. **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
   jen „D.“ – žádné osobní údaje. Humor: kostlivci v bludišti mají jména a krátké představení
   (Bohouš, Leopold, Vendelín, Hugo, Kazimír, Ferda, Cyril, Metoděj), komisař a rtn. Doubek v tělocvičně
   (hodiny zastavil Doubkův medicinbal, „bazén je studenej“), D. je ve vzkazech uštěpačný, ale laskavý.

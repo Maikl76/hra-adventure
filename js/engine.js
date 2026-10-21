@@ -156,7 +156,7 @@
 
     /* startRoomId: zkratka pro vyučující – začít rovnou v pozdější místnosti světa (odkaz ?mistnost=…).
        Může to být i zkušební místnost světa („trialRooms“: místnost → kam vede); běžná hra ji přeskočí. */
-    newGame(trackId, team, startRoomId) {
+    newGame(trackId, team, startRoomId, classCode) {
       const track = this.data.tracks.find((t) => t.id === trackId) || this.data.tracks[0];
       const trialTo = (track.trialRooms || {})[startRoomId];
       const startIndex = Math.max(0, track.rooms.indexOf(trialTo || startRoomId));
@@ -173,7 +173,10 @@
         vars: {},          // naměřené hodnoty hráče (dřepy, čas…) pro „chytré“ zámky
         playMs: 0,
         finished: false,
+        // kód úlohy: zadaný kód třídy (stejný kód = stejná čísla), jinak náhodný
+        seed: String(classCode || '').trim() || String(1000 + Math.floor(Math.random() * 9000)),
       };
+      this.applyVariants();
       if (trialTo) this.state.trialRoom = startRoomId;                     // zkušební místnost, pak track.rooms[startIndex]
       if (shortcut) this.state.startRoom = trialTo ? startRoomId : track.rooms[startIndex];   // ukáže závěrečná obrazovka
       this.save();
@@ -181,6 +184,29 @@
       // co by si hráč přinesl z dřívějších místností (např. kalkulačku): „shortcut“ u místnosti v game.json
       if (shortcut) events.push(...this.run(this.room.shortcut || []));
       return events;
+    }
+
+    /* Sady čísel: místnost může mít „variants“ = seznam sad hodnot (první sada = původní čísla).
+       Sada se vybere z kódu úlohy (hash kódu a id místnosti), hodnoty se uloží do proměnných hráče
+       (v textech {v_…}, v odpovědích zámků jako vzorec). Starší uložení bez kódu dostane sadu 0. */
+    applyVariants() {
+      const s = this.state;
+      for (const [roomId, room] of Object.entries(this.data.rooms)) {
+        const list = room.variants || [];
+        if (!list.length) continue;
+        const idx = s.seed ? Game.variantIndex(s.seed, roomId, list.length) : 0;
+        for (const [k, v] of Object.entries(list[idx])) if (s.vars[k] === undefined) s.vars[k] = v;
+      }
+    }
+
+    static variantIndex(seed, roomId, n) {
+      // FNV-1a nad „kód|místnost“ – stejný kód dá vždy stejnou sadu
+      let h = 2166136261;
+      for (const ch of `${seed}|${roomId}`) {
+        h ^= ch.codePointAt(0);
+        h = Math.imul(h, 16777619) >>> 0;
+      }
+      return h % n;
     }
 
     /* Id místnosti, ve které je uložená hra daného světa (null = žádná). */
@@ -234,6 +260,7 @@
       if (!saved.vars) saved.vars = {};
       Game.resolveRoom(saved, this.data.tracks.find((t) => t.id === saved.trackId));
       this.state = saved;
+      this.applyVariants();   // starší uložení bez sad čísel dostane původní hodnoty (sada 0)
       this.save();   // opravené místo hned uložit
       Game.setSetting('lastTrack', saved.trackId);
       return true;
@@ -282,6 +309,7 @@
         try {
           const v = isExpr ? this.evaluate(body) : this.state.vars[body];
           if (v === undefined || v === null) return '–';
+          if (typeof v === 'string' && Number.isNaN(Number(v))) return v;   // textová hodnota ze sady čísel
           return formatNumber(Number(v), dec === undefined ? undefined : Number(dec));
         } catch (e) {
           return '–';
@@ -746,6 +774,8 @@
       }
       for (const [roomId, r] of Object.entries(d.rooms)) {
         for (const n of r.nudges || []) if (!n.text) problems.push(`Místnost „${roomId}“: vzkaz od D. bez textu.`);
+        const keys = (r.variants || []).map((v) => Object.keys(v).sort().join(','));
+        if (keys.some((k) => k !== keys[0])) problems.push(`Místnost „${roomId}“: sady čísel nemají stejné klíče.`);
       }
       // bouřka venku: místo musí být okno, budova nebo sklep
       for (const [roomId, r] of Object.entries(d.rooms)) {

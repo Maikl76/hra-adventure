@@ -148,6 +148,12 @@ Každý svět bude mít vlastních devět bran.
   kostlivce a svalovce) – studenti ji vyfotí pro vyhodnocení.
 - Když tým tři minuty nepostoupí, přijde **vzkaz od D.** – řekne, kam se podívat, ne řešení, a do
   nápověd se nepočítá. Delší vysvětlení výpočtů jsou za tlačítkem „Proč?“.
+- **Jiná čísla pro každý tým:** několik úloh (závaží v kabinetu, protokol rtn. Doubka s běžeckým
+  pásem a klikem v tělocvičně, schodiště v bludišti) má víc sad čísel. Sadu určuje **kód třídy**
+  na obrazovce „Kdo vstupuje?“: stejný kód = stejná čísla pro celou třídu (dá se předvyplnit odkazem
+  `?kod=1234`), bez kódu dostane každý tým náhodný kód. Kód je i na diplomu („Kód úlohy“), takže
+  jde dohledat, jaká čísla tým měl. Úlohy s vlastním měřením (dřepy, výskok, kliky na váze, 3D
+  chodba) se liší samy.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
   s hlasitým zvukem). Ve výchozím stavu jsou **vypnuté**; kdo chce, zapne si je v Menu →
   „Lekačky: zapnuté/vypnuté“. Obraz nebliká opakovaně, ale citlivější studenty je dobré

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.24 – ukázka",
+    "version": "0.25 – ukázka",
     "totalGates": 9
   },
 
@@ -124,7 +124,7 @@
       "icon": "assets/items/listecek.svg",
       "description": "Složený lísteček, docentův rukopis.",
       "closeup": {
-        "note": "Závaží: 50 N",
+        "note": "Závaží: {v_tiha} N",
         "caption": "Lísteček z šuplíku"
       }
     },
@@ -1174,7 +1174,7 @@
         { "text": "Klíček zapadl do zámku a otočil se. Cvak! Šuplík jde ztuha ven – uvnitř leží dřevěné pravítko a složený lísteček." },
         { "give": "pravitko" },
         { "give": "listecek" },
-        { "note": "Lísteček ze šuplíku: tíha závaží je 50 N." }
+        { "note": "Lísteček ze šuplíku: tíha závaží je {v_tiha} N." }
       ]
     },
     {
@@ -1655,6 +1655,20 @@
       "storm": { "place": "okno", "steps": ["zmereno", "kniha_vzata", "klic_vzat", "kalkulacka_vzata"] },
       "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
       "startView": "u_stolu",
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_tiha": 50
+        },
+        {
+          "_sada": "lehčí závaží",
+          "v_tiha": 40
+        },
+        {
+          "_sada": "těžší závaží",
+          "v_tiha": 60
+        }
+      ],
       "nudges": [
         {
           "when": {
@@ -2247,19 +2261,31 @@
             "type": "code",
             "question": "Do mosazi je vyryto: „Jakou silou musí táhnout dvojhlavý sval pažní, aby paže zůstala v klidu?“ (Hmotnost předloktí zanedbej.)",
             "unit": "N",
-            "answer": 500,
+            "answer": "v_tiha*10",
             "tolerance": 0,
-            "feedback": {
-              "50": "50 N je tíha závaží. Sval se ale upíná mnohem blíž ke kloubu než závaží – musí táhnout víc, nebo míň?",
-              "15": "15 je moment síly závaží (v N·m). Teď zjisti, jakou silou ho vyrovná sval na svém kratším rameni.",
-              "5": "Pozor na jednotky – nepomíchal ses centimetry a metry?",
-              "1500": "1500 je moment síly závaží v N·cm. Ještě ho vyděl ramenem síly svalu."
-            },
+            "feedbackFormulas": [
+              {
+                "value": "v_tiha",
+                "text": "{v_tiha} N je tíha závaží. Sval se ale upíná mnohem blíž ke kloubu než závaží – musí táhnout víc, nebo míň?"
+              },
+              {
+                "value": "v_tiha*0.3",
+                "text": "{=v_tiha*0.3:0} je moment síly závaží (v N·m). Teď zjisti, jakou silou ho vyrovná sval na svém kratším rameni."
+              },
+              {
+                "value": "v_tiha*0.3/3",
+                "text": "Pozor na jednotky – nepomíchal ses centimetry a metry?"
+              },
+              {
+                "value": "v_tiha*30",
+                "text": "{=v_tiha*30:0} je moment síly závaží v N·cm. Ještě ho vyděl ramenem síly svalu."
+              }
+            ],
             "wrong": "Zámek ani necvakl. Zkus to přepočítat.",
             "hints": [
               "Paže je v klidu, když se momenty sil kolem loketního kloubu navzájem vyrovnají.",
               "Moment síly = síla × rameno (kolmá vzdálenost od osy kloubu). Jaký moment vytváří závaží?",
-              "Závaží: 50 N × 0,30 m = 15 N·m. Sval musí vytvořit stejný moment, ale na rameni jen 0,03 m."
+              "Závaží: {v_tiha} N × 0,30 m = {=v_tiha*0.3:0} N·m. Sval musí vytvořit stejný moment, ale na rameni jen 0,03 m."
             ],
             "success": "Zámek cvakl. Dveře ale pořád drží železná závora – i na ní je otázka."
           },
@@ -2283,7 +2309,7 @@
         ],
         "open": [
           { "text": "Brána I je otevřená. Z mezery mezi dveřmi proudí studený vzduch a slabé světlo." },
-          { "note": "Brána I: biceps drží závaží silou 500 N – desetkrát víc, než je tíha závaží. Loket je páka 3. druhu." }
+          { "note": "Brána I: biceps drží závaží silou {=v_tiha*10:0} N – desetkrát víc, než je tíha závaží. Loket je páka 3. druhu." }
         ]
       }
     },
@@ -5171,6 +5197,110 @@
         }
       ],
       "startView": "stul",
+      "variants": [
+        {
+          "_sada": "původní čísla (37 let, III)",
+          "v_vek": 37,
+          "v_kat": "III",
+          "v_sloupec": "36–40 let",
+          "v_beh": 2520,
+          "v_lehsed": 43,
+          "v_kliky": 29,
+          "v_bremeno": 72,
+          "v_z_beh": 2,
+          "v_z_lehsed": 2,
+          "v_z_kliky": 1,
+          "v_z_bremeno": 3,
+          "v_kod": 2213,
+          "v_kod_mladsi": 4323,
+          "v_sloupec_mladsi": "do 30 let",
+          "v_kod_mladsi2": 3323,
+          "v_sloupec_mladsi2": "31–35 let",
+          "v_kod_starsi": 2112,
+          "v_sloupec_starsi": "41–45 let",
+          "v_kod_brem1": 2211,
+          "v_kod_brem2": 2212,
+          "v_brem_text": "72 s je víc než 69 s na dvojku – to je trojka.",
+          "v_kod_shyby": 22123,
+          "v_beh_jednicka": 2700,
+          "v_beh_dvojka": 2500,
+          "v_pas": 13.5,
+          "v_pas_mladsi": 14.5,
+          "v_pas_starsi": 13.0,
+          "v_pas_dvojka": 12.5,
+          "v_dkg": 80,
+          "v_dcom": 0.9,
+          "v_dhands": 1.3
+        },
+        {
+          "_sada": "33 let, II",
+          "v_vek": 33,
+          "v_kat": "II",
+          "v_sloupec": "31–35 let",
+          "v_beh": 2660,
+          "v_lehsed": 46,
+          "v_kliky": 27,
+          "v_bremeno": 61,
+          "v_z_beh": 2,
+          "v_z_lehsed": 2,
+          "v_z_kliky": 2,
+          "v_z_bremeno": 1,
+          "v_kod": 2221,
+          "v_kod_mladsi": 3232,
+          "v_sloupec_mladsi": "do 30 let",
+          "v_kod_mladsi2": 3232,
+          "v_sloupec_mladsi2": "do 30 let",
+          "v_kod_starsi": 2121,
+          "v_sloupec_starsi": "36–40 let",
+          "v_kod_brem1": 2223,
+          "v_kod_brem2": 2222,
+          "v_brem_text": "61 s je méně než 62 s – to je jednička.",
+          "v_kod_shyby": 22221,
+          "v_beh_jednicka": 2800,
+          "v_beh_dvojka": 2650,
+          "v_pas": 14.0,
+          "v_pas_mladsi": 14.5,
+          "v_pas_starsi": 13.5,
+          "v_pas_dvojka": 13.25,
+          "v_dkg": 75,
+          "v_dcom": 0.85,
+          "v_dhands": 1.25
+        },
+        {
+          "_sada": "44 let, IV",
+          "v_vek": 44,
+          "v_kat": "IV",
+          "v_sloupec": "41–45 let",
+          "v_beh": 2620,
+          "v_lehsed": 42,
+          "v_kliky": 23,
+          "v_bremeno": 70,
+          "v_z_beh": 1,
+          "v_z_lehsed": 2,
+          "v_z_kliky": 2,
+          "v_z_bremeno": 2,
+          "v_kod": 1222,
+          "v_kod_mladsi": 2233,
+          "v_sloupec_mladsi": "36–40 let",
+          "v_kod_mladsi2": 2233,
+          "v_sloupec_mladsi2": "36–40 let",
+          "v_kod_starsi": 1121,
+          "v_sloupec_starsi": "46–50 let",
+          "v_kod_brem1": 1221,
+          "v_kod_brem2": 1223,
+          "v_brem_text": "70 s je víc než 68 s na jedničku, ale nejvýš 74 s – to je dvojka.",
+          "v_kod_shyby": 12222,
+          "v_beh_jednicka": 2600,
+          "v_beh_dvojka": 2400,
+          "v_pas": 13.0,
+          "v_pas_mladsi": 13.5,
+          "v_pas_starsi": 12.5,
+          "v_pas_dvojka": 12.0,
+          "v_dkg": 85,
+          "v_dcom": 0.95,
+          "v_dhands": 1.35
+        }
+      ],
       "phone": {
         "_poznamka": "Když tým idleSeconds sekund nepostoupí, telefon na zdi u stolu komise zazvoní (co řekne, je u objektu telefon).",
         "flag": "telefon_tv_zvoni",
@@ -5375,20 +5505,50 @@
             {
               "type": "code",
               "question": "V psacím stroji je založený formulář HLÁŠENÍ O PŘEZKOUŠENÍ. Chybí jen řádek „Známky rtn. Doubka – běh, leh-sed, kliky, břemeno:“ – čtyři číslice za sebou.",
-              "answer": 2213,
-              "feedback": {
-                "4323": "Díval ses do sloupce pro muže do 30 let. Doubkovi je 37 – patří do III. věkové kategorie (36–40 let).",
-                "3323": "To je sloupec 31–35 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
-                "2112": "To je sloupec 41–45 let. Doubkovi je 37 – hledej sloupec 36–40 let.",
-                "2211": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
-                "2212": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. 72 s je víc než 69 s na dvojku.",
-                "22123": "Shyby Doubek nedělal – v silové části si vybral leh-sed a kliky. Do hlášení patří čtyři známky: běh, leh-sed, kliky, břemeno."
-              },
+              "answer": "v_kod",
+              "feedbackFormulas": [
+                {
+                  "value": "v_kod_mladsi",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "To je sloupec {v_sloupec_mladsi}. Doubkovi je {v_vek} – patří do {v_kat}. věkové kategorie ({v_sloupec})."
+                },
+                {
+                  "value": "v_kod_mladsi2",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "To je sloupec {v_sloupec_mladsi2}. Doubkovi je {v_vek} – hledej sloupec {v_sloupec}."
+                },
+                {
+                  "value": "v_kod_starsi",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "To je sloupec {v_sloupec_starsi}. Doubkovi je {v_vek} – hledej sloupec {v_sloupec}."
+                },
+                {
+                  "value": "v_kod_brem1",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. {v_brem_text}"
+                },
+                {
+                  "value": "v_kod_brem2",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "U přenášení břemene se měří čas: čím méně sekund, tím lépe. {v_brem_text}"
+                },
+                {
+                  "value": "v_kod_shyby",
+                  "tolerance": 0,
+                  "toleranceRel": 0,
+                  "text": "Shyby Doubek nedělal – v silové části si vybral leh-sed a kliky. Do hlášení patří čtyři známky: běh, leh-sed, kliky, břemeno."
+                }
+              ],
               "wrong": "Stroj zarachotil a vysunul list zpátky. Některá známka nesedí.",
               "hints": [
-                "Doubkovi je 37 let – patří do III. věkové kategorie (36–40 let). Hledej v brožuře Normy tabulky pro muže, kategorie A.",
+                "Doubkovi je {v_vek} let – patří do {v_kat}. věkové kategorie ({v_sloupec}). Hledej v brožuře Normy tabulky pro muže, kategorie A.",
                 "Známka 1 = výkon aspoň jako v řádku. U přenášení břemene je to naopak: čas nejvýš jako v řádku.",
-                "Běh 2, leh-sed 2, kliky 1, břemeno 3 → 2213."
+                "Běh {v_z_beh}, leh-sed {v_z_lehsed}, kliky {v_z_kliky}, břemeno {v_z_bremeno} → {v_kod}."
               ],
               "success": "Ťuk, ťuk, ťuk… cink!"
             }
@@ -5401,7 +5561,7 @@
               "text": "Psací stroj vyťuká celé hlášení. Pod poslední řádek se sám dopíše docentův dovětek: „P. S. Pás u odhodového sektoru se rozjede jen rychlostí, kterou by Doubek potřeboval na jedničku v běhu. – D.“"
             },
             {
-              "note": "Hlášení: rtn. Doubek – běh 2, leh-sed 2, kliky 1, břemeno 3. P. S.: pás u sektoru se rozjede rychlostí, kterou by Doubek potřeboval na jedničku v běhu.",
+              "note": "Hlášení: rtn. Doubek – běh {v_z_beh}, leh-sed {v_z_lehsed}, kliky {v_z_kliky}, břemeno {v_z_bremeno}. P. S.: pás u sektoru se rozjede rychlostí, kterou by Doubek potřeboval na jedničku v běhu.",
               "noteKey": "hlaseni"
             }
           ]
@@ -5414,20 +5574,47 @@
               "type": "code",
               "question": "Konzole pásu: ZADEJ RYCHLOST. Pod displejem lísteček: „Rychlost, kterou Doubek potřebuje na jedničku v běhu. – D.“",
               "unit": "km/h",
-              "answer": 13.5,
+              "answer": "v_pas",
               "tolerance": 0.05,
-              "feedback": {
-                "14.5": "To je jednička pro muže do 30 let. Doubkovi je 37.",
-                "225": "225 metrů za minutu – pás chce kilometry za hodinu.",
-                "12.5": "2 500 m stačí jen na dvojku. Na jedničku je potřeba víc.",
-                "2.7": "2,7 km je vzdálenost za 12 minut. Kolik by to bylo za celou hodinu?",
-                "12": "12 je délka testu v minutách, ne rychlost."
-              },
+              "feedbackFormulas": [
+                {
+                  "value": "v_pas_mladsi",
+                  "tolerance": 0.06,
+                  "toleranceRel": 0,
+                  "text": "To je jednička pro muže {v_sloupec_mladsi}. Doubkovi je {v_vek}."
+                },
+                {
+                  "value": "v_pas_starsi",
+                  "tolerance": 0.06,
+                  "toleranceRel": 0,
+                  "text": "To je jednička pro muže {v_sloupec_starsi}. Doubkovi je {v_vek}."
+                },
+                {
+                  "value": "v_pas_dvojka",
+                  "tolerance": 0.06,
+                  "toleranceRel": 0,
+                  "text": "{v_beh_dvojka} m stačí jen na dvojku. Na jedničku je potřeba víc."
+                },
+                {
+                  "value": "v_beh_jednicka/12",
+                  "text": "{=v_beh_jednicka/12:0} metrů za minutu – pás chce kilometry za hodinu."
+                },
+                {
+                  "value": "v_beh_jednicka/1000",
+                  "text": "{=v_beh_jednicka/1000:1} km je vzdálenost za 12 minut. Kolik by to bylo za celou hodinu?"
+                },
+                {
+                  "value": "12",
+                  "tolerance": 0.06,
+                  "toleranceRel": 0,
+                  "text": "12 je délka testu v minutách, ne rychlost."
+                }
+              ],
               "wrong": "Pás škubl a zase stojí. ŠPATNÁ RYCHLOST.",
               "hints": [
-                "Doubkovi je 37, je to muž kategorie A. Kolik metrů musí uběhnout za 12 minut na jedničku? (brožura Normy, Běh 12 min – muži)",
-                "2 700 m za 12 minut. Hodina má 60 minut – to je pětkrát víc.",
-                "2 700 m × 5 = 13 500 m za hodinu = 13,5 km/h."
+                "Doubkovi je {v_vek}, je to muž kategorie A. Kolik metrů musí uběhnout za 12 minut na jedničku? (brožura Normy, Běh 12 min – muži)",
+                "{v_beh_jednicka} m za 12 minut. Hodina má 60 minut – to je pětkrát víc.",
+                "{v_beh_jednicka} m × 5 = {=v_beh_jednicka*5:0} m za hodinu = {v_pas:1} km/h."
               ],
               "success": "Pás se rozjel."
             }
@@ -5443,7 +5630,7 @@
               "give": "klic_skrin"
             },
             {
-              "note": "Běžecký pás: 2 700 m za 12 min = 13,5 km/h (průměrná rychlost v = s / t).",
+              "note": "Běžecký pás: {v_beh_jednicka} m za 12 min = {v_pas:1} km/h (průměrná rychlost v = s / t).",
               "noteKey": "pas"
             }
           ]
@@ -5618,13 +5805,13 @@
                     },
                     {
                       "closeup": {
-                        "note": "PROTOKOL – VÝROČNÍ PŘEZKOUŠENÍ\nZ FYZICKÉ ZDATNOSTI\n\nrtn. Karel Doubek\nmuž, 37 let\nzdravotní kategorie A\n\nVytrvalost (zvolil běh)\nBěh 12 min ........... 2 520 m\n\nSíla (zvolil leh-sed a kliky)\nLeh-sed .............. 43\nKliky ................ 29\n\nPřenášení břemene .... 72 s\n\nZnámky dopíše komise.\n– D.",
+                        "note": "PROTOKOL – VÝROČNÍ PŘEZKOUŠENÍ\nZ FYZICKÉ ZDATNOSTI\n\nrtn. Karel Doubek\nmuž, {v_vek} let\nzdravotní kategorie A\n\nVytrvalost (zvolil běh)\nBěh 12 min ........... {v_beh} m\n\nSíla (zvolil leh-sed a kliky)\nLeh-sed .............. {v_lehsed}\nKliky ................ {v_kliky}\n\nPřenášení břemene .... {v_bremeno} s\n\nZnámky dopíše komise.\n– D.",
                         "font": "type",
                         "caption": "Protokol na stole komise"
                       }
                     },
                     {
-                      "note": "Protokol: rtn. Doubek, muž, 37 let, kategorie A – běh 12 min 2 520 m (zvolil běh, ne plavání), leh-sed 43 a kliky 29 (zvolil leh-sed a kliky, ne shyby), přenášení břemene 72 s.",
+                      "note": "Protokol: rtn. Doubek, muž, {v_vek} let, kategorie A – běh 12 min {v_beh} m (zvolil běh, ne plavání), leh-sed {v_lehsed} a kliky {v_kliky} (zvolil leh-sed a kliky, ne shyby), přenášení břemene {v_bremeno} s.",
                       "noteKey": "protokol"
                     }
                   ]
@@ -5743,10 +5930,10 @@
                       "sound": "paper"
                     },
                     {
-                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Doubkovi je 37 let – hledej v normách sloupec 36–40 let. A u břemene platí: čím méně sekund, tím lépe.“ Linka ztichne."
+                      "text": "Zvedneš sluchátko. Šum… a pak chraplavý hlas, který zní jako docent: „Doubkovi je {v_vek} let – hledej v normách sloupec {v_sloupec}. A u břemene platí: čím méně sekund, tím lépe.“ Linka ztichne."
                     },
                     {
-                      "note": "Telefon: Doubkovi je 37 let – hledej v normách sloupec 36–40 let. A u břemene platí: čím méně sekund, tím lépe.",
+                      "note": "Telefon: Doubkovi je {v_vek} let – hledej v normách sloupec {v_sloupec}. A u břemene platí: čím méně sekund, tím lépe.",
                       "noteKey": "telefon"
                     }
                   ]
@@ -6285,7 +6472,7 @@
                   },
                   "do": [
                     {
-                      "text": "Pás tiše běží rychlostí 13,5 km/h. Na takovou jedničku by musel Doubek běžet celých 12 minut."
+                      "text": "Pás tiše běží rychlostí {v_pas:1} km/h. Na takovou jedničku by musel Doubek běžet celých 12 minut."
                     }
                   ]
                 },
@@ -6589,37 +6776,37 @@
         "steps": [
           {
             "type": "code",
-            "question": "Na číselníku svítí: „Rotný Doubek váží 80 kg. V poloze kliku má těžiště 0,90 m od špiček a ruce 1,30 m od špiček. Jakou silou tlačí ruce do podlahy? Zadej v newtonech.“",
+            "question": "Na číselníku svítí: „Rotný Doubek váží {v_dkg} kg. V poloze kliku má těžiště {v_dcom:2} m od špiček a ruce {v_dhands:2} m od špiček. Jakou silou tlačí ruce do podlahy? Zadej v newtonech.“",
             "unit": "N",
             "requiresVars": [
               "kliky_kg"
             ],
             "missingText": "Číselník bliká: NEJDŘÍV KLIKY NA VÁZE. Decimální váha stojí u žíněnky pod hrazdou.",
-            "answer": "80*9.81*0.9/1.3",
+            "answer": "v_dkg*9.81*v_dcom/v_dhands",
             "toleranceRel": 0.03,
             "feedbackFormulas": [
               {
-                "value": "80*9.81",
+                "value": "v_dkg*9.81",
                 "text": "To je celá jeho tíha. Ruce nesou jen část – zbytek leží na špičkách."
               },
               {
-                "value": "80*0.9/1.3",
+                "value": "v_dkg*v_dcom/v_dhands",
                 "text": "Správně – ale v kilogramech. Číselník chce newtony: vynásob 9,81."
               },
               {
-                "value": "80*9.81*1.3/0.9",
+                "value": "v_dkg*9.81*v_dhands/v_dcom",
                 "text": "Prohozená ramena. Těžiště je blíž ke špičkám než ruce, takže ruce nesou MÉNĚ než celou tíhu."
               },
               {
-                "value": "80*9.81*0.9",
-                "text": "To je moment tíhy kolem špiček (N·m). Ještě ho vyděl ramenem rukou 1,30 m."
+                "value": "v_dkg*9.81*v_dcom",
+                "text": "To je moment tíhy kolem špiček (N·m). Ještě ho vyděl ramenem rukou {v_dhands:2} m."
               }
             ],
             "wrong": "Číselník zablikal červeně.",
             "hints": [
               "Je to stejné jako na decimální váze: rovnováha momentů kolem špiček.",
               "m · g · a = F · b, tedy F = m · g · a / b.",
-              "80 · 9,81 · 0,90 / 1,30 ≈ 543 N."
+              "{v_dkg} · 9,81 · {v_dcom:2} / {v_dhands:2} ≈ {=v_dkg*9.81*v_dcom/v_dhands:0} N."
             ],
             "success": "Zelená! Další otázka…"
           },
@@ -6725,6 +6912,23 @@
         ]
       },
       "darkness": 0,
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_schody": 18,
+          "v_schod_cm": 17
+        },
+        {
+          "_sada": "méně vyšších schodů",
+          "v_schody": 16,
+          "v_schod_cm": 18
+        },
+        {
+          "_sada": "víc nižších schodů",
+          "v_schody": 20,
+          "v_schod_cm": 16
+        }
+      ],
       "nudges": [
         {
           "when": {
@@ -7655,13 +7859,13 @@
               "do": [
                 {
                   "closeup": {
-                    "note": "SCHODIŠTĚ\n\n18 SCHODŮ × 17 cm",
+                    "note": "SCHODIŠTĚ\n\n{v_schody} SCHODŮ × {v_schod_cm} cm",
                     "font": "type",
                     "caption": "Smaltovaná cedule u schodiště"
                   }
                 },
                 {
-                  "note": "Schodiště do tělocvičny: 18 schodů po 17 cm.",
+                  "note": "Schodiště do tělocvičny: {v_schody} schodů po {v_schod_cm} cm.",
                   "noteKey": "cedule_schody"
                 }
               ]
@@ -8044,35 +8248,35 @@
               "type": "code",
               "question": "Na mříži visí zámek s číselníkem a docentův lísteček: „Nahoru po schodech půjde voják 70 kg s batohem 30 kg. Kolik práce vykoná proti tíze, než vystoupá do tělocvičny? Zadej v joulech. – D.“",
               "unit": "J",
-              "answer": "100*9.81*18*0.17",
+              "answer": "100*9.81*v_schody*v_schod_cm/100",
               "toleranceRel": 0.03,
               "feedbackFormulas": [
                 {
-                  "value": "70*9.81*18*0.17",
+                  "value": "70*9.81*v_schody*v_schod_cm/100",
                   "text": "Zapomněl jsi na batoh. Nahoru jde voják i batoh: 70 + 30 kg."
                 },
                 {
-                  "value": "30*9.81*18*0.17",
+                  "value": "30*9.81*v_schody*v_schod_cm/100",
                   "text": "To je jen batoh. Voják nese nahoru i sám sebe."
                 },
                 {
-                  "value": "100*9.81*0.17",
-                  "text": "To je práce na jediný schod. Schodů je 18."
+                  "value": "100*9.81*v_schod_cm/100",
+                  "text": "To je práce na jediný schod. Schodů je {v_schody}."
                 },
                 {
-                  "value": "100*9.81*18*17",
-                  "text": "Výška je v centimetrech. Převeď ji na metry: 17 cm = 0,17 m."
+                  "value": "100*9.81*v_schody*v_schod_cm",
+                  "text": "Výška je v centimetrech. Převeď ji na metry: {v_schod_cm} cm = {=v_schod_cm/100:2} m."
                 },
                 {
-                  "value": "100*18*0.17",
+                  "value": "100*v_schody*v_schod_cm/100",
                   "text": "Chybí tíhové zrychlení g = 9,81 m/s². Práce proti tíze je W = m · g · h."
                 }
               ],
               "wrong": "Zámek ani necvakl.",
               "hints": [
                 "Práce proti tíze: W = m · g · h. Výšku schodiště zjistíš na ceduli vedle mříže.",
-                "m = 70 + 30 = 100 kg; h = 18 · 0,17 m = 3,06 m.",
-                "100 · 9,81 · 3,06 ≈ 3 000 J."
+                "m = 70 + 30 = 100 kg; h = {v_schody} · {=v_schod_cm/100:2} m = {=v_schody*v_schod_cm/100:2} m.",
+                "100 · 9,81 · {=v_schody*v_schod_cm/100:2} ≈ {=100*9.81*v_schody*v_schod_cm/100:0} J."
               ],
               "success": "Cvak! Zámek mříže povolil."
             }
@@ -8082,7 +8286,7 @@
               "text": "Mříž se se skřípěním otevřela. Za ní stoupá úzké schodiště a shora je slyšet vzdálené dunění – jako by v tělocvičně někdo běhal."
             },
             {
-              "note": "Schodiště: voják 70 kg + batoh 30 kg, 18 schodů po 17 cm → W = m · g · h = 100 · 9,81 · 3,06 ≈ 3 000 J.",
+              "note": "Schodiště: voják 70 kg + batoh 30 kg, {v_schody} schodů po {v_schod_cm} cm → W = m · g · h = 100 · 9,81 · {=v_schody*v_schod_cm/100:2} ≈ {=100*9.81*v_schody*v_schod_cm/100:0} J.",
               "noteKey": "schodiste_prace"
             }
           ]

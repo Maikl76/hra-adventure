@@ -186,7 +186,10 @@ button:focus-visible, input:focus-visible {
 
 .track-wrap h2 { font-weight: normal; font-size: 32px; letter-spacing: 0.06em; color: var(--gold-bright); margin: 0 0 24px; }
 
-.team { display: inline-flex; flex-direction: column; gap: 6px; text-align: left; color: var(--muted); margin-bottom: 28px; }
+.team-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 28px; margin-bottom: 28px; }
+.team { display: inline-flex; flex-direction: column; gap: 6px; text-align: left; color: var(--muted); }
+.team.code input { width: min(80vw, 200px); font-family: var(--digits); letter-spacing: 0.08em; }
+.team.code small { display: block; max-width: 260px; font-size: 12px; line-height: 1.25; }
 
 .team small { color: #6f6555; }
 
