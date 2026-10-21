@@ -1251,3 +1251,13 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .scene-storm { display: none; }
 }
+/* Noční cvičiště: nosítka, přilba s protizávažím, mapa se svahem */
+.stretcher-patient, .helmet-pouch { cursor: grab; }
+.slope-map { border-radius: 8px; }
+.slope-route { fill: none; stroke-width: 3; opacity: 0.55; pointer-events: none; }
+.slope-route.selected { opacity: 1; stroke-width: 5; }
+.slope-route-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; }
+.slope-task { margin-top: 10px; }
+.slope-task .question { margin: 6px 0 8px; }
+.slope-options { display: flex; flex-direction: column; gap: 6px; }
+.slope-options .btn { text-align: left; }

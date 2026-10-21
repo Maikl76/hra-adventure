@@ -406,6 +406,22 @@
       this.osc('sine', freq * 2.01, g2, t, t + decay + 0.1);
     }
 
+    /* Houkání sovy: dva tiché tóny, druhý delší a klesající. */
+    hoot(dest, t, level) {
+      const out = this.gain(0.0001, dest);
+      const lp = this.filter('lowpass', 900, 0.7, out);
+      const o = this.osc('sine', 400, lp, t, t + 1.5);
+      o.frequency.setValueAtTime(410, t);
+      o.frequency.linearRampToValueAtTime(380, t + 0.3);
+      o.frequency.setValueAtTime(405, t + 0.5);
+      o.frequency.linearRampToValueAtTime(350, t + 1.3);
+      out.gain.setValueAtTime(0.0001, t);
+      out.gain.exponentialRampToValueAtTime(level, t + 0.06);
+      out.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+      out.gain.exponentialRampToValueAtTime(level, t + 0.56);
+      out.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+    }
+
     /* Kovový / zvonový tón (frekvenční modulace s neharmonickým poměrem). */
     fm(dest, freq, ratio, index, t, level, decay) {
       const g = this.gain(0, dest);
@@ -652,6 +668,45 @@
       });
       // parkety
       this.every(h, 16, 30, (when) => this.creak(group, when, 0.025, 0.5 + Math.random() * 0.5));
+    },
+
+    /* Noční cvičiště (venku): vítr v trávě, cvrčci, vzdálená sova, plachta stanu a tichý generátor
+       reflektoru. Všechno tiché a pozvolné. */
+    cviciste(group, h) {
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      // vítr: šum přes pásmovou propust, pomalu se přelévá ze strany na stranu
+      const pan = ctx.createStereoPanner();
+      pan.connect(group);
+      const wind = this.gain(0.05, pan);
+      const bp = this.filter('bandpass', 420, 0.6, wind);
+      h.sources.push(this.noiseSource(bp, t, 0, this.noise, true));
+      this.lfo(bp.frequency, 0.05, 220, t, h);
+      this.lfo(wind.gain, 0.08, 0.02, t, h);
+      this.lfo(pan.pan, 0.025, 0.5, t, h);
+      // tráva: tichý vyšší šum
+      const grass = this.gain(0.01, group);
+      h.sources.push(this.noiseSource(this.filter('highpass', 2500, 0.5, grass), t, 0, this.noise, true));
+      this.lfo(grass.gain, 0.11, 0.006, t, h);
+      // generátor reflektoru daleko: hluboký tón s harmonickými
+      const gen = this.gain(0.012, group);
+      const glp = this.filter('lowpass', 300, 0.8, gen);
+      h.sources.push(this.osc('sawtooth', 50, glp, t));
+      h.sources.push(this.osc('sawtooth', 100.7, glp, t, 0, 4));
+      this.lfo(gen.gain, 0.3, 0.003, t, h);
+      // cvrčci: krátké trylky kolem 4,5 kHz
+      this.every(h, 1.2, 3.5, (when) => {
+        const n = 3 + Math.floor(Math.random() * 4);
+        const f = 4200 + Math.random() * 700;
+        for (let i = 0; i < n; i++) this.ping(group, f, when + i * 0.07, 0.005, 0.05);
+      });
+      // sova: dvě tichá houknutí daleko
+      this.every(h, 25, 60, (when) => this.hoot(group, when, 0.03));
+      // plachta stanu: občas zapleská
+      this.every(h, 9, 20, (when) => {
+        const n = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < n; i++) this.noiseBurst(group, when + i * (0.12 + Math.random() * 0.1), 0.08, 'lowpass', 600, 0.05);
+      });
     },
 
     /* Závěrečná obrazovka: klidnější tón. */

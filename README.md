@@ -32,6 +32,12 @@ Každý svět bude mít vlastních devět bran.
   (impulz odrazu, batoh 15 kg sníží výskok), lezení po žebřinách (práce a výkon), seskok z plošiny
   (doskok do podřepu zmenší sílu) a **svalovec**: zasáhnout cvičným laserem sval, který jeho útok
   provede. Na tabletu dotykové ovládání.
+- **Vojenská tělovýchova – Brána III: Noční cvičiště** (páka a vzdálenost od osy, práce proti tíze):
+  nosítka s raněným (kdo je blíž těžišti, nese víc – a rtn. Doubek má poraněné rameno), přilba
+  s noktovizorem a protizávažím (stejný moment, dál od osy lehčí) a mapa s vrstevnicemi: tři trasy
+  na stanoviště se stejnou prací proti tíze, ale jiným časem a výkonem. Venku v noci, bez kamery.
+  Zatím se zástupnou grafikou (zadání obrázků:
+  [`docs/zadani-obrazku-cviciste.md`](docs/zadani-obrazku-cviciste.md)).
 - **GSPORT – LEVEL 1: Stará herna** (práce a výkon při dřepech, sčítání wattů): stará laboratoř
   v suterénu předělaná na hernu, čtyři strany místnosti a řetěz úkolů – reflex test, UV
   svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
@@ -136,6 +142,7 @@ Každý svět bude mít vlastních devět bran.
   - GSPORT – LEVEL 2 (Skokanská aréna): <https://maikl76.github.io/hra-adventure/?mistnost=arena>
   - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
   - Vojenská tělovýchova – Chodba na cvičiště (3D: skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
+  - Vojenská tělovýchova – Brána III (Noční cvičiště): <https://maikl76.github.io/hra-adventure/?mistnost=cviciste>
 
   Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč

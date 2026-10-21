@@ -93,8 +93,9 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
 - Místnost: `name`, `gateNumber`/`gateLabel`, `tracks`, `ambience` (podkres), `enterText`,
   `enter` (účinky při vstupu), `startView`, `views`, `gate` (kroky zámku brány), `locks` (malé
   zámky), `activities`, `scares` (lekačky), `phone` (polní telefon), `shortcut` (zkratka pro
-  vyučující), `storm` (bouřka venku: `place` = `okno` | `budova` | `sklep`, `steps` = příznaky
-  postupu – bouřka s každým splněným sílí, u otevřené brány je nejsilnější).
+  vyučující), `storm` (bouřka venku: `place` = `okno` | `budova` | `sklep` | `venku`, `steps` = příznaky
+  postupu – bouřka s každým splněným sílí, u otevřené brány je nejsilnější; `venku` = záblesk přes
+  celé nebe a hrom bez tlumení).
 - Pohled: `background` (1672 × 941), `hotspots` (oblast v % obrázku, `click` = případy
   s podmínkou `when` a účinky `do`), `layers` (obrázky podle stavu), `lights`, `darkness`
   (síla tmy 0–1; tmavé obrázky autora ~0,6), `dust` (prach ve světle), sousedé `left`/`right`
@@ -119,8 +120,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   Sady mají: kabinet (tíha závaží 50/40/60 N → síla bicepsu 500/400/600 N), tělocvična (rtn. Doubek
   37 let III / 33 let II / 44 let IV → hlášení 2213/2221/1222, pás 13,5/14,0/13,0 km/h, klik v bráně
   80 kg 0,90/1,30 m → 543 N, 75 kg 0,85/1,25 → 500 N, 85 kg 0,95/1,35 → 587 N; známky ověřené podle
-  brožury Normy, muži A), bludiště (schodiště 18×17 / 16×18 / 20×16 cm → 3 002 / 2 825 / 3 139 J).
-  Kódy pro testy: 1022 = všude sada 0, 1067 = všude sada 1, 1051 = všude sada 2. Diplom ukazuje
+  brožury Normy, muži A), bludiště (schodiště 18×17 / 16×18 / 20×16 cm → 3 002 / 2 825 / 3 139 J),
+  noční cvičiště (nosítka 80 kg 1,30/2,20 m → 464 N, 75 kg 1,20/2,00 → 441 N, 90 kg 1,40/2,40 → 515 N;
+  protizávaží 0,7 kg 12/15 cm → 0,56 kg, 0,6 kg 15/12 → 0,75 kg, 0,8 kg 10/16 → 0,50 kg; výstup
+  75+25 kg 420→720 m → 294 kJ, 80+20 kg 380→700 → 314 kJ, 70+30 kg 450→720 → 265 kJ).
+  Kódy pro testy: **1259** = všude sada 0 (1022 dává cvičišti sadu 1), 1067 = všude sada 1,
+  1051 = všude sada 2. Diplom ukazuje
   řádek „Kód úlohy“. Herna, aréna a 3D chodba mají čísla z vlastního měření, ta se liší sama.
 - **Deník docenta D. a mapa bran** (`diary` v kořeni): `mapNote`, `pages` [{ `id`, `room`, `short`
   (název na mapě), `track`, `gate` (popisek brány), `title`, `text` (odstavce `\n`), `sign` }]; stránky
@@ -132,8 +137,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `meta.totalGates` (9) bran odspodu nahoru: postavené brány (místnosti s `gate`) s číslem a jménem,
   chodby mezi nimi (bludiště, 3D chodba) jako menší kolečka, nepostavené přerušovaně; nahoře společná
   střecha, kam vede devátá brána každého světa. V Menu i na titulní obrazovce; zlatá = prošlá (klik
-  otevře stránku). Teď 7 stránek (kabinet; sklad, bludiště, tělocvična, chodba na cvičiště; herna,
-  aréna).
+  otevře stránku). Teď 8 stránek (kabinet; sklad, bludiště, tělocvična, chodba na cvičiště, noční
+  cvičiště; herna, aréna).
 - **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
   výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
   Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
@@ -152,7 +157,11 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (výskok), `targets` (NEON AIM), `pushup` (kliky na decimální váze), `throw` (šikmý vrh –
   medicinbal, granát; kolo má `speed`, `h0` = výška odhodu, `target`, volitelně `pose: "sed"`
   = postava sedí u stěny a `x0` = jak daleko před stěnou míč opouští ruku, dolet se měří od stěny), `gobletsim` (panáček v dolní poloze goblet dřepu), `goblet` (goblet dřep
-  90 s). Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
+  90 s), `stretcher` (nosítka: dva nosiči, raněný se táhne po nosítkách, momenty kolem rukou zadního
+  nosiče; kola `goal` = `equal` | `rearMax`), `helmet` (přilba s noktovizorem: hmotnost a vzdálenost
+  protizávaží, moment a síla šíje; kola `goal` = `balance` | `lightest`), `slope` (mapa se svahem:
+  trasy `routes` se stejným převýšením, otázka `question`, rozkaz `mission` s mezí času a výkonu).
+  Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
   a `table` (`caption`, `head`, `rows`; první buňka řádku je záhlaví) – tabulky norem v brožuře.
@@ -214,8 +223,9 @@ plocha, slepení přelomené psí známky (kód skříňky), polní telefon s n�
 stability před kamerou. Zámek: posun těžiště **6 cm**, co s tím udělat, kam patří těžké věci.
 Všechny čtyři pohledy a otevřené dveře jsou od autora; zástupné zůstaly jen ikony klíčů, půlek
 známky a pásky (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
-**Odloženo do dalších vojenských místností** (nápady autor schválil): protizávaží u přilby, mapa
-se svahem, nosítka. Decimální váha a psací stroj jsou v tělocvičně (Brána II).
+Nápady, které autor schválil pro další vojenské místnosti (protizávaží u přilby, mapa se svahem,
+nosítka), jsou od verze 0.28 v Nočním cvičišti (Brána III). Decimální váha a psací stroj jsou
+v tělocvičně (Brána II).
 
 ### Vojenská tělovýchova – Sklep: Sklepní bludiště (`chodba`)
 Autor chtěl vyzkoušet pohyb jako v DOOMu (16. 10. 2026): chodby z vlastních očí, místnosti zůstávají
@@ -368,6 +378,37 @@ v chodbě. Knihovna three.js (MIT) je ve `vendor/three/`.
 - **Zbývá:** další svaly a útoky (např. výskok → trojhlavý sval lýtkový), případně uložení polohy
   v chodbě (teď se po zavření prohlížeče začíná na začátku chodby).
 
+### Vojenská tělovýchova – Brána III: Noční cvičiště (`cviciste`)
+Tři náměty, které autor schválil 21. 10. 2026 (nosítka, protizávaží u přilby, mapa se svahem),
+postavené 22. 10. 2026 ve verzi 0.28 jako první místnost **venku** (noc, bez kamery, podkres
+`cviciste` = vítr, cvrčci, sova, plachta, generátor; bouřka `venku`). Čtyři pohledy: polní stůl
+s mapou (sem hráč přijde) → stojan s přilbami → brána → polní ošetřovna (stan) → zpět. Rtn. Doubek
+sedí v ošetřovně s ramenem v šátku (svalovec ho trefil úderem shora), na radiostanici komise.
+Řetěz (pořadí volné): **nosítka** (figurína 80 kg, 1,80 m, těžiště 56 % od chodidel, nosítka 9 kg,
+ruce 2,40 m od sebe; kolo 1 oba stejně → raněný posunutý k nohám, kolo 2 Doubek vzadu nejvýš 370 N →
+raněný dopředu, k tobě) → **noktovizor** z bedny v ošetřovně → **přilba** (noktovizor 0,7 kg 12 cm
+před osou kloubu lebka–atlas = 0,82 N·m, šíje s ramenem 5 cm by držela 16 N; kolo 1 váček pevně
+na 10 cm → 0,84 kg, kolo 2 nejlehčí = na 15 cm → 0,56 kg; ukazuje i celkovou hmotnost na krku) →
+**mapa se svahem** (voják 70 + 20 kg, tábor 400 → stanoviště 680 m; trasy A spádnicí 560 m / 30° /
+nejvýš 2,5 km/h, B serpentinami 1 400 m / 12° / 4,5 km/h, C po silnici 2 400 m / 7° / 5,5 km/h;
+práce proti tíze 247 kJ **u všech stejná**, složka tíhy podél svahu m·g·sin α, čas a výkon podle
+tempa; nejdřív otázka „kde nejvíc práce“ = stejně, pak rozkaz do 20 min a výkon ≤ 300 W: C to
+nestihne, A jen pomalu, B pohodlně; po aktivitě „Proč je to ve skutečnosti víc?“ = účinnost ~25 %
+a cena kroků). **Brána III** (číselník u brány, sady čísel): síla předního nosiče `m·g·x/L` v N,
+protizávaží `m·d₁/d₂` v kg (±0,02), práce proti tíze `(m+výstroj)·g·Δh/1000` v kJ, volba „stejná práce,
+vyšší výkon“. Cílené rady: celá tíha, polovina, kg místo N, zadní nosič; stejná hmotnost, prohozené
+vzdálenosti, kg·cm, zbytečné g; jouly, bez výstroje, bez g, nadmořská výška místo převýšení.
+Vzkazy od D. (`nudges`), deník strana „Vzdálenost od osy“, závěr světa „Brána III je otevřená“
+(šest bran zbývá), nové řádky diplomu (nosítka, protizávaží, výstup) a odznak **Rychlá hlídka**
+(na stanovišti do 15 min = trasa A pomalu); odznak Rychlík vojenského světa zvednut na 90 minut.
+Zkratka `?mistnost=cviciste`. Zástupné kresby (noc, stan, stůl, stojan, brána + vrstva otevřené brány),
+zadání pro autora `docs/zadani-obrazku-cviciste.md`.
+- Fyzika: nosítka = páka s osou u rukou zadního nosiče, F·L = m_r·g·x + m_n·g·L/2 (nosítka mají
+  těžiště uprostřed); přilba = rovnováha momentů m₁·d₁ = m₂·d₂ (g se vykrátí), protizávaží dál od osy
+  = lehčí, ale každý gram nese krční páteř; svah = W = m·g·Δh nezávisí na cestě, P = W/t, síla podél
+  svahu m·g·sin α; nejvyšší tempo klesá se sklonem (realistické meze, ne vzorec).
+- **Zbývá:** obrázky od autora; případně stanoviště na kopci jako další místnost.
+
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
 a neony; čtyři pohledy (stůl → knihovna → kostra a stanice → dveře) + přiblížená pojistková skříň.
@@ -437,10 +478,11 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   a lístek „Devět bran jsem kdysi prošel já. Teď vy. Nezavírejte je. – D.“ D. je naživu, jen odešel.
   **Hotovo ve verzi 0.26:** 7 stránek deníku (texty v `diary`), mapa bran, sekce v zápisníku.
   **22. 10. 2026 autor upřesnil: devět bran má každý svět zvlášť** (Laboratoře, Vojenská tělovýchova,
-  GSPORT – tři oddělené světy), mapa od verze 0.27 kreslí tři sloupce po devíti branách. **Zbývá:**
-  další brány (autor schválil návrhy: Vojenská III Noční cvičiště – nosítka, protizávaží u přilby, mapa
-  se svahem; GSPORT LEVEL 3 Spin zóna – rotace; Laboratoře II Fotografická laboratoř – rychlost,
-  zrychlení, energie), střecha s devátou branou a koncem příběhu (až bude svět dohraný), případně
+  GSPORT – tři oddělené světy), mapa od verze 0.27 kreslí tři sloupce po devíti branách.
+  **Vojenská III Noční cvičiště** (nosítka, protizávaží u přilby, mapa se svahem) hotová ve verzi 0.28.
+  **Zbývá:** další brány (autor schválil návrhy: GSPORT LEVEL 3 Spin zóna – rotace; Laboratoře II
+  Fotografická laboratoř – rychlost, zrychlení, energie), střecha s devátou branou a koncem příběhu
+  (až bude svět dohraný), případně
   obrázky stránek od autora (`docs/zadani-obrazku-denik.md`) a zmínka o učiteli D. na fotografii
   katedry (zvrat až na posledních stránkách). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
   jen „D.“ – žádné osobní údaje. Humor: kostlivci v bludišti mají jména a krátké představení

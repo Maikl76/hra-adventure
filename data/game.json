@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.27 – ukázka",
+    "version": "0.28 – ukázka",
     "totalGates": 9
   },
 
@@ -72,6 +72,15 @@
         "text": "Dopad. Všechno, co vyskočí, musí dolů stejnou rychlostí, jakou vyletělo. Rozdíl je jen v tom, jak dlouho brzdíš: propnutá kolena setinu sekundy, pokrčená třetinu. Delší brzdění, menší síla. Kolena jsou od toho, aby se ohýbala.\nSvé pravé jsem to naučil pozdě. Seskok z bedny na soustředění v devatenácti, tvrdě, na patu. Od té doby učím doskok první hodinu – dřív než skok."
       },
       {
+        "id": "cviciste",
+        "room": "cviciste",
+        "short": "Noční cvičiště",
+        "track": "vojenska",
+        "gate": "Brána III",
+        "title": "Vzdálenost od osy",
+        "text": "Vzdálenost od osy. Páku jsem učil v kabinetu na bicepsu, ale pochopil jsem ji v noci na cvičišti. Kdo je blíž těžišti raněného, nese víc. Noktovizor před čelem vyváží na zadku přilby půl kila – když ho dáš dost daleko. A kopec nikoho neošidí: zvedáš sám sebe o celé převýšení, ať jdeš kudykoli; strmá cesta chce tu samou práci, jen rychleji.\nJednou jsme v noci nesli kolegu z kopce dolů. Šel jsem vzadu, u hlavy. Do rána jsem věděl v každém prstu, kde má člověk těžiště – a proč se nosiči střídají."
+      },
+      {
         "id": "herna",
         "room": "herna",
         "short": "Stará herna",
@@ -113,12 +122,12 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad", "chodba", "telocvicna", "prekazky"],
+      "rooms": ["sklad", "chodba", "telocvicna", "prekazky", "cviciste"],
       "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
       "roomsBefore": ["sklad", "telocvicna"],
       "finish": {
-        "title": "Brána II je otevřená",
-        "text": "Chodba z tělocvičny je za tebou – svalovec leží a dveře na cvičiště jsou otevřené. Na klice visí píšťalka komisaře a lísteček: „Normy znáš – a víš i proč. Sedm bran zbývá. – D.“",
+        "title": "Brána III je otevřená",
+        "text": "Noční cvičiště je za tebou. Brána u plotu je otevřená, cesta stoupá ke stanovišti a reflektor ti svítí do zad. Na sloupku visí píšťalka komisaře a lísteček: „Normy znáš, páku taky – a víš i proč. Šest bran zbývá. – D.“",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "cameraLabel": "Zkouška stability ověřená kamerou",
         "stats": [
@@ -131,10 +140,13 @@
           { "label": "Kostra z kabinetu", "value": "složená, chyb při skládání: {kostra_chybne}", "requires": ["kostra_chybne"] },
           { "label": "Svalovec – funkce svalů", "value": "správné zásahy: {svaly_spravne}, vedle: {svaly_chybne}", "requires": ["svaly_spravne"] },
           { "label": "Nejvyšší výskok (chodba na cvičiště)", "value": "{skok_max:2} m", "requires": ["skok_max"] },
-          { "label": "Chodba na cvičiště", "value": "přeskočená – prohlížeč neuměl 3D grafiku", "requires": ["prekazky_preskoceno"] }
+          { "label": "Chodba na cvičiště", "value": "přeskočená – prohlížeč neuměl 3D grafiku", "requires": ["prekazky_preskoceno"] },
+          { "label": "Nosítka – Doubek vzadu", "value": "přední nosič {nositka_predni} N, zadní {nositka_zadni} N", "requires": ["nositka_predni"] },
+          { "label": "Protizávaží noktovizoru", "value": "{prilba_kg:2} kg na {prilba_cm} cm (bez něj šíje {prilba_f0} N)", "requires": ["prilba_kg"] },
+          { "label": "Výstup na stanoviště", "value": "{svah_trasa}: {svah_t:1} min, {svah_P} W (práce {svah_W:1} kJ)", "requires": ["svah_t"] }
         ],
         "badges": [
-          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 75 minut.", "maxMinutes": 75 },
+          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 90 minut.", "maxMinutes": 90 },
           { "id": "kamera", "label": "Kamera nelže", "desc": "Zkouška stability změřená kamerou.", "when": { "vars": ["zed_panev"] } },
           { "id": "silak", "label": "Silák", "desc": "Aspoň 30 platných goblet dřepů za 90 s.", "when": { "vars": ["goblet_n"], "exprs": ["goblet_n >= 30"] } },
           { "id": "anatom", "label": "Anatom", "desc": "V bludišti každá kost napoprvé.", "when": { "vars": ["kosti_spravne", "kosti_chybne"], "exprs": ["kosti_chybne == 0"] } },
@@ -142,7 +154,8 @@
           { "id": "nezlomny", "label": "Nezlomný", "desc": "Bludiště i chodba bez jediného pádu.", "when": { "flags": ["svalovec_porazen"], "vars": ["padnuti"], "exprs": ["padnuti == 0"] } },
           { "id": "pruzina", "label": "Pružina", "desc": "Výskok aspoň 0,6 m.", "when": { "vars": ["skok_max"], "exprs": ["skok_max >= 0.6"] } },
           { "id": "doskok", "label": "Měkký doskok", "desc": "Každý seskok do podřepu.", "when": { "vars": ["doskoky_mekke", "doskoky_tvrde"], "exprs": ["doskoky_mekke >= 1", "doskoky_tvrde == 0"] } },
-          { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } }
+          { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } },
+          { "id": "hlidka", "label": "Rychlá hlídka", "desc": "Na stanovišti do 15 minut – a bojeschopní.", "when": { "vars": ["svah_t"], "exprs": ["svah_t <= 15"] } }
         ]
       }
     },
@@ -1157,6 +1170,11 @@
       "name": "Laserová puška",
       "icon": "assets/items/laserova_puska.svg",
       "description": "Cvičná laserová puška (laser game) ze zbrojní skříně. Kostlivcům neublíží – míří se myší nebo prstem na kost, kterou puška ukáže."
+    },
+    "noktovizor": {
+      "name": "Noktovizor",
+      "icon": "assets/items/noktovizor.svg",
+      "description": "Noktovizor s držákem na přilbu, 0,7 kg. Na přilbě sedí asi 12 cm před osou otáčení hlavy – a celou noc ji táhne dopředu."
     },
     "klic_zbrojni": {
       "name": "Klíč od zbrojní skříně",
@@ -8837,6 +8855,1117 @@
           "doorLocked": "Dveře na cvičiště jsou zamčené. Otevřou se, až svalovec padne – stojí ti v cestě schválně.",
           "end": "Prošel jsi dveřmi ven na cvičiště. Noční vzduch, mokrá tráva – a ticho."
         }
+      }
+    },
+
+    "cviciste": {
+      "name": "Noční cvičiště",
+      "gateNumber": "III",
+      "tracks": [
+        "vojenska"
+      ],
+      "ambience": "cviciste",
+      "storm": {
+        "place": "venku",
+        "steps": [
+          "noktovizor_vzat",
+          "nositka_hotovo",
+          "prilba_hotovo",
+          "svah_hotovo"
+        ]
+      },
+      "_poznamka": "Brána III (autor schválil náměty 21. 10. 2026: nosítka, protizávaží u přilby, mapa se svahem). Venku v noci, bez kamery. Tři stanoviště = tři aktivity (stretcher, helmet, slope), brána se ptá na totéž s jinými čísly (sady).",
+      "enterText": "Dveře z chodby se za tebou zavřely. Jsi venku: noční cvičiště, mokrá tráva, v dálce reflektor nad bránou. U stanu ošetřovny svítí lampa, pod plachtou stojí polní stůl s mapou a vedle něj stojan s přilbami.",
+      "enterMore": "Na cvičišti se dnes nestřílí ani neběhá – počítá se. Tři stanoviště: ošetřovna s nosítky, stojan s přilbami a stůl s mapou. Brána III vzadu u plotu se ptá na to, co si na nich vyzkoušíš. Šipkami se otáčíš, kliknutím zkoumáš.",
+      "enterMoreLabel": "Co tu dělat?",
+      "enter": [
+        {
+          "when": {
+            "notFlags": [
+              "cviciste_vstup"
+            ]
+          },
+          "do": [
+            {
+              "set": "cviciste_vstup"
+            },
+            {
+              "sound": "doorSoft"
+            }
+          ]
+        }
+      ],
+      "_shortcut": "Odkaz pro vyučující ?mistnost=cviciste: hra začne rovnou tady a hráč dostane kalkulačku ze skladu.",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš rovnou na nočním cvičišti (Brána III). Kalkulačku ze skladu máš u sebe."
+        }
+      ],
+      "startView": "stul",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "nositka_hotovo"
+            ]
+          },
+          "text": "Nosítka v ošetřovně nejsou k ležení, ale k počítání: posuň figurínu a dívej se, komu rostou newtony. Osa je u rukou toho vzadu."
+        },
+        {
+          "when": {
+            "flags": [
+              "nositka_hotovo"
+            ],
+            "notFlags": [
+              "noktovizor_vzat"
+            ]
+          },
+          "text": "Přilba bez noktovizoru nic netáhne dopředu. Noktovizor je tam, kde je výstroj na noční cvičení – v bedně v ošetřovně."
+        },
+        {
+          "when": {
+            "flags": [
+              "noktovizor_vzat"
+            ],
+            "notFlags": [
+              "prilba_hotovo"
+            ]
+          },
+          "text": "U stojanu: co je před osou, táhne hlavu dopředu; co je za ní, dozadu. Čím dál od osy, tím míň toho stačí. Plakát to má napsané."
+        },
+        {
+          "when": {
+            "notFlags": [
+              "svah_hotovo"
+            ]
+          },
+          "text": "Mapa na stole: převýšení je u všech tří tras stejné, takže práce proti tíze taky. Liší se čas. A rozkaz na kolíčku říká, kolik ho máš."
+        },
+        {
+          "when": {
+            "flags": [
+              "nositka_hotovo",
+              "prilba_hotovo",
+              "svah_hotovo"
+            ],
+            "notFlags": [
+              "brana_cviciste_otevrena"
+            ]
+          },
+          "text": "Číselník u brány se ptá jen na to, co jsi tu dělal. Čísla má jiná než stanoviště – vzorec je stejný. Zápisník ti připomene, co jsi už spočítal."
+        },
+        {
+          "text": "Noc je dlouhá a já mám čas. Ty míň: projdi stanoviště znovu – nosítka, přilba, mapa – a pak k číselníku u brány."
+        }
+      ],
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_pac": 80,
+          "v_pac_x": 1.3,
+          "v_L": 2.2,
+          "v_nvg": 0.7,
+          "v_dn": 12,
+          "v_dc": 15,
+          "v_hm": 75,
+          "v_vys": 25,
+          "v_h0": 420,
+          "v_h1": 720
+        },
+        {
+          "_sada": "B",
+          "v_pac": 75,
+          "v_pac_x": 1.2,
+          "v_L": 2.0,
+          "v_nvg": 0.6,
+          "v_dn": 15,
+          "v_dc": 12,
+          "v_hm": 80,
+          "v_vys": 20,
+          "v_h0": 380,
+          "v_h1": 700
+        },
+        {
+          "_sada": "C",
+          "v_pac": 90,
+          "v_pac_x": 1.4,
+          "v_L": 2.4,
+          "v_nvg": 0.8,
+          "v_dn": 10,
+          "v_dc": 16,
+          "v_hm": 70,
+          "v_vys": 30,
+          "v_h0": 450,
+          "v_h1": 720
+        }
+      ],
+      "activities": {
+        "nositka": {
+          "type": "stretcher",
+          "title": "Nosítka – kdo nese víc?",
+          "intro": "Raněného nesou dva lidé. Nosítka jsou páka: osa je u rukou zadního nosiče, přední nosič drží druhý konec. Čím blíž k němu je těžiště raněného, tím víc nese. Posuň figurínu po nosítkách a sleduj síly.",
+          "lengthM": 2.4,
+          "patientKg": 80,
+          "stretcherKg": 9,
+          "patientHeightM": 1.8,
+          "comFrac": 0.56,
+          "xMin": 0.85,
+          "xMax": 1.55,
+          "xStart": 1.31,
+          "carriers": {
+            "front": "přední (ty)",
+            "rear": "zadní (Doubek)"
+          },
+          "rounds": [
+            {
+              "name": "Oba stejně",
+              "var": "nositka_stejne",
+              "goal": "equal",
+              "tolN": 20,
+              "text": "Nejdřív férově: posuň raněného tak, aby přední i zadní nosič nesli stejně. Všimni si, kde leží teď – uprostřed nosítek, a přesto přední nese víc.",
+              "fail": "Přední nese {front} N, zadní {rear} N – rozdíl {diff} N. Posuň raněného k tomu, kdo nese míň.",
+              "success": "Stejně: každý {front} N (asi {frontKg:1} kg). Těžiště raněného je přesně uprostřed mezi rukama – proto leží posunutý k nohám: těžiště má člověk blíž k hlavě."
+            },
+            {
+              "name": "Doubkovo rameno",
+              "var": "nositka",
+              "goal": "rearMax",
+              "rearMaxN": 370,
+              "text": "Doubek vzadu udrží poraněným ramenem jen asi 370 N (37 kg). Posuň raněného tak, aby zadní nosič nesl nejvýš 370 N – zbytek vezmeš ty vpředu.",
+              "fail": "Zadní nosič nese {rear} N – to Doubkovo rameno nevydrží (nejvýš 370 N). Posuň raněného dál dopředu, k tobě.",
+              "success": "Doubek nese {rear} N, ty {front} N. Posunutí o pár desítek centimetrů přehodilo desítky newtonů – u páky rozhoduje vzdálenost od osy. Kdyby raněný ležel hlavou k Doubkovi, bylo by to naopak."
+            }
+          ],
+          "done": [
+            {
+              "set": "nositka_hotovo"
+            },
+            {
+              "note": "Nosítka: kdo je blíž těžišti raněného, nese víc (momenty kolem rukou druhého nosiče: F · L = m · g · x). Oba stejně = raněný posunutý k nohám. Doubek vzadu nejvýš 370 N → přední nosič {nositka_predni} N, zadní {nositka_zadni} N.",
+              "noteKey": "nositka"
+            }
+          ]
+        },
+        "prilba": {
+          "type": "helmet",
+          "title": "Přilba s noktovizorem",
+          "intro": "Noktovizor sedí 12 cm před osou otáčení hlavy (kloub mezi lebkou a prvním krčním obratlem) a táhne ji dopředu. Celou noc by to musely držet šíjové svaly. Vyvaž ho protizávažím na zadku přilby: nastav hmotnost a vzdálenost od osy.",
+          "nvgKg": 0.7,
+          "nvgCm": 12,
+          "muscleArmCm": 5,
+          "headKg": 4.5,
+          "helmetKg": 1.4,
+          "dcMin": 5,
+          "dcMax": 15,
+          "massMax": 1.5,
+          "massStep": 0.05,
+          "toleranceNm": 0.05,
+          "rounds": [
+            {
+              "name": "Váček na 10 cm",
+              "var": "prilba_pevne",
+              "dc": 10,
+              "goal": "balance",
+              "text": "Váček je připnutý 10 cm za osou. Najdi hmotnost, při které šíje nic nedrží.",
+              "success": "Vyváženo: {mc:2} kg na 10 cm. Bez protizávaží by šíje držela {f0} N – ne moc, ale celou noc, v každé poloze hlavy."
+            },
+            {
+              "name": "Co nejlehčí",
+              "var": "prilba",
+              "dcStart": 8,
+              "goal": "lightest",
+              "text": "Každý gram navíc nese krční páteř. Najdi nejlehčí protizávaží, které hlavu vyváží – váček můžeš posunout až na 15 cm.",
+              "success": "Nejlehčí řešení: {mc:2} kg na {dc} cm. Stejný moment, méně hmoty – proto se protizávaží dává co nejdál dozadu. Krk teď nese celkem {total:2} kg."
+            }
+          ],
+          "done": [
+            {
+              "set": "prilba_hotovo"
+            },
+            {
+              "note": "Přilba: noktovizor 0,7 kg 12 cm před osou = moment 0,82 N·m; protizávaží vyváží, když má stejné m · d – nejlehčí {prilba_kg:2} kg na {prilba_cm} cm. Bez něj drží šíje {prilba_f0} N.",
+              "noteKey": "prilba"
+            }
+          ]
+        },
+        "svah": {
+          "type": "slope",
+          "title": "Mapa se svahem – výstup na stanoviště",
+          "intro": "Hlídka (voják 70 kg s výstrojí 20 kg) má vystoupat z tábora (400 m n. m.) na stanoviště (680 m). Klikni na trasu, nastav tempo a sleduj práci, čas a výkon.",
+          "soldierKg": 70,
+          "gearKg": 20,
+          "h0": 400,
+          "h1": 680,
+          "contourStep": 40,
+          "tempoMin": 1,
+          "tempoStart": 3,
+          "startName": "Tábor",
+          "goalName": "Stanoviště",
+          "routes": [
+            {
+              "id": "A",
+              "name": "spádnicí",
+              "lengthM": 560,
+              "maxKmh": 2.5,
+              "shape": "direct",
+              "labelAt": 0.45
+            },
+            {
+              "id": "B",
+              "name": "serpentinami",
+              "lengthM": 1400,
+              "maxKmh": 4.5,
+              "shape": "zigzag",
+              "turns": 7,
+              "labelAt": 0.3
+            },
+            {
+              "id": "C",
+              "name": "po silnici kolem",
+              "lengthM": 2400,
+              "maxKmh": 5.5,
+              "shape": "spiral",
+              "turnDeg": 300,
+              "labelAt": 0.35
+            }
+          ],
+          "question": {
+            "text": "Nejdřív otázka: na které trase vykoná hlídka nejvíc práce proti tíze?",
+            "options": [
+              "A – spádnicí, je nejstrmější",
+              "B – serpentinami",
+              "C – po silnici kolem, je nejdelší",
+              "Na všech stejně"
+            ],
+            "correct": 3,
+            "feedback": {
+              "0": "Strmá trasa je náročnější na každý krok, ale práce proti tíze je m · g · Δh – a převýšení je stejné. Porovnej u tras řádek „Práce proti tíze“.",
+              "1": "Serpentiny nic nešetří ani nepřidávají: práce proti tíze závisí jen na převýšení.",
+              "2": "Delší cesta znamená víc kroků, ne víc práce proti tíze – ta závisí jen na výšce, o kterou zvedneš sám sebe."
+            },
+            "success": "Správně – 247 kJ kudykoli. Práce proti tíze závisí jen na převýšení. Trasy se liší v tom, jak rychle ji dokážeš odvést."
+          },
+          "mission": {
+            "text": "Rozkaz: být na stanovišti do 20 minut a dorazit bojeschopní – výkon proti tíze nejvýš 300 W. Vyber trasu a tempo a vyraz.",
+            "maxMin": 20,
+            "maxW": 300,
+            "goLabel": "Vyrazit",
+            "failTime": "Po trase {id} tempem {tempo:1} km/h to trvá {t:1} min – pozdě. Rozkaz zní do {maxMin} min.",
+            "failPower": "Za {t:1} min nahoře, jenže s výkonem {P} W – hlídka dorazí uřícená. Nejvýš {maxW} W: zpomal, nebo vyber jinou trasu.",
+            "success": "Splněno: trasa {id} – {name}, {t:1} min, {P} W. Práce byla stejná jako kudykoli jinudy ({W:0} kJ); lišil se čas, a tedy výkon – a na svahu i síla, kterou v každém kroku překonáváš ({fPar} N podél svahu)."
+          },
+          "done": [
+            {
+              "set": "svah_hotovo"
+            },
+            {
+              "text": "Hlídka vyrazila. Práce proti tíze byla stejná kudykoli – rozhodl čas.",
+              "more": "Tělo na výstup spálí asi čtyřikrát víc energie, než je práce proti tíze – zbytek odejde jako teplo (účinnost svalů je kolem 25 %). A každý krok něco stojí, i po rovině, takže delší trasa přidá energii za kroky navíc. Proto se v terénu neřídíme jen prací proti tíze, ale i časem, svahem a tím, v jakém stavu má hlídka dorazit.",
+              "moreLabel": "Proč je to ve skutečnosti víc?"
+            },
+            {
+              "note": "Výstup: práce proti tíze W = m · g · Δh = 90 · 9,81 · 280 = {svah_W:1} kJ kudykoli. Trasa {svah_trasa}: {svah_delka} m, sklon {svah_sklon}°, tempo {svah_tempo:1} km/h → {svah_t:1} min, výkon {svah_P} W.",
+              "noteKey": "svah"
+            }
+          ]
+        }
+      },
+      "views": {
+        "stan": {
+          "name": "Polní ošetřovna",
+          "background": "assets/rooms/cviciste_stan.webp",
+          "_obrazek": "Zástupná kresba (SVG → WebP). Zadání pro autora: docs/zadani-obrazku-cviciste.md.",
+          "darkness": 0.6,
+          "left": "brana",
+          "right": "stul",
+          "enterText": "Stan polní ošetřovny s rozsvícenou petrolejkou. Na nosítkách leží cvičná figurína raněného, na bedně sedí rtn. Doubek s rukou v šátku.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 17,
+              "radius": 26,
+              "strength": 0.6,
+              "flicker": true
+            },
+            {
+              "x": 46,
+              "y": 60,
+              "radius": 22,
+              "strength": 0.3
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "lampa",
+              "name": "Petrolejka",
+              "area": [
+                46.1,
+                5.3,
+                8.1,
+                22.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Petrolejka na háku. Plamen se chvěje v průvanu od vchodu a stíny nosítek se s ním houpou po plachtě."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "radio",
+              "name": "Radiostanice",
+              "area": [
+                81.9,
+                14.9,
+                14.4,
+                19.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "termTick"
+                    },
+                    {
+                      "text": "Polní radiostanice šumí. Stiskneš tlačítko: „Tady komise. Doubku, kde je hlášení?… Cože, raněný? Tak ať ho nese někdo, kdo umí počítat. Konec.“",
+                      "more": "Radiostanice váží 3 kg a nosí se na zádech co nejblíž k tělu – blízko těžiště, aby nezvětšovala moment v bedrech. Stejná myšlenka jako u batohu ve skladu: břemeno blízko osy, malý moment.",
+                      "moreLabel": "Proč se nosí na zádech?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "nositka",
+              "name": "Nosítka s raněným",
+              "area": [
+                16.1,
+                48.9,
+                59.5,
+                24.4
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "nositka_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Chceš si nošení raněného zkusit znovu?"
+                    },
+                    {
+                      "activity": "nositka"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Polní nosítka, na nich cvičná figurína „raněný“: 80 kg, 180 cm. Cedulka: TĚŽIŠTĚ 56 % VÝŠKY OD CHODIDEL. Vzadu má nést Doubek, vpředu ty."
+                    },
+                    {
+                      "activity": "nositka"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "doubek",
+              "name": "Rtn. Doubek",
+              "area": [
+                76.6,
+                35.1,
+                17.3,
+                51.0
+              ],
+              "click": [
+                {
+                  "when": {
+                    "notFlags": [
+                      "doubek_cviciste"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "set": "doubek_cviciste"
+                    },
+                    {
+                      "text": "Doubek si drží levé rameno v šátku. „Svalovec. Úder shora, přesně jak jste říkal, že přijde. Já se díval na kop.“ Kývne k nosítkám: „Já vzadu, vy vpředu. Jenom… rameno mi drží tak sedmatřicet kilo. Víc ne. Narovnejte ho tam tak, abych nesl míň než vy.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "nositka_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "„Vidíte,“ říká Doubek, „pár centimetrů a nesu o dvacet kilo míň. To si zapamatuju. Hlavně až mě ponesou.“"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "„Těžiště má člověk blíž k hlavě než k nohám,“ mumlá Doubek. „Tak ho otočte hlavou od mě. A posuňte.“ To už je skoro nápověda, ale nemůžeš mu ji mít za zlé."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "bedna",
+              "name": "Bedna s výstrojí",
+              "area": [
+                6.0,
+                67.0,
+                21.5,
+                25.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "notFlags": [
+                      "noktovizor_vzat"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "set": "noktovizor_vzat"
+                    },
+                    {
+                      "sound": "pickup"
+                    },
+                    {
+                      "text": "Dřevěná bedna VÝSTROJ – NOČNÍ CVIČENÍ. Uvnitř noktovizor s držákem na přilbu a štítek: 0,7 kg. Bereš ho."
+                    },
+                    {
+                      "give": "noktovizor"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Bedna je prázdná – noktovizor máš u sebe. Patří na přilbu u stojanu."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "stul": {
+          "name": "Polní stůl s mapou",
+          "background": "assets/rooms/cviciste_stul.webp",
+          "_obrazek": "Zástupná kresba (SVG → WebP). Zadání pro autora: docs/zadani-obrazku-cviciste.md.",
+          "darkness": 0.6,
+          "left": "stan",
+          "right": "stojan",
+          "enterText": "Pod napnutou plachtou stojí polní stůl: mapa s vrstevnicemi přitížená buzolou, lampa a rozkaz na kolíčku. Za plachtou šumí noc a na kopci bliká světlo stanoviště.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 20,
+              "radius": 24,
+              "strength": 0.6
+            },
+            {
+              "x": 44,
+              "y": 70,
+              "radius": 24,
+              "strength": 0.3
+            },
+            {
+              "x": 92,
+              "y": 23,
+              "radius": 4,
+              "strength": 0.35,
+              "flicker": true
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "lampa",
+              "name": "Lampa",
+              "area": [
+                46.1,
+                11.7,
+                8.1,
+                21.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Petrolejová lampa na háku plachty. Kolem ní krouží můry."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mapa",
+              "name": "Mapa s vrstevnicemi",
+              "area": [
+                24.5,
+                58.4,
+                38.9,
+                27.6
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "svah_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Chceš výstup naplánovat znovu?"
+                    },
+                    {
+                      "activity": "svah"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Mapa cvičiště a kopce nad ním. Tábor 400 m n. m., stanoviště na vrcholu 680 m. Tužkou tři trasy: A spádnicí, B serpentinami, C po silnici kolem. Na okraji docentovou rukou: „Vrstevnice nelžou. – D.“"
+                    },
+                    {
+                      "activity": "svah"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "buzola",
+              "name": "Buzola a měřítko",
+              "area": [
+                57.7,
+                60.0,
+                6.6,
+                11.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Buzola drží mapu proti větru, střelka míří k severu – na mapě nahoru. Vedle měřítko: 1 : 10 000, jeden centimetr na mapě je sto metrů v terénu. Vrstevnice jsou po 40 metrech – kde se tisknou k sobě, je svah strmý."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rozkaz",
+              "name": "Rozkaz",
+              "area": [
+                69.4,
+                30.8,
+                11.4,
+                25.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "ROZKAZ č. 3 – NOČNÍ CVIČENÍ\n\nHlídka (voják 70 kg, výstroj 20 kg)\nvystoupá z tábora (400 m n. m.)\nna stanoviště na kótě 680.\n\nČas: nejpozději do 20 minut\nod vyražení.\n\nHlídka musí dorazit bojeschopná:\nvýkon proti tíze nejvýš 300 W.\n\nTrasu zvolí velitel hlídky.\n– D.",
+                        "font": "type",
+                        "caption": "Rozkaz na kolíčku"
+                      }
+                    },
+                    {
+                      "note": "Rozkaz: na stanoviště do 20 min, výkon proti tíze nejvýš 300 W, trasu vybrat na mapě.",
+                      "noteKey": "rozkaz"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "stojan": {
+          "name": "Stojan s přilbami",
+          "background": "assets/rooms/cviciste_stojan.webp",
+          "_obrazek": "Zástupná kresba (SVG → WebP). Zadání pro autora: docs/zadani-obrazku-cviciste.md.",
+          "darkness": 0.6,
+          "left": "stul",
+          "right": "brana",
+          "enterText": "Dřevěný stojan s přilbami a na tabuli plakát POLNÍ PŘILBA A NOKTOVIZOR. Na háčcích visí plátěné váčky s broky – protizávaží.",
+          "lights": [
+            {
+              "x": 22,
+              "y": 22,
+              "radius": 24,
+              "strength": 0.55,
+              "flicker": true
+            },
+            {
+              "x": 72,
+              "y": 40,
+              "radius": 20,
+              "strength": 0.3
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "stojan",
+              "name": "Stojan",
+              "area": [
+                16.1,
+                30.8,
+                38.3,
+                64.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na kolících visí další přilby – bez noktovizoru. Ty netáhnou nikam: jejich těžiště sedí nad osou hlavy."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "prilba",
+              "name": "Přilba s držákem",
+              "area": [
+                29.3,
+                37.2,
+                15.6,
+                25.5
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "prilba_hotovo"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Chceš protizávaží nastavit znovu?"
+                    },
+                    {
+                      "activity": "prilba"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "items": [
+                      "noktovizor"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Nasadíš noktovizor na držák přilby. Hlava s ním hned padá dopředu…"
+                    },
+                    {
+                      "activity": "prilba"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Přilba s prázdným držákem vpředu – noktovizor chybí. Výstroj na noční cvičení bývá v bedně v ošetřovně."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vacky",
+              "name": "Váčky s protizávažím",
+              "area": [
+                44.6,
+                56.3,
+                11.1,
+                27.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plátěné váčky s broky po 50 gramech a suchý zip – dají se nastavit na libovolnou hmotnost a připnout na zadek přilby, 5 až 15 cm za osou otáčení hlavy."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plakat",
+              "name": "Plakát",
+              "area": [
+                59.2,
+                20.2,
+                25.1,
+                46.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "sound": "paper"
+                    },
+                    {
+                      "closeup": {
+                        "note": "POLNÍ PŘILBA A NOKTOVIZOR\n\nHlava se otáčí v kloubu mezi lebkou\na prvním krčním obratlem (atlas).\n\nCo je před kloubem, táhne hlavu dopředu;\ndrží to šíjové svaly.\nMoment = hmotnost × vzdálenost od osy.\n\nProtizávaží vzadu vyváží, když\nm₁ · d₁ = m₂ · d₂.\nČím dál od osy, tím lehčí stačí.\n\nKaždý gram navíc nese krční páteř\ncelou noc. – D.",
+                        "font": "type",
+                        "caption": "Plakát u stojanu"
+                      }
+                    },
+                    {
+                      "note": "Plakát: osa otáčení hlavy = kloub lebka–atlas. Moment = hmotnost × vzdálenost od osy; protizávaží vyváží, když m₁ · d₁ = m₂ · d₂ (dál od osy = lehčí).",
+                      "noteKey": "plakat_prilba"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "brana": {
+          "name": "Brána cvičiště",
+          "background": "assets/rooms/cviciste_brana.webp",
+          "_obrazek": "Zástupná kresba (SVG → WebP); otevřená brána = vrstva cviciste_brana_otevrena.webp. Zadání pro autora: docs/zadani-obrazku-cviciste.md.",
+          "darkness": 0.6,
+          "left": "stojan",
+          "right": "stan",
+          "enterText": "Plot cvičiště a brána z ocelových trubek, nad ní reflektor. Vedle sloupku číselník, na plotě cedule a směrovka na stanoviště.",
+          "lights": [
+            {
+              "x": 50,
+              "y": 12,
+              "radius": 30,
+              "strength": 0.7
+            },
+            {
+              "x": 50,
+              "y": 62,
+              "radius": 20,
+              "strength": 0.35,
+              "when": {
+                "flags": [
+                  "brana_cviciste_otevrena"
+                ]
+              }
+            }
+          ],
+          "layers": [
+            {
+              "image": "assets/rooms/cviciste_brana_otevrena.webp",
+              "when": {
+                "flags": [
+                  "brana_cviciste_otevrena"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "reflektor",
+              "name": "Reflektor",
+              "area": [
+                44.9,
+                3.2,
+                10.2,
+                21.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Halogenový reflektor 1 000 W nad bránou. Hučí a kolem něj se točí hmyz.",
+                      "more": "Příkon 1 000 W znamená 1 000 J každou sekundu – za hodinu 3,6 MJ. Tolik je práce proti tíze pro skoro patnáct výstupů hlídky z tábora na stanoviště (asi 247 kJ každý). A to svítí jen na bránu.",
+                      "moreLabel": "Kolik to je?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "cedule",
+              "name": "Cedule",
+              "area": [
+                14.4,
+                39.3,
+                17.3,
+                17.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Smaltovaná cedule: CVIČIŠTĚ – VSTUP JEN S PŘILBOU. Pod ní tužkou: „A s rozumem. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "smerovka",
+              "name": "Směrovka",
+              "area": [
+                76.0,
+                30.8,
+                15.0,
+                51.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Směrovka na sloupku: STANOVIŠTĚ – KÓTA 680. Pod ní někdo připsal: „Nahoru musíš zvednout sám sebe. Kudy, to je na tobě.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ciselnik",
+              "name": "Číselník",
+              "area": [
+                66.9,
+                48.4,
+                4.8,
+                12.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_cviciste_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Číselník svítí zeleně: BRÁNA III OTEVŘENA."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "brana_cviciste",
+              "name": "Brána",
+              "area": [
+                33.2,
+                34.0,
+                33.5,
+                54.2
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_cviciste_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Brána je otevřená. Za ní stoupá cesta ke stanovišti – a dál, k další bráně."
+                    },
+                    {
+                      "leave": true
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Brána III z ocelových trubek, zamčená. Vedle sloupku svítí číselník."
+                    },
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "gate": {
+        "title": "Brána cvičiště – Brána III",
+        "openFlag": "brana_cviciste_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku svítí: „Raněný {v_pac} kg leží na lehkých nosítkách (jejich hmotnost zanedbej). Jeho těžiště je {v_pac_x:2} m od rukou zadního nosiče, ruce nosičů jsou od sebe {v_L:2} m. Jakou silou drží přední nosič? Zadej v newtonech.“",
+            "unit": "N",
+            "requiresVars": [
+              "nositka_predni"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV NOSÍTKA. Ošetřovna je ve stanu.",
+            "answer": "v_pac*9.81*v_pac_x/v_L",
+            "toleranceRel": 0.03,
+            "feedbackFormulas": [
+              {
+                "value": "v_pac*9.81",
+                "text": "To je celá tíha raněného. Přední nosič nese jen část – zbytek drží zadní."
+              },
+              {
+                "value": "v_pac*9.81/2",
+                "text": "Polovina by platila, jen kdyby těžiště leželo přesně uprostřed. Tady je {v_pac_x:2} m od zadních rukou z {v_L:2} m."
+              },
+              {
+                "value": "v_pac*v_pac_x/v_L",
+                "text": "Správně – ale v kilogramech. Číselník chce newtony: vynásob 9,81."
+              },
+              {
+                "value": "v_pac*9.81*(v_L-v_pac_x)/v_L",
+                "text": "To nese zadní nosič. Přední drží moment těžiště kolem zadních rukou: F = m · g · x / L."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Je to páka s osou u rukou zadního nosiče – jako u nosítek v ošetřovně.",
+              "F · L = m · g · x, tedy F = m · g · x / L.",
+              "{v_pac} · 9,81 · {v_pac_x:2} / {v_L:2} ≈ {=v_pac*9.81*v_pac_x/v_L:0} N."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Noktovizor {v_nvg:1} kg sedí {v_dn} cm před osou otáčení hlavy. Protizávaží může být nejdál {v_dc} cm za ní. Kolik má vážit, aby šíje v noci nic nedržela? Zadej v kilogramech.“",
+            "unit": "kg",
+            "requiresVars": [
+              "prilba_kg"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV PŘILBA. Stojan s přilbami je vedle stolu.",
+            "answer": "v_nvg*v_dn/v_dc",
+            "tolerance": 0.02,
+            "feedbackFormulas": [
+              {
+                "value": "v_nvg",
+                "tolerance": 0.005,
+                "text": "Stejná hmotnost by stačila jen ve stejné vzdálenosti od osy. Protizávaží je dál, takže ho stačí méně."
+              },
+              {
+                "value": "v_nvg*v_dc/v_dn",
+                "text": "Prohozené vzdálenosti. Dál od osy stačí méně hmoty: m₂ = m₁ · d₁ / d₂."
+              },
+              {
+                "value": "v_nvg*v_dn",
+                "text": "To je moment v kg·cm. Ještě ho vyděl vzdáleností protizávaží {v_dc} cm."
+              },
+              {
+                "value": "v_nvg*9.81*v_dn/v_dc",
+                "text": "Vynásobil jsi 9,81 – g je v rovnováze momentů na obou stranách, vykrátí se. Číselník chce kilogramy."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Rovnováha momentů: m₁ · d₁ = m₂ · d₂ (g je na obou stranách, vykrátí se).",
+              "m₂ = m₁ · d₁ / d₂.",
+              "{v_nvg:1} · {v_dn} / {v_dc} ≈ {=v_nvg*v_dn/v_dc:2} kg."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Hlídka – voják {v_hm} kg s výstrojí {v_vys} kg – vystoupá z {v_h0} na {v_h1} m n. m. Kolik práce proti tíze vykoná, ať jde kudykoli? Zadej v kilojoulech.“",
+            "unit": "kJ",
+            "requiresVars": [
+              "svah_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV MAPA. Polní stůl je pod plachtou.",
+            "answer": "(v_hm+v_vys)*9.81*(v_h1-v_h0)/1000",
+            "toleranceRel": 0.03,
+            "feedbackFormulas": [
+              {
+                "value": "(v_hm+v_vys)*9.81*(v_h1-v_h0)",
+                "text": "Správně – ale v joulech. Číselník chce kilojouly: vyděl tisícem."
+              },
+              {
+                "value": "v_hm*9.81*(v_h1-v_h0)/1000",
+                "text": "Voják nezvedá jen sebe, ale i výstroj {v_vys} kg. Počítej s celou hmotností."
+              },
+              {
+                "value": "(v_hm+v_vys)*(v_h1-v_h0)/1000",
+                "text": "Chybí g: práce proti tíze je m · g · Δh."
+              },
+              {
+                "value": "(v_hm+v_vys)*9.81*v_h1/1000",
+                "text": "Počítáš s nadmořskou výškou stanoviště. Hlídka stoupá jen o rozdíl výšek {v_h1} − {v_h0} m."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Záleží jen na převýšení – jako u všech tří tras na mapě.",
+              "W = m · g · Δh, m je voják i s výstrojí.",
+              "({v_hm} + {v_vys}) · 9,81 · ({v_h1} − {v_h0}) ≈ {=(v_hm+v_vys)*9.81*(v_h1-v_h0):0} J, tedy asi {=(v_hm+v_vys)*9.81*(v_h1-v_h0)/1000:0} kJ."
+            ],
+            "success": "Zelená! Poslední otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Dvě hlídky vystoupaly na stejné stanoviště: první strmou pěšinou za 15 minut, druhá serpentinami za 25 minut. Co platí?“",
+            "options": [
+              "Obě vykonaly stejnou práci proti tíze; první měla vyšší výkon",
+              "První vykonala víc práce – strmý svah je těžší",
+              "Druhá vykonala víc práce – šla delší cestu",
+              "Nedá se rozhodnout bez délky tras"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "Strmý svah znamená větší sílu v každém kroku a vyšší výkon, ne větší práci proti tíze – ta je m · g · Δh.",
+              "2": "Delší cesta = víc kroků, ale stejné převýšení, tedy stejná práce proti tíze.",
+              "3": "Délky tras nepotřebuješ: práce proti tíze závisí jen na převýšení, výkon na čase."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na mapu: řádek „Práce proti tíze“ byl u všech tras stejný.",
+              "Výkon = práce / čas.",
+              "Stejná práce, kratší čas → vyšší výkon."
+            ],
+            "success": "Zelená!"
+          }
+        ],
+        "open": [
+          {
+            "denik": "cviciste"
+          },
+          {
+            "sound": "levelUp"
+          },
+          {
+            "text": "Číselník zapípal, reflektor nad bránou zhasl a zase naskočil. Brána se odjistila – za ní stoupá cesta ke stanovišti."
+          },
+          {
+            "note": "BRÁNA III: u páky rozhoduje vzdálenost od osy – kdo je blíž těžišti raněného, nese víc; protizávaží vyváží noktovizor, když má stejné m · d (dál od osy = lehčí); práce proti tíze W = m · g · Δh nezáleží na cestě – cesta mění čas a výkon.",
+            "noteKey": "brana3"
+          }
+        ]
       }
     }
   },

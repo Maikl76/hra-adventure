@@ -807,9 +807,9 @@
         const keys = (r.variants || []).map((v) => Object.keys(v).sort().join(','));
         if (keys.some((k) => k !== keys[0])) problems.push(`Místnost „${roomId}“: sady čísel nemají stejné klíče.`);
       }
-      // bouřka venku: místo musí být okno, budova nebo sklep
+      // bouřka venku: místo musí být okno, budova, sklep nebo venku
       for (const [roomId, r] of Object.entries(d.rooms)) {
-        if (r.storm && !['okno', 'budova', 'sklep'].includes(r.storm.place)) problems.push(`Místnost „${roomId}“: storm.place má být okno, budova nebo sklep.`);
+        if (r.storm && !['okno', 'budova', 'sklep', 'venku'].includes(r.storm.place)) problems.push(`Místnost „${roomId}“: storm.place má být okno, budova, sklep nebo venku.`);
       }
       // chodby „z vlastních očí“: mapa, start, textury, objekty na zdech
       for (const [roomId, r] of Object.entries(d.rooms)) {
