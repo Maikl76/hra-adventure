@@ -899,7 +899,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.26');
+      const mod = await import('./chodba.js?v=0.27');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1110,7 +1110,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.26');
+        const mod = await import('./chodba3d.js?v=0.27');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1910,7 +1910,7 @@
         }
       };
 
-      import('./basket.js?v=0.26').then((mod) => {
+      import('./basket.js?v=0.27').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2533,7 +2533,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.26');
+          const mod = await import('./squats.js?v=0.27');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3395,7 +3395,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.26');
+          const mod = await import('./skok.js?v=0.27');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3773,7 +3773,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.26');
+          const mod = await import('./goblet.js?v=0.27');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4503,7 +4503,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.26');
+          const mod = await import('./predklon.js?v=0.27');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4602,7 +4602,7 @@
       const found = diaryFoundSet();
       const h3 = document.createElement('h3');
       h3.className = 'notes-sub';
-      h3.textContent = `Deník docenta D. (${found.size} z ${diaryTotal()})`;
+      h3.textContent = `Deník docenta D. (nalezeno stran: ${found.size})`;
       box.appendChild(h3);
       const list = document.createElement('div');
       list.className = 'diary-list';
@@ -4611,7 +4611,8 @@
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'link';
-        b.textContent = `strana ${pg.page}: ${pg.title}`;
+        const place = diaryPlace(pg);
+        b.textContent = `${place.world} ${place.num}: ${pg.title}`;
         b.addEventListener('click', () => openDiaryPage(pg.id));
         list.appendChild(b);
       }
@@ -4630,8 +4631,13 @@
      docentova života. Nalezené stránky se pamatují napříč světy (nastavení prohlížeče), čtou se
      v zápisníku a na mapě bran (Menu, titulní obrazovka). Texty jsou v game.json („diary“). */
   const diaryPages = () => (data.diary || {}).pages || [];
-  const diaryTotal = () => (data.diary || {}).total || diaryPages().length;
   const diaryFoundSet = () => Game.diaryFound(data, game && game.state);
+  /* Číslo stránky v rámci světa a název světa (deník se čísluje po světech). */
+  function diaryPlace(pg) {
+    const same = diaryPages().filter((p) => p.track === pg.track);
+    const track = data.tracks.find((tr) => tr.id === pg.track);
+    return { num: same.indexOf(pg) + 1, world: track ? track.name : '' };
+  }
 
   function openDiaryPage(id, fresh) {
     const pages = diaryPages();
@@ -4644,7 +4650,8 @@
       paper.className = 'paper long diary';
       const num = document.createElement('div');
       num.className = 'diary-num';
-      num.textContent = `strana ${pg.page || idx + 1} z ${diaryTotal()}`;
+      const place = diaryPlace(pg);
+      num.textContent = `${place.world} · strana ${place.num}`;
       const h = document.createElement('div');
       h.className = 'diary-title';
       h.textContent = pg.title;
@@ -4686,12 +4693,12 @@
       heading(box, 'Mapa bran');
       const intro = document.createElement('p');
       intro.className = 'map-intro';
-      intro.textContent = `${diary.mapNote || ''} Deník docenta D.: ${found.size} z ${diaryTotal()} stran.`.trim();
+      intro.textContent = `${diary.mapNote || ''} Deník docenta D.: nalezeno stran ${found.size}.`.trim();
       box.appendChild(intro);
-      box.appendChild(buildMapSvg(pages, found, diary));
+      box.appendChild(buildMapSvg(pages, found));
       const legend = document.createElement('p');
       legend.className = 'map-legend';
-      legend.textContent = 'Zlatá brána = prošlá, se stránkou deníku (klikni). Tmavá = čeká. Přerušovaná = zatím nepřístupná.';
+      legend.textContent = 'Zlatá = prošlá, se stránkou deníku (klikni). Tmavá = čeká. Přerušovaná = zatím nepřístupná. Malé kolečko = chodba mezi branami.';
       box.appendChild(legend);
       const row = document.createElement('div');
       row.className = 'diary-actions';
@@ -4705,9 +4712,10 @@
     });
   }
 
-  /* Schéma budovy: sloupec pro každý svět (brány odspodu nahoru), neznámé brány přerušovaně,
-     nahoře střecha s devátou branou. */
-  function buildMapSvg(pages, found, diary) {
+  /* Mapa: tři světy vedle sebe, v každém devět bran odspodu nahoru (postavené s číslem a jménem,
+     nepostavené přerušovaně), chodby mezi branami jako menší kolečka; nahoře společná střecha,
+     kam vede devátá brána každého světa. */
+  function buildMapSvg(pages, found) {
     const NS = 'http://www.w3.org/2000/svg';
     const el = (tag, attrs, text) => {
       const e = document.createElementNS(NS, tag);
@@ -4715,57 +4723,61 @@
       if (text !== undefined) e.textContent = text;
       return e;
     };
-    const tracks = data.tracks;
-    const cols = tracks.map((tr) => ({ track: tr, nodes: pages.filter((p) => p.track === tr.id).map((p) => ({ page: p })) }));
-    const unknown = Math.max(0, (diary.total || pages.length) - pages.length - 1);
-    for (let i = 0; i < unknown; i++) {
-      const c = cols.reduce((a, b) => (b.nodes.length < a.nodes.length ? b : a));
-      c.nodes.push({ unknown: true });
-    }
+    const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    const GATES = data.meta.totalGates || 9;
+    const cols = data.tracks.map((tr) => {
+      const nodes = [];
+      let gateNo = 0;
+      for (const roomId of tr.rooms) {
+        const room = data.rooms[roomId] || {};
+        const page = pages.find((p) => p.room === roomId);
+        if (room.gate) {
+          gateNo += 1;
+          nodes.push({ kind: 'gate', n: gateNo, room, page, label: room.gateLabel || `Brána ${room.gateNumber || ROMAN[gateNo]}` });
+        } else nodes.push({ kind: 'passage', room, page, label: room.gateLabel || '' });
+      }
+      const sample = tr.rooms.map((r) => data.rooms[r]).find((r) => r && r.gate) || {};
+      const levels = /^LEVEL/i.test(sample.gateLabel || '');
+      for (let n = gateNo + 1; n <= GATES; n++) nodes.push({ kind: 'unknown', n, label: levels ? `LEVEL ${n}` : `Brána ${ROMAN[n]}` });
+      return { track: tr, nodes };
+    });
     const rows = Math.max(...cols.map((c) => c.nodes.length));
-    const W = 720, step = 82, top = 118, bottom = top + rows * step;
-    const H = bottom + 48;
-    const svg = el('svg', { class: 'map-svg', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `Mapa bran: nalezeno ${found.size} z ${diary.total || pages.length} stran deníku` });
-    const colX = (i) => W * (i + 0.5) / cols.length;
-    // budova a střecha
-    svg.appendChild(el('path', { class: 'building', d: `M 24 ${bottom + 14} V 92 L ${W / 2} 22 L ${W - 24} 92 V ${bottom + 14} Z` }));
-    svg.appendChild(el('line', { class: 'link-line', x1: 24, y1: 92, x2: W - 24, y2: 92 }));
-    const roof = diary.roof || {};
-    const roofG = el('g', { class: 'gate roof' });
-    roofG.appendChild(el('circle', { class: 'node unknown', cx: W / 2, cy: 56, r: 20 }));
-    roofG.appendChild(el('text', { class: 'num', x: W / 2, y: 56 }, roof.label || 'IX'));
-    roofG.appendChild(el('text', { class: 'label', x: W / 2 + 30, y: 52 }, roof.title || 'Střecha'));
-    roofG.appendChild(el('text', { class: 'small', x: W / 2 + 30, y: 68 }, roof.note || ''));
-    svg.appendChild(roofG);
+    const colW = 236, W = colW * cols.length + 16, step = 50, top = 96, bottom = top + rows * step, H = bottom + 44;
+    const svg = el('svg', { class: 'map-svg', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `Mapa bran: každý svět má ${GATES} bran, nalezeno ${found.size} stran deníku` });
+    // střecha
+    svg.appendChild(el('path', { class: 'building', d: `M 8 ${bottom + 14} V 70 L ${W / 2} 16 L ${W - 8} 70 V ${bottom + 14} Z` }));
+    svg.appendChild(el('line', { class: 'link-line', x1: 8, y1: 70, x2: W - 8, y2: 70 }));
+    svg.appendChild(el('text', { class: 'label', x: W / 2, y: 46, 'text-anchor': 'middle' }, 'Střecha'));
+    svg.appendChild(el('text', { class: 'small', x: W / 2, y: 61, 'text-anchor': 'middle' }, 'devátá brána každého světa vede nahoru'));
     cols.forEach((c, ci) => {
-      const x = colX(ci);   // popisky pod bránou, na střed sloupce
-      // spojnice: zdola nahoru a dál ke střeše
-      svg.appendChild(el('line', { class: 'link-line', x1: x, y1: bottom - step / 2, x2: x, y2: 92 }));
-      svg.appendChild(el('line', { class: 'link-line', x1: x, y1: 92, x2: W / 2, y2: 76 }));
-      svg.appendChild(el('text', { class: 'world', x, y: bottom + 36, 'text-anchor': 'middle' }, c.track.name));
+      const x0 = 8 + ci * colW;
+      const nx = x0 + 32;
+      svg.appendChild(el('line', { class: 'link-line', x1: nx, y1: bottom - step / 2, x2: nx, y2: 70 }));
+      svg.appendChild(el('text', { class: 'world', x: x0 + colW / 2, y: bottom + 34, 'text-anchor': 'middle' }, c.track.name));
       c.nodes.forEach((n, ri) => {
         const y = bottom - step / 2 - ri * step;
         const g = el('g', { class: 'gate' });
-        if (n.unknown) {
-          g.appendChild(el('circle', { class: 'node unknown', cx: x, cy: y, r: 18 }));
-          g.appendChild(el('text', { class: 'num', x, y }, '?'));
-          g.appendChild(el('text', { class: 'small', x, y: y + 34, 'text-anchor': 'middle' }, 'zatím nepřístupná'));
+        const lit = Boolean(n.page && found.has(n.page.id));
+        if (n.kind === 'unknown') {
+          g.appendChild(el('circle', { class: 'node unknown', cx: nx, cy: y, r: 15 }));
+          g.appendChild(el('text', { class: `num${ROMAN[n.n].length > 3 ? ' tight' : ''}`, x: nx, y }, ROMAN[n.n]));
+          g.appendChild(el('text', { class: 'label dim', x: nx + 24, y: y + 1 }, n.label));
+          g.appendChild(el('text', { class: 'small', x: nx + 24, y: y + 15 }, 'zatím nepřístupná'));
         } else {
-          const lit = found.has(n.page.id);
-          const room = data.rooms[n.page.room] || {};
-          const circle = el('circle', { class: `node${lit ? ' lit' : ''}`, cx: x, cy: y, r: 18 });
+          const name = (n.page && n.page.short) || n.room.name || '';
+          const r = n.kind === 'gate' ? 15 : 9;
+          const circle = el('circle', { class: `node${lit ? ' lit' : ''}${n.kind === 'passage' ? ' passage' : ''}`, cx: nx, cy: y, r });
           if (lit) {
             circle.setAttribute('tabindex', '0');
             circle.setAttribute('role', 'button');
-            circle.setAttribute('aria-label', `Deník, strana ${n.page.page}: ${n.page.title}`);
+            circle.setAttribute('aria-label', `Deník: ${n.page.title}`);
             circle.addEventListener('click', () => openDiaryPage(n.page.id));
             circle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDiaryPage(n.page.id); } });
           }
           g.appendChild(circle);
-          g.appendChild(el('text', { class: 'num', x, y }, String(n.page.page)));
-          const name = n.page.short || room.name || '';
-          g.appendChild(el('text', { class: 'label', x, y: y + 34, 'text-anchor': 'middle' }, n.page.gate ? `${n.page.gate} · ${name}` : name));
-          g.appendChild(el('text', { class: 'small', x, y: y + 49, 'text-anchor': 'middle' }, lit ? `deník: ${n.page.title}` : 'stránka deníku čeká'));
+          if (n.kind === 'gate') g.appendChild(el('text', { class: `num${ROMAN[n.n].length > 3 ? ' tight' : ''}`, x: nx, y }, ROMAN[n.n]));
+          g.appendChild(el('text', { class: n.kind === 'gate' ? 'label' : 'label dim', x: nx + 24, y: y + 1 }, n.label ? `${n.label} · ${name}` : name));
+          g.appendChild(el('text', { class: 'small', x: nx + 24, y: y + 15 }, lit ? `deník: ${n.page.title}` : n.page ? 'stránka deníku čeká' : ''));
         }
         svg.appendChild(g);
       });

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.26 – ukázka",
+    "version": "0.27 – ukázka",
     "totalGates": 9
   },
 
@@ -23,18 +23,11 @@
   },
 
   "diary": {
-    "_poznamka": "Deník docenta D. (příběh, autor schválil 21. 10. 2026): za každou branou a na konci chodeb jedna stránka – lekce jednou větou a kousek docentova života. Účinek {\"denik\": \"<id>\"} v open brány / zámku (3D chodba: po porážce svalovce v ui.js). total = počet bran včetně střechy; neznámé brány se na mapě kreslí přerušovaně.",
-    "total": 9,
-    "mapNote": "Devět bran. Sedm už má jméno, jedna se teprve otevře – a devátá vede na střechu.",
-    "roof": {
-      "label": "IX",
-      "title": "Střecha – devátá brána",
-      "note": "Otevře se, až budou otevřené všechny ostatní."
-    },
+    "_poznamka": "Deník docenta D. (příběh, autor schválil 21. 10. 2026; 22. 10.: každý svět má svých devět bran): za každou branou a na konci chodeb jedna stránka – lekce jednou větou a kousek docentova života. Účinek {\"denik\": \"<id>\"} v open brány / zámku (3D chodba: po porážce svalovce v ui.js). Stránky se číslují po světech podle pořadí v tomto seznamu; mapa bran kreslí v každém světě meta.totalGates bran (nepostavené přerušovaně).",
+    "mapNote": "Každý svět má devět bran a ta devátá vede na střechu.",
     "pages": [
       {
         "id": "kabinet",
-        "page": 1,
         "room": "kabinet",
         "short": "Anatomický kabinet",
         "track": "civilni",
@@ -44,7 +37,6 @@
       },
       {
         "id": "sklad",
-        "page": 2,
         "room": "sklad",
         "short": "Výstrojní sklad",
         "track": "vojenska",
@@ -54,7 +46,6 @@
       },
       {
         "id": "chodba",
-        "page": 3,
         "room": "chodba",
         "short": "Sklepní bludiště",
         "track": "vojenska",
@@ -64,7 +55,6 @@
       },
       {
         "id": "telocvicna",
-        "page": 4,
         "room": "telocvicna",
         "short": "Tělocvična",
         "track": "vojenska",
@@ -74,7 +64,6 @@
       },
       {
         "id": "prekazky",
-        "page": 5,
         "room": "prekazky",
         "short": "Chodba na cvičiště",
         "track": "vojenska",
@@ -84,7 +73,6 @@
       },
       {
         "id": "herna",
-        "page": 6,
         "room": "herna",
         "short": "Stará herna",
         "track": "gsport",
@@ -94,7 +82,6 @@
       },
       {
         "id": "arena",
-        "page": 7,
         "room": "arena",
         "short": "Skokanská aréna",
         "track": "gsport",
