@@ -148,6 +148,10 @@ Každý svět bude mít vlastních devět bran.
   kostlivce a svalovce) – studenti ji vyfotí pro vyhodnocení.
 - Když tým tři minuty nepostoupí, přijde **vzkaz od D.** – řekne, kam se podívat, ne řešení, a do
   nápověd se nepočítá. Delší vysvětlení výpočtů jsou za tlačítkem „Proč?“.
+- **Deník docenta D. a mapa bran:** za každou branou (a na konci chodeb) hráč najde stránku
+  docentova deníku – lekce brány jednou větou a kousek jeho příběhu. Stránky se pamatují napříč
+  světy; Menu → „Mapa bran a deník“ (nebo tlačítko Mapa bran na titulní obrazovce) ukáže schéma
+  budovy s devíti branami a nalezené stránky.
 - **Jiná čísla pro každý tým:** několik úloh (závaží v kabinetu, protokol rtn. Doubka s běžeckým
   pásem a klikem v tělocvičně, schodiště v bludišti) má víc sad čísel. Sadu určuje **kód třídy**
   na obrazovce „Kdo vstupuje?“: stejný kód = stejná čísla pro celou třídu (dá se předvyplnit odkazem

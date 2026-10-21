@@ -122,6 +122,17 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   brožury Normy, muži A), bludiště (schodiště 18×17 / 16×18 / 20×16 cm → 3 002 / 2 825 / 3 139 J).
   Kódy pro testy: 1022 = všude sada 0, 1067 = všude sada 1, 1051 = všude sada 2. Diplom ukazuje
   řádek „Kód úlohy“. Herna, aréna a 3D chodba mají čísla z vlastního měření, ta se liší sama.
+- **Deník docenta D. a mapa bran** (`diary` v kořeni): `total` (počet bran včetně střechy), `mapNote`,
+  `roof` (`label`, `title`, `note`), `pages` [{ `id`, `page`, `room`, `short` (název na mapě), `track`,
+  `gate` (popisek brány), `title`, `text` (odstavce `\n`), `sign` }]. Stránku dá účinek
+  `{ "denik": "<id>" }` (v `open` brány, u bludiště v `open` zámku mříže, ve 3D chodbě po porážce
+  svalovce z `ui.js`) – jen jednou; příznak `denik_<id>` a zároveň **sdílené nastavení** `denik`
+  v prohlížeči, takže mapa ukazuje postup napříč světy. Okno se stránkou (linkovaný papír, rukopis),
+  zápisník má sekci „Deník docenta D.“, **Mapa bran** = schéma budovy (sloupec pro každý svět, brány
+  odspodu, neznámé přerušovaně, nahoře střecha IX) v Menu i na titulní obrazovce; zlatá brána = prošlá
+  (klik otevře stránku). Teď 7 stránek (kabinet, sklad, bludiště, tělocvična, chodba na cvičiště,
+  herna, aréna), strana 8 = brána, která se teprve postaví, strana 9 = střecha (konec příběhu,
+  zatím neudělané).
 - **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
   výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
   Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
@@ -422,7 +433,11 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   devět bran = devět věcí k zapamatování; za každou branou stránka deníku (lekce + kousek života);
   mapa fakulty s branami napříč světy; zvrat: D. branami kdysi sám prošel, postavil mu je jeho učitel
   (fotografie katedry); konec: devátá brána vede na střechu za svítání, klobouk, klíč od laboratoře
-  a lístek „Devět bran jsem kdysi prošel já. Teď vy. Nezavírejte je. – D.“ D. je naživu, jen odešel. **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
+  a lístek „Devět bran jsem kdysi prošel já. Teď vy. Nezavírejte je. – D.“ D. je naživu, jen odešel.
+  **Hotovo ve verzi 0.26:** 7 stránek deníku (texty v `diary`), mapa bran, sekce v zápisníku. **Zbývá:**
+  stránka 8 (až přibude další brána), střecha s devátou branou a koncem (až budou světy dohrané;
+  na mapě zatím jen jako IX), případně obrázky stránek od autora (`docs/zadani-obrazku-denik.md`)
+  a zmínka o učiteli D. na fotografii katedry v kabinetu (zvrat se prozradí až na posledních stránkách). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
   jen „D.“ – žádné osobní údaje. Humor: kostlivci v bludišti mají jména a krátké představení
   (Bohouš, Leopold, Vendelín, Hugo, Kazimír, Ferda, Cyril, Metoděj), komisař a rtn. Doubek v tělocvičně
   (hodiny zastavil Doubkův medicinbal, „bazén je studenej“), D. je ve vzkazech uštěpačný, ale laskavý.

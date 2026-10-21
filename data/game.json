@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.25 – ukázka",
+    "version": "0.26 – ukázka",
     "totalGates": 9
   },
 
@@ -20,6 +20,89 @@
       { "at": 20.5, "until": 27.5, "text": "„Devět bran. Otevřou se jen těm, kdo pohybu skutečně rozumějí.“" }
     ],
     "duration": 30
+  },
+
+  "diary": {
+    "_poznamka": "Deník docenta D. (příběh, autor schválil 21. 10. 2026): za každou branou a na konci chodeb jedna stránka – lekce jednou větou a kousek docentova života. Účinek {\"denik\": \"<id>\"} v open brány / zámku (3D chodba: po porážce svalovce v ui.js). total = počet bran včetně střechy; neznámé brány se na mapě kreslí přerušovaně.",
+    "total": 9,
+    "mapNote": "Devět bran. Sedm už má jméno, jedna se teprve otevře – a devátá vede na střechu.",
+    "roof": {
+      "label": "IX",
+      "title": "Střecha – devátá brána",
+      "note": "Otevře se, až budou otevřené všechny ostatní."
+    },
+    "pages": [
+      {
+        "id": "kabinet",
+        "page": 1,
+        "room": "kabinet",
+        "short": "Anatomický kabinet",
+        "track": "civilni",
+        "gate": "Brána I",
+        "title": "Páka",
+        "text": "Páka. První věc, kterou učím, a poslední, které rozumím. Sval táhne za krátké rameno, břemeno visí na dlouhém – proto musí biceps táhnout desetkrát víc, než váží závaží v dlani. Tělo nešetří silou, šetří místem: kdyby se sval upínal dál od lokte, měli bychom paže jako pavouci.\nDo kabinetu jsem přišel před třiceti lety jako asistent. Kostru na stojanu jsem zdědil, model paže vyrobil z koštěte a kuchyňské váhy. Káva v hrnku je dnešní. Odešel jsem ve tři čtvrtě na tři a hodiny jsem nechal jít."
+      },
+      {
+        "id": "sklad",
+        "page": 2,
+        "room": "sklad",
+        "short": "Výstrojní sklad",
+        "track": "vojenska",
+        "gate": "Brána I",
+        "title": "Těžiště",
+        "text": "Těžiště. Není to místo v těle, je to dohoda mezi všemi jeho částmi – a batoh do té dohody mluví taky. Třicet kilo dvacet centimetrů za zády posune společné těžiště o šest centimetrů. Šest centimetrů stačí, aby se voják poroučel dozadu. Předklon není slabost, je to počítání.\nNa vojně mi to vysvětlil rotný, který nikdy neslyšel slovo biomechanika: „Těžké k zádům, hochu, a hlavu dopředu.“ Řekl za minutu, co já pak učil třicet let."
+      },
+      {
+        "id": "chodba",
+        "page": 3,
+        "room": "chodba",
+        "short": "Sklepní bludiště",
+        "track": "vojenska",
+        "gate": "Sklep",
+        "title": "Kosti",
+        "text": "Kosti. Dvě stě šest kusů a každý má jméno, protože každý má práci. Kostlivci ve sklepě jsou staré učební modely – fakulta je chtěla vyhodit, já je snesl dolů. Bohouš mi stál v kabinetu dvacet let a pořád se na mě dívá, jako bych mu dlužil zkoušku.\nKdo trefí stehenní kost poslepu, umí anatomii. Kdo ji trefí a ví, proč je nejdelší, umí biomechaniku."
+      },
+      {
+        "id": "telocvicna",
+        "page": 4,
+        "room": "telocvicna",
+        "short": "Tělocvična",
+        "track": "vojenska",
+        "gate": "Brána II",
+        "title": "Normy",
+        "text": "Normy. Čísla v tabulce nejsou cíl, jsou to otázky: proč pětačtyřicetiletý běží míň a proč je u břemene lepší méně. Kdo zná jen čísla, zná půlku. Klik je páka kolem špiček, výdrž ve shybu je nulová práce a přesto nejtěžší minuta roku, medicinbal letí nejdál pod úhlem menším než pětačtyřicet, protože startuje výš, než dopadá.\nRotného Doubka zkouším dvanáct let. Pokaždé si stěžuje na lavičku a pokaždé přijde."
+      },
+      {
+        "id": "prekazky",
+        "page": 5,
+        "room": "prekazky",
+        "short": "Chodba na cvičiště",
+        "track": "vojenska",
+        "gate": "Chodba",
+        "title": "Dopad",
+        "text": "Dopad. Všechno, co vyskočí, musí dolů stejnou rychlostí, jakou vyletělo. Rozdíl je jen v tom, jak dlouho brzdíš: propnutá kolena setinu sekundy, pokrčená třetinu. Delší brzdění, menší síla. Kolena jsou od toho, aby se ohýbala.\nSvé pravé jsem to naučil pozdě. Seskok z bedny na soustředění v devatenácti, tvrdě, na patu. Od té doby učím doskok první hodinu – dřív než skok."
+      },
+      {
+        "id": "herna",
+        "page": 6,
+        "room": "herna",
+        "short": "Stará herna",
+        "track": "gsport",
+        "gate": "LEVEL 1",
+        "title": "Výkon",
+        "text": "Výkon. Práce za čas. Sto čtyřicet dva wattů jsem dal ve dřepech v noci před odchodem – a herní počítač chce čtyři sta. Tři lidi na jeden počítač, a to ještě svaly spálí čtyřikrát víc, než vydají. Žárovka v nás nesvítí, ta hřeje.\nHernu jsem postavil ze staré laboratoře, kterou chtěli zrušit. Zrušili ji. Herna zůstala, protože na dveřích nebyl štítek LABORATOŘ, ale LEVEL 1."
+      },
+      {
+        "id": "arena",
+        "page": 7,
+        "room": "arena",
+        "short": "Skokanská aréna",
+        "track": "gsport",
+        "gate": "LEVEL 2",
+        "title": "Let",
+        "text": "Let. Z doby letu se dá spočítat výška, aniž bys skok viděl – stačí hodiny. Na stěně jsem nechal dvě čárky: dosah ve stoje a ve výskoku, třicet jedna centimetrů. Ve dvaceti to bylo padesát. Čísla stárnou s námi, vzorce ne.\nA terče: malý vzdálený cíl trvá déle ne proto, že ho nevidíš, ale proto, že ruka musí na konci zpomalit. Rychlost a přesnost se handrkují celý život. Vědí to chirurgové, střelci a lidé, co píšou vzkazy na lístečky."
+      }
+    ]
   },
 
   "badges": [
@@ -2308,6 +2391,7 @@
           }
         ],
         "open": [
+          { "denik": "kabinet" },
           { "text": "Brána I je otevřená. Z mezery mezi dveřmi proudí studený vzduch a slabé světlo." },
           { "note": "Brána I: biceps drží závaží silou {=v_tiha*10:0} N – desetkrát víc, než je tíha závaží. Loket je páka 3. druhu." }
         ]
@@ -3091,6 +3175,7 @@
           }
         ],
         "open": [
+          { "denik": "herna" },
           { "sound": "levelUp" },
           { "text": "Staré dveře se pomalu otevřely. Za nimi je tmavá chodba a na jejím konci bliká obrazovka: LEVEL 2." },
           { "scare": "chodba" },
@@ -3757,6 +3842,7 @@
           }
         ],
         "open": [
+          { "denik": "sklad" },
           { "sound": "door" },
           { "text": "Pancéřové dveře se pomalu otevřely. Za nimi vede schodiště nahoru do sklepních chodeb – z jejich tmy je slyšet tiché chrastění, jako by se tam převalovaly kosti." },
           { "note": "Brána I (vojenská): batoh 30 kg posune společné těžiště vojáka (70 kg) o 6 cm dozadu. Voják to vyrovná předklonem – svislice z těžiště musí procházet opěrnou plochou. Nejtěžší věci patří co nejblíž k zádům." }
@@ -5145,6 +5231,7 @@
           }
         ],
         "open": [
+          { "denik": "arena" },
           {
             "sound": "levelUp"
           },
@@ -6881,6 +6968,7 @@
           }
         ],
         "open": [
+          { "denik": "telocvicna" },
           {
             "sound": "levelUp"
           },
@@ -8282,6 +8370,7 @@
             }
           ],
           "open": [
+            { "denik": "chodba" },
             {
               "text": "Mříž se se skřípěním otevřela. Za ní stoupá úzké schodiště a shora je slyšet vzdálené dunění – jako by v tělocvičně někdo běhal."
             },

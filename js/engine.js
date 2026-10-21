@@ -186,6 +186,20 @@
       return events;
     }
 
+    /* ---------- Deník docenta D. (sdílený mezi světy v nastavení prohlížeče) ---------- */
+
+    static rememberDiary(id) {
+      const found = Game.getSetting('denik', []);
+      if (!found.includes(id)) Game.setSetting('denik', found.concat(id));
+    }
+
+    /* Nalezené stránky: z nastavení (všechny světy) i z této hry. */
+    static diaryFound(data, state) {
+      const found = new Set(Game.getSetting('denik', []));
+      for (const pg of (data.diary || {}).pages || []) if (state && state.flags[`denik_${pg.id}`]) found.add(pg.id);
+      return found;
+    }
+
     /* Sady čísel: místnost může mít „variants“ = seznam sad hodnot (první sada = původní čísla).
        Sada se vybere z kódu úlohy (hash kódu a id místnosti), hodnoty se uloží do proměnných hráče
        (v textech {v_…}, v odpovědích zámků jako vzorec). Starší uložení bez kódu dostane sadu 0. */
@@ -525,6 +539,12 @@
         if ('hint' in effect) s.extraHints = (s.extraHints || 0) + 1;
         if ('leave' in effect) events.push({ type: 'leave' });
         if ('heal' in effect) events.push({ type: 'heal' });   // chodba: doplnit životy (lékárnička)
+        // stránka deníku docenta D. (za branou / na konci chodby) – jen jednou; sdílí se mezi světy
+        if ('denik' in effect && !s.flags[`denik_${effect.denik}`]) {
+          s.flags[`denik_${effect.denik}`] = true;
+          Game.rememberDiary(effect.denik);
+          events.push({ type: 'denik', id: effect.denik });
+        }
       }
       events.push({ type: 'state' });
       this.save();
@@ -772,6 +792,16 @@
       for (const b of (d.badges || []).concat(...d.tracks.map((t) => (t.finish && t.finish.badges) || []))) {
         if (!b.id || !b.label) problems.push(`Odznak bez id nebo názvu: ${JSON.stringify(b).slice(0, 60)}.`);
       }
+      const pageIds = new Set(((d.diary || {}).pages || []).map((pg) => pg.id));
+      for (const pg of (d.diary || {}).pages || []) if (!d.rooms[pg.room]) problems.push(`Deník: stránka „${pg.id}“ odkazuje na neexistující místnost „${pg.room}“.`);
+      const walk = (x) => {
+        if (Array.isArray(x)) x.forEach(walk);
+        else if (x && typeof x === 'object') {
+          if (typeof x.denik === 'string' && !pageIds.has(x.denik)) problems.push(`Účinek „denik“ odkazuje na neexistující stránku „${x.denik}“.`);
+          Object.values(x).forEach(walk);
+        }
+      };
+      walk(d.rooms);
       for (const [roomId, r] of Object.entries(d.rooms)) {
         for (const n of r.nudges || []) if (!n.text) problems.push(`Místnost „${roomId}“: vzkaz od D. bez textu.`);
         const keys = (r.variants || []).map((v) => Object.keys(v).sort().join(','));

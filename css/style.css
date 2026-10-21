@@ -616,6 +616,32 @@ button:focus-visible, input:focus-visible {
 }
 
 .paper.long { width: min(100%, 460px); font-size: 21px; line-height: 1.55; text-align: left; padding: 30px 32px; }
+
+/* Deník docenta D.: linkovaná stránka, mapa bran */
+.paper.diary { width: min(100%, 540px); padding: 24px 30px 20px; transform: rotate(-0.8deg); font-size: 19px; line-height: 32px; background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0 31px, rgba(90, 60, 30, 0.18) 31px 32px), linear-gradient(160deg, #e6dabb, #cbbb93); }
+.diary-num { font-family: var(--serif); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: #7a6a4a; }
+.diary-title { font-size: 25px; color: #5a3a22; }
+.diary-text { white-space: pre-line; }
+.diary-sign { text-align: right; color: #7a2e1e; font-size: 22px; }
+.diary-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+.map-intro { margin: 0 0 8px; color: var(--ink); text-align: center; }
+.map-legend { margin: 8px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+.map-svg { display: block; width: min(100%, 640px); height: auto; margin: 0 auto; }
+.map-svg text { font-family: var(--serif); fill: var(--ink); }
+.map-svg .world { fill: var(--gold); font-size: 15px; letter-spacing: 0.08em; }
+.map-svg .label { font-size: 13px; }
+.map-svg .small { font-size: 11px; fill: var(--muted); }
+.map-svg .building { fill: rgba(230, 198, 126, 0.04); stroke: var(--gold-dim); stroke-width: 1.5; }
+.map-svg .link-line { stroke: var(--gold-dim); stroke-width: 1.5; opacity: 0.7; }
+.map-svg .node { fill: #15110c; stroke: var(--gold-dim); stroke-width: 2; }
+.map-svg .node.lit { fill: var(--gold); stroke: var(--gold-bright); filter: drop-shadow(0 0 8px rgba(230, 198, 126, 0.6)); cursor: pointer; }
+.map-svg .node.lit:hover, .map-svg .node.lit:focus { stroke: #fff; outline: none; }
+.map-svg .node.unknown { stroke-dasharray: 5 4; }
+.map-svg .num { font-size: 14px; fill: var(--gold-bright); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.map-svg .lit + .num { fill: #1a1308; }
+.notes-sub { margin: 18px 0 6px; color: var(--gold); font-weight: normal; font-size: 17px; }
+.diary-list { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.diary-list .link { padding: 2px 0; }
 .paper.type {
   width: min(100%, 420px);
   font-family: "Courier New", Courier, monospace;

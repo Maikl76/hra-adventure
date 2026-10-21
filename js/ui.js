@@ -163,6 +163,7 @@
     $('btn-continue').addEventListener('click', () => continueGame(shortcut ? shortcut.track.id : undefined));
     $('btn-new').addEventListener('click', showTrack);
     $('btn-intro').addEventListener('click', () => playIntro(showTitle));
+    $('btn-map').addEventListener('click', () => openMap());
     $('track-back').addEventListener('click', showTitle);
     // ze zkratky zpět na běžnou hru (adresa bez ?mistnost=…)
     $('track-all').addEventListener('click', () => { location.href = location.pathname; });
@@ -898,7 +899,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.25');
+      const mod = await import('./chodba.js?v=0.26');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1109,7 +1110,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.25');
+        const mod = await import('./chodba3d.js?v=0.26');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1144,7 +1145,7 @@
       stats: (vals) => game.setVars(vals),
       flag: (name) => handleEvents(game.run([{ set: name }])),
       fell: () => game.setVars({ padnuti: (game.state.vars.padnuti || 0) + 1 }),
-      defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }])),
+      defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }, { denik: 'prekazky' }])),
       // dveřmi ven: další místnost světa, nebo závěrečná obrazovka
       end: () => {
         const roomId = game.roomId;
@@ -1409,6 +1410,9 @@
           return;
         case 'heal':
           if (corridor) corridor.heal();
+          break;
+        case 'denik':
+          modal = () => openDiaryPage(ev.id, true);
           break;
         case 'state':
           break;
@@ -1906,7 +1910,7 @@
         }
       };
 
-      import('./basket.js?v=0.25').then((mod) => {
+      import('./basket.js?v=0.26').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2529,7 +2533,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.25');
+          const mod = await import('./squats.js?v=0.26');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3391,7 +3395,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.25');
+          const mod = await import('./skok.js?v=0.26');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3769,7 +3773,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.25');
+          const mod = await import('./goblet.js?v=0.26');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4499,7 +4503,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.25');
+          const mod = await import('./predklon.js?v=0.26');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -4582,17 +4586,191 @@
         p.className = 'notes-empty';
         p.textContent = 'Zatím nic. Sem se zapisuje vše důležité, co najdeš nebo změříš.';
         box.appendChild(p);
-        return;
+      } else {
+        const ul = document.createElement('ul');
+        ul.className = 'notes';
+        for (const note of game.state.notes) {
+          const li = document.createElement('li');
+          li.textContent = note;
+          ul.appendChild(li);
+        }
+        box.appendChild(ul);
       }
-      const ul = document.createElement('ul');
-      ul.className = 'notes';
-      for (const note of game.state.notes) {
-        const li = document.createElement('li');
-        li.textContent = note;
-        ul.appendChild(li);
+      // deník docenta D. – nalezené stránky (ze všech světů)
+      const pages = diaryPages();
+      if (!pages.length) return;
+      const found = diaryFoundSet();
+      const h3 = document.createElement('h3');
+      h3.className = 'notes-sub';
+      h3.textContent = `Deník docenta D. (${found.size} z ${diaryTotal()})`;
+      box.appendChild(h3);
+      const list = document.createElement('div');
+      list.className = 'diary-list';
+      for (const pg of pages) {
+        if (!found.has(pg.id)) continue;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'link';
+        b.textContent = `strana ${pg.page}: ${pg.title}`;
+        b.addEventListener('click', () => openDiaryPage(pg.id));
+        list.appendChild(b);
       }
-      box.appendChild(ul);
+      if (!found.size) {
+        const p = document.createElement('p');
+        p.className = 'notes-empty';
+        p.textContent = 'Stránky deníku leží za branami.';
+        list.appendChild(p);
+      }
+      box.appendChild(list);
     });
+  }
+
+  /* ---------- Deník docenta D. a mapa bran ----------
+     Za každou branou (a na konci chodeb) najde hráč stránku deníku: lekce brány jednou větou a kousek
+     docentova života. Nalezené stránky se pamatují napříč světy (nastavení prohlížeče), čtou se
+     v zápisníku a na mapě bran (Menu, titulní obrazovka). Texty jsou v game.json („diary“). */
+  const diaryPages = () => (data.diary || {}).pages || [];
+  const diaryTotal = () => (data.diary || {}).total || diaryPages().length;
+  const diaryFoundSet = () => Game.diaryFound(data, game && game.state);
+
+  function openDiaryPage(id, fresh) {
+    const pages = diaryPages();
+    const idx = pages.findIndex((p) => p.id === id);
+    if (idx < 0) return;
+    const pg = pages[idx];
+    openModal((box) => {
+      heading(box, fresh ? 'Stránka z docentova deníku' : 'Deník docenta D.');
+      const paper = document.createElement('div');
+      paper.className = 'paper long diary';
+      const num = document.createElement('div');
+      num.className = 'diary-num';
+      num.textContent = `strana ${pg.page || idx + 1} z ${diaryTotal()}`;
+      const h = document.createElement('div');
+      h.className = 'diary-title';
+      h.textContent = pg.title;
+      const body = document.createElement('div');
+      body.className = 'diary-text';
+      body.textContent = pg.text;
+      const sign = document.createElement('div');
+      sign.className = 'diary-sign';
+      sign.textContent = pg.sign || '– D.';
+      paper.append(num, h, body, sign);
+      box.appendChild(paper);
+      const row = document.createElement('div');
+      row.className = 'diary-actions';
+      const found = diaryFoundSet();
+      const prev = pages.slice(0, idx).reverse().find((p) => found.has(p.id));
+      const next = pages.slice(idx + 1).find((p) => found.has(p.id));
+      const mk = (label, fn, cls) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = cls || 'btn';
+        b.textContent = label;
+        b.addEventListener('click', fn);
+        row.appendChild(b);
+      };
+      if (prev) mk('‹ Předchozí', () => openDiaryPage(prev.id));
+      mk('Mapa bran', () => openMap());
+      if (next) mk('Další ›', () => openDiaryPage(next.id));
+      mk(fresh ? 'Pokračovat' : 'Zavřít', closeModal, 'btn primary');
+      box.appendChild(row);
+    });
+    sound.sfx('page');
+  }
+
+  function openMap() {
+    const pages = diaryPages();
+    const found = diaryFoundSet();
+    const diary = data.diary || {};
+    openModal((box) => {
+      heading(box, 'Mapa bran');
+      const intro = document.createElement('p');
+      intro.className = 'map-intro';
+      intro.textContent = `${diary.mapNote || ''} Deník docenta D.: ${found.size} z ${diaryTotal()} stran.`.trim();
+      box.appendChild(intro);
+      box.appendChild(buildMapSvg(pages, found, diary));
+      const legend = document.createElement('p');
+      legend.className = 'map-legend';
+      legend.textContent = 'Zlatá brána = prošlá, se stránkou deníku (klikni). Tmavá = čeká. Přerušovaná = zatím nepřístupná.';
+      box.appendChild(legend);
+      const row = document.createElement('div');
+      row.className = 'diary-actions';
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn primary';
+      b.textContent = 'Zavřít';
+      b.addEventListener('click', closeModal);
+      row.appendChild(b);
+      box.appendChild(row);
+    });
+  }
+
+  /* Schéma budovy: sloupec pro každý svět (brány odspodu nahoru), neznámé brány přerušovaně,
+     nahoře střecha s devátou branou. */
+  function buildMapSvg(pages, found, diary) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs, text) => {
+      const e = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    };
+    const tracks = data.tracks;
+    const cols = tracks.map((tr) => ({ track: tr, nodes: pages.filter((p) => p.track === tr.id).map((p) => ({ page: p })) }));
+    const unknown = Math.max(0, (diary.total || pages.length) - pages.length - 1);
+    for (let i = 0; i < unknown; i++) {
+      const c = cols.reduce((a, b) => (b.nodes.length < a.nodes.length ? b : a));
+      c.nodes.push({ unknown: true });
+    }
+    const rows = Math.max(...cols.map((c) => c.nodes.length));
+    const W = 720, step = 82, top = 118, bottom = top + rows * step;
+    const H = bottom + 48;
+    const svg = el('svg', { class: 'map-svg', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `Mapa bran: nalezeno ${found.size} z ${diary.total || pages.length} stran deníku` });
+    const colX = (i) => W * (i + 0.5) / cols.length;
+    // budova a střecha
+    svg.appendChild(el('path', { class: 'building', d: `M 24 ${bottom + 14} V 92 L ${W / 2} 22 L ${W - 24} 92 V ${bottom + 14} Z` }));
+    svg.appendChild(el('line', { class: 'link-line', x1: 24, y1: 92, x2: W - 24, y2: 92 }));
+    const roof = diary.roof || {};
+    const roofG = el('g', { class: 'gate roof' });
+    roofG.appendChild(el('circle', { class: 'node unknown', cx: W / 2, cy: 56, r: 20 }));
+    roofG.appendChild(el('text', { class: 'num', x: W / 2, y: 56 }, roof.label || 'IX'));
+    roofG.appendChild(el('text', { class: 'label', x: W / 2 + 30, y: 52 }, roof.title || 'Střecha'));
+    roofG.appendChild(el('text', { class: 'small', x: W / 2 + 30, y: 68 }, roof.note || ''));
+    svg.appendChild(roofG);
+    cols.forEach((c, ci) => {
+      const x = colX(ci);   // popisky pod bránou, na střed sloupce
+      // spojnice: zdola nahoru a dál ke střeše
+      svg.appendChild(el('line', { class: 'link-line', x1: x, y1: bottom - step / 2, x2: x, y2: 92 }));
+      svg.appendChild(el('line', { class: 'link-line', x1: x, y1: 92, x2: W / 2, y2: 76 }));
+      svg.appendChild(el('text', { class: 'world', x, y: bottom + 36, 'text-anchor': 'middle' }, c.track.name));
+      c.nodes.forEach((n, ri) => {
+        const y = bottom - step / 2 - ri * step;
+        const g = el('g', { class: 'gate' });
+        if (n.unknown) {
+          g.appendChild(el('circle', { class: 'node unknown', cx: x, cy: y, r: 18 }));
+          g.appendChild(el('text', { class: 'num', x, y }, '?'));
+          g.appendChild(el('text', { class: 'small', x, y: y + 34, 'text-anchor': 'middle' }, 'zatím nepřístupná'));
+        } else {
+          const lit = found.has(n.page.id);
+          const room = data.rooms[n.page.room] || {};
+          const circle = el('circle', { class: `node${lit ? ' lit' : ''}`, cx: x, cy: y, r: 18 });
+          if (lit) {
+            circle.setAttribute('tabindex', '0');
+            circle.setAttribute('role', 'button');
+            circle.setAttribute('aria-label', `Deník, strana ${n.page.page}: ${n.page.title}`);
+            circle.addEventListener('click', () => openDiaryPage(n.page.id));
+            circle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDiaryPage(n.page.id); } });
+          }
+          g.appendChild(circle);
+          g.appendChild(el('text', { class: 'num', x, y }, String(n.page.page)));
+          const name = n.page.short || room.name || '';
+          g.appendChild(el('text', { class: 'label', x, y: y + 34, 'text-anchor': 'middle' }, n.page.gate ? `${n.page.gate} · ${name}` : name));
+          g.appendChild(el('text', { class: 'small', x, y: y + 49, 'text-anchor': 'middle' }, lit ? `deník: ${n.page.title}` : 'stránka deníku čeká'));
+        }
+        svg.appendChild(g);
+      });
+    });
+    return svg;
   }
 
   function openMenu() {
@@ -4611,6 +4789,7 @@
       };
       add('Zpět do hry', closeModal);
       add('Jak ovládat hru', () => { closeModal(); showHudHelp(); });
+      add('Mapa bran a deník', () => { closeModal(); openMap(); });
       const scene = $('scene');
       add(scene.classList.contains('show-hotspots') ? 'Skrýt vyznačení objektů' : 'Vyznačit objekty v místnosti', () => {
         scene.classList.toggle('show-hotspots');
