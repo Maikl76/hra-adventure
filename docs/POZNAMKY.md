@@ -100,7 +100,22 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (síla tmy 0–1; tmavé obrázky autora ~0,6), `dust` (prach ve světle), sousedé `left`/`right`
   nebo `back`, `enterText`, `enter`.
 - Podmínky `when`: `flags`, `notFlags`, `items`, `notItems`, `expr` (výraz s příznaky 1/0
-  a proměnnými, umí `> < >= <= ==`).
+  a proměnnými, umí `> < >= <= ==`), `vars` (proměnné, které musí existovat), `exprs` (seznam výrazů,
+  všechny musí platit – výraz umí jen jedno porovnání).
+- Účinek `text` může mít `more` (+ `moreLabel`, výchozí „Proč?“): krátká věta hned, delší vysvětlení
+  až po kliknutí (méně čtení najednou). Totéž u místnosti: `enterText` + `enterMore` (+ `enterMoreLabel`,
+  např. „Ovládání“). Ve 3D chodbě stačí v `texts` přidat `<klíč>More`.
+- **Vzkazy od D.** (`nudges` u místnosti bez telefonu, `nudgeSeconds` výchozí 180): když tým tak dlouho
+  nepostoupí (žádný nový příznak, předmět, zápis ani měření), ukáže se první vyhovující vzkaz
+  (`when` → `text`), při dalším zaseknutí další v pořadí; obecný vzkaz bez `when` až když žádný cílený
+  nesedí. Říkají, kam se podívat, ne řešení, a **do nápověd se nepočítají** (telefon ve skladu
+  a tělocvičně zůstal, jak ho autor napsal – ten se počítá, `{"hint": true}`).
+- **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
+  výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
+  Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
+  tým, svět a datum (`state.finishedAt`). `finish` světa doplňuje společný `finish` hry (svět Laboratoře
+  má jen odznaky). Nové proměnné: `padnuti` (pády v bludišti a 3D chodbě), `doskoky_mekke`,
+  `doskoky_tvrde`; příznak `puska_cviciste`.
 - Účinky: `text`, `give`, `remove`, `set`/`unset`, `note` (+ `noteKey` = nahradí starší zápis),
   `closeup` (`image`, nebo `note` + `font` `"type"`/`"terminal"`), `sound`, `view`, `openItem`,
   `openGate`, `lock`, `activity`, `fx` (`"blackout"`), `scare`, `hint`, `leave`.
@@ -387,6 +402,13 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
 - **Basketbal v aréně** (17. 10. 2026): ovládání jako prak, 10 hodů, **povinně aspoň 3 koše** (bez nich
   dveře LEVEL 2 nepustí), po dvou neúspěšných kolech automat napoví úhel a rychlost.
+- **Větší zábava** (21. 10. 2026, autor schválil návrh a pořadí): 1) odznaky, hvězdičky a diplom,
+  3) méně čtení („Proč?“) a vzkazy od D. při zaseknutí, 5) humor a postavy – hotovo ve verzi 0.24;
+  dál 2) **jiná čísla pro každý tým** (autor povolil měnit hodnoty úloh) a 4) příběh docenta D. s deníkem
+  a mapou bran (příběh navrhne asistent). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
+  jen „D.“ – žádné osobní údaje. Humor: kostlivci v bludišti mají jména a krátké představení
+  (Bohouš, Leopold, Vendelín, Hugo, Kazimír, Ferda, Cyril, Metoděj), komisař a rtn. Doubek v tělocvičně
+  (hodiny zastavil Doubkův medicinbal, „bazén je studenej“), D. je ve vzkazech uštěpačný, ale laskavý.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
 
 ## Obrázky od autora – postup

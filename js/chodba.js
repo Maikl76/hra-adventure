@@ -112,7 +112,7 @@ export class Corridor {
     this.lives = this.cfg.lives;
     const dead = new Set(opts.defeated || []);
     this.skeletons = (def.skeletons || []).map((s) => ({
-      id: s.id, bones: s.bones || [], home: { x: s.cell[0], y: s.cell[1] },
+      id: s.id, name: s.name, intro: s.intro, bones: s.bones || [], home: { x: s.cell[0], y: s.cell[1] },
       x: s.cell[0], y: s.cell[1], rx: s.cell[0] + 0.5, ry: s.cell[1] + 0.5,
       alive: !dead.has(s.id), awake: false, progress: 0, nextMove: 0, nextAttack: 0, adjacent: false, tween: null, fallT: 0,
       lunge: 0, wakePos: null,

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#070605">
   <title>Devět bran k pochopení pohybu</title>
-  <link rel="stylesheet" href="css/style.css?v=0.23">
+  <link rel="stylesheet" href="css/style.css?v=0.24">
 </head>
 <body>
   <div id="app">
@@ -88,8 +88,14 @@
 
     <!-- Závěrečná obrazovka -->
     <section id="finish" class="screen" hidden>
-      <div class="finish-wrap">
+      <div class="finish-wrap diploma">
+        <p class="diploma-kicker" id="finish-kicker"></p>
         <h2 id="finish-title"></h2>
+        <p class="diploma-team" id="finish-team" hidden></p>
+        <p class="diploma-sub" id="finish-sub"></p>
+        <div class="stars" id="finish-stars" role="img"></div>
+        <p class="stars-why" id="finish-stars-why"></p>
+        <div class="badges" id="finish-badges" hidden></div>
         <p class="finish-text" id="finish-text"></p>
         <dl class="stats" id="finish-stats"></dl>
         <p class="photo-hint" id="finish-photo"></p>
@@ -115,10 +121,10 @@
   <div class="toast" id="toast" hidden></div>
   <div class="cursor-item" id="cursor-item" hidden><img alt=""></div>
 
-  <script src="js/engine.js?v=0.23"></script>
-  <script src="js/audio.js?v=0.23"></script>
-  <script src="js/calc.js?v=0.23"></script>
-  <script src="js/brany.js?v=0.23"></script>
-  <script src="js/ui.js?v=0.23"></script>
+  <script src="js/engine.js?v=0.24"></script>
+  <script src="js/audio.js?v=0.24"></script>
+  <script src="js/calc.js?v=0.24"></script>
+  <script src="js/brany.js?v=0.24"></script>
+  <script src="js/ui.js?v=0.24"></script>
 </body>
 </html>

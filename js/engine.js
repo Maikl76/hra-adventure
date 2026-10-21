@@ -379,6 +379,8 @@
       if (when.items && !when.items.every((i) => s.inventory.includes(i))) return false;
       if (when.notItems && when.notItems.some((i) => s.inventory.includes(i))) return false;
       if (when.expr && !this.condition(when.expr)) return false;
+      if (when.vars && !when.vars.every((v) => s.vars[v] !== undefined && s.vars[v] !== null)) return false;
+      if (when.exprs && !when.exprs.every((e) => this.condition(e))) return false;
       return true;
     }
 
@@ -397,7 +399,7 @@
     enterRoom() {
       this.lockId = null;
       const events = [{ type: 'room' }];
-      if (this.room.enterText) events.push({ type: 'text', text: this.room.enterText });
+      if (this.room.enterText) events.push({ type: 'text', text: this.room.enterText, more: this.room.enterMore, moreLabel: this.room.enterMoreLabel });
       // účinky při vstupu do místnosti (např. tiché cvaknutí zámku za hráčem)
       const match = (this.room.enter || []).find((c) => this.check(c.when));
       if (match) events.push(...this.run(match.do));
@@ -449,7 +451,7 @@
       const events = [];
       const s = this.state;
       for (const effect of effects || []) {
-        if ('text' in effect) events.push({ type: 'text', text: this.fill(effect.text) });
+        if ('text' in effect) events.push({ type: 'text', text: this.fill(effect.text), more: effect.more ? this.fill(effect.more) : undefined, moreLabel: effect.moreLabel });
         if ('set' in effect) s.flags[effect.set] = true;
         if ('unset' in effect) delete s.flags[effect.unset];
         if ('give' in effect && !s.inventory.includes(effect.give)) {
@@ -653,12 +655,56 @@
       }
       if (this.state.roomIndex + 1 >= this.track.rooms.length) {
         this.state.finished = true;
+        this.state.finishedAt = Date.now();
         this.save();
         return false;
       }
       this.state.roomIndex += 1;
       this.save();
       return this.enterRoom();
+    }
+
+    /* Vzkaz od D. při zaseknutí: první vyhovující z „nudges“ místnosti (podmínka when); při dalším
+       zaseknutí další v pořadí. Nepočítá se jako nápověda – jen říká, kam se podívat. */
+    nextNudge() {
+      const all = (this.room.nudges || []).filter((n) => this.check(n.when));
+      // obecný vzkaz (bez podmínky) až když žádný cílený nesedí
+      const aimed = all.filter((n) => n.when);
+      const list = aimed.length ? aimed : all;
+      if (!list.length) return null;
+      if (!this.state.nudges) this.state.nudges = {};
+      const n = this.state.nudges[this.roomId] || 0;
+      this.state.nudges[this.roomId] = n + 1;
+      this.save();
+      return this.fill(list[n % list.length].text);
+    }
+
+    /* Závěrečná obrazovka světa: společné hodnoty z „finish“ hry doplněné hodnotami světa. */
+    get finishDef() {
+      return { ...(this.data.finish || {}), ...(this.track.finish || {}) };
+    }
+
+    /* Odznaky: společné (data.badges) a světa (finish.badges); podmínky when, maxHints, maxErrors, maxMinutes. */
+    badges() {
+      const st = this.stats();
+      const out = [];
+      for (const b of (this.data.badges || []).concat(this.finishDef.badges || [])) {
+        if (b.when && !this.check(b.when)) continue;
+        if (b.maxHints !== undefined && st.hints > b.maxHints) continue;
+        if (b.maxErrors !== undefined && st.errors > b.maxErrors) continue;
+        if (b.maxMinutes !== undefined && st.playMs > b.maxMinutes * 60000) continue;
+        out.push(b);
+      }
+      return out;
+    }
+
+    /* Hvězdičky 1–3 podle nápověd a chybných pokusů (meze lze změnit ve finish.stars). */
+    stars() {
+      const st = this.stats();
+      const lim = { three: { hints: 0, errors: 3 }, two: { hints: 2, errors: 8 }, ...(this.finishDef.stars || {}) };
+      const ok = (l) => st.hints <= l.hints && st.errors <= l.errors;
+      const n = ok(lim.three) ? 3 : ok(lim.two) ? 2 : 1;
+      return { n, limits: lim };
     }
 
     /* ---------- Statistiky (pro vyhodnocení pilotu) ---------- */
@@ -694,6 +740,12 @@
           if (!d.rooms[r]) problems.push(`Sekce „${t.id}“: neexistující zkušební místnost „${r}“.`);
           if (!t.rooms.includes(to)) problems.push(`Sekce „${t.id}“: zkušební místnost „${r}“ vede do „${to}“, která v sekci není.`);
         }
+      }
+      for (const b of (d.badges || []).concat(...d.tracks.map((t) => (t.finish && t.finish.badges) || []))) {
+        if (!b.id || !b.label) problems.push(`Odznak bez id nebo názvu: ${JSON.stringify(b).slice(0, 60)}.`);
+      }
+      for (const [roomId, r] of Object.entries(d.rooms)) {
+        for (const n of r.nudges || []) if (!n.text) problems.push(`Místnost „${roomId}“: vzkaz od D. bez textu.`);
       }
       // bouřka venku: místo musí být okno, budova nebo sklep
       for (const [roomId, r] of Object.entries(d.rooms)) {

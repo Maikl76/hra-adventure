@@ -141,9 +141,13 @@ Každý svět bude mít vlastních devět bran.
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč
   dostane automaticky (`"shortcut"` u místnosti v `game.json`). Na závěrečné obrazovce je řádek
   „Začátek“, takže je vidět, že čas, chyby a nápovědy platí až od této místnosti.
-- Závěrečná obrazovka ukazuje tým, sekci, čas, počet chybných pokusů a nápověd (v GSPORT i
-  naměřené dřepy, výkon, reakční dobu, dobu letu, výšku výskoku a časy z NEON AIM, ve vojenské
-  tělovýchově zkoušku stability, kliky na váze a goblet dřep) – studenti ji vyfotí pro vyhodnocení.
+- Závěrečná obrazovka je **diplom**: tým, svět, datum, 1–3 hvězdičky (podle nápověd a chybných
+  pokusů), odznaky (např. Bez nápovědy, Anatom, Ostrostřelec, Měkký doskok, Blesk, Střelec) a čas,
+  počet chybných pokusů a nápověd (v GSPORT i naměřené dřepy, výkon, reakční dobu, dobu letu, výšku
+  výskoku a časy z NEON AIM, ve vojenské tělovýchově zkoušku stability, kliky na váze, goblet dřep,
+  kostlivce a svalovce) – studenti ji vyfotí pro vyhodnocení.
+- Když tým tři minuty nepostoupí, přijde **vzkaz od D.** – řekne, kam se podívat, ne řešení, a do
+  nápověd se nepočítá. Delší vysvětlení výpočtů jsou za tlačítkem „Proč?“.
 - **Lekačky:** svět GSPORT obsahuje několik lekaček (náhlý obrázek přes celou obrazovku
   s hlasitým zvukem). Ve výchozím stavu jsou **vypnuté**; kdo chce, zapne si je v Menu →
   „Lekačky: zapnuté/vypnuté“. Obraz nebliká opakovaně, ale citlivější studenty je dobré

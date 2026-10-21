@@ -503,6 +503,11 @@ button:focus-visible, input:focus-visible {
 .message p + p { margin-top: 4px; }
 .message .muted { color: var(--muted); font-style: italic; }
 .message .go { margin-left: 12px; padding: 2px 12px; vertical-align: baseline; }
+.message .why { margin-left: 8px; padding: 0 9px; font-size: 13px; line-height: 1.5; vertical-align: baseline; border-radius: 10px; }
+.message .why-text { color: var(--muted); font-style: italic; }
+.message .nudge { font-style: italic; color: var(--ink); }
+.message .nudge::before { content: 'Vzkaz od D.: '; color: var(--gold); font-style: normal; letter-spacing: 0.02em; }
+.message .aside { color: var(--muted); font-style: italic; }
 
 .inventory {
   display: flex;
@@ -861,6 +866,22 @@ button:focus-visible, input:focus-visible {
 .stats dd { margin: 0; color: var(--gold-bright); font-family: var(--digits); font-variant-numeric: lining-nums tabular-nums; }
 
 .photo-hint { color: var(--muted); font-style: italic; font-size: 15px; margin: 0 0 24px; }
+
+/* Diplom: rámeček, tým, hvězdičky a odznaky (k vyfocení) */
+.diploma { position: relative; padding: 28px 22px 26px; border: 1px solid var(--gold-dim); outline: 1px solid rgba(230, 198, 126, 0.25); outline-offset: 5px; background: linear-gradient(180deg, rgba(230, 198, 126, 0.05), rgba(0, 0, 0, 0)); }
+.diploma-kicker { margin: 0 0 6px; color: var(--muted); font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; }
+.diploma h2 { margin-bottom: 8px; }
+.diploma-team { margin: 0 0 2px; font-size: clamp(22px, 4vw, 30px); color: var(--ink); letter-spacing: 0.04em; }
+.diploma-sub { margin: 0 0 10px; color: var(--muted); font-size: 15px; }
+.stars { font-size: 34px; line-height: 1.1; letter-spacing: 0.12em; color: var(--gold-bright); text-shadow: 0 0 14px rgba(230, 198, 126, 0.35); }
+.stars-why { margin: 2px 0 14px; color: var(--muted); font-size: 14px; font-style: italic; }
+.badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 18px; }
+.badges[hidden] { display: none; }
+.badge { display: inline-flex; flex-direction: column; align-items: center; min-width: 120px; padding: 6px 12px; border: 1px solid var(--gold-dim); border-radius: 8px; background: rgba(230, 198, 126, 0.07); }
+.badge b { font-weight: normal; color: var(--gold-bright); font-size: 15px; }
+.badge b::before { content: '★ '; }
+.badge small { color: var(--muted); font-size: 11.5px; line-height: 1.25; max-width: 170px; text-align: center; }
+.diploma .finish-text { margin-bottom: 18px; font-size: 16px; }
 
 .fatal-wrap p { color: var(--muted); white-space: pre-line; }
 

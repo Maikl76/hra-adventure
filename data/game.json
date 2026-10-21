@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.23 – ukázka",
+    "version": "0.24 – ukázka",
     "totalGates": 9
   },
 
@@ -22,12 +22,22 @@
     "duration": 30
   },
 
+  "badges": [
+    { "id": "bez_napovedy", "label": "Bez nápovědy", "desc": "Celý svět bez jediné nápovědy.", "maxHints": 0 },
+    { "id": "pevna_ruka", "label": "Pevná ruka", "desc": "Nejvýš dva chybné pokusy u zámků.", "maxErrors": 2 }
+  ],
+
   "tracks": [
     {
       "id": "civilni",
       "name": "Laboratoře",
       "description": "Sport, výuka, zdraví. Brány tělovýchovy a sportu.",
-      "rooms": ["kabinet"]
+      "rooms": ["kabinet"],
+      "finish": {
+        "badges": [
+          { "id": "rychlik", "label": "Rychlík", "desc": "Kabinet do 20 minut.", "maxMinutes": 20 }
+        ]
+      }
     },
     {
       "id": "vojenska",
@@ -52,6 +62,17 @@
           { "label": "Svalovec – funkce svalů", "value": "správné zásahy: {svaly_spravne}, vedle: {svaly_chybne}", "requires": ["svaly_spravne"] },
           { "label": "Nejvyšší výskok (chodba na cvičiště)", "value": "{skok_max:2} m", "requires": ["skok_max"] },
           { "label": "Chodba na cvičiště", "value": "přeskočená – prohlížeč neuměl 3D grafiku", "requires": ["prekazky_preskoceno"] }
+        ],
+        "badges": [
+          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 75 minut.", "maxMinutes": 75 },
+          { "id": "kamera", "label": "Kamera nelže", "desc": "Zkouška stability změřená kamerou.", "when": { "vars": ["zed_panev"] } },
+          { "id": "silak", "label": "Silák", "desc": "Aspoň 30 platných goblet dřepů za 90 s.", "when": { "vars": ["goblet_n"], "exprs": ["goblet_n >= 30"] } },
+          { "id": "anatom", "label": "Anatom", "desc": "V bludišti každá kost napoprvé.", "when": { "vars": ["kosti_spravne", "kosti_chybne"], "exprs": ["kosti_chybne == 0"] } },
+          { "id": "skladac", "label": "Skladač kostí", "desc": "Kostra z kabinetu složená bez chyby.", "when": { "vars": ["kostra_chybne"], "exprs": ["kostra_chybne == 0"] } },
+          { "id": "nezlomny", "label": "Nezlomný", "desc": "Bludiště i chodba bez jediného pádu.", "when": { "flags": ["svalovec_porazen"], "vars": ["padnuti"], "exprs": ["padnuti == 0"] } },
+          { "id": "pruzina", "label": "Pružina", "desc": "Výskok aspoň 0,6 m.", "when": { "vars": ["skok_max"], "exprs": ["skok_max >= 0.6"] } },
+          { "id": "doskok", "label": "Měkký doskok", "desc": "Každý seskok do podřepu.", "when": { "vars": ["doskoky_mekke", "doskoky_tvrde"], "exprs": ["doskoky_mekke >= 1", "doskoky_tvrde == 0"] } },
+          { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } }
         ]
       }
     },
@@ -72,6 +93,15 @@
           { "label": "Výskok ověřený kamerou", "bool": "skok_kamera" },
           { "label": "NEON AIM", "value": "velké blízké {terce_a} ms, malé vzdálené {terce_b} ms", "requires": ["terce_a", "terce_b"] },
           { "label": "Basketbal – trestné hody", "value": "{kose} košů z 10", "requires": ["kose"] }
+        ],
+        "badges": [
+          { "id": "rychlik", "label": "Rychlík", "desc": "Oba levely do 45 minut.", "maxMinutes": 45 },
+          { "id": "blesk", "label": "Blesk", "desc": "Nejlepší reakce do 250 ms.", "when": { "vars": ["reflex_best"], "exprs": ["reflex_best <= 250"] } },
+          { "id": "dynamo", "label": "Dynamo", "desc": "Výkon při dřepech aspoň 150 W.", "when": { "vars": ["n", "t"], "exprs": ["70*9.81*0.4*n/t >= 150"] } },
+          { "id": "skokan", "label": "Skokan", "desc": "Doba letu aspoň 0,5 s – jako docent.", "when": { "vars": ["tl"], "exprs": ["tl >= 0.5"] } },
+          { "id": "kamera", "label": "Kamera nelže", "desc": "Výskok změřený kamerou.", "when": { "vars": ["skok_kamera"], "exprs": ["skok_kamera == 1"] } },
+          { "id": "oko", "label": "Ostré oko", "desc": "NEON AIM bez jediné střely vedle.", "when": { "vars": ["terce_chyby"], "exprs": ["terce_chyby == 0"] } },
+          { "id": "strelec", "label": "Střelec", "desc": "Aspoň 5 košů z 10.", "when": { "vars": ["kose"], "exprs": ["kose >= 5"] } }
         ]
       }
     }
@@ -1625,6 +1655,63 @@
       "storm": { "place": "okno", "steps": ["zmereno", "kniha_vzata", "klic_vzat", "kalkulacka_vzata"] },
       "enterText": "Anatomický kabinet. Pach formalínu a starého papíru. Na stole svítí lampa – jako by tu ještě před chvílí někdo seděl.",
       "startView": "u_stolu",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "klic_vzat"
+            ]
+          },
+          "text": "Nikdy jsem neodcházel bez klobouku. Když tam visí plášť, mám v něm pořád svoje věci – a kapsy pláště jsou na klíčky."
+        },
+        {
+          "when": {
+            "flags": [
+              "klic_vzat"
+            ],
+            "notFlags": [
+              "suplik_otevren"
+            ]
+          },
+          "text": "Malý klíček, malá klíčová dírka. Šuplík u mého stolu – vyber klíček v inventáři a klikni na šuplík."
+        },
+        {
+          "when": {
+            "flags": [
+              "suplik_otevren"
+            ],
+            "notFlags": [
+              "zmereno"
+            ]
+          },
+          "text": "Bez měření se v biomechanice nehneš. Pravítko ze šuplíku přilož k modelu paže: vyber ho v inventáři a klikni na model."
+        },
+        {
+          "when": {
+            "flags": [
+              "zmereno"
+            ],
+            "notFlags": [
+              "kniha_vzata"
+            ]
+          },
+          "text": "Postup je v knize se zeleným hřbetem. Zelený hřbet. Knihovna. Víc neřeknu, to už by bylo řešení."
+        },
+        {
+          "when": {
+            "flags": [
+              "kniha_vzata"
+            ],
+            "notFlags": [
+              "kalkulacka_vzata"
+            ]
+          },
+          "text": "Počítat z hlavy je úctyhodné, ale u tabule stojí židle a o ni je opřená kalkulačka. Nechal jsem ji tam schválně."
+        },
+        {
+          "text": "Brána má dvě otázky. První je o síle svalu – rovnováha momentů, vzdálenosti máš v zápisníku a vzorec v knize. Druhá je o druhu páky – plakát se třemi pákami visí u stolu."
+        }
+      ],
 
       "activities": {
         "mereni_paze": {
@@ -2216,6 +2303,118 @@
         { "when": { "notFlags": ["herna_vstup"] }, "do": [ { "set": "herna_vstup" }, { "sound": "doorSoft" } ] }
       ],
       "startView": "stul",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "pc_probuzen"
+            ]
+          },
+          "text": "Herní počítač u stolu se probouzí, jen když k němu někdo přijde. Já u něj trávil víc času, než přiznám."
+        },
+        {
+          "when": {
+            "flags": [
+              "pc_probuzen"
+            ],
+            "notFlags": [
+              "reflex_hotovo"
+            ]
+          },
+          "text": "Na obrazovce čeká REFLEX TEST. Po něm se v tomhle stole něco odemkne – slyšel jsem to cvaknout snad stokrát."
+        },
+        {
+          "when": {
+            "flags": [
+              "reflex_hotovo"
+            ],
+            "notFlags": [
+              "uv_nalezena"
+            ]
+          },
+          "text": "Prostřední šuplík s elektronickým zámkem už není zamčený. Podívej se do něj."
+        },
+        {
+          "when": {
+            "flags": [
+              "uv_nalezena"
+            ],
+            "notFlags": [
+              "vitrina_otevrena"
+            ]
+          },
+          "text": "Vitrína chce kód: výkon posledního hráče. Kdo tu hrál naposledy, ví žebříček u dveří LEVEL 1. Hádej, kdo to byl."
+        },
+        {
+          "when": {
+            "flags": [
+              "vitrina_otevrena"
+            ],
+            "notFlags": [
+              "karta_nalezena"
+            ]
+          },
+          "text": "Vitrína je otevřená. Krabice od sluchátek nejsou vždycky jen od sluchátek."
+        },
+        {
+          "when": {
+            "flags": [
+              "karta_nalezena"
+            ],
+            "notFlags": [
+              "uv_kostra"
+            ]
+          },
+          "text": "Měřicí stanice nemá proud a pojistková skříň se ptá na kosti. SVĚTLO UKÁŽE CESTU – UV svítilnu máš. Posviť na kostru."
+        },
+        {
+          "when": {
+            "flags": [
+              "uv_kostra"
+            ],
+            "notFlags": [
+              "pojistky_otevreny"
+            ]
+          },
+          "text": "Šipka pod UV světlem ukazuje dolů – na mosazný štítek na podstavci kostry. Tam je odpověď pro pojistkovou skříň."
+        },
+        {
+          "when": {
+            "flags": [
+              "pojistky_otevreny"
+            ],
+            "notFlags": [
+              "stanice_proud"
+            ]
+          },
+          "text": "Hlavní jistič unese 1000 W. Sečti, co běží: počítač 400, televizor 120, neony 60, lednice 300 – a stanice chce dalších 150. Něco musí dolů. Počítač ne, ten jsem přelepil páskou osobně."
+        },
+        {
+          "when": {
+            "flags": [
+              "stanice_proud"
+            ],
+            "notFlags": [
+              "drepy_hotovo"
+            ]
+          },
+          "text": "Stanice svítí a chce hráčskou kartu. Pak dřepy – pořádné, pod devadesát stupňů v koleni. Komise jsem já."
+        },
+        {
+          "when": {
+            "flags": [
+              "drepy_hotovo"
+            ],
+            "notFlags": [
+              "kniha_drep_vzata"
+            ]
+          },
+          "text": "Dveře LEVEL 1 chtějí výkon. Vzorec je v knize Fyzika dřepu – svítí v knihovně, nejde ji přehlédnout. Tedy jde, jak vidím."
+        },
+        {
+          "text": "Výkon je práce za čas: tíha krát výška, kolikrát, za kolik sekund. Čísla máš v zápisníku a kalkulačku v šuplíku stolu, pokud sis ji nevzal."
+        }
+      ],
       "_pojistky": "Zátěž jističe = 400 (počítač, nejde vypnout) + 120·(1−tv_vyp) + 60·(1−neon_vyp) + 300·(1−lednice_vyp) + 150·stanice_proud; víc než 1000 W = jistič vypadne.",
 
       "activities": {
@@ -3585,6 +3784,82 @@
         }
       ],
       "startView": "automat",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "terce_hotovo"
+            ]
+          },
+          "text": "Měřič u automatu JUMP potřebuje dvě věci: konektor a baterii. Konektor je výhra na neonové střelnici. Trefuj terče – a sleduj, které ti trvají déle."
+        },
+        {
+          "when": {
+            "flags": [
+              "terce_hotovo"
+            ],
+            "notFlags": [
+              "deska_kabel"
+            ]
+          },
+          "text": "Konektor z výdejního okénka patří k měřiči kontaktní desky. Vyber ho v inventáři a klikni na měřič."
+        },
+        {
+          "when": {
+            "flags": [
+              "deska_kabel"
+            ],
+            "notFlags": [
+              "skrinka_stena_otevrena"
+            ]
+          },
+          "text": "Baterie 9 V je ve skříňce na stěně s ryskami. Kód je výška mého výskoku – a na dřevěné stěně jsou moje dvě značky. Odečti je."
+        },
+        {
+          "when": {
+            "flags": [
+              "skrinka_stena_otevrena"
+            ],
+            "notFlags": [
+              "mer_baterie"
+            ]
+          },
+          "text": "Baterii vyber v inventáři a klikni na měřič u automatu."
+        },
+        {
+          "when": {
+            "flags": [
+              "mer_baterie"
+            ],
+            "notFlags": [
+              "skok_hotovo"
+            ]
+          },
+          "text": "Automat JUMP měří dobu letu. Podřep, výdrž, výskok. S kamerou, nebo bez ní – automat ti řekne jak."
+        },
+        {
+          "when": {
+            "flags": [
+              "skok_hotovo"
+            ],
+            "notFlags": [
+              "kniha_skok_vzata"
+            ]
+          },
+          "text": "Z doby letu na výšku: vzorec je v knize Fyzika skoku, svítí v polici u stěny s ryskami."
+        },
+        {
+          "when": {
+            "notFlags": [
+              "kos_hotovo"
+            ]
+          },
+          "text": "Dveře LEVEL 2 se ptají i na basketbal. Automat u stěny – tři koše z deseti stačí. Vysoký oblouk, a když se trefíš, ten hod opakuj."
+        },
+        {
+          "text": "Čtyři otázky na dveřích a všechny odpovědi už máš: výška z doby letu je v zápisníku, k malým terčům a vysokému oblouku dojdeš úvahou – a že je na Měsíci gravitace šestkrát slabší, stojí v otázce."
+        }
+      ],
       "activities": {
         "skok": {
           "type": "jump",
@@ -4942,6 +5217,9 @@
               "set": "kliky_hotovo"
             },
             {
+              "text": "Komisař si odkašlal: „Správně. Ruce nesou {kliky_procent} procent. Doubek tvrdil, že sto – prý cítil každé kilo.“"
+            },
+            {
               "note": "Kliky na decimální váze: ruce nesou {kliky_kg:1} kg z 70 kg ({kliky_procent} %), s batohem 15 kg {kliky_batoh_kg:1} kg. Rovnováha momentů kolem špiček: m · g · a = F · b → F = m · g · a / b.",
               "noteKey": "kliky"
             }
@@ -4987,6 +5265,9 @@
           "done": [
             {
               "set": "hod_hotovo"
+            },
+            {
+              "text": "Komisař: „Jednička. A pozor na hodiny – Doubek loni trefil přesně dvanáctku.“"
             },
             {
               "note": "Hod: medicinbal vsedě u stěny (5,5 m/s z výšky 0,9 m, půl metru před stěnou) doletí nejdál asi pod 38°, granát (20 m/s z 2 m) asi pod 44°. Čím vyšší odhod proti doletu, tím víc pod 45°. Dolet roste s druhou mocninou rychlosti.",
@@ -5064,6 +5345,9 @@
               },
               "do": [
                 {
+                  "text": "Komisař si povzdechl: „Dřep vynechán. Doubek to taky zkoušel.“"
+                },
+                {
                   "note": "Goblet dřep: vynechán.",
                   "noteKey": "goblet"
                 }
@@ -5071,6 +5355,9 @@
             },
             {
               "do": [
+                {
+                  "text": "Komisař zapíchl tužku do protokolu: „{goblet_n} dřepů. Doubek jich dal dvacet čtyři a pak si stěžoval na lavičku.“"
+                },
                 {
                   "note": "Goblet dřep (90 s): {goblet_n} platných dřepů.",
                   "noteKey": "goblet"
@@ -5259,7 +5546,7 @@
                 {
                   "do": [
                     {
-                      "text": "Nástěnné hodiny se zastavily přesně na dvanáctce. Pod nimi cedulka: COOPERŮV TEST – 12 MINUT."
+                      "text": "Nástěnné hodiny se zastavily přesně na dvanáctce. Pod nimi cedulka: COOPERŮV TEST – 12 MINUT. Komisař tvrdí, že je zastavil Doubkův medicinbal."
                     }
                   ]
                 }
@@ -5322,6 +5609,9 @@
                   "do": [
                     {
                       "set": "protokol_viden"
+                    },
+                    {
+                      "text": "Protokol rtn. Doubka. Na okraji jeho písmem: „Běh jsem zvolil, protože bazén je studenej.“"
                     },
                     {
                       "sound": "paper"
@@ -6435,7 +6725,66 @@
         ]
       },
       "darkness": 0,
-      "enterText": "Po schodech ze skladu jsi vystoupal do sklepních chodeb – tady začíná bludiště. Pod stropem bzučí zářivky, některé blikají. (Ovládání: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.)",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "klic_zbrojni_nalezen"
+            ]
+          },
+          "text": "Nástěnka u začátku: od hasicího přístroje po azimutech. Deska podlahy má 2,4 m, kompas máš nahoře. Na správném místě se otoč na daný azimut a klikni na zeď před sebou – jedna cihla se viklá."
+        },
+        {
+          "when": {
+            "flags": [
+              "klic_zbrojni_nalezen"
+            ],
+            "notFlags": [
+              "zbrojni_otevrena"
+            ]
+          },
+          "text": "Klíč máš. Zbrojní skříň je u začátku chodby – vyber klíč v inventáři a klikni na ni."
+        },
+        {
+          "when": {
+            "flags": [
+              "zbrojni_otevrena"
+            ],
+            "notFlags": [
+              "zavora_otevrena"
+            ]
+          },
+          "text": "Závora má červené čidlo. Laser na čidlo. Víc do toho nevkládej."
+        },
+        {
+          "when": {
+            "flags": [
+              "zavora_otevrena"
+            ],
+            "notFlags": [
+              "kostra_slozena"
+            ]
+          },
+          "text": "Mříž ke schodišti otevře až celá kostra z kabinetu – chybí jí osm kostí. Každý kostlivec, kterého rozsypeš, ti jednu nechá na hromádce. Klikni na hromádku a pak s kostí na kostru u mříže."
+        },
+        {
+          "when": {
+            "flags": [
+              "kostra_slozena"
+            ],
+            "notFlags": [
+              "mriz_otevrena"
+            ]
+          },
+          "text": "Číselník na mříži svítí. Cedule u schodiště říká, kolik je schodů a jak jsou vysoké. Práce proti tíze: hmotnost krát g krát výška."
+        },
+        {
+          "text": "Bloudíš? Kompas nahoře a nápis TĚLOCVIČNA – SCHODIŠTĚ na zdi ukazují směr. Ve slepých uličkách jsem nechal plakát a lékárničku – aspoň něco."
+        }
+      ],
+      "enterText": "Po schodech ze skladu jsi vystoupal do sklepních chodeb – tady začíná bludiště. Pod stropem bzučí zářivky, některé blikají.",
+      "enterMore": "Ovládání: ↑ nebo W = krok vpřed, ↓ = krok vzad, ← → = otočit se, na věc před sebou klikni nebo stiskni Enter. Laserovou puškou se míří myší nebo prstem.",
+      "enterMoreLabel": "Ovládání",
       "shortcut": [
         {
           "give": "kalkulacka"
@@ -6659,7 +7008,7 @@
         ],
         "skeletons": [
           {
-            "id": "k1",
+            "id": "k1", "name": "Bohouš", "intro": "Podle štítku na krku bývalý učební model z kabinetu. Chybí mu dva zuby a trpělivost.",
             "cell": [
               14,
               9
@@ -6670,7 +7019,7 @@
             ]
           },
           {
-            "id": "k2",
+            "id": "k2", "name": "Leopold", "intro": "Má na sobě zbytky kravaty. Zřejmě bývalý člen zkušební komise.",
             "cell": [
               17,
               13
@@ -6681,7 +7030,7 @@
             ]
           },
           {
-            "id": "k3",
+            "id": "k3", "name": "Vendelín", "intro": "Stojí mírně nahrbený – celý život seděl u mikroskopu.",
             "cell": [
               18,
               9
@@ -6692,7 +7041,7 @@
             ]
           },
           {
-            "id": "k4",
+            "id": "k4", "name": "Hugo", "intro": "Chrastí hlasitěji než ostatní. Prý běhal maratony.",
             "cell": [
               16,
               4
@@ -6703,7 +7052,7 @@
             ]
           },
           {
-            "id": "k5",
+            "id": "k5", "name": "Kazimír", "intro": "Hlídá slepou uličku. Zabloudil tu dřív než ty.",
             "cell": [
               11,
               1
@@ -6714,7 +7063,7 @@
             ]
           },
           {
-            "id": "k6",
+            "id": "k6", "name": "Ferda", "intro": "Stojí u plakátu kostry, jako by ho sám namaloval.",
             "cell": [
               12,
               9
@@ -6725,7 +7074,7 @@
             ]
           },
           {
-            "id": "k7",
+            "id": "k7", "name": "Cyril", "intro": "Poslední hlídka před mříží. Má přísný pohled, i když nemá oči.",
             "cell": [
               18,
               1
@@ -6736,7 +7085,7 @@
             ]
           },
           {
-            "id": "k8",
+            "id": "k8", "name": "Metoděj", "intro": "Přišel se jen podívat, co je to za hluk.",
             "cell": [
               11,
               3
@@ -7002,11 +7351,11 @@
             }
           },
           "texts": {
-            "wake": "Z šera se vynořil kostlivec a chrastí kostmi! Zasáhni kost, kterou ukazuje puška: {name}.",
-            "wakeNoWeapon": "Z šera se vynořil kostlivec! Bez laserové pušky na něj nic nezmůžeš – zbrojní skříň je u začátku chodby.",
+            "wake": "Z šera se vynořil kostlivec{who} a chrastí kostmi! Zasáhni kost, kterou ukazuje puška: {name}.",
+            "wakeNoWeapon": "Z šera se vynořil kostlivec{who}! Bez laserové pušky na něj nic nezmůžeš – zbrojní skříň je u začátku chodby.",
             "hit": "Zásah – {name}!",
             "next": "Teď zasáhni: {name}.",
-            "defeated": "Kostlivec se rozsypal na hromádku kostí. Oddechneš si – životy doplněny. Jedna kost z hromádky patří ke kostře z kabinetu – klikni na ni.",
+            "defeated": "Kostlivec{who} se rozsypal na hromádku kostí. Oddechneš si – životy doplněny. Jedna kost z hromádky patří ke kostře z kabinetu – klikni na ni.",
             "wrong": "Vedle – trefil jsi: {hit}. Hledej {name} – {where}. Na kostlivci teď bliká.",
             "between": "Laser prošel mezi kostmi. Hledej {name} – {where}. Na kostlivci teď bliká.",
             "attack": "Kostlivec tě praštil! Zbývá životů: {lives}.",
@@ -7926,7 +8275,33 @@
         "steps": ["svalovec_porazen"]
       },
       "darkness": 0,
-      "enterText": "Za dveřmi tělocvičny je široká chodba ven na cvičiště. Stojí v ní bedny, u plošiny žebřiny a vzadu v šeru… něco jako anatomický model. (Ovládání: klikni do obrazu a rozhlížej se myší, chůze W A S D nebo šipkami, mezerník = skok – drž ho déle pro delší odraz, C = podřep, E = akce. Na tabletu páčka vlevo a tlačítka vpravo.)",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "puska_cviciste"
+            ]
+          },
+          "text": "Bedny se zdolávají skokem – drž mezerník a pusť. Na vyšší se vyleze klávesou E, po žebřinách na plošinu. Z plošiny seskoč, ale do podřepu (C). Cvičná laserová puška je ve stojanu u levé stěny, dál v chodbě."
+        },
+        {
+          "when": {
+            "flags": [
+              "puska_cviciste"
+            ],
+            "notFlags": [
+              "svalovec_porazen"
+            ]
+          },
+          "text": "Svalovec útočí třemi způsoby a před každým se napřáhne. Pruh nahoře říká, který sval útok provede – ten zasáhni. Když mineš, správný sval začne blikat. A nestřílej do kostí, kosti nic nehýbou."
+        },
+        {
+          "text": "Dveře na cvičiště jsou otevřené. Běž – a nezapomeň, co jsi tu spočítal."
+        }
+      ],
+      "enterText": "Za dveřmi tělocvičny je široká chodba ven na cvičiště. Stojí v ní bedny, u plošiny žebřiny a vzadu v šeru… něco jako anatomický model.",
+      "enterMore": "Ovládání: klikni do obrazu a rozhlížej se myší, chůze W A S D nebo šipkami, mezerník = skok – drž ho déle pro delší odraz, C = podřep, E = akce. Na tabletu chůze prstem v levé části obrazu a tlačítka vpravo.",
+      "enterMoreLabel": "Ovládání",
       "shortcut": [
         {
           "text": "Začínáš rovnou v chodbě z tělocvičny na cvičiště (3D). Zkus vyskočit na bedny, vylézt po žebřinách na plošinu, seskočit z ní – a pak svalovce. Výpočty se ukážou tady dole."
@@ -8120,22 +8495,31 @@
           "noWebgl": "Tento prohlížeč neumí 3D grafiku (WebGL), takže chodbu na cvičiště nezobrazí. Zkus jiný prohlížeč nebo počítač – nebo chodbu přeskoč (na závěrečné obrazovce to bude uvedené).",
           "skipButton": "Přeskočit chodbu ›",
           "charge": "odraz {t} s · impulz {J} N·s · výskok {h} m",
-          "jump": "Odraz {t} s × síla {F} N = impulz {J} N·s. Rychlost odrazu v = impulz : hmotnost = {J} : {m} = {v} m/s, výška výskoku h = v² : 2g = {h} m.",
+          "jump": "Výskok {h} m – odraz {t} s dal impulz {J} N·s.",
+          "jumpMore": "Impulz = síla × doba odrazu = {F} N × {t} s = {J} N·s. Rychlost odrazu v = impulz : hmotnost = {J} : {m} = {v} m/s a výška h = v² : 2g = {h} m.",
           "pushLimit": "Déle než {tmax} s se odrážet nejde – pak už máš nohy propnuté.",
-          "jumpOnto": "Na bednu {label} jsi vyskočil: těžiště musíš zvednout o {box} m, k tomu potřebuješ rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, tedy impulz aspoň {Jneed} N·s.",
-          "jumpShort": "Na bednu {label} to nestačilo: těžiště musíš zvednout o {box} m – potřebuješ rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, tedy impulz aspoň {Jneed} N·s. Drž mezerník déle.",
-          "jumpImpossible": "Na {label} nevyskočíš: ani nejdelší odraz ({Jmax} N·s) tě s hmotností {m} kg nezvedne o {box} m, nejvýš asi o {hmax} m. {extra}",
+          "jumpOnto": "Jsi na bedně {label}!",
+          "jumpOntoMore": "Těžiště muselo nahoru o {box} m: rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, tedy impulz aspoň m · v = {m} · {vneed} = {Jneed} N·s.",
+          "jumpShort": "Na bednu {label} to nestačilo – potřebuješ impulz aspoň {Jneed} N·s. Drž mezerník déle.",
+          "jumpShortMore": "Těžiště musíš zvednout o {box} m: rychlost odrazu aspoň v = √(2g·h) = {vneed} m/s, impulz = m · v = {m} · {vneed} = {Jneed} N·s.",
+          "jumpImpossible": "Na {label} nevyskočíš – s hmotností {m} kg vyskočíš nejvýš asi {hmax} m. {extra}",
+          "jumpImpossibleMore": "Nejdelší odraz dá impulz {Jmax} N·s, rychlost v = {Jmax} : {m} a výška v² : 2g = {hmax} m. Na {box} m by bylo potřeba aspoň {Jneed} N·s.",
           "tryNoPack": "Zkus to bez batohu.",
           "climbInstead": "Sem musíš vylézt (E), nebo najít jinou cestu.",
-          "packOn": "Bereš batoh {kg} kg – teď vážíš {m} kg. Stejný odraz (stejný impulz) ti dá menší rychlost, takže vyskočíš níž. Batoh odložíš klávesou E.",
+          "packOn": "Bereš batoh {kg} kg – teď vážíš {m} kg. Odložíš ho klávesou E.",
+          "packOnMore": "Stejný odraz dá stejný impulz, ale rychlost v = impulz : hmotnost vyjde menší – a výskok s ní.",
           "packOff": "Batoh odložen – vážíš zase {m} kg.",
           "packHud": "Batoh {kg} kg · celkem {m} kg",
-          "landSoft": "Seskok z {H} m: dopadová rychlost v = √(2g·h) = {v} m/s. Doskok do podřepu – brzdíš {dt} s, průměrná síla F = m·v : t + m·g = {F} kN, to je asi {ratio}× tvoje tíha. Pokrčená kolena prodloužila brzdění, a proto je síla menší.",
-          "landHard": "Seskok z {H} m: dopadová rychlost v = √(2g·h) = {v} m/s. Propnutá kolena – brzdíš jen {dt} s, průměrná síla F = m·v : t + m·g = {F} kN, to je asi {ratio}× tvoje tíha!",
+          "landSoft": "Doskok do podřepu z {H} m: síla asi {ratio}× tvoje tíha ({F} kN).",
+          "landSoftMore": "Dopadová rychlost v = √(2g·h) = {v} m/s. Brzdil jsi {dt} s, průměrná síla F = m·v : t + m·g = {F} kN. Pokrčená kolena prodloužila brzdění, a proto je síla menší.",
+          "landHard": "Tvrdý dopad z {H} m s propnutými koleny: síla asi {ratio}× tvoje tíha ({F} kN)!",
+          "landHardMore": "Dopadová rychlost v = √(2g·h) = {v} m/s. Brzdil jsi jen {dt} s, průměrná síla F = m·v : t + m·g = {F} kN. Podřep (C) brzdění prodlouží a sílu zmenší.",
           "landHurt": "Au – ztrácíš život (zbývá {lives}). Příště drž při dopadu C (podřep).",
-          "climb": "Vylezl jsi po žebřinách o {h} m za {t} s. Práce W = m·g·h = {m} · 9,81 · {h} = {W} J, výkon P = W : t = {P} W.",
-          "mantle": "Vytáhl ses nahoru o {h} m. Práce W = m·g·h = {m} · 9,81 · {h} = {W} J.",
-          "tooHigh": "Tady je to {h} m vysoko – na to nevylezeš.",
+          "climb": "Žebřiny: {h} m za {t} s – práce {W} J, výkon {P} W.",
+          "climbMore": "Práce W = m · g · h = {m} · 9,81 · {h} = {W} J, výkon P = W : t = {W} : {t} = {P} W.",
+          "mantle": "Vytáhl ses nahoru o {h} m – práce {W} J.",
+          "mantleMore": "W = m · g · h = {m} · 9,81 · {h} = {W} J.",
+          "tooHigh": "Tady je to {h} m vysoko – na to nevylezeš. Ani docent.",
           "jumpHere": "Na {h} m se nešplhá – vyskoč: drž mezerník a pusť.",
           "promptJump": "Bedna {h} m: drž mezerník (delší odraz = větší impulz)",
           "promptMantle": "E – vylézt nahoru ({h} m)",
@@ -8145,7 +8529,7 @@
           "promptClimbing": "W nahoru · S dolů · mezerník = pustit se",
           "promptEdge": "Seskok 2 m – při dopadu drž C (podřep)!",
           "promptDoor": "Dveře na cvičiště – zamčeno",
-          "gunTaken": "Bereš cvičnou laserovou pušku (laser game – bez krve). Vzadu v šeru se něco pohnulo…",
+          "gunTaken": "Bereš cvičnou laserovou pušku (laser game – bez krve). Na pažbě je vyryto D. Vzadu v šeru se něco pohnulo…",
           "wake": "Svalovec se probral! Sleduj, k jakému pohybu se chystá, a zasáhni sval, který ten pohyb provede. Míříš křížkem uprostřed obrazu, střílíš klikem, Enterem nebo X.",
           "wakeNoGun": "Svalovec se probral! Bez laserové pušky na něj nic nezmůžeš – stojan je u levé stěny.",
           "correct": "Zásah! {muscle} – {does}. Útok „{attack}“ už svalovec neudělá.",
@@ -8154,7 +8538,7 @@
           "notNow": "Trefil jsi: {muscle} – {does}. Teď ale nepracuje. Zasáhni ho, až se svalovec chystá k pohybu, který tenhle sval provádí.",
           "info": "Trefil jsi: {muscle} – {does}.",
           "disabled": "Tenhle sval ({muscle}) už je vypnutý.",
-          "bone": "Laser zasáhl kost – míř na svaly.",
+          "bone": "Laser zasáhl kost. Kosti nic nehýbou – míř na svaly.",
           "hint": "Na svalovci teď bliká sval, který útok provede.",
           "bannerHint": "Nápověda: sval, který útok provede, bliká",
           "toastCorrect": "Zásah! {muscle}",
@@ -8164,14 +8548,14 @@
           "toastBone": "Kost – míř na svaly",
           "toastDisabled": "{muscle} – už je vypnutý",
           "touch": "Chůze: polož prst kamkoli do levé části obrazu a táhni. Rozhlížení: táhni prstem vpravo. Klepnutí = výstřel.",
-          "hitPlayer": "Svalovec tě zasáhl ({attack})! Zbývá životů: {lives}.",
+          "hitPlayer": "Svalovec tě zasáhl ({attack}) – učebnicově provedené. Zbývá životů: {lives}.",
           "hitNoDamage": "Svalovec tě zasáhl ({attack}) – útoky jsou v Menu vypnuté, nic se ti nestalo.",
-          "death": "Svalovec tě srazil. Začínáš znovu pod plošinou – svaly, které už jsi vypnul, zůstaly vypnuté.",
-          "deathFall": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu pod plošinou.",
-          "deathStart": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu na začátku chodby.",
-          "defeated": "Svalovec se zhroutil! Vypnul jsi všechny svaly, které jeho útoky prováděly. Dveře na cvičiště se otevírají.",
-          "doorLocked": "Dveře na cvičiště jsou zamčené. Otevřou se, až svalovec padne.",
-          "end": "Prošel jsi dveřmi ven na cvičiště."
+          "death": "Svalovec tě srazil. Začínáš znovu pod plošinou – svaly, které už jsi vypnul, zůstaly vypnuté. Ostatní si mezitím protáhl.",
+          "deathFall": "Po tvrdém dopadu nemůžeš dál. Kolena jsou od toho, aby se ohýbala. Začínáš znovu pod plošinou.",
+          "deathStart": "Po tvrdém dopadu nemůžeš dál. Začínáš znovu na začátku chodby – tentokrát s podřepem.",
+          "defeated": "Svalovec se zhroutil! Vypnul jsi všechny svaly, které jeho útoky prováděly – bez nich je i nejhrozivější model jen hromádka. Dveře na cvičiště se otevírají.",
+          "doorLocked": "Dveře na cvičiště jsou zamčené. Otevřou se, až svalovec padne – stojí ti v cestě schválně.",
+          "end": "Prošel jsi dveřmi ven na cvičiště. Noční vzduch, mokrá tráva – a ticho."
         }
       }
     }

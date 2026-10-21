@@ -609,10 +609,38 @@
     Game.setSetting('hudHelpSeen', true);
   }
 
+  /* Závěrečná obrazovka jako diplom: tým, svět, datum, hvězdičky, odznaky a naměřené hodnoty. */
   function showFinish() {
     const st = game.stats();
-    const fin = game.track.finish || data.finish || {};
+    const fin = game.finishDef;
+    if (!game.state.finishedAt) {
+      game.state.finishedAt = Date.now();
+      game.save();
+    }
+    $('finish-kicker').textContent = `${data.meta.title} · diplom`;
     $('finish-title').textContent = fin.title || 'Konec';
+    $('finish-team').hidden = !st.team;
+    $('finish-team').textContent = st.team ? `Tým ${st.team}` : '';
+    $('finish-sub').textContent = `${st.track} · ${new Date(game.state.finishedAt).toLocaleDateString('cs-CZ')}`;
+    const stars = game.stars();
+    const starsEl = $('finish-stars');
+    starsEl.textContent = '★'.repeat(stars.n) + '☆'.repeat(3 - stars.n);
+    starsEl.setAttribute('aria-label', `${stars.n} ze 3 hvězdiček`);
+    $('finish-stars-why').textContent = starsReason(stars);
+    const badges = game.badges();
+    const bx = $('finish-badges');
+    bx.innerHTML = '';
+    bx.hidden = !badges.length;
+    for (const b of badges) {
+      const chip = document.createElement('span');
+      chip.className = 'badge';
+      const name = document.createElement('b');
+      name.textContent = b.label;
+      const desc = document.createElement('small');
+      desc.textContent = b.desc || '';
+      chip.append(name, desc);
+      bx.appendChild(chip);
+    }
     $('finish-text').textContent = fin.text || '';
     $('finish-photo').textContent = fin.photoHint || '';
     const rows = [
@@ -652,6 +680,15 @@
     showScreen('finish');
   }
 
+  /* Proč tolik hvězdiček a co stačí na víc. */
+  function starsReason({ n, limits }) {
+    const hintsText = (k) => (k === 0 ? 'bez nápovědy' : `nejvýš ${k} nápověd${k === 1 ? 'a' : k < 5 ? 'y' : ''}`);
+    const errorsText = (k) => `nejvýš ${k} chybn${k === 1 ? 'ý pokus' : k < 5 ? 'é pokusy' : 'ých pokusů'}`;
+    if (n === 3) return `Tři hvězdičky: ${hintsText(limits.three.hints)} a ${errorsText(limits.three.errors)}.`;
+    if (n === 2) return `Dvě hvězdičky. Na tři: ${hintsText(limits.three.hints)} a ${errorsText(limits.three.errors)}.`;
+    return `Jedna hvězdička. Na dvě: ${hintsText(limits.two.hints)} a ${errorsText(limits.two.errors)}.`;
+  }
+
   function formatTime(ms) {
     const total = Math.round(ms / 1000);
     const m = Math.floor(total / 60);
@@ -678,6 +715,7 @@
       if (game.state && !$('room').hidden && document.visibilityState === 'visible') {
         game.tick(delta);
         checkPhone(delta);
+        checkNudge(delta);
         sinceSave += delta;
         if (sinceSave >= 10000) {
           game.save();
@@ -719,6 +757,29 @@
       handleEvents(game.run([{ set: cfg.flag }, { text: cfg.text || 'Zazvonil telefon.' }]));
       phoneSig = '';
     }
+  }
+
+  /* ---------- Vzkaz od D. ----------
+     V místnosti bez telefonu: když tým nudgeSeconds (180 s) nepostoupí (žádný nový příznak, předmět,
+     zápis ani měření), objeví se vzkaz od D. z „nudges“ místnosti – říká, kam se podívat, ne řešení,
+     a do nápověd se nepočítá. Při dalším zaseknutí přijde další vzkaz v pořadí. */
+  let nudgeSig = '';
+  let nudgeIdle = 0;
+
+  function checkNudge(delta) {
+    const room = game.room;
+    if (!room || room.phone || !(room.nudges || []).length || game.state.finished) return;
+    const st = game.state;
+    const sig = `${game.roomId}|${Object.keys(st.flags).length}|${st.inventory.join(',')}|${st.notes.length}|${JSON.stringify(st.vars).length}`;
+    if (sig !== nudgeSig) { nudgeSig = sig; nudgeIdle = 0; }
+    if (!$('modal').hidden || (room.gate && game.gateOpen())) return;
+    nudgeIdle += delta;
+    if (nudgeIdle < (room.nudgeSeconds || 180) * 1000) return;
+    nudgeIdle = 0;
+    const text = game.nextNudge();
+    if (!text) return;
+    sound.sfx('paper');
+    showMessage([{ text, cls: 'nudge' }]);
   }
 
   /* ====================================================================
@@ -831,7 +892,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.23');
+      const mod = await import('./chodba.js?v=0.24');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -846,6 +907,7 @@
       corridor = c;
       corridorRoom = roomId;
       canvas.__corridor = c;   // pro automatické testy (poloha kostlivců na obrazovce)
+      if (game.state.vars.padnuti === undefined) game.setVars({ padnuti: 0 });   // odznak „Nezlomný“
     }
     corridor.setFlashlight(flashlightOn);
     corridor.setPosition(game.corridorPos());
@@ -869,7 +931,10 @@
       wake: (s) => {
         sound.sfx('kosti');
         const armed = game.hasItem(def.weaponItem || 'laserova_puska');
-        showMessage([armed ? skeletonText(def, 'wake', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'wakeNoWeapon')]);
+        const who = s.name ? ` ${s.name}` : '';
+        const lines = [armed ? skeletonText(def, 'wake', { ...boneInfo(def, s.bones[s.progress]), who }) : skeletonText(def, 'wakeNoWeapon', { who })];
+        if (s.intro) lines.push({ text: s.intro, cls: 'aside' });
+        showMessage(lines);
       },
       attack: (lives) => {
         sound.sfx('au');
@@ -877,6 +942,7 @@
       },
       death: (killer) => {
         sound.sfx('au');
+        game.setVars({ padnuti: (game.state.vars.padnuti || 0) + 1 });
         setTimeout(() => {
           if (!corridor) return;
           corridor.resetAfterDeath(killer);
@@ -911,7 +977,7 @@
       const s = target.skeleton;
       corridor.hit(s, true);
       const lines = [skeletonText(def, 'hit', want)];
-      lines.push(s.alive ? skeletonText(def, 'next', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'defeated'));
+      lines.push(s.alive ? skeletonText(def, 'next', boneInfo(def, s.bones[s.progress])) : skeletonText(def, 'defeated', { who: s.name ? ` ${s.name}` : '' }));
       showMessage(lines);
       if (!s.alive) updateCorridorFacing(false);   // hromádka kostí před hráčem jde hned sebrat
       return;
@@ -1037,7 +1103,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.23');
+        const mod = await import('./chodba3d.js?v=0.24');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1057,6 +1123,7 @@
       world3d = w;
       world3dRoom = roomId;
       box.__world3d = w;   // pro automatické testy
+      if (game.state.vars.padnuti === undefined) game.setVars({ padnuti: 0 });
     }
     world3d.setFlashlight(flashlightOn);
     world3d.setAttacks(Game.getSetting('kostlivciUtoci', true));
@@ -1069,6 +1136,8 @@
       message: (lines) => showMessage(lines),
       sfx: (name) => sound.sfx(name),
       stats: (vals) => game.setVars(vals),
+      flag: (name) => handleEvents(game.run([{ set: name }])),
+      fell: () => game.setVars({ padnuti: (game.state.vars.padnuti || 0) + 1 }),
       defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }])),
       // dveřmi ven: další místnost světa, nebo závěrečná obrazovka
       end: () => {
@@ -1294,7 +1363,7 @@
           modal = () => openItemDetail(ev.item);
           break;
         case 'text':
-          texts.push(ev.text);
+          texts.push(ev.more ? { text: ev.text, more: ev.more, moreLabel: ev.moreLabel } : ev.text);
           break;
         case 'sound':
           sound.sfx(ev.name);
@@ -1365,15 +1434,37 @@
     handleEvents(events);
   }
 
+  /* Řádek zprávy: text, nebo { text, more, cls } – „more“ je delší vysvětlení za tlačítkem „Proč?“
+     (méně čtení najednou: krátká věta hned, výpočet pro toho, kdo chce). */
+  function messageLine(line, muted) {
+    const obj = typeof line === 'string' ? { text: line } : line || { text: '' };
+    const p = document.createElement('p');
+    p.textContent = obj.text;
+    if (muted) p.className = 'muted';
+    if (obj.cls) p.classList.add(obj.cls);
+    if (obj.more) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn why';
+      btn.textContent = obj.moreLabel || 'Proč?';
+      btn.setAttribute('aria-label', `${obj.moreLabel || 'Proč?'} – ukázat víc`);
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ex = document.createElement('span');
+        ex.className = 'why-text';
+        ex.textContent = ` ${obj.more}`;
+        btn.replaceWith(ex);
+      });
+      p.append(' ', btn);
+    }
+    return p;
+  }
+
   /* Zpráva pod místností; „muted“ řádky jsou šedé (nápověda k ovládání). */
   function showMessage(lines, mutedLines) {
     const box = $('message');
     box.innerHTML = '';
-    for (const line of lines) {
-      const p = document.createElement('p');
-      p.textContent = line;
-      box.appendChild(p);
-    }
+    for (const line of lines) box.appendChild(messageLine(line));
     for (const line of mutedLines || []) appendMessage(line, true);
     // Po otevření brány nabídnout průchod (tlačítko v řádku, aby místnost neposkočila).
     if (game.state && game.room.gate && game.gateOpen()) {
@@ -1392,10 +1483,7 @@
   }
 
   function appendMessage(text, muted) {
-    const p = document.createElement('p');
-    p.textContent = text;
-    if (muted) p.className = 'muted';
-    $('message').appendChild(p);
+    $('message').appendChild(messageLine(text, muted));
   }
 
   function showTooltip(hotspot) {
@@ -1812,7 +1900,7 @@
         }
       };
 
-      import('./basket.js?v=0.23').then((mod) => {
+      import('./basket.js?v=0.24').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2435,7 +2523,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.23');
+          const mod = await import('./squats.js?v=0.24');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3297,7 +3385,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.23');
+          const mod = await import('./skok.js?v=0.24');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3675,7 +3763,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.23');
+          const mod = await import('./goblet.js?v=0.24');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4405,7 +4493,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.23');
+          const mod = await import('./predklon.js?v=0.24');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

@@ -10,7 +10,7 @@
  * Rozvržení a texty jsou v game.json (místnost → „world“); hra jen hlásí události (on.message…).
  */
 import * as THREE from '../vendor/three/three.module.min.js';
-import { Svalovec } from './svalovec.js?v=0.23';
+import { Svalovec } from './svalovec.js?v=0.24';
 
 const G = 9.81;
 const EYE = 1.65, EYE_CROUCH = 1.12, R = 0.3, HEIGHT = 1.8;
@@ -591,6 +591,13 @@ export class World3D {
     return text.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
   }
 
+  /* Text s rozbalovacím vysvětlením: když je v texts i „<klíč>More“, vrátí { text, more } („Proč?“). */
+  tm(key, vars = {}) {
+    const text = this.t(key, vars);
+    const more = this.texts[`${key}More`] ? this.t(`${key}More`, vars) : '';
+    return more ? { text, more } : text;
+  }
+
   message(lines) {
     if (this.on.message) this.on.message(Array.isArray(lines) ? lines.filter(Boolean) : [lines]);
   }
@@ -867,13 +874,14 @@ export class World3D {
       if (this.rackGun) this.rackGun.visible = false;
       this.sfx('pickup');
       this.message([this.t('gunTaken')]);
+      if (this.on.flag) this.on.flag('puska_cviciste');   // pro vzkazy od D.
       this.sval.wake();
       this.updateHud();
     } else if (a.kind === 'pack') {
       this.carrying = true;
       this.backpack.visible = false;
       this.sfx('pickup');
-      this.message([this.t('packOn', { m: num(this.mass, 0), kg: this.packKg })]);
+      this.message([this.tm('packOn', { m: num(this.mass, 0), kg: this.packKg })]);
       this.updateHud();
     } else if (a.kind === 'drop') {
       this.carrying = false;
@@ -1038,8 +1046,9 @@ export class World3D {
     }
   }
 
-  /* Ztráta života (úder svalovce nebo tvrdý dopad). */
+  /* Ztráta života (úder svalovce nebo tvrdý dopad); text = řádek nebo pole řádků. */
   hurt(text, deathKey) {
+    const lines = Array.isArray(text) ? text : [text];
     this.lives -= 1;
     this.sfx('au');
     this.ui.flash.classList.remove('w3d-hurt');
@@ -1047,10 +1056,11 @@ export class World3D {
     this.ui.flash.classList.add('w3d-hurt');
     this.updateHud();
     if (this.lives > 0) {
-      this.message([text]);
+      this.message(lines);
       return;
     }
     this.dead = true;
+    if (this.on.fell) this.on.fell();
     this.keys = {};
     this.charge = null;
     this.ui.fade.classList.add('w3d-dark');
@@ -1199,7 +1209,7 @@ export class World3D {
     const lines = [];
     if (jump) {
       const vars = { t: num(jump.t), F: num(jump.F, 0), J: num(jump.J, 0), m: num(m, 0), v: num(jump.v), h: num(jump.h) };
-      lines.push(this.t('jump', vars));
+      lines.push(this.tm('jump', vars));
       if (jump.limited) lines.push(this.t('pushLimit', { tmax: num(this.def.player.pushMax || 0.6, 1) }));
       this.stats.skok_max = Math.max(this.stats.skok_max, jump.h);
       const tg = jump.target;
@@ -1209,11 +1219,11 @@ export class World3D {
         const box = { box: num(tg.rise, 1), label: tg.block.label || `${num(tg.rise, 1)} m`, vneed: num(need), Jneed: num(Jneed, 0), m: num(m, 0) };
         const P = this.def.player;
         const Jmax = (P.force || 400) * (P.pushMax || 0.6);
-        if (Math.abs(ground - tg.block.top) < 0.02) lines.push(this.t('jumpOnto', box));
+        if (Math.abs(ground - tg.block.top) < 0.02) lines.push(this.tm('jumpOnto', box));
         else if (Jmax < Jneed) {
           const hmax = (Jmax / m) ** 2 / (2 * G);
-          lines.push(this.t('jumpImpossible', { ...box, Jmax: num(Jmax, 0), hmax: num(hmax), extra: this.carrying ? this.t('tryNoPack') : this.t('climbInstead') }));
-        } else lines.push(this.t('jumpShort', box));
+          lines.push(this.tm('jumpImpossible', { ...box, Jmax: num(Jmax, 0), hmax: num(hmax), extra: this.carrying ? this.t('tryNoPack') : this.t('climbInstead') }));
+        } else lines.push(this.tm('jumpShort', box));
       }
     }
     if (fall >= 0.9) {
@@ -1223,12 +1233,15 @@ export class World3D {
       const F = m * v / brake + m * G;
       const ratio = F / (m * G);
       const vars = { H: num(fall, 1), v: num(v, 1), dt: num(brake), F: num(F / 1000, 1), ratio: num(ratio, 0), m: num(m, 0) };
-      lines.push(this.t(crouch ? 'landSoft' : 'landHard', vars));
+      lines.push(this.tm(crouch ? 'landSoft' : 'landHard', vars));
+      this.stats.doskoky_mekke = (this.stats.doskoky_mekke || 0) + (crouch ? 1 : 0);   // odznak „Měkký doskok“
+      this.stats.doskoky_tvrde = (this.stats.doskoky_tvrde || 0) + (crouch ? 0 : 1);
+      this.pushStats();
       if (crouch) this.dip = this.reducedMotion ? 0.1 : 0.4;
       else this.shake = this.reducedMotion ? 0 : 0.3;
       this.sfx('step');
       if (!crouch && ratio > HURT_RATIO && this.attacksOn) {
-        this.hurt([...lines, this.t('landHurt', { lives: this.lives - 1 })].join(' '), 'deathFall');
+        this.hurt([...lines, this.t('landHurt', { lives: this.lives - 1 })], 'deathFall');
         return;
       }
     }
@@ -1259,7 +1272,7 @@ export class World3D {
       this.pos.z = L.z - R - 0.1;
       this.mode = 'walk';
       this.onGround = true;
-      this.message([this.t('climb', { h: num(h, 1), t: num(t, 1), m: num(m, 0), W: num(W, 0), P: num(W / t, 0) })]);
+      this.message([this.tm('climb', { h: num(h, 1), t: num(t, 1), m: num(m, 0), W: num(W, 0), P: num(W / t, 0) })]);
       this.sfx('step');
     }
   }
@@ -1278,7 +1291,7 @@ export class World3D {
       this.mode = 'walk';
       this.onGround = true;
       const m = this.mass;
-      this.message([this.t('mantle', { h: num(M.rise, 1), m: num(m, 0), W: num(m * G * M.rise, 0) })]);
+      this.message([this.tm('mantle', { h: num(M.rise, 1), m: num(m, 0), W: num(m * G * M.rise, 0) })]);
       this.sfx('step');
     }
   }
