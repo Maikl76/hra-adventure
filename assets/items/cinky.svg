@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: dvě činky 2 kg -->
+  <g fill="#2a2c30" stroke="#111" stroke-width="1.5">
+    <rect x="6" y="18" width="10" height="20" rx="2"/><rect x="48" y="18" width="10" height="20" rx="2"/><rect x="16" y="25" width="32" height="6" rx="3"/>
+    <rect x="12" y="40" width="10" height="18" rx="2"/><rect x="42" y="40" width="10" height="18" rx="2"/><rect x="22" y="46" width="20" height="6" rx="3"/>
+  </g>
+</svg>

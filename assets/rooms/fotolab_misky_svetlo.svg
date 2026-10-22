@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: červené světlo (přes fotolab_misky) -->
+<defs>
+<linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3630"/><stop offset="1" stop-color="#1e1b17"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3129"/><stop offset="1" stop-color="#17120e"/></linearGradient>
+<linearGradient id="wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6a4a2b"/><stop offset="1" stop-color="#4a3219"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa0a2"/><stop offset="0.5" stop-color="#5e6466"/><stop offset="1" stop-color="#2f3436"/></linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe7cf"/><stop offset="1" stop-color="#d3c8a4"/></linearGradient>
+<linearGradient id="photo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1c22"/><stop offset="1" stop-color="#0b0c10"/></linearGradient>
+<radialGradient id="red"><stop offset="0" stop-color="#ff6a4a" stop-opacity="0.55"/><stop offset="0.5" stop-color="#c0303c" stop-opacity="0.22"/><stop offset="1" stop-color="#c0303c" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1672" height="941" fill="#c0303c" opacity="0.16"/>
+<circle cx="836" cy="150" r="700" fill="url(#red)"/>
+<ellipse cx="836" cy="150" rx="84" ry="16" fill="#ff8a6a" opacity="0.9"/>
+</svg>

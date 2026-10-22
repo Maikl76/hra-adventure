@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Spin zóna – zástupná kresba (lze nahradit obrázkem 1672 × 941 se stejným rozvržením, viz docs/zadani-obrazku-spin.md). -->
+<defs>
+<linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2622"/><stop offset="1" stop-color="#17140f"/></linearGradient>
+<linearGradient id="panel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5a3f28"/><stop offset="0.5" stop-color="#7a5636"/><stop offset="1" stop-color="#4e3522"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2420"/><stop offset="1" stop-color="#0f0c0a"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8bcbe"/><stop offset="0.5" stop-color="#6f7577"/><stop offset="1" stop-color="#3b4042"/></linearGradient>
+<linearGradient id="screen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1a22"/><stop offset="1" stop-color="#061015"/></linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe7cf"/><stop offset="1" stop-color="#d3c8a4"/></linearGradient>
+<radialGradient id="neonC"><stop offset="0" stop-color="#9ff3ff" stop-opacity="0.9"/><stop offset="0.3" stop-color="#36c6e8" stop-opacity="0.35"/><stop offset="1" stop-color="#36c6e8" stop-opacity="0"/></radialGradient>
+<radialGradient id="neonM"><stop offset="0" stop-color="#ffb3f0" stop-opacity="0.9"/><stop offset="0.3" stop-color="#e03cc8" stop-opacity="0.35"/><stop offset="1" stop-color="#e03cc8" stop-opacity="0"/></radialGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#ffe9a8" stop-opacity="0.9"/><stop offset="0.3" stop-color="#ffd37a" stop-opacity="0.3"/><stop offset="1" stop-color="#ffd37a" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1672" height="941" fill="url(#wall)"/>
+<rect x="0" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="120" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="240" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="360" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="480" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="600" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="720" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="840" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="960" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="1080" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="1200" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="1320" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="1440" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="1560" y="380" width="118" height="300" fill="url(#panel)" stroke="#2d1f10" stroke-width="2"/>
+<rect x="0" y="372" width="1672" height="10" fill="#8a6236"/>
+<rect x="0" y="680" width="1672" height="261" fill="url(#floor)"/>
+<path d="M0,680 L-60,941" stroke="#241d18" stroke-width="2"/>
+<path d="M160,680 L100,941" stroke="#241d18" stroke-width="2"/>
+<path d="M320,680 L260,941" stroke="#241d18" stroke-width="2"/>
+<path d="M480,680 L420,941" stroke="#241d18" stroke-width="2"/>
+<path d="M640,680 L580,941" stroke="#241d18" stroke-width="2"/>
+<path d="M800,680 L740,941" stroke="#241d18" stroke-width="2"/>
+<path d="M960,680 L900,941" stroke="#241d18" stroke-width="2"/>
+<path d="M1120,680 L1060,941" stroke="#241d18" stroke-width="2"/>
+<path d="M1280,680 L1220,941" stroke="#241d18" stroke-width="2"/>
+<path d="M1440,680 L1380,941" stroke="#241d18" stroke-width="2"/>
+<path d="M1600,680 L1540,941" stroke="#241d18" stroke-width="2"/>
+<rect x="0" y="40" width="1672" height="6" fill="#36c6e8" opacity="0.7"/><rect x="0" y="20" width="1672" height="60" fill="url(#neonC)" opacity="0.5"/>
+<rect x="560" y="150" width="500" height="750" rx="14" fill="#23262b" stroke="#0f1114" stroke-width="4"/>
+<rect x="570" y="160" width="480" height="70" rx="8" fill="#36c6e8" opacity="0.85"/>
+<text x="810.0" y="210" font-size="44" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" fill="#08141a" >CURVE</text>
+<rect x="600" y="250" width="420" height="315" rx="10" fill="url(#screen)" stroke="#36c6e8" stroke-width="3"/>
+<rect x="590" y="585" width="440" height="60" rx="8" fill="#2f333a"/>
+<circle cx="650" cy="615" r="18" fill="#e03cc8" stroke="#111" stroke-width="2"/>
+<circle cx="720" cy="615" r="18" fill="#36c6e8" stroke="#111" stroke-width="2"/>
+<circle cx="790" cy="615" r="18" fill="#ffd37a" stroke="#111" stroke-width="2"/>
+<path d="M640,470 A170,170 0 0 1 980,470" fill="none" stroke="#e8e0c4" stroke-width="3"/>
+<path d="M700,470 A110,110 0 0 1 920,470" fill="none" stroke="#e8e0c4" stroke-width="3"/>
+<path d="M691.4285714285714,470 A118.57142857142857,118.57142857142857 0 0 1 928.5714285714286,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M682.8571428571429,470 A127.14285714285714,127.14285714285714 0 0 1 937.1428571428571,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M674.2857142857142,470 A135.71428571428572,135.71428571428572 0 0 1 945.7142857142858,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M665.7142857142858,470 A144.28571428571428,144.28571428571428 0 0 1 954.2857142857142,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M657.1428571428571,470 A152.85714285714286,152.85714285714286 0 0 1 962.8571428571429,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M648.5714285714286,470 A161.42857142857144,161.42857142857144 0 0 1 971.4285714285714,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<path d="M640.0,470 A170.0,170.0 0 0 1 980.0,470" fill="none" stroke="#3a5a60" stroke-width="1"/>
+<circle cx="700" cy="400" r="9" fill="#ffd37a"/>
+<text x="810" y="270" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" fill="#36c6e8" >VLOŽ ŽETON</text>
+<rect x="1000" y="590" width="60" height="70" rx="6" fill="#111" stroke="#ffd37a" stroke-width="3"/><rect x="1024" y="605" width="12" height="40" fill="#000"/>
+<rect x="1180" y="200" width="320" height="360" fill="url(#paper)" stroke="#9a8a5a" stroke-width="3"/>
+<path d="M1220,480 A120,120 0 0 1 1460,480" fill="none" stroke="#36c6e8" stroke-width="5"/><circle cx="1260" cy="420" r="8" fill="#e03cc8"/><path d="M1260,420 L1340,480" stroke="#e03cc8" stroke-width="3"/>
+<rect x="1210" y="240" width="207" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="260" width="260" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="280" width="221" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="300" width="259" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="320" width="249" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="340" width="209" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="360" width="207" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="1210" y="380" width="215" height="5" fill="#5a5040" opacity="0.6"/>
+<rect x="150" y="640" width="370" height="30" fill="url(#panel)" stroke="#2d1f10" stroke-width="3"/><path d="M180,670 L170,820 M490,670 L500,820" stroke="#5e3f1f" stroke-width="14"/>
+<path d="M250,640 l20,-50 l70,-10 l30,60 z" fill="#c0303c" stroke="#111" stroke-width="2"/><path d="M268,640 l6,-12 M290,640 l6,-12 M312,640 l6,-12 M334,640 l6,-12" stroke="#ddd" stroke-width="3"/>
+<path d="M340,640 l20,-50 l70,-10 l30,60 z" fill="#c0303c" stroke="#111" stroke-width="2"/><path d="M358,640 l6,-12 M380,640 l6,-12 M402,640 l6,-12 M424,640 l6,-12" stroke="#ddd" stroke-width="3"/>
+</svg>

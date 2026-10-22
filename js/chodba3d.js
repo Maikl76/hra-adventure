@@ -10,7 +10,7 @@
  * Rozvržení a texty jsou v game.json (místnost → „world“); hra jen hlásí události (on.message…).
  */
 import * as THREE from '../vendor/three/three.module.min.js';
-import { Svalovec } from './svalovec.js?v=0.28';
+import { Svalovec } from './svalovec.js?v=0.29';
 
 const G = 9.81;
 const EYE = 1.65, EYE_CROUCH = 1.12, R = 0.3, HEIGHT = 1.8;
@@ -111,6 +111,33 @@ function nightTexture() {
   g.fillRect(240, 258, 4, 20);
   for (let x = 0; x < 256; x += 12) g.fillRect(x, 262, 2, 16);
   g.fillRect(0, 266, 256, 2);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/* Pohled dveřmi do další chodby GSPORT: tma, neonové pruhy a vzdálený nápis (door.view = "neon"). */
+function neonTexture(label) {
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 384;
+  const g = c.getContext('2d');
+  g.fillStyle = '#05070c';
+  g.fillRect(0, 0, 256, 384);
+  // chodba v perspektivě: podlaha a strop se sbíhají
+  g.fillStyle = '#0d1016';
+  g.beginPath(); g.moveTo(0, 384); g.lineTo(256, 384); g.lineTo(176, 250); g.lineTo(80, 250); g.closePath(); g.fill();
+  for (const [y0, y1, col] of [[40, 250, '#36c6e8'], [60, 258, '#e03cc8']]) {
+    g.strokeStyle = col; g.lineWidth = 3; g.globalAlpha = 0.8;
+    g.beginPath(); g.moveTo(0, y0); g.lineTo(80, y1); g.stroke();
+    g.beginPath(); g.moveTo(256, y0); g.lineTo(176, y1); g.stroke();
+  }
+  g.globalAlpha = 1;
+  g.fillStyle = '#ffb3f0';
+  g.font = 'bold 28px Arial, sans-serif';
+  g.textAlign = 'center';
+  g.shadowColor = '#e03cc8'; g.shadowBlur = 16;
+  g.fillText(label || 'SPIN ZONE', 128, 230);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
@@ -371,7 +398,7 @@ export class World3D {
     q.floor.add([door.x[0], 0, Z0], [door.x[1], 0, Z0], [door.x[1], 0, TZ], [door.x[0], 0, TZ], [0, 1, 0],
       [[0, 0], [0.6, 0], [0.6, 1], [0, 1]]);
     const night = new THREE.Mesh(new THREE.PlaneGeometry(door.x[1] - door.x[0], DH),
-      new THREE.MeshBasicMaterial({ map: nightTexture(), fog: false }));
+      new THREE.MeshBasicMaterial({ map: (def.door && def.door.view === 'neon') ? neonTexture(def.door.viewLabel) : nightTexture(), fog: false }));
     night.position.set((door.x[0] + door.x[1]) / 2, DH / 2, TZ + 0.01);
     scene.add(night);
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941">
+  <!-- Vrstva: otevřené dveře LEVEL 3 (přes spin_dvere). -->
+<defs><linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8bcbe"/><stop offset="0.5" stop-color="#6f7577"/><stop offset="1" stop-color="#3b4042"/></linearGradient></defs>
+<rect x="600" y="140" width="480" height="720" fill="#05080c"/>
+<rect x="820" y="420" width="40" height="40" fill="#9ff3ff" opacity="0.9"/>
+<path d="M600,140 L690,180 L690,820 L600,860 Z" fill="url(#steel)" stroke="#2a2c30" stroke-width="4"/>
+<rect x="1112" y="392" width="56" height="28" fill="#3cff7a"/>
+</svg>

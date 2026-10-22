@@ -1261,3 +1261,7 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .slope-task .question { margin: 6px 0 8px; }
 .slope-options { display: flex; flex-direction: column; gap: 6px; }
 .slope-options .btn { text-align: left; }
+/* Fotografická laboratoř: stroboskopická fotografie */
+.strobo-photo { border-radius: 6px; }
+.strobo-cursor { cursor: grab; }
+.strobo-table { grid-template-columns: 1fr; }

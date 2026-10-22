@@ -899,7 +899,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.28');
+      const mod = await import('./chodba.js?v=0.29');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1110,7 +1110,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.28');
+        const mod = await import('./chodba3d.js?v=0.29');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1138,6 +1138,12 @@
     world3d.setPaused(!$('modal').hidden);
   }
 
+  /* Příznaky a stránka deníku 3D chodby: z dat (room.world.ids), výchozí = chodba na cvičiště. */
+  function world3dIds() {
+    const ids = (game.room && game.room.world && game.room.world.ids) || {};
+    return { defeat: ids.defeat || 'svalovec_porazen', diary: ids.diary || 'prekazky', end: ids.end || 'prekazky_konec', skipped: ids.skipped || 'prekazky_preskoceno' };
+  }
+
   function world3dEvents() {
     return {
       message: (lines) => showMessage(lines),
@@ -1145,11 +1151,11 @@
       stats: (vals) => game.setVars(vals),
       flag: (name) => handleEvents(game.run([{ set: name }])),
       fell: () => game.setVars({ padnuti: (game.state.vars.padnuti || 0) + 1 }),
-      defeat: () => handleEvents(game.run([{ set: 'svalovec_porazen' }, { denik: 'prekazky' }])),
+      defeat: () => { const ids = world3dIds(); handleEvents(game.run([{ set: ids.defeat }, { denik: ids.diary }])); },
       // dveřmi ven: další místnost světa, nebo závěrečná obrazovka
       end: () => {
         const roomId = game.roomId;
-        handleEvents(game.run([{ set: 'prekazky_konec' }]));
+        handleEvents(game.run([{ set: world3dIds().end }]));
         setTimeout(() => {
           if (game.state && game.roomId === roomId && !$('room').hidden) leaveRoom();
         }, 1400);
@@ -1166,7 +1172,7 @@
     btn.className = 'btn go';
     btn.textContent = texts.skipButton || 'Přeskočit ›';
     btn.addEventListener('click', () => {
-      game.setVars({ prekazky_preskoceno: 1 });
+      game.setVars({ [world3dIds().skipped]: 1 });
       leaveRoom();
     });
     $('message').lastElementChild.appendChild(btn);
@@ -1910,7 +1916,7 @@
         }
       };
 
-      import('./basket.js?v=0.28').then((mod) => {
+      import('./basket.js?v=0.29').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2386,6 +2392,10 @@
     else if (act.type === 'stretcher') openStretcher(act);
     else if (act.type === 'helmet') openHelmet(act);
     else if (act.type === 'slope') openSlope(act);
+    else if (act.type === 'spin') openSpin(act);
+    else if (act.type === 'curve') openCurve(act);
+    else if (act.type === 'gyro') openGyro(act);
+    else if (act.type === 'strobo') openStrobo(act);
   }
 
   function finishActivity(act, results) {
@@ -2536,7 +2546,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.28');
+          const mod = await import('./squats.js?v=0.29');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3398,7 +3408,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.28');
+          const mod = await import('./skok.js?v=0.29');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3776,7 +3786,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.28');
+          const mod = await import('./goblet.js?v=0.29');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4928,6 +4938,740 @@
     });
   }
 
+  /* Otočná stolice (Spin zóna): zachování momentu hybnosti. Hráč se roztočí s rozpaženýma rukama
+     (ω₀), pak posuvníkem připažuje: I klesá, ω = L / I roste, energie otáčení roste (práci dodají
+     paže). I = bodyI + 2 · m_činky · r² + 2 · m_paže · r² / 3 (paže jako tyče). Kola „rounds“:
+     { name, text, dumbbellKg, targetOt (cíl v ot/s), success, var }. Proměnné: <var>_ot, <var>_i1,
+     <var>_i2, <var>_l, spin_hotovo. */
+  function openSpin(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const bodyI = act.bodyI || 0.9, armKg = act.armKg || 3.5;
+    const rMin = act.rMin || 0.2, rMax = act.rMax || 0.7;
+    const omega0 = act.omega0 || 1.0;                 // ot/s při rozpažení
+    const K = 200, C = { x: 210, y: 150 };            // px na m, střed
+    let idx = 0, r = rMax, spinning = false, L = 0, angle = 0, done = false, raf = 0, last = 0;
+    const out = { spin_hotovo: 1 };
+    const round = () => act.rounds[idx];
+    const inertia = (rr) => bodyI + 2 * round().dumbbellKg * rr * rr + 2 * armKg * rr * rr / 3;
+    const omegaOt = () => (spinning ? L / inertia(r) / (2 * Math.PI) : 0);
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Otočná stolice');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 420 300', class: 'pack-svg' }, wrap);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const roundText = para(side, '', 'muted');
+      const l = document.createElement('label');
+      l.className = 'stance-slider';
+      const lt = document.createElement('span');
+      const slider = document.createElement('input');
+      slider.type = 'range'; slider.min = rMin; slider.max = rMax; slider.step = 0.01; slider.value = r;
+      const updLabel = () => { lt.textContent = `${act.armLabel || 'Rozpažení (činky od osy)'}: ${fmt(r, 2)} m`; };
+      slider.addEventListener('input', () => { if (done) return; r = Number(slider.value); updLabel(); render(); });
+      updLabel();
+      l.append(lt, slider);
+      side.appendChild(l);
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      side.appendChild(btns);
+      const spinBtn = button(btns, act.spinLabel || 'Roztočit (s rozpaženýma rukama)', 'btn primary', () => {
+        if (done) return;
+        r = rMax; slider.value = r; updLabel();
+        L = inertia(r) * omega0 * 2 * Math.PI;
+        spinning = true;
+        sound.sfx('step');
+        render();
+      });
+      const stopBtn = button(btns, act.stopLabel || 'Zastavit', 'btn', () => { spinning = false; render(); });
+      para(side, act.hint || 'Po roztočení posouvej rozpažení – sleduj otáčky a energii.', 'muted small');
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const eq = para(box, '', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      function draw() {
+        svg.innerHTML = '';
+        el('rect', { x: 0, y: 0, width: 420, height: 300, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+        el('circle', { cx: C.x, cy: C.y, r: 48, fill: '#3a3a30', stroke: '#1a1a16', 'stroke-width': 2 }, svg);   // stolice
+        const g = el('g', { transform: `rotate(${(angle * 180 / Math.PI).toFixed(1)} ${C.x} ${C.y})` }, svg);
+        const ra = r * K;
+        el('line', { x1: C.x - ra, y1: C.y, x2: C.x + ra, y2: C.y, stroke: '#c9b08a', 'stroke-width': 9, 'stroke-linecap': 'round' }, g);   // paže
+        el('ellipse', { cx: C.x, cy: C.y, rx: 34, ry: 22, fill: '#4f5638', stroke: '#2a3022', 'stroke-width': 2 }, g);   // ramena
+        el('circle', { cx: C.x, cy: C.y, r: 16, fill: '#6b6650', stroke: '#2a2418', 'stroke-width': 2 }, g);             // hlava
+        el('path', { d: `M${C.x - 6},${C.y - 14} q6,-6 12,0`, fill: 'none', stroke: '#2a2418', 'stroke-width': 2 }, g);  // nos (směr)
+        if (round().dumbbellKg > 0) {
+          for (const s of [-1, 1]) {
+            el('rect', { x: C.x + s * ra - 9, y: C.y - 14, width: 18, height: 28, rx: 4, fill: '#2a2c30', stroke: '#111', 'stroke-width': 1.5 }, g);
+            el('text', { x: C.x + s * ra, y: C.y + 30, 'text-anchor': 'middle', 'font-size': 10, fill: '#d8cfae' }, g, `${fmt(round().dumbbellKg)} kg`);
+          }
+        } else {
+          for (const s of [-1, 1]) el('circle', { cx: C.x + s * ra, cy: C.y, r: 6, fill: '#c9b08a', stroke: '#2a2418' }, g);
+        }
+        // osa a šipka otáčení
+        el('circle', { cx: C.x, cy: C.y, r: 3, fill: '#ffd28a' }, svg);
+        const w = omegaOt();
+        if (w > 0) {
+          const R = 62 + Math.min(80, w * 20), a0 = -Math.PI * 0.85, a1 = a0 + Math.min(5.5, 1.2 + w * 1.3);
+          el('path', { d: `M${C.x + R * Math.cos(a0)},${C.y + R * Math.sin(a0)} A${R},${R} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${C.x + R * Math.cos(a1)},${C.y + R * Math.sin(a1)}`, fill: 'none', stroke: '#9fd0a0', 'stroke-width': 3 }, svg);
+        }
+        el('text', { x: 12, y: 290, 'font-size': 11, fill: '#d8cfae' }, svg, 'pohled shora');
+        el('text', { x: 408, y: 24, 'font-size': 14, 'text-anchor': 'end', fill: '#ffd28a' }, svg, w ? `${fmt(w, 2)} ot/s` : 'stojí');
+      }
+
+      function render() {
+        const rd = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${rd.name}`;
+        const I = inertia(r), w = omegaOt(), om = w * 2 * Math.PI;
+        draw();
+        readoutRows(readout, [
+          ['Rozpažení (ruce od osy)', `${fmt(r, 2)} m`],
+          [`Moment setrvačnosti I (tělo ${fmt(bodyI, 1)} + paže${rd.dumbbellKg ? ' + činky' : ''})`, `${fmt(I, 2)} kg·m²`],
+          ['Otáčky ω', w ? `${fmt(w, 2)} ot/s = ${fmt(om, 2)} rad/s` : '0 (stojíš)'],
+          ['Moment hybnosti L = I · ω', w ? `${fmt(L, 1)} kg·m²/s (stálý)` : '0'],
+          ['Energie otáčení ½ I ω²', w ? `${fmt(0.5 * I * om * om)} J` : '0 J'],
+        ]);
+        eq.textContent = w ? `L = I · ω se zachová: ${fmt(L, 1)} = ${fmt(I, 2)} · ${fmt(om, 2)}. Menší I → větší ω.` : 'Roztoč se s rozpaženýma rukama, pak připažuj.';
+        spinBtn.disabled = done;
+        stopBtn.disabled = done || !spinning;
+        if (!done && spinning && w >= rd.targetOt - 1e-9) {
+          done = true;
+          sound.sfx('unlock');
+          const v = rd.var || 'spin';
+          out[`${v}_ot`] = Math.round(w * 100) / 100;
+          out[`${v}_i1`] = Math.round(inertia(rMax) * 100) / 100;
+          out[`${v}_i2`] = Math.round(I * 100) / 100;
+          out[`${v}_l`] = Math.round(L * 10) / 10;
+          status.textContent = tplLocal(rd.success || 'Cíl splněn.', { ot: w, i1: inertia(rMax), i2: I, L, E0: 0.5 * L * omega0 * 2 * Math.PI, E: 0.5 * I * om * om, r });
+          status.className = 'feedback good';
+          const last = idx + 1 >= act.rounds.length;
+          button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+            if (last) { finishActivity(act, out); return; }
+            actions.innerHTML = '';
+            idx += 1; done = false; spinning = false; r = rMax; slider.value = r; updLabel();
+            roundText.textContent = round().text || '';
+            status.textContent = ''; status.className = 'feedback';
+            render();
+          });
+        } else if (!done && spinning) {
+          status.textContent = tplLocal(act.tipMore || 'Cíl: aspoň {target:1} ot/s. Přitáhni ruce blíž k ose.', { target: rd.targetOt });
+          status.className = 'feedback';
+        }
+      }
+
+      const tick = (now) => {
+        if (spinning) {
+          const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+          angle += omegaOt() * 2 * Math.PI * dt;
+          draw();
+        }
+        last = now;
+        raf = requestAnimationFrame(tick);
+      };
+      activityCleanup = () => { if (raf) cancelAnimationFrame(raf); };
+      raf = requestAnimationFrame(tick);
+      roundText.textContent = round().text || '';
+      render();
+    });
+  }
+
+  /* Zatáčka (automat CURVE): dostředivá síla F = m · v² / r, náklon tan α = v² / (g · r), nejvyšší
+     rychlost bez uklouznutí v = √(μ · g · r). Dráhy běžeckého oválu: poloměr r = laneR + (dráha − 1) · laneW.
+     Kola „rounds“: { name, text, kind: "compare" (otázka „question“ nad údaji drah) | "grip" (najít
+     nejvyšší rychlost při μ, lane, tolV), success, … }. Proměnné: curve_draha, curve_v, curve_f,
+     curve_uhel, curve_vmax, curve_hotovo. */
+  function openCurve(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const m = act.runnerKg || 70, R1 = act.laneR || 36.5, LW = act.laneW || 1.22, LANES = act.lanes || 8;
+    const vMin = act.vMin || 4, vMax = act.vMax || 12;
+    let idx = 0, lane = 1, v = act.vStart || 10, running = false, raf = 0, done = false, prog = 0;
+    const out = { curve_hotovo: 1 };
+    const round = () => act.rounds[idx];
+    const radius = (ln) => R1 + (ln - 1) * LW;
+    const calc = () => {
+      const r = radius(lane), a = v * v / r, F = m * a, deg = Math.atan(v * v / (g * r)) * 180 / Math.PI;
+      const mu = round().mu, vm = mu ? Math.sqrt(mu * g * r) : null;
+      return { r, a, F, deg, mu, vm, fMax: mu ? mu * m * g : null };
+    };
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'CURVE – zatáčka');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const svg = el('svg', { viewBox: '0 0 600 300', class: 'pack-svg' }, wrap);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const roundText = para(side, '', 'muted');
+      para(side, act.laneLabel || 'Dráha:', 'muted');
+      const lb = document.createElement('div');
+      lb.className = 'stance-push';
+      side.appendChild(lb);
+      const laneBtns = [];
+      for (let i = 1; i <= LANES; i++) laneBtns.push(button(lb, String(i), 'btn lift-posture', () => { if (running || round().lane) return; lane = i; sound.sfx('step'); render(); }));
+      const l = document.createElement('label');
+      l.className = 'stance-slider';
+      const lt = document.createElement('span');
+      const slider = document.createElement('input');
+      slider.type = 'range'; slider.min = vMin; slider.max = vMax; slider.step = 0.1; slider.value = v;
+      const updLabel = () => { lt.textContent = `${act.speedLabel || 'Rychlost'}: ${fmt(v, 1)} m/s (${fmt(v * 3.6)} km/h)`; };
+      slider.addEventListener('input', () => { if (running) return; v = Number(slider.value); updLabel(); render(); });
+      updLabel();
+      l.append(lt, slider);
+      side.appendChild(l);
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const eq = para(box, '', 'muted small');
+      const qbox = document.createElement('div');
+      qbox.className = 'slope-task';
+      box.appendChild(qbox);
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      let runner = null, goBtn = null;
+
+      // zatáčka shora: půlkruhy drah, běžec; z boku: náklon
+      const CX = 150, CY = 290, S = 2.6;      // střed oblouku, px na m
+      function draw() {
+        svg.innerHTML = '';
+        el('rect', { x: 0, y: 0, width: 600, height: 300, fill: 'rgba(0,0,0,0.25)', rx: 8 }, svg);
+        for (let i = 0; i <= LANES; i++) {
+          const rr = (R1 - LW / 2 + i * LW) * S;
+          el('path', { d: `M${CX - rr},${CY} A${rr},${rr} 0 0 1 ${CX + rr},${CY}`, fill: 'none', stroke: i === 0 || i === LANES ? '#e8e0c4' : '#6a6250', 'stroke-width': i === 0 || i === LANES ? 2 : 1 }, svg);
+        }
+        const rs = radius(lane) * S;
+        el('path', { d: `M${CX - rs},${CY} A${rs},${rs} 0 0 1 ${CX + rs},${CY}`, fill: 'none', stroke: '#ffd28a', 'stroke-width': 3, opacity: 0.8 }, svg);
+        el('text', { x: CX, y: CY - 8, 'text-anchor': 'middle', 'font-size': 11, fill: '#d8cfae' }, svg, `dráha ${lane}: r = ${fmt(radius(lane), 1)} m`);
+        const th = Math.PI + prog * Math.PI;
+        const px = CX + rs * Math.cos(th), py = CY + rs * Math.sin(th);
+        runner = el('circle', { cx: px, cy: py, r: 7, fill: '#fff4d0', stroke: '#1a1a16', 'stroke-width': 1.5 }, svg);
+        // dostředivá síla: šipka ke středu
+        const c = calc();
+        const len = Math.min(60, c.F / 4);
+        el('line', { x1: px, y1: py, x2: px + (CX - px) / rs * len, y2: py + (CY - py) / rs * len, stroke: '#e0805f', 'stroke-width': 2.5 }, svg);
+        el('text', { x: 12, y: 290, 'font-size': 11, fill: '#d8cfae' }, svg, 'zatáčka shora (200 m)');
+        // pohled zezadu: běžec nakloněný o α
+        const BX = 460, BY = 250;
+        el('line', { x1: 340, y1: BY, x2: 590, y2: BY, stroke: '#5a4a30', 'stroke-width': 2 }, svg);
+        const a = c.deg * Math.PI / 180;
+        const hx = BX - Math.sin(a) * 120, hy = BY - Math.cos(a) * 120;
+        el('line', { x1: BX, y1: BY, x2: hx, y2: hy, stroke: '#4f5638', 'stroke-width': 14, 'stroke-linecap': 'round' }, svg);
+        el('circle', { cx: hx - Math.sin(a) * 14, cy: hy - Math.cos(a) * 14, r: 13, fill: '#6b6650' }, svg);
+        // síly: tíha dolů, reakce podložky podél těla, dostředivá vodorovně
+        const gx = BX - Math.sin(a) * 70, gy = BY - Math.cos(a) * 70;
+        el('line', { x1: gx, y1: gy, x2: gx, y2: gy + 50, stroke: '#9fd0a0', 'stroke-width': 2.5 }, svg);
+        el('text', { x: gx + 6, y: gy + 50, 'font-size': 10, fill: '#9fd0a0' }, svg, 'tíha m·g');
+        el('line', { x1: gx, y1: gy, x2: gx - 50 * Math.tan(a), y2: gy, stroke: '#e0805f', 'stroke-width': 2.5 }, svg);
+        el('text', { x: gx - 50 * Math.tan(a) - 4, y: gy - 6, 'font-size': 10, fill: '#e0805f', 'text-anchor': 'end' }, svg, `dostředivá ${fmt(c.F)} N`);
+        el('path', { d: `M${BX},${BY} m0,-36 a36,36 0 0 0 ${-36 * Math.sin(a)},${36 - 36 * Math.cos(a)}`, fill: 'none', stroke: '#ffd28a', 'stroke-width': 1.5 }, svg);
+        el('text', { x: BX - 14 - 30 * Math.sin(a / 2), y: BY - 42, 'font-size': 11, fill: '#ffd28a', 'text-anchor': 'end' }, svg, `α ≈ ${fmt(c.deg, 1)}°`);
+        el('text', { x: 590, y: 290, 'font-size': 11, fill: '#d8cfae', 'text-anchor': 'end' }, svg, 'náklon (pohled zezadu)');
+      }
+
+      function render() {
+        const rd = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${rd.name}`;
+        if (rd.lane) lane = rd.lane;
+        laneBtns.forEach((b, i) => { b.classList.toggle('selected', i + 1 === lane); b.disabled = Boolean(rd.lane) || running; });
+        const c = calc();
+        draw();
+        const rows = [
+          ['Dráha a poloměr', `${lane} – r = ${fmt(c.r, 1)} m`],
+          ['Rychlost', `${fmt(v, 1)} m/s`],
+          ['Dostředivé zrychlení v² / r', `${fmt(c.a, 2)} m/s²`],
+          [`Dostředivá síla m · v² / r (${m} kg)`, `${fmt(c.F)} N (${fmt(c.F / (m * g) * 100)} % tíhy)`],
+          ['Náklon tan α = v² / (g · r)', `${fmt(c.deg, 1)}°`],
+        ];
+        if (c.mu) rows.push([`Nejvyšší třecí síla μ · m · g (μ = ${fmt(c.mu, 1)})`, `${fmt(c.fMax)} N`]);
+        readoutRows(readout, rows);
+        eq.textContent = `F = m · v² / r = ${m} · ${fmt(v, 1)}² / ${fmt(c.r, 1)} ≈ ${fmt(c.F)} N.` + (c.mu ? ` Bez uklouznutí musí platit m · v² / r ≤ μ · m · g, tedy v ≤ √(μ · g · r) – tu hodnotu hledej.` : '');
+      }
+
+      function showRound() {
+        const rd = round();
+        qbox.innerHTML = '';
+        actions.innerHTML = '';
+        roundText.textContent = rd.text || '';
+        status.textContent = ''; status.className = 'feedback';
+        if (rd.kind === 'compare') {
+          const q = rd.question;
+          para(qbox, q.text, 'question');
+          const opts = document.createElement('div');
+          opts.className = 'slope-options';
+          qbox.appendChild(opts);
+          q.options.forEach((o, i) => button(opts, o, 'btn lift-posture', () => {
+            if (done) return;
+            if (i === q.correct) {
+              done = true;
+              sound.sfx('unlock');
+              status.textContent = q.success || rd.success || 'Správně.';
+              status.className = 'feedback good';
+              nextButton();
+            } else {
+              sound.sfx('wrong');
+              status.textContent = (q.feedback || {})[i] || q.wrong || 'Ne. Porovnej dráhy.';
+              status.className = 'feedback bad';
+            }
+          }));
+        } else {
+          goBtn = button(actions, rd.goLabel || 'Proběhnout zatáčku', 'btn primary', () => start());
+        }
+        render();
+      }
+
+      function nextButton() {
+        const last = idx + 1 >= act.rounds.length;
+        button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+          if (last) { finishActivity(act, out); return; }
+          idx += 1; done = false; prog = 0;
+          showRound();
+        });
+      }
+
+      function start() {
+        if (running || done) return;
+        running = true;
+        goBtn.disabled = true; slider.disabled = true;
+        const c = calc();
+        const slip = c.mu && c.F > c.fMax + 1e-9;
+        const t0 = performance.now(), dur = 2200;
+        const step = (now) => {
+          const f = Math.min(1, (now - t0) / dur);
+          prog = slip ? Math.min(f, 0.55) : f;
+          draw();
+          if (slip && f > 0.55) {
+            // uklouznutí: běžec vyletí z dráhy ven
+            const rs = radius(lane) * S, th = Math.PI + 0.55 * Math.PI;
+            const d = (f - 0.55) * 160;
+            runner.setAttribute('cx', CX + (rs + d) * Math.cos(th));
+            runner.setAttribute('cy', CY + (rs + d) * Math.sin(th));
+          }
+          if (f < 1) { raf = requestAnimationFrame(step); return; }
+          raf = 0; running = false; slider.disabled = false;
+          finishRun(c, slip);
+        };
+        raf = requestAnimationFrame(step);
+      }
+
+      function finishRun(c, slip) {
+        const rd = round();
+        const vals = { v, F: c.F, fMax: c.fMax, vmax: c.vm, deg: c.deg, lane, r: c.r, mu: c.mu };
+        if (slip) {
+          sound.sfx('wrong');
+          status.textContent = tplLocal(rd.failSlip || 'Uklouznutí! Potřebná dostředivá síla {F} N je víc, než tření udrží ({fMax} N). Zpomal.', vals);
+          status.className = 'feedback bad';
+          goBtn.disabled = false;
+          return;
+        }
+        if (c.vm && v < c.vm - (rd.tolV || 0.3)) {
+          sound.sfx('step');
+          status.textContent = tplLocal(rd.failSlow || 'Udržel ses – ale jde to rychleji. Zkus přidat, dokud tření stačí.', vals);
+          status.className = 'feedback';
+          goBtn.disabled = false;
+          return;
+        }
+        done = true;
+        sound.sfx('unlock');
+        out.curve_draha = lane;
+        out.curve_v = Math.round(v * 10) / 10;
+        out.curve_f = Math.round(c.F);
+        out.curve_uhel = Math.round(c.deg * 10) / 10;
+        if (c.vm) out.curve_vmax = Math.round(c.vm * 10) / 10;
+        status.textContent = tplLocal(rd.success || 'Zatáčka proběhnuta.', vals);
+        status.className = 'feedback good';
+        goBtn.remove();
+        nextButton();
+      }
+
+      activityCleanup = () => { if (raf) cancelAnimationFrame(raf); };
+      showRound();
+    });
+  }
+
+  /* SPIN – pirueta měřená gyroskopem zařízení (tablet, telefon): hráč drží zařízení oběma rukama
+     u hrudníku a jednou se otočí; měří se nejvyšší úhlová rychlost (rotationRate, °/s) a počet otáček.
+     Bez senzoru: kolega stopne čas tří otáček. Proměnné: pirueta_ot (ot/s), pirueta_omega (rad/s),
+     pirueta_t (s na otáčku), pirueta_senzor (1/0), pirueta_hotovo. */
+  function openGyro(act) {
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const seconds = act.seconds || 8;
+    const bodyI = act.bodyI || 1.2;
+    let listening = false, peak = 0, turns = 0, lastT = 0, timer = 0, handler = null, samples = 0;
+    const out = { pirueta_hotovo: 1 };
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'SPIN – pirueta');
+      para(box, act.intro || '', 'question');
+      para(box, act.safety || 'Bezpečnost: volné místo kolem sebe, zařízení drž oběma rukama u hrudníku, otoč se jen jednou a zastav se pomalu.', 'feedback bad');
+      const big = document.createElement('p');
+      big.className = 'tape-reading';
+      big.textContent = '–';
+      box.appendChild(big);
+      const sub = para(box, '', 'muted small');
+      sub.style.textAlign = 'center';
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const status = para(box, '', 'feedback');
+      const btns = document.createElement('div');
+      btns.className = 'squat-buttons';
+      box.appendChild(btns);
+      const results = document.createElement('div');
+      box.appendChild(results);
+
+      const stopListening = () => {
+        if (handler) window.removeEventListener('devicemotion', handler);
+        handler = null; listening = false;
+        clearTimeout(timer); timer = 0;
+      };
+      activityCleanup = stopListening;
+
+      const finish = (degPerS, sensor, turnsDone) => {
+        const ot = degPerS / 360, omega = degPerS * Math.PI / 180;
+        out.pirueta_ot = Math.round(ot * 100) / 100;
+        out.pirueta_omega = Math.round(omega * 100) / 100;
+        out.pirueta_t = ot > 0 ? Math.round(100 / ot) / 100 : 0;
+        out.pirueta_senzor = sensor ? 1 : 0;
+        big.textContent = `${fmt(ot, 2)} ot/s`;
+        sub.textContent = sensor ? `nejrychlejší okamžik piruety (${fmt(turnsDone, 1)} otáčky)` : 'průměr ze tří otáček (bez senzoru)';
+        readoutRows(readout, [
+          ['Úhlová rychlost ω', `${fmt(degPerS)} °/s = ${fmt(omega, 2)} rad/s`],
+          ['Otáčky', `${fmt(ot, 2)} ot/s → jedna otáčka za ${fmt(out.pirueta_t, 2)} s`],
+          [`Moment hybnosti L = I · ω (I ≈ ${fmt(bodyI, 1)} kg·m², připažení)`, `${fmt(bodyI * omega, 1)} kg·m²/s`],
+          ['Energie otáčení ½ I ω²', `${fmt(0.5 * bodyI * omega * omega, 1)} J`],
+        ]);
+        status.textContent = act.success || 'Změřeno.';
+        status.className = 'feedback good';
+        btns.innerHTML = '';
+        results.innerHTML = '';
+        button(results, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, out));
+      };
+
+      const startSensor = async () => {
+        if (listening) return;
+        if (!window.DeviceMotionEvent) {
+          status.textContent = act.noSensor || 'Tohle zařízení gyroskop nehlásí – použij měření bez senzoru.';
+          status.className = 'feedback bad';
+          return;
+        }
+        try {
+          if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            const res = await DeviceMotionEvent.requestPermission();
+            if (res !== 'granted') throw new Error('denied');
+          }
+        } catch (e) {
+          status.textContent = act.noPermission || 'Prohlížeč přístup k pohybovému senzoru nepovolil – použij měření bez senzoru.';
+          status.className = 'feedback bad';
+          return;
+        }
+        listening = true; peak = 0; turns = 0; samples = 0; lastT = performance.now();
+        status.textContent = act.listening || 'Měřím… otoč se jednou dokola a pomalu zastav.';
+        status.className = 'feedback';
+        big.textContent = '0 °/s';
+        const started = performance.now();
+        handler = (e) => {
+          const rr = e.rotationRate || {};
+          const mag = Math.hypot(rr.alpha || 0, rr.beta || 0, rr.gamma || 0);
+          const now = performance.now();
+          const dt = Math.min(0.1, (now - lastT) / 1000);
+          lastT = now;
+          turns += mag * dt / 360;
+          if (mag > peak) peak = mag;
+          samples++;
+          big.textContent = `${fmt(mag)} °/s`;
+          sub.textContent = `max ${fmt(peak)} °/s · otáčky ${fmt(turns, 1)} · zbývá ${Math.max(0, Math.ceil(seconds - (now - started) / 1000))} s`;
+        };
+        window.addEventListener('devicemotion', handler);
+        timer = setTimeout(() => {
+          stopListening();
+          if (samples < 5 || peak < 20) {
+            status.textContent = act.noData || 'Senzor nehlásil žádný pohyb. Zkus to znovu, nebo měř bez senzoru.';
+            status.className = 'feedback bad';
+            big.textContent = '–';
+            return;
+          }
+          finish(peak, true, turns);
+        }, seconds * 1000);
+      };
+
+      button(btns, act.sensorLabel || 'Spustit senzor (tablet, telefon)', 'btn primary', startSensor);
+      button(btns, act.manualLabel || 'Bez senzoru (stopky)', 'btn', () => {
+        stopListening();
+        results.innerHTML = '';
+        const form = document.createElement('div');
+        form.className = 'squat-manual';
+        results.appendChild(form);
+        para(form, act.manualText || 'Kolega stopne čas, za který se otočíš třikrát dokola (ruce u těla). Zadej čas v sekundách.', 'muted');
+        const l = document.createElement('label');
+        l.className = 'jump-field';
+        l.textContent = 'Čas tří otáček: ';
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.min = '1'; inp.max = '30'; inp.step = '0.1';
+        l.appendChild(inp);
+        form.appendChild(l);
+        button(form, 'Spočítat', 'btn primary', () => {
+          const t = Number(String(inp.value).replace(',', '.'));
+          if (!(t >= 1 && t <= 30)) { status.textContent = 'Zadej čas mezi 1 a 30 s.'; status.className = 'feedback bad'; return; }
+          finish(3 * 360 / t, false, 3);
+        });
+      });
+    });
+  }
+
+  /* Stroboskopická fotografie (fotografická laboratoř): na „fotce“ je několik poloh téhož předmětu
+     (sprinter, padající míč) v pravidelných časech a pásmo s metry. Hráč nejdřív nastaví měřítko
+     (dva zelené ukazatele na značky pásma), pak položí ukazatel každého snímku na značku na předmětu
+     a fotku „vyvolá“: tabulka Δs, průměrná rychlost v = Δs / Δt a zrychlení a = Δv / Δt; u míče
+     proložení s = ½ g t² (g) a porovnání polohové a pohybové energie. Ukazatel blízko správné značky
+     přiskočí (přesné odečtení). Nastavení: orientation x|y, frames [{t, s}] (m), unit m|cm, scalePx
+     (px na jednotku), origin [px, px], ruler {from, to, step}, calib {a, b}, object runner|ball,
+     massKg, goal 'speed'|'g', var. Proměnné: <var>_v (m/s, poslední úsek), <var>_a (m/s², první dva
+     úseky), <var>_g (m/s², jen míč), <var>_hotovo. */
+  function openStrobo(act) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (name, attrs, parent, text) => {
+      const e = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const horiz = act.orientation !== 'y';
+    const unitM = act.unit === 'cm' ? 0.01 : 1;        // jednotka pásma v metrech
+    const K = act.scalePx || 44;                        // px na jednotku pásma
+    const [OX, OY] = act.origin || (horiz ? [40, 230] : [300, 30]);
+    const frames = act.frames;
+    const ruler = act.ruler || { from: 0, to: 12, step: 1 };
+    const calib = act.calib || { a: ruler.from, b: ruler.to };
+    const SNAP = act.snapPx || 12;
+    const pxOf = (u) => (horiz ? OX + u * K : OY + u * K);   // poloha v jednotkách pásma → px podél pohybu
+    const truePx = frames.map((f) => pxOf(f.s / unitM));
+    // ukazatele: 2 kalibrační + 1 na snímek; začínají rozházené
+    const W = 600, H = 340, DIM = horiz ? W : H;
+    // ukazatele začínají rozmístěné rovnoměrně (bez překryvů), ne na správných místech
+    const cursors = [
+      { kind: 'calib', key: 'a', label: `${fmt(calib.a)} ${act.unit || 'm'}`, px: DIM * 0.15, target: pxOf(calib.a) },
+      { kind: 'calib', key: 'b', label: `${fmt(calib.b)} ${act.unit || 'm'}`, px: DIM * 0.85, target: pxOf(calib.b) },
+      ...frames.map((f, i) => ({ kind: 'frame', i, label: `${fmt(f.t, 1)} s`, px: DIM * 0.25 + (DIM * 0.5) * (i / Math.max(1, frames.length - 1)), target: truePx[i] })),
+    ];
+    let done = false, dragging = null;
+    const v = act.var || 'strobo';
+    const out = {};
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Stroboskopická fotografie');
+      para(box, act.intro || '', 'question');
+      const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pack-svg strobo-photo' }, box);
+      para(box, act.dragHint || 'Zelené ukazatele přetáhni na značky pásma (měřítko), oranžové na značku na předmětu v každém snímku. Pak fotku vyvolej.', 'muted small');
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout strobo-table';
+      box.appendChild(readout);
+      const eq = para(box, '', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const dev = button(actions, act.developLabel || 'Vyvolat fotku', 'btn primary', () => develop());
+
+      function drawRunner(parent, x, y, i, n) {
+        // běžec z boku (doprava), póza podle snímku; y = úroveň chodidel, značka na kyčli
+        const ph = (i / Math.max(1, n - 1));
+        const hipY = y - 1.0 * K / unitM * 1, headY = y - 1.65 * K / unitM;
+        const scale = K / unitM;           // px na metr
+        const hy = y - 1.0 * scale, hdY = y - 1.62 * scale;
+        const lean = (1 - ph) * 0.35;      // na startu předkloněný
+        const sx = x + lean * 0.5 * scale;
+        el('line', { x1: x, y1: hy, x2: sx, y2: hdY + 0.12 * scale, stroke: '#cfd3d6', 'stroke-width': 4, 'stroke-linecap': 'round' }, parent);   // trup
+        el('circle', { cx: sx + lean * 0.1 * scale, cy: hdY, r: 0.11 * scale, fill: '#cfd3d6' }, parent);
+        const legA = 0.5 + 0.4 * Math.sin(i * 2.1), legB = -0.5 + 0.4 * Math.cos(i * 1.7);
+        el('path', { d: `M${x},${hy} l${legA * 0.42 * scale},${0.48 * scale} l${0.1 * scale},${0.5 * scale}`, fill: 'none', stroke: '#cfd3d6', 'stroke-width': 4, 'stroke-linecap': 'round' }, parent);
+        el('path', { d: `M${x},${hy} l${legB * 0.42 * scale},${0.5 * scale} l${-0.15 * scale},${0.45 * scale}`, fill: 'none', stroke: '#cfd3d6', 'stroke-width': 4, 'stroke-linecap': 'round' }, parent);
+        const shY = hdY + 0.25 * scale;
+        el('path', { d: `M${sx},${shY} l${0.35 * scale},${0.1 * scale} l${0.05 * scale},${-0.3 * scale}`, fill: 'none', stroke: '#cfd3d6', 'stroke-width': 3.5, 'stroke-linecap': 'round' }, parent);
+        el('path', { d: `M${sx},${shY} l${-0.3 * scale},${0.15 * scale} l${-0.1 * scale},${0.3 * scale}`, fill: 'none', stroke: '#cfd3d6', 'stroke-width': 3.5, 'stroke-linecap': 'round' }, parent);
+        el('circle', { cx: x, cy: hy, r: 5, fill: '#ffd28a', stroke: '#1a1a16', 'stroke-width': 1.5 }, parent);   // reflexní značka na kyčli
+        void hipY; void headY;
+      }
+
+      function draw() {
+        svg.innerHTML = '';
+        el('rect', { x: 0, y: 0, width: W, height: H, fill: '#0c0d12', rx: 6 }, svg);
+        el('rect', { x: 6, y: 6, width: W - 12, height: H - 12, fill: 'none', stroke: '#2b2d38', 'stroke-width': 2 }, svg);
+        // pásmo
+        const rg = el('g', {}, svg);
+        if (horiz) {
+          el('rect', { x: pxOf(ruler.from) - 10, y: OY + 8, width: pxOf(ruler.to) - pxOf(ruler.from) + 20, height: 18, fill: '#d9c25a' }, rg);
+          for (let u = ruler.from; u <= ruler.to + 1e-9; u += ruler.step) {
+            const x = pxOf(u);
+            el('line', { x1: x, y1: OY + 8, x2: x, y2: OY + 26, stroke: '#1a1a16', 'stroke-width': 1.5 }, rg);
+            el('text', { x, y: OY + 40, 'font-size': 10, 'text-anchor': 'middle', fill: '#d8cfae' }, rg, fmt(u));
+          }
+          el('text', { x: pxOf(ruler.to) + 14, y: OY + 22, 'font-size': 10, fill: '#d8cfae' }, rg, act.unit || 'm');
+          el('line', { x1: 0, y1: OY, x2: W, y2: OY, stroke: '#3a3a44', 'stroke-width': 1 }, rg);   // dráha
+        } else {
+          el('rect', { x: OX - 150, y: pxOf(ruler.from) - 10, width: 18, height: pxOf(ruler.to) - pxOf(ruler.from) + 20, fill: '#d9c25a' }, rg);
+          for (let u = ruler.from; u <= ruler.to + 1e-9; u += ruler.step) {
+            const y = pxOf(u);
+            el('line', { x1: OX - 150, y1: y, x2: OX - 132, y2: y, stroke: '#1a1a16', 'stroke-width': 1.5 }, rg);
+            if (Math.round(u / ruler.step) % (act.labelEvery || 2) === 0) el('text', { x: OX - 156, y: y + 4, 'font-size': 10, 'text-anchor': 'end', fill: '#d8cfae' }, rg, fmt(u));
+          }
+          el('text', { x: OX - 141, y: pxOf(ruler.from) - 16, 'font-size': 10, 'text-anchor': 'middle', fill: '#d8cfae' }, rg, act.unit || 'm');
+        }
+        // snímky
+        frames.forEach((f, i) => {
+          const p = truePx[i];
+          const fg = el('g', { opacity: 0.55 + 0.45 * (i / Math.max(1, frames.length - 1)) }, svg);
+          if (act.object === 'ball') {
+            el('circle', { cx: OX, cy: p, r: (act.ballR || 0.12) * K / unitM, fill: '#c0603a', stroke: '#2a1a10', 'stroke-width': 1.5 }, fg);
+            el('circle', { cx: OX, cy: p, r: 4, fill: '#ffd28a', stroke: '#1a1a16', 'stroke-width': 1.2 }, fg);
+          } else {
+            drawRunner(fg, p, OY, i, frames.length);
+          }
+          el('text', horiz ? { x: p, y: OY - 1.8 * K / unitM, 'font-size': 10, 'text-anchor': 'middle', fill: '#8aa0b0' } : { x: OX + 40, y: p + 4, 'font-size': 10, fill: '#8aa0b0' }, svg, `t = ${fmt(f.t, 1)} s`);
+        });
+        // blesk stroboskopu
+        el('text', { x: W - 10, y: 20, 'font-size': 10, 'text-anchor': 'end', fill: '#8aa0b0' }, svg, `stroboskop ${fmt(1 / (frames[1].t - frames[0].t), 1)} záblesků/s`);
+        // ukazatele
+        cursors.forEach((c, k) => {
+          const col = c.kind === 'calib' ? '#9fd0a0' : '#e0a060';
+          const grp = el('g', { class: 'strobo-cursor', 'data-k': k }, svg);
+          if (horiz) {
+            el('line', { x1: c.px, y1: 14, x2: c.px, y2: H - 14, stroke: col, 'stroke-width': 1.5, 'stroke-dasharray': c.kind === 'calib' ? '4 3' : 'none' }, grp);
+            const ty = c.kind === 'calib' ? H - 18 : 30 + (c.i % 2) * 14;
+            el('rect', { x: c.px - 20, y: ty - 11, width: 40, height: 14, rx: 4, fill: col }, grp);
+            el('text', { x: c.px, y: ty, 'font-size': 10, 'text-anchor': 'middle', fill: '#111' }, grp, c.label);
+            el('rect', { x: c.px - 10, y: 10, width: 20, height: H - 20, fill: 'transparent' }, grp);
+          } else {
+            el('line', { x1: 60, y1: c.px, x2: W - 14, y2: c.px, stroke: col, 'stroke-width': 1.5, 'stroke-dasharray': c.kind === 'calib' ? '4 3' : 'none' }, grp);
+            const tx = c.kind === 'calib' ? 90 : W - 50 - (c.i % 2) * 52;   // popisky snímků střídavě, aby se nepřekrývaly
+            el('rect', { x: tx - 20, y: c.px - 7, width: 40, height: 14, rx: 4, fill: col }, grp);
+            el('text', { x: tx, y: c.px + 4, 'font-size': 10, 'text-anchor': 'middle', fill: '#111' }, grp, c.label);
+            el('rect', { x: 60, y: c.px - 10, width: W - 74, height: 20, fill: 'transparent' }, grp);
+          }
+        });
+      }
+
+      function develop() {
+        const ca = cursors[0], cb = cursors[1];
+        if (Math.abs(ca.px - ca.target) > 6 || Math.abs(cb.px - cb.target) > 6) {
+          sound.sfx('wrong');
+          status.textContent = act.badCalib || `Měřítko nesedí: zelené ukazatele musí ležet přesně na značkách ${ca.label} a ${cb.label} pásma.`;
+          status.className = 'feedback bad';
+          return;
+        }
+        const scale = (cb.px - ca.px) / (calib.b - calib.a);        // px na jednotku pásma
+        const off = cursors.slice(2).find((c) => Math.abs(c.px - c.target) > 6);
+        if (off) {
+          sound.sfx('wrong');
+          status.textContent = tplLocal(act.badFrame || 'Ukazatel {t} s neleží na značce {mark}. Přisuň ho – blízko značky přiskočí.', { t: fmt(frames[off.i].t, 1), mark: act.object === 'ball' ? 'uprostřed míče' : 'na kyčli běžce' });
+          status.className = 'feedback bad';
+          return;
+        }
+        const s = cursors.slice(2).map((c) => ((c.px - ca.px) / scale + calib.a) * unitM);   // m
+        const rows = [];
+        const vs = [];
+        for (let i = 1; i < frames.length; i++) {
+          const dt = frames[i].t - frames[i - 1].t, ds = s[i] - s[i - 1], vv = ds / dt;
+          vs.push(vv);
+          const acc = i >= 2 ? (vv - vs[i - 2]) / dt : null;
+          rows.push([`${fmt(frames[i - 1].t, 1)}–${fmt(frames[i].t, 1)} s: Δs = ${fmt(ds, act.object === 'ball' ? 3 : 2)} m`, `v = ${fmt(vv, 2)} m/s${acc !== null ? ` · a = ${fmt(acc, 1)} m/s²` : ''}`]);
+        }
+        let gFit = null;
+        if (act.goal === 'g') {
+          let num = 0, den = 0;
+          frames.forEach((f, i) => { num += s[i] * f.t * f.t; den += 0.5 * Math.pow(f.t, 4); });
+          gFit = num / den;
+          const tl = frames[frames.length - 1].t, sl = s[frames.length - 1];
+          const vEnd = gFit * tl;
+          rows.push(['Proložení s = ½ g t² (všechny snímky)', `g ≈ ${fmt(gFit, 2)} m/s²`]);
+          rows.push([`Polohová energie ztracená za ${fmt(tl, 1)} s: m · g · h = ${fmt(act.massKg, 1)} · 9,81 · ${fmt(sl, 2)}`, `${fmt(act.massKg * g * sl, 2)} J`]);
+          rows.push([`Pohybová energie ½ m v² (v = g · t ≈ ${fmt(vEnd, 2)} m/s)`, `${fmt(0.5 * act.massKg * vEnd * vEnd, 2)} J`]);
+        }
+        readoutRows(readout, rows);
+        eq.textContent = horiz
+          ? `Měřítko: ${fmt(cb.px - ca.px)} px na fotce = ${fmt(calib.b - calib.a)} ${act.unit || 'm'}, tedy ${fmt(scale, 1)} px na ${act.unit || 'm'}. Průměrná rychlost v úseku = Δs / Δt, zrychlení = (v₂ − v₁) / Δt.`
+          : `Měřítko: ${fmt(cb.px - ca.px)} px = ${fmt(calib.b - calib.a)} ${act.unit || 'm'}. Mezery mezi snímky rostou: míč zrychluje. Za stejný čas Δt urazí víc, protože v = g · t roste.`;
+        done = true;
+        sound.sfx('unlock');
+        const lastV = vs[vs.length - 1];
+        out[`${v}_v`] = Math.round(lastV * 100) / 100;
+        if (vs.length >= 2) out[`${v}_a`] = Math.round((vs[1] - vs[0]) / (frames[1].t - frames[0].t) * 10) / 10;
+        if (gFit !== null) out[`${v}_g`] = Math.round(gFit * 100) / 100;
+        out[`${v}_hotovo`] = 1;
+        status.textContent = tplLocal(act.success || 'Fotka vyvolaná.', { v: lastV, a: out[`${v}_a`] || 0, g: gFit || 0 });
+        status.className = 'feedback good';
+        dev.remove();
+        button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, out));
+      }
+
+      // tažení ukazatelů (jen podél směru pohybu), s přiskočením ke značce
+      const toPx = (e) => {
+        const b = svg.getBoundingClientRect();
+        return horiz ? ((e.clientX - b.left) / b.width) * W : ((e.clientY - b.top) / b.height) * H;
+      };
+      svg.addEventListener('pointerdown', (e) => {
+        if (done) return;
+        const t = e.target.closest('.strobo-cursor');
+        if (!t) return;
+        e.preventDefault();
+        dragging = { c: cursors[Number(t.dataset.k)], grab: cursors[Number(t.dataset.k)].px - toPx(e) };
+        svg.setPointerCapture(e.pointerId);
+      });
+      svg.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        dragging.c.px = Math.max(12, Math.min((horiz ? W : H) - 12, toPx(e) + dragging.grab));
+        draw();
+      });
+      const up = () => {
+        if (!dragging) return;
+        const c = dragging.c;
+        if (Math.abs(c.px - c.target) <= SNAP) { c.px = c.target; sound.sfx('key'); }
+        dragging = null;
+        draw();
+      };
+      svg.addEventListener('pointerup', up);
+      svg.addEventListener('pointercancel', up);
+      draw();
+    });
+  }
+
   /* Hod (šikmý vrh z výšky odhodu, bez odporu vzduchu). Kola „rounds“: { name, text, object, speed,
      h0, target, targetLabel, xMax, tick, success, var } – rychlost je daná, hráč hledá úhel, při kterém
      předmět doletí aspoň na normu. Po posledním kole lze zkoušet i jinou rychlost (dolet roste
@@ -5207,7 +5951,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.28');
+          const mod = await import('./predklon.js?v=0.29');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

@@ -123,9 +123,16 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   brožury Normy, muži A), bludiště (schodiště 18×17 / 16×18 / 20×16 cm → 3 002 / 2 825 / 3 139 J),
   noční cvičiště (nosítka 80 kg 1,30/2,20 m → 464 N, 75 kg 1,20/2,00 → 441 N, 90 kg 1,40/2,40 → 515 N;
   protizávaží 0,7 kg 12/15 cm → 0,56 kg, 0,6 kg 15/12 → 0,75 kg, 0,8 kg 10/16 → 0,50 kg; výstup
-  75+25 kg 420→720 m → 294 kJ, 80+20 kg 380→700 → 314 kJ, 70+30 kg 450→720 → 265 kJ).
-  Kódy pro testy: **1259** = všude sada 0 (1022 dává cvičišti sadu 1), 1067 = všude sada 1,
-  1051 = všude sada 2. Diplom ukazuje
+  75+25 kg 420→720 m → 294 kJ, 80+20 kg 380→700 → 314 kJ, 70+30 kg 450→720 → 265 kJ),
+  Spin zóna (stolice 1,0 ot/s 4,0→1,2 kg·m² → 3,3 ot/s, 0,8 3,6→1,2 → 2,4, 1,2 4,5→1,5 → 3,6; zatáčka
+  70 kg 36,5 m 10 m/s → 192 N, 65 kg 40 m 9 m/s → 132 N, 75 kg 45 m 11 m/s → 202 N), fotolaboratoř
+  (rychlost 3,55/0,5 s → 7,1 m/s, 3,2 → 6,4, 2,6 → 5,2; zrychlení 2,1→5,2 → 6,2 m/s², 2,0→4,8 → 5,6,
+  2,4→5,6 → 6,4; energie 0,6 kg 1,23 m → 7,2 J, 0,5 kg 1,8 m → 8,8 J, 0,8 kg 1,0 m → 7,8 J), archiv
+  (výkon na schodech za 6/5/7 s → 350/420/300 W), servisní chodba (pohybová energie při 4/3/5 m/s →
+  560/315/875 J).
+  Kódy pro testy: **1259** = sada 0 v kabinetu a ve vojenském světě (Spin zóna a fotolaboratoř sada 1,
+  archiv a servis sada 2), **2280** = všude sada 1, **1314** = všude sada 2; kód se sadou 0 ve všech
+  osmi místnostech se sadami neexistuje – testy si odpovědi počítají z uložených proměnných. Diplom ukazuje
   řádek „Kód úlohy“. Herna, aréna a 3D chodba mají čísla z vlastního měření, ta se liší sama.
 - **Deník docenta D. a mapa bran** (`diary` v kořeni): `mapNote`, `pages` [{ `id`, `room`, `short`
   (název na mapě), `track`, `gate` (popisek brány), `title`, `text` (odstavce `\n`), `sign` }]; stránky
@@ -137,8 +144,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `meta.totalGates` (9) bran odspodu nahoru: postavené brány (místnosti s `gate`) s číslem a jménem,
   chodby mezi nimi (bludiště, 3D chodba) jako menší kolečka, nepostavené přerušovaně; nahoře společná
   střecha, kam vede devátá brána každého světa. V Menu i na titulní obrazovce; zlatá = prošlá (klik
-  otevře stránku). Teď 8 stránek (kabinet; sklad, bludiště, tělocvična, chodba na cvičiště, noční
-  cvičiště; herna, aréna).
+  otevře stránku). Teď 13 stránek (kabinet, archiv, fotolaboratoř; sklad, bludiště, tělocvična, chodba
+  na cvičiště, noční cvičiště; herna, servisní chodba, aréna, chodba k LEVELU 3, Spin zóna).
 - **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
   výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
   Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
@@ -160,7 +167,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   90 s), `stretcher` (nosítka: dva nosiči, raněný se táhne po nosítkách, momenty kolem rukou zadního
   nosiče; kola `goal` = `equal` | `rearMax`), `helmet` (přilba s noktovizorem: hmotnost a vzdálenost
   protizávaží, moment a síla šíje; kola `goal` = `balance` | `lightest`), `slope` (mapa se svahem:
-  trasy `routes` se stejným převýšením, otázka `question`, rozkaz `mission` s mezí času a výkonu).
+  trasy `routes` se stejným převýšením, otázka `question`, rozkaz `mission` s mezí času a výkonu),
+  `spin` (otočná stolice: zachování momentu hybnosti, kola s `dumbbellKg` a cílem `targetOt`), `curve`
+  (zatáčka: dráhy oválu, kola `compare` s otázkou a `grip` s třením μ), `gyro` (pirueta měřená
+  gyroskopem zařízení – `devicemotion`, na iOS s dotazem na povolení; bez senzoru čas tří otáček),
+  `strobo` (stroboskopická fotografie: `frames` [{t, s}], pásmo `ruler`, měřítko `calib`, předmět
+  `runner`|`ball`, cíl `speed`|`g`; ukazatele blízko značky přiskočí).
   Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
@@ -184,7 +196,10 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `blocks` (bedny a plošina: `x`, `z`, `h`, `label`), `ladder` (žebřiny na čele plošiny), `edgeSign`,
   `rack` (stojan s puškou), `door`, `lamps` ([x, z, bliká]), `zone3` (kde chodí svalovec), `svalovec`
   (`at`, `attacks`, `windup` = délka nápřahu v s, `speed`), `attacks` (název, `target` = sval, který útok
-  provádí, `prompt`), `muscles` (název a funkce svalu), `texts` (všechny hlášky s {proměnnými}).
+  provádí, `prompt`), `muscles` (název a funkce svalu), `texts` (všechny hlášky s {proměnnými}),
+  `ids` (příznaky a stránka deníku té chodby: `defeat`, `end`, `skipped`, `diary` – výchozí jsou hodnoty
+  chodby na cvičiště, GSPORT chodba má vlastní), `door.view` = `"neon"` (za dveřmi neonová chodba místo
+  nočního cvičiště), `door.label`.
   Svaly svalovce (id) a jejich úpony jsou v `js/svalovec.js`. Příznaky: `svalovec_porazen`,
   `prekazky_konec`; proměnné `svaly_spravne`, `svaly_chybne`, `skok_max`.
 - Aktivita `basket` (basketbalový automat, `js/basket.js`): trestný hod z boku ve skutečných rozměrech
@@ -409,6 +424,29 @@ zadání pro autora `docs/zadani-obrazku-cviciste.md`.
   svahu m·g·sin α; nejvyšší tempo klesá se sklonem (realistické meze, ne vzorec).
 - **Zbývá:** obrázky od autora; případně stanoviště na kopci jako další místnost.
 
+### Laboratoře – Sklep: Sklepní archiv (`archiv`) a GSPORT – Sklep: Servisní chodba (`servis`)
+Autor 22. 10. 2026: **chodby mezi místnostmi mají být stejně ve všech světech**. Obě bludiště jsou
+odvozená od vojenského sklepa (stejný engine `chodba.js`, stejné textury z `assets/chodba/`; mapa
+archivu je zrcadlená vodorovně, servisní chodby svisle – zatáčky vlevo/vpravo jsou prohozené, azimuty
+v nástěnce přepsané). Stejný řetěz: nástěnka → klíč za cihlou (azimuty) → skříň s laserem → závora →
+osm kostlivců (kosti k zásahu) → kosti na hromádkách → kostra z kabinetu u mříže (skládání) → zámek
+mříže. Vlastní jména a představení kostlivců (archiv: Alois … Hynek po bývalých asistentech; servis:
+Lag, Ping, Glitch, Patch, Bot, Noob, Crash, Combo), vlastní zámek mříže: archiv = **výkon** při
+výběhu 18 schodů po 17 cm (student 70 kg za 6/5/7 s → 350/420/300 W), servis = **pohybová energie**
+běžícího hráče 70 kg (4/3/5 m/s → 560/315/875 J; vzorec je připsaný dole na plakátu kostry).
+Nápis TĚLOCVIČNA – SCHODIŠTĚ (textura s textem) v nich není, cedule schodiště zůstává 18 × 17 cm
+(text je v textuře autora). Příznaky jsou stejné jako ve sklepě (každý svět má vlastní uloženou hru),
+použití kostí na kostru má v `uses` záznam pro každou chodbu (`room`). Zkratky `?mistnost=archiv`,
+`?mistnost=servis`. Testy: `maze_test.js` (zrcadlené příkazy z `bludiste_seed.js`).
+
+### GSPORT – Chodba k LEVELU 3, 3D (`chodba_l3`)
+Mezi arénou (LEVEL 2) a Spin zónou (LEVEL 3), odvozená od chodby na cvičiště (`chodba3d.js`): bedny
+0,5 / 0,6 / 1,1 m a plošina 2,0 m, batoh **10 kg**, dveře **LEVEL 3** s pohledem do neonové chodby
+(`door.view: "neon"`), svalovec stejný (útoky úder, kop, sevření). Vlastní příznaky přes `world.ids`
+(`svalovec_l3_porazen`, `chodba_l3_konec`, `chodba_l3_preskocena`) a stránka deníku `chodba_l3`.
+Řádky diplomu a odznaky (Nezlomný, Pružina, Měkký doskok, Ostrostřelec, Anatom, Skladač kostí) jsou
+teď i ve světě GSPORT, Anatom/Skladač/Nezlomný i v Laboratořích. Zkratka `?mistnost=chodba_l3`.
+
 ### GSPORT – LEVEL 1: Stará herna (`herna`)
 Práce a výkon při dřepech. Styl kabinetu (staré dřevo, knihovna, kostra) + herní technika
 a neony; čtyři pohledy (stůl → knihovna → kostra a stanice → dveře) + přiblížená pojistková skříň.
@@ -431,6 +469,39 @@ okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze
 trvá déle → **basketbalový automat** (trestný hod, povinně aspoň 3 koše z 10) → otázka, proč se hází
 vysokým obloukem → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
+
+### GSPORT – LEVEL 3: Spin zóna (`spin`)
+Rotace (námět autor schválil 21. 10. 2026, postaveno 22. 10. 2026 ve verzi 0.29). Bývalá laboratoř
+rovnováhy jako arkáda: **otočná stolice** (`spin`: roztočit s rozpaženýma rukama 1 ot/s, I = 0,9 +
+2·m_činky·r² + 2·m_paže·r²/3; připažit → L = I·ω stálý, ω roste, energie otáčení roste – práci dodají
+paže; kolo 1 s činkami 2 kg na 2,5 ot/s, kolo 2 bez činek na 1,8 ot/s), **stanice SPIN** (`gyro`:
+pirueta s tabletem u hrudníku, `devicemotion` – nejvyšší |rotationRate| a počet otáček za 8 s; bez
+senzoru čas tří otáček; výsledky pirueta_ot/omega/t/senzor), **automat CURVE** (`curve`: dráhy oválu
+r = 36,5 + 1,22·(n−1) m, F = m·v²/r, tan α = v²/(g·r); kolo 1 otázka „proč sprinteři nechtějí dráhu
+1“, kolo 2 mokrá dráha μ = 0,3 – najít nejvyšší rychlost √(μ·g·r) ≈ 10,4 m/s, při překročení běžec
+uklouzne). Řetěz: skříňka s činkami (kód = docentova pirueta 1,9 ot/s v ot/min = **114**) → stolice;
+SPIN → žeton z výdejního okénka → CURVE. Kniha **Fyzika rotace** (ω = 2π·n, I = m·r², L = I·ω,
+zatáčka) a plakáty – vzorec musí hráč najít v místnosti. Dveře LEVEL 3: pirueta v rad/s
+(`pirueta_ot·2π`, ±5 %), otáčky po připažení `ω₁·I₁/I₂` (sady), odkud se vzala energie (práce paží),
+dostředivá síla `m·v²/r` (sady), proč se běžec naklání. Deník „Osa“, závěr GSPORT „LEVEL 3 splněn“
+(šest levelů zbývá), řádky diplomu, odznak **Káča** (pirueta ≥ 1,5 ot/s), Rychlík GSPORT zvednut na
+60 minut. Zástupné kresby, `docs/zadani-obrazku-spin.md`. Bez kamery; senzor je volitelný.
+
+### Laboratoře – Brána II: Fotografická laboratoř (`fotolab`)
+Rychlost, zrychlení, energie (námět autor schválil 21. 10. 2026, postaveno 22. 10. 2026 ve verzi 0.29).
+Temná komora: nejdřív **vypínač červeného světla** (bez něj hlavní objekty „ve tmě nevidíš“; „Proč
+červené?“), **stroboskop** = malý zámek (štítek: sprinter 10 m/s, mezery 5 m → **2 záblesky/s**),
+**fotka sprintu** na šňůře (`strobo`: x(t) = 10·(t − 1 + e^(−t)), záblesky po 0,5 s, pásmo 0–12 m,
+měřítko ukazateli na 0 a 10 m, ukazatel každého snímku na značku na kyčli, „Vyvolat“ → tabulka Δs,
+v = Δs/Δt (2,13 / 5,23 / 7,10 / 8,24 m/s), a = Δv/Δt), **negativ** v šuplíku → **zvětšovák** („Proč je
+na každé fotce pásmo?“ – zvětšovák mění velikost, měřítko se nastavuje znovu) → **fotka pádu**
+(míč 0,6 kg, záblesky po 0,1 s, pásmo v cm, proložení s = ½gt² → g ≈ 9,81, tabulka energií m·g·h
+vs. ½mv²). Brána II (mosazný zámek + závora jako v kabinetu): průměrná rychlost `Δs/Δt` (sady),
+zrychlení `Δv/0,5 s` (sady), pohybová energie před dopadem `m·g·h` (sady), proč rostou mezery.
+Plakát RYCHLOST – ZRYCHLENÍ – ENERGIE u brány. Deník „Čas mezi snímky“, závěr Laboratoří „Brána II je
+otevřená“ (sedm bran zbývá), řádky diplomu, odznak **Fotograf** (g mezi 9,5 a 10,1), Rychlík
+Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časovače). Zástupné kresby a vrstvy
+(červené světlo, druhá fotka, otevřená brána), `docs/zadani-obrazku-fotolab.md`. Bez kamery.
 
 ## Rozhodnutí autora (důležitá)
 
@@ -479,10 +550,13 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   **Hotovo ve verzi 0.26:** 7 stránek deníku (texty v `diary`), mapa bran, sekce v zápisníku.
   **22. 10. 2026 autor upřesnil: devět bran má každý svět zvlášť** (Laboratoře, Vojenská tělovýchova,
   GSPORT – tři oddělené světy), mapa od verze 0.27 kreslí tři sloupce po devíti branách.
-  **Vojenská III Noční cvičiště** (nosítka, protizávaží u přilby, mapa se svahem) hotová ve verzi 0.28.
-  **Zbývá:** další brány (autor schválil návrhy: GSPORT LEVEL 3 Spin zóna – rotace; Laboratoře II
-  Fotografická laboratoř – rychlost, zrychlení, energie), střecha s devátou branou a koncem příběhu
-  (až bude svět dohraný), případně
+  **Vojenská III Noční cvičiště** (nosítka, protizávaží u přilby, mapa se svahem) hotová ve verzi 0.28,
+  **GSPORT LEVEL 3 Spin zóna** (rotace) a **Laboratoře II Fotografická laboratoř** (rychlost, zrychlení,
+  energie) ve verzi 0.29. **Chodby mezi místnostmi stejně ve všech světech** (autor 22. 10. 2026): od
+  verze 0.29 má každý svět mezi branami chodby – Laboratoře sklepní archiv (bludiště), GSPORT servisní
+  chodbu (bludiště) a 3D chodbu k LEVELU 3; odvozené z vojenských chodeb (stejné enginy a textury, jiné
+  mapy, jména, zámky). **Zbývá:** další brány (IV a výš v každém světě), střecha s devátou branou a koncem
+  příběhu (až bude svět dohraný), případně
   obrázky stránek od autora (`docs/zadani-obrazku-denik.md`) a zmínka o učiteli D. na fotografii
   katedry (zvrat až na posledních stránkách). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
   jen „D.“ – žádné osobní údaje. Humor: kostlivci v bludišti mají jména a krátké představení
@@ -516,3 +590,8 @@ z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
   aplikace, protože aplikace na Windows běží v oznamovací oblasti.
 - Testovací uložení dělat na jiném původu (`localhost` místo `127.0.0.1`), ať se nepřepíše
   autorova rozehraná hra, a po testu ho smazat.
+- **Senzor piruety (Spin zóna):** gyroskop jde v prohlížeči zkoušet jen na tabletu nebo telefonu
+  (na iOS se prohlížeč zeptá na povolení pohybových senzorů, tlačítko musí stisknout hráč). V testech
+  se posílají umělé události `devicemotion`; cesta bez senzoru (čas tří otáček) je vždy k dispozici.
+- Zrcadlená bludiště (archiv, servisní chodba) procházejí stejnou cestou jako sklep, jen s prohozenými
+  zatáčkami vlevo/vpravo; kódy zámků si testy počítají z uložených proměnných (sady čísel).

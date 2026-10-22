@@ -24,6 +24,12 @@ obrázků, kterými hra „tapetuje“ zdi, podlahu a strop. Hráč je vidí zbl
 
 Vyzkoušet: <https://maikl76.github.io/hra-adventure/?mistnost=chodba>
 
+**Od verze 0.29 se stejné textury používají i v bludištích ostatních světů** – sklepní archiv
+Laboratoří (`?mistnost=archiv`) a servisní chodba GSPORT (`?mistnost=servis`). Mapy jsou zrcadlené,
+jména kostlivců a zámek mříže jiné; textura `sipka` (nápis TĚLOCVIČNA – SCHODIŠTĚ) se v nich nepoužívá.
+Kdybyste chtěl pro tyto světy jiný styl zdí (archiv s regály kartoték, servisní chodba s kabely a
+neony), stačí sada stejných textur pod jinými jmény – doplním je do `game.json`.
+
 ## Styl
 
 Stejný svět jako výstrojní sklad: betonový sklep pod fakultou, stěny dole natřené olivově,

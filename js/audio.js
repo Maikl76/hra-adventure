@@ -709,6 +709,24 @@
       });
     },
 
+    /* Fotografická laboratoř (temná komora): ventilace, kapání vody do dřezu, tikání časovače,
+       občas zabublá ustalovač. Tiché a pravidelné. */
+    fotolab(group, h) {
+      const t = this.ctx.currentTime;
+      AMBIENCE.room.call(this, group, h);
+      // ventilace: úzký šum
+      const fan = this.gain(0.03, group);
+      const bp = this.filter('bandpass', 260, 1.2, fan);
+      h.sources.push(this.noiseSource(bp, t, 0, this.brown, true));
+      this.lfo(fan.gain, 0.09, 0.008, t, h);
+      // kapání: asi jednou za sekundu, nepravidelně, vysoké „plink“ s krátkým dozvukem
+      this.every(h, 0.7, 1.6, (when) => this.ping(group, 1800 + Math.random() * 900, when, 0.028, 0.35));
+      // časovač: tiché tikání
+      this.metronome(h, 1.0, (when) => this.click(group, 2400, when, 0.012));
+      // bublina v misce
+      this.every(h, 12, 28, (when) => this.ping(group, 300 + Math.random() * 120, when, 0.02, 0.2));
+    },
+
     /* Závěrečná obrazovka: klidnější tón. */
     finish(group, h) {
       AMBIENCE.intro.call(this, group, h, { level: 0.5, bells: false });

@@ -38,6 +38,12 @@ Každý svět bude mít vlastních devět bran.
   na stanoviště se stejnou prací proti tíze, ale jiným časem a výkonem. Venku v noci, bez kamery.
   Zatím se zástupnou grafikou (zadání obrázků:
   [`docs/zadani-obrazku-cviciste.md`](docs/zadani-obrazku-cviciste.md)).
+- **Laboratoře – Brána II: Fotografická laboratoř** (rychlost, zrychlení, energie): temná komora
+  s červeným světlem, stroboskopické fotografie sprintu a padajícího míče – měřítko z pásma na fotce,
+  polohy snímků → rychlost → zrychlení, z pádu tíhové zrychlení a přeměna polohové energie
+  v pohybovou. Mezi kabinetem a laboratoří je **sklepní archiv** (bludiště s kostlivci, výkon na
+  schodech). Zatím se zástupnou grafikou (zadání obrázků:
+  [`docs/zadani-obrazku-fotolab.md`](docs/zadani-obrazku-fotolab.md)).
 - **GSPORT – LEVEL 1: Stará herna** (práce a výkon při dřepech, sčítání wattů): stará laboratoř
   v suterénu předělaná na hernu, čtyři strany místnosti a řetěz úkolů – reflex test, UV
   svítilna, vitrína a pojistková skříň s číselnými zámky, jistič na 1000 W. Pak hráč udělá
@@ -50,6 +56,13 @@ Každý svět bude mít vlastních devět bran.
   výšku. Na automatu NEON AIM trefuje neonové terče a u dveří vysvětlí, proč malý vzdálený
   terč trvá déle, a spočítá skok na Měsíci. Grafiku místnosti dodal autor (zadání obrázků:
   [`docs/zadani-obrazku-arena.md`](docs/zadani-obrazku-arena.md)).
+- **GSPORT – LEVEL 3: Spin zóna** (rotace): otočná stolice s činkami (zachování momentu hybnosti –
+  připažení zrychlí otáčení, energii dodají paže), pirueta měřená gyroskopem tabletu nebo telefonu
+  (bez senzoru se stopkami) a automat CURVE se zatáčkou běžeckého oválu (dostředivá síla, náklon,
+  kdy podrážka uklouzne). Mezi hernou a arénou je **servisní chodba** (bludiště s kostlivci, pohybová
+  energie), mezi arénou a Spin zónou **3D chodba k LEVELU 3** (skok, lezení, seskok, svalovec).
+  Zatím se zástupnou grafikou (zadání obrázků:
+  [`docs/zadani-obrazku-spin.md`](docs/zadani-obrazku-spin.md)).
 - Další brány se připravují.
 
 ## GSPORT: dřepy před webkamerou
@@ -143,6 +156,11 @@ Každý svět bude mít vlastních devět bran.
   - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
   - Vojenská tělovýchova – Chodba na cvičiště (3D: skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
   - Vojenská tělovýchova – Brána III (Noční cvičiště): <https://maikl76.github.io/hra-adventure/?mistnost=cviciste>
+  - Laboratoře – Sklepní archiv (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=archiv>
+  - Laboratoře – Brána II (Fotografická laboratoř): <https://maikl76.github.io/hra-adventure/?mistnost=fotolab>
+  - GSPORT – Servisní chodba (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=servis>
+  - GSPORT – Chodba k LEVELU 3 (3D): <https://maikl76.github.io/hra-adventure/?mistnost=chodba_l3>
+  - GSPORT – LEVEL 3 (Spin zóna): <https://maikl76.github.io/hra-adventure/?mistnost=spin>
 
   Titulní obrazovka na zkratku upozorní a v nabídce je jen příslušný svět (odkaz „Všechny světy
   od začátku“ vede zpět na běžnou hru). Věci z dřívějších místností, např. kalkulačku, hráč
