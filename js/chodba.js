@@ -176,6 +176,30 @@ export class Corridor {
     return s ? s.id : null;
   }
 
+  /* Kde leží hromádka kostí z políčka (x, y) na obrazovce: { x0, y0, x1, y1 } v podílech obrazu 0–1
+     (podle konečné velikosti hromádky a polohy kamery), null = žádná nebo není vidět. Pro klikací
+     plochu jen přes kosti na podlaze – zbytek obrazu dál znamená krok vpřed. */
+  pileRect(x, y) {
+    const s = this.skeletons.find((k) => !k.alive && k.x === x && k.y === y);
+    const spr = this.sprites.pile;
+    if (!s || !spr) return null;
+    const { a } = this.cam;
+    const dX = Math.cos(a), dY = Math.sin(a);
+    const px = this.cam.x - dX * BACK, py = this.cam.y - dY * BACK;
+    const plX = -dY * FOV, plY = dX * FOV;
+    const invDet = 1 / (plX * dY - dX * plY);
+    const relX = (s.rx ?? s.x + 0.5) - px, relY = (s.ry ?? s.y + 0.5) - py;
+    const tX = invDet * (dY * relX - dX * relY);
+    const tY = invDet * (-plY * relX + plX * relY);
+    if (tY <= 0.15) return null;
+    const screenX = (W / 2) * (1 + tX / tY);
+    const floorY = H / 2 + H / (2 * tY);
+    const hgt = (H / tY) * 0.24;
+    const wid = hgt * (spr.w / spr.h);
+    const c = (v) => Math.max(0, Math.min(1, v));
+    return { x0: c((screenX - wid / 2) / W), x1: c((screenX + wid / 2) / W), y0: c((floorY - hgt) / H), y1: c(floorY / H) };
+  }
+
   /* Textura zdi podle znaku v mapě; „legend“: název textury, { texture, openWhen }, nebo varianty s „when“. */
   wallTexture(x, y) {
     const e = this.legendEntry(x, y);

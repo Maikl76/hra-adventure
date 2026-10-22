@@ -189,6 +189,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `moveSeconds`, `wakeCells`), `weapon` = obrázek pušky; zbraň = předmět `weaponItem`
   (výchozí `laserova_puska`). Účinek `heal` doplní životy. Poražený kostlivec = příznak `kostlivec_<id>`.
   Objekt s `pile: "<id kostlivce>"` místo `cell` = hromádka kostí na podlaze, kde kostlivec padl.
+  Klikací plocha objektu na zdi je přes celou zeď; **hromádka kostí má plochu jen přes kosti** na
+  podlaze (počítá ji `Corridor.pileRect`), takže klepnutí jinam do středu obrazu je dál krok vpřed.
+  `hideWhen` = podmínka, kdy objekt zmizí – hromádky mají `{ "flags": ["kost_<id>_vzata"] }`, po
+  sebrání kosti tedy plocha zmizí úplně. (Oprava 22. 10. 2026, verze 0.30: autor na tabletu nemohl
+  po sebrání kosti jít dál – velká čárkovaná plocha přes střed obrazu zachytávala klepnutí a krok šel
+  jen klepnutím úplně nahoru.)
 - **3D chodba** (`"type": "world3d"`, kreslí `js/chodba3d.js` + `js/svalovec.js` přes three.js): místo
   pohledů má `world` – rozměry v metrech (x vlevo/vpravo, dopředu je −z): `hall` (x, z, výška),
   `textures` (zeď, podlaha, strop, potrubí, puška), `player` (`start`, `yaw`, `kg`, `force` = síla

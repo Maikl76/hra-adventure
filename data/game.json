@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.29 – ukázka",
+    "version": "0.30 – ukázka",
     "totalGates": 9
   },
 
@@ -8260,6 +8260,7 @@
           "id": "kosti_k1",
           "name": "Hromádka kostí",
           "pile": "k1",
+          "hideWhen": { "flags": ["kost_k1_vzata"] },
           "click": [
             {
               "when": {
@@ -8295,6 +8296,7 @@
           "id": "kosti_k2",
           "name": "Hromádka kostí",
           "pile": "k2",
+          "hideWhen": { "flags": ["kost_k2_vzata"] },
           "click": [
             {
               "when": {
@@ -8330,6 +8332,7 @@
           "id": "kosti_k3",
           "name": "Hromádka kostí",
           "pile": "k3",
+          "hideWhen": { "flags": ["kost_k3_vzata"] },
           "click": [
             {
               "when": {
@@ -8365,6 +8368,7 @@
           "id": "kosti_k4",
           "name": "Hromádka kostí",
           "pile": "k4",
+          "hideWhen": { "flags": ["kost_k4_vzata"] },
           "click": [
             {
               "when": {
@@ -8400,6 +8404,7 @@
           "id": "kosti_k5",
           "name": "Hromádka kostí",
           "pile": "k5",
+          "hideWhen": { "flags": ["kost_k5_vzata"] },
           "click": [
             {
               "when": {
@@ -8435,6 +8440,7 @@
           "id": "kosti_k6",
           "name": "Hromádka kostí",
           "pile": "k6",
+          "hideWhen": { "flags": ["kost_k6_vzata"] },
           "click": [
             {
               "when": {
@@ -8470,6 +8476,7 @@
           "id": "kosti_k7",
           "name": "Hromádka kostí",
           "pile": "k7",
+          "hideWhen": { "flags": ["kost_k7_vzata"] },
           "click": [
             {
               "when": {
@@ -8505,6 +8512,7 @@
           "id": "kosti_k8",
           "name": "Hromádka kostí",
           "pile": "k8",
+          "hideWhen": { "flags": ["kost_k8_vzata"] },
           "click": [
             {
               "when": {
@@ -13702,6 +13710,7 @@
           "id": "kosti_k1",
           "name": "Hromádka kostí",
           "pile": "k1",
+          "hideWhen": { "flags": ["kost_k1_vzata"] },
           "click": [
             {
               "when": {
@@ -13737,6 +13746,7 @@
           "id": "kosti_k2",
           "name": "Hromádka kostí",
           "pile": "k2",
+          "hideWhen": { "flags": ["kost_k2_vzata"] },
           "click": [
             {
               "when": {
@@ -13772,6 +13782,7 @@
           "id": "kosti_k3",
           "name": "Hromádka kostí",
           "pile": "k3",
+          "hideWhen": { "flags": ["kost_k3_vzata"] },
           "click": [
             {
               "when": {
@@ -13807,6 +13818,7 @@
           "id": "kosti_k4",
           "name": "Hromádka kostí",
           "pile": "k4",
+          "hideWhen": { "flags": ["kost_k4_vzata"] },
           "click": [
             {
               "when": {
@@ -13842,6 +13854,7 @@
           "id": "kosti_k5",
           "name": "Hromádka kostí",
           "pile": "k5",
+          "hideWhen": { "flags": ["kost_k5_vzata"] },
           "click": [
             {
               "when": {
@@ -13877,6 +13890,7 @@
           "id": "kosti_k6",
           "name": "Hromádka kostí",
           "pile": "k6",
+          "hideWhen": { "flags": ["kost_k6_vzata"] },
           "click": [
             {
               "when": {
@@ -13912,6 +13926,7 @@
           "id": "kosti_k7",
           "name": "Hromádka kostí",
           "pile": "k7",
+          "hideWhen": { "flags": ["kost_k7_vzata"] },
           "click": [
             {
               "when": {
@@ -13947,6 +13962,7 @@
           "id": "kosti_k8",
           "name": "Hromádka kostí",
           "pile": "k8",
+          "hideWhen": { "flags": ["kost_k8_vzata"] },
           "click": [
             {
               "when": {
@@ -15279,6 +15295,7 @@
           "id": "kosti_k1",
           "name": "Hromádka kostí",
           "pile": "k1",
+          "hideWhen": { "flags": ["kost_k1_vzata"] },
           "click": [
             {
               "when": {
@@ -15314,6 +15331,7 @@
           "id": "kosti_k2",
           "name": "Hromádka kostí",
           "pile": "k2",
+          "hideWhen": { "flags": ["kost_k2_vzata"] },
           "click": [
             {
               "when": {
@@ -15349,6 +15367,7 @@
           "id": "kosti_k3",
           "name": "Hromádka kostí",
           "pile": "k3",
+          "hideWhen": { "flags": ["kost_k3_vzata"] },
           "click": [
             {
               "when": {
@@ -15384,6 +15403,7 @@
           "id": "kosti_k4",
           "name": "Hromádka kostí",
           "pile": "k4",
+          "hideWhen": { "flags": ["kost_k4_vzata"] },
           "click": [
             {
               "when": {
@@ -15419,6 +15439,7 @@
           "id": "kosti_k5",
           "name": "Hromádka kostí",
           "pile": "k5",
+          "hideWhen": { "flags": ["kost_k5_vzata"] },
           "click": [
             {
               "when": {
@@ -15454,6 +15475,7 @@
           "id": "kosti_k6",
           "name": "Hromádka kostí",
           "pile": "k6",
+          "hideWhen": { "flags": ["kost_k6_vzata"] },
           "click": [
             {
               "when": {
@@ -15489,6 +15511,7 @@
           "id": "kosti_k7",
           "name": "Hromádka kostí",
           "pile": "k7",
+          "hideWhen": { "flags": ["kost_k7_vzata"] },
           "click": [
             {
               "when": {
@@ -15524,6 +15547,7 @@
           "id": "kosti_k8",
           "name": "Hromádka kostí",
           "pile": "k8",
+          "hideWhen": { "flags": ["kost_k8_vzata"] },
           "click": [
             {
               "when": {

@@ -851,7 +851,8 @@
   /* ---------- Chodba „z vlastních očí“ (zkouška; kreslí js/chodba.js) ----------
      Hráč chodí po krocích (↑ ↓ / W S) a otáčí se o 90° (← → / A D); šipky jsou i na obrazovce
      a kliknutí do obrazu vlevo / vpravo otočí, uprostřed udělá krok. Objekt na zdi přímo před
-     hráčem dostane klikací plochu přes celou zeď (Enter / mezerník). Poloha se ukládá do hry. */
+     hráčem dostane klikací plochu přes celou zeď (Enter / mezerník), hromádka kostí na podlaze jen
+     plochu přes kosti a po sebrání kosti zmizí („hideWhen“). Poloha se ukládá do hry. */
   let corridor = null;        // instance Corridor
   let corridorRoom = null;    // id místnosti, pro kterou je načtená
   let corridorBusy = false;   // probíhá krok / otočení
@@ -899,7 +900,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.29');
+      const mod = await import('./chodba.js?v=0.30');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1046,12 +1047,38 @@
   }
 
   function corridorHotspotAt(cell) {
+    let h = null;
     if (corridor && corridor.isFloor(cell.x, cell.y)) {
-      // na podlaze: hromádka kostí po poraženém kostlivci („pile“ = id kostlivce)
+      // na podlaze: hromádka kostí po poraženém kostlivci („pile“ = id kostlivce); jinak nic (otevřená závora apod.)
       const pile = corridor.pileAt(cell.x, cell.y);
-      return pile ? (game.room.hotspots || []).find((h) => h.pile === pile) || null : null;   // jinak otevřená závora apod.
+      h = pile ? (game.room.hotspots || []).find((x) => x.pile === pile) || null : null;
+    } else {
+      h = (game.room.hotspots || []).find((x) => x.cell && x.cell[0] === cell.x && x.cell[1] === cell.y) || null;
     }
-    return (game.room.hotspots || []).find((h) => h.cell && h.cell[0] === cell.x && h.cell[1] === cell.y);
+    // „hideWhen“: objekt zmizí, když podmínka platí (hromádka kostí, ze které hráč už kost vzal)
+    return h && h.hideWhen && game.check(h.hideWhen) ? null : h;
+  }
+
+  /* Klikací plocha pro věc přímo před hráčem: věc na zdi dostane celou zeď, hromádka kostí na podlaze
+     jen plochu přes kosti – klepnutí jinam do středu obrazu dál znamená krok vpřed. */
+  function placeCorridorHotspot() {
+    const hs = $('hotspots');
+    hs.innerHTML = '';
+    hs.dataset.front = '';
+    if (!corridor) return null;
+    const cell = corridor.facing().front;
+    const front = corridorHotspotAt(cell);
+    if (!front) return null;
+    let area = [14, 20, 72, 72];
+    if (front.pile) {
+      const r = corridor.pileRect(cell.x, cell.y);
+      const x0 = r ? Math.max(0, r.x0 - 0.06) : 0.35, x1 = r ? Math.min(1, r.x1 + 0.06) : 0.65;
+      const y0 = r ? Math.max(0, r.y0 - 0.06) : 0.62, y1 = r ? Math.min(1, r.y1 + 0.05) : 0.92;
+      area = [x0 * 100, y0 * 100, (x1 - x0) * 100, (y1 - y0) * 100];
+    }
+    hs.appendChild(hotspotButton({ ...front, area }));
+    hs.dataset.front = front.id;
+    return front;
   }
 
   function frontHotspot() {
@@ -1062,10 +1089,7 @@
   function updateCorridorFacing(replace, bumped) {
     if (!corridor) return;
     const f = corridor.facing();
-    const front = corridorHotspotAt(f.front);
-    const hs = $('hotspots');
-    hs.innerHTML = '';
-    if (front) hs.appendChild(hotspotButton({ ...front, area: [14, 20, 72, 72] }));
+    const front = placeCorridorHotspot();
     const lines = [];
     if (front && !front.hidden) lines.push(`Před tebou: ${front.name} (klikni, nebo stiskni Enter).`);
     const left = corridorHotspotAt(f.left), right = corridorHotspotAt(f.right);
@@ -1110,7 +1134,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.29');
+        const mod = await import('./chodba3d.js?v=0.30');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1235,7 +1259,17 @@
   /* Části, které se mění se stavem: vrstvy obrázku, inventář.
      animate = nově objevená vrstva se ukáže animací (např. vysunutí šuplíku); při otočení ne. */
   function renderState(animate = true) {
-    if (corridor && game.room.type === 'corridor') corridor.invalidate();
+    if (corridor && game.room.type === 'corridor') {
+      corridor.invalidate();
+      // po akci (např. sebraná kost) se klikací plocha před hráčem může změnit nebo zmizet
+      if (corridorRoom === game.roomId && !corridorBusy) {
+        const front = corridorHotspotAt(corridor.facing().front);
+        if ((front ? front.id : '') !== ($('hotspots').dataset.front || '')) {
+          hideTooltip();
+          placeCorridorHotspot();
+        }
+      }
+    }
     updateStorm();   // síla bouřky podle postupu v místnosti
     const layers = $('scene-layers');
     const wanted = game.visibleLayers();
@@ -1916,7 +1950,7 @@
         }
       };
 
-      import('./basket.js?v=0.29').then((mod) => {
+      import('./basket.js?v=0.30').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2546,7 +2580,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.29');
+          const mod = await import('./squats.js?v=0.30');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3408,7 +3442,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.29');
+          const mod = await import('./skok.js?v=0.30');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3786,7 +3820,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.29');
+          const mod = await import('./goblet.js?v=0.30');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -5951,7 +5985,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.29');
+          const mod = await import('./predklon.js?v=0.30');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
