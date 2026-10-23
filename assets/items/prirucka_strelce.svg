@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: příručka střelce -->
+  <rect x="12" y="8" width="40" height="48" rx="3" fill="#4a5634" stroke="#20251a" stroke-width="2"/>
+  <rect x="16" y="8" width="4" height="48" fill="#363f26"/>
+  <circle cx="36" cy="28" r="9" fill="none" stroke="#e9dfc2" stroke-width="2"/>
+  <path d="M36,16 V40 M24,28 H48" stroke="#e9dfc2" stroke-width="1.6"/>
+</svg>

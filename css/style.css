@@ -1058,6 +1058,25 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .basket-after p { margin: 0; }
 .basket-win { color: var(--ok); }
 .basket-lose { color: var(--danger); }
+
+/* Odstřelovací puška (střelnice na kótě 680) */
+.modal-box.sniper-box { width: min(100%, 1000px); }
+.sniper-canvas { display: block; width: min(100%, calc(56vh * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; border-radius: 8px; background: #050607; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.sniper-canvas:active { cursor: grabbing; }
+.sniper-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; }
+.sniper-btn { padding: 7px 12px; font-size: 15px; }
+.sniper-btn[aria-pressed="true"] { color: #17120a; background: var(--gold-bright); border-color: var(--gold-bright); }
+.sniper-zoom { min-width: 42px; font-weight: bold; }
+.sniper-fire { min-width: 112px; }
+.sniper-posinfo { margin: 8px 0 0; font-size: 14px; color: var(--muted); text-align: center; }
+.sniper-task { margin: 8px 0 0; }
+.sniper-range { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.sniper-range[hidden] { display: none; }
+.sniper-input { width: 96px; margin-left: 8px; padding: 6px 8px; font: inherit; background: #0f1418; color: var(--ink); border: 1px solid var(--gold-dim); border-radius: 4px; }
+.sniper-spot { min-height: 2.4em; margin: 8px 0 0; color: #cfe3b6; }
+.sniper-spot strong { color: var(--gold-bright); font-weight: normal; }
+.sniper-after { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+.sniper-after p { margin: 0; flex: 1 1 320px; color: var(--ok); }
 /* Skládání kostry (bludiště) */
 .modal-box.skel-box { width: min(100%, 760px); }
 .skel-wrap { display: flex; gap: 16px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }

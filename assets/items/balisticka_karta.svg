@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: zalaminovaná balistická karta -->
+  <rect x="8" y="10" width="48" height="44" rx="4" fill="#f4efe0" stroke="#5a4a30" stroke-width="2"/>
+  <rect x="8" y="10" width="48" height="9" rx="3" fill="#b4302a"/>
+  <path d="M14,26 H50 M14,32 H50 M14,38 H50 M14,44 H50 M27,22 V50 M39,22 V50" stroke="#7a6c50" stroke-width="1.6"/>
+</svg>

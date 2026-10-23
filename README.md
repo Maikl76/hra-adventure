@@ -38,6 +38,14 @@ Každý svět bude mít vlastních devět bran.
   na stanoviště se stejnou prací proti tíze, ale jiným časem a výkonem. Venku v noci, bez kamery.
   Zatím se zástupnou grafikou (zadání obrázků:
   [`docs/zadani-obrazku-cviciste.md`](docs/zadani-obrazku-cviciste.md)).
+- **Vojenská tělovýchova – Brána IV: Stanoviště na kótě 680** (pád střely, úhlové měření, stabilita
+  a dech střelce): za svítání na kopci nad údolím střelba **odstřelovací puškou s dalekohledem** jako
+  ve hrách – ale jen na ocelové gongy. Kříž v dalekohledu dělený v milech (1 mil = 1 m na 1 000 m),
+  balistická karta (o kolik mířit výš, protože kulka padá ½ · g · t²), změření vzdálenosti tabule
+  křížem, boční vítr; puška se houpe podle polohy těla (vstoje, vkleče, vleže), zvedá se s nádechem
+  (výstřel v dechové pauze) a cuká s každým tepem srdce, který po výstupu na kótu postupně klesá.
+  Pozorovatel hlásí odchylku v milech. Zatím se zástupnou grafikou (zadání obrázků:
+  [`docs/zadani-obrazku-strelnice.md`](docs/zadani-obrazku-strelnice.md)).
 - **Laboratoře – Brána II: Fotografická laboratoř** (rychlost, zrychlení, energie): temná komora
   s červeným světlem, stroboskopické fotografie sprintu a padajícího míče – měřítko z pásma na fotce,
   polohy snímků → rychlost → zrychlení, z pádu tíhové zrychlení a přeměna polohové energie
@@ -63,6 +71,11 @@ Každý svět bude mít vlastních devět bran.
   energie), mezi arénou a Spin zónou **3D chodba k LEVELU 3** (skok, lezení, seskok, svalovec).
   Zatím se zástupnou grafikou (zadání obrázků:
   [`docs/zadani-obrazku-spin.md`](docs/zadani-obrazku-spin.md)).
+- **Průhledy do vedlejších místností**: v každé místnosti jde nakouknout dál – škvírou po knize
+  do preparátorny, větrací mřížkou do sušárny, oknem do kabinetu tělocvikářů, pootevřenými dveřmi
+  do měřicí kabiny… Každý průhled má pár věcí s krátkým vysvětlením „Proč?“ (k bráně nejsou potřeba,
+  kdo nakoukne všude, dostane odznak Zvědavec; zadání obrázků:
+  [`docs/zadani-obrazku-nahledy.md`](docs/zadani-obrazku-nahledy.md)).
 - Další brány se připravují.
 
 ## GSPORT: dřepy před webkamerou
@@ -156,6 +169,7 @@ Každý svět bude mít vlastních devět bran.
   - Vojenská tělovýchova – Brána II (Tělocvična): <https://maikl76.github.io/hra-adventure/?mistnost=telocvicna>
   - Vojenská tělovýchova – Chodba na cvičiště (3D: skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
   - Vojenská tělovýchova – Brána III (Noční cvičiště): <https://maikl76.github.io/hra-adventure/?mistnost=cviciste>
+  - Vojenská tělovýchova – Brána IV (Stanoviště na kótě 680, odstřelovací puška): <https://maikl76.github.io/hra-adventure/?mistnost=strelnice>
   - Laboratoře – Sklepní archiv (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=archiv>
   - Laboratoře – Brána II (Fotografická laboratoř): <https://maikl76.github.io/hra-adventure/?mistnost=fotolab>
   - GSPORT – Servisní chodba (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=servis>

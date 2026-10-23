@@ -272,7 +272,15 @@
       const saved = id ? storage.get(saveKey(id)) : null;
       if (!saved || saved.version !== SAVE_VERSION) return false;
       if (!saved.vars) saved.vars = {};
-      Game.resolveRoom(saved, this.data.tracks.find((t) => t.id === saved.trackId));
+      const track = this.data.tracks.find((t) => t.id === saved.trackId);
+      Game.resolveRoom(saved, track);
+      // dohraný svět, do kterého mezitím přibyla další místnost (např. Brána IV): pokračovat jí
+      if (saved.finished && track && saved.roomIndex < track.rooms.length - 1 && !saved.trialRoom) {
+        saved.finished = false;
+        delete saved.finishedAt;
+        saved.roomIndex += 1;
+        saved.roomId = track.rooms[saved.roomIndex];
+      }
       this.state = saved;
       this.applyVariants();   // starší uložení bez sad čísel dostane původní hodnoty (sada 0)
       this.save();   // opravené místo hned uložit
@@ -863,6 +871,11 @@
           }
           for (const h of view.hotspots || []) {
             for (const c of h.click || []) checkEffects(c.do, `Místnost „${roomId}“, objekt „${h.id}“`);
+            // oblast [x, y, šířka, výška] v % obrázku: kladná velikost, uvnitř obrázku
+            const a = h.area;
+            if (a && (a.length !== 4 || !(a[2] > 0 && a[3] > 0) || a[0] < -1 || a[1] < -1 || a[0] + a[2] > 101 || a[1] + a[3] > 101)) {
+              problems.push(`Místnost „${roomId}“, objekt „${h.id}“: oblast ${JSON.stringify(a)} není [x, y, šířka, výška] v % obrázku.`);
+            }
           }
           for (const c of view.enter || []) checkEffects(c.do, `Místnost „${roomId}“, vstup do pohledu „${viewId}“`);
         }

@@ -41,7 +41,7 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
 - **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
   importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`, `goblet.js`) a `skok.js`,
   `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo; také `chodba.js`,
-  `chodba3d.js` a `basket.js` v `js/ui.js` a `svalovec.js` v `js/chodba3d.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
+  `chodba3d.js`, `basket.js` a `strelnice.js` v `js/ui.js` a `svalovec.js` v `js/chodba3d.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
   prohlížeče hráčů míchají starý a nový kód. **První slovo `meta.version` musí být stejné jako `?v=`
   u `ui.js`**: když se liší (stará stránka z mezipaměti – GitHub Pages ji drží až 10 minut, autor tak
   17. 10. 2026 neotevřel basketbalový automat), hra se jednou sama znovu načte s `?v=<verze>`.
@@ -70,6 +70,7 @@ js/goblet.js        goblet dřep 90 s – platné a neplatné dřepy (vojenská 
 js/chodba.js        chodba „z vlastních očí“ – chůze po krocích, kreslení jako DOOM (zkouška: sklep)
 js/chodba3d.js      3D chodba (ukázka) – volný pohyb, skok s impulzem, doskok, lezení, laser (three.js)
 js/svalovec.js      svalovec – kostra se svaly z tvarů v kódu, pózy a chování (three.js)
+js/strelnice.js     odstřelovací puška – výhled do údolí, dalekohled s křížem v mil, dech, tep, let kulky, vítr
 vendor/mediapipe/   MediaPipe Tasks Vision 0.10.14 + model pose_landmarker_lite (Apache 2.0)
 vendor/three/       three.js 0.186.1, zmenšené (MIT) – jen pro 3D chodbu, načte se až v ní
 data/game.json      VEŠKERÝ obsah hry
@@ -129,9 +130,12 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (rychlost 3,55/0,5 s → 7,1 m/s, 3,2 → 6,4, 2,6 → 5,2; zrychlení 2,1→5,2 → 6,2 m/s², 2,0→4,8 → 5,6,
   2,4→5,6 → 6,4; energie 0,6 kg 1,23 m → 7,2 J, 0,5 kg 1,8 m → 8,8 J, 0,8 kg 1,0 m → 7,8 J), archiv
   (výkon na schodech za 6/5/7 s → 350/420/300 W), servisní chodba (pohybová energie při 4/3/5 m/s →
-  560/315/875 J).
+  560/315/875 J), stanoviště na kótě 680 (tabule 1,0 m na 400 m = 2,5 mil / 0,9 m na 450 m = 2,0 mil /
+  1,4 m na 350 m = 4,0 mil; boční vítr zprava 4/3/5 m/s; brána: kontejner 6 m zabírá 12/15/20 mil → 500/400/300 m,
+  pokles bez vzduchu při 820 m/s na 300/400/250 m → 65,7/116,7/45,6 cm).
   Kódy pro testy: **1259** = sada 0 v kabinetu a ve vojenském světě (Spin zóna a fotolaboratoř sada 1,
-  archiv a servis sada 2), **2280** = všude sada 1, **1314** = všude sada 2; kód se sadou 0 ve všech
+  archiv a servis sada 2, stanoviště na kótě sada 1), **2280** = všude sada 1 (stanoviště sada 2),
+  **1314** = všude sada 2 (stanoviště sada 0); kód se sadou 0 ve všech
   osmi místnostech se sadami neexistuje – testy si odpovědi počítají z uložených proměnných. Diplom ukazuje
   řádek „Kód úlohy“. Herna, aréna a 3D chodba mají čísla z vlastního měření, ta se liší sama.
 - **Deník docenta D. a mapa bran** (`diary` v kořeni): `mapNote`, `pages` [{ `id`, `room`, `short`
@@ -144,8 +148,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `meta.totalGates` (9) bran odspodu nahoru: postavené brány (místnosti s `gate`) s číslem a jménem,
   chodby mezi nimi (bludiště, 3D chodba) jako menší kolečka, nepostavené přerušovaně; nahoře společná
   střecha, kam vede devátá brána každého světa. V Menu i na titulní obrazovce; zlatá = prošlá (klik
-  otevře stránku). Teď 13 stránek (kabinet, archiv, fotolaboratoř; sklad, bludiště, tělocvična, chodba
-  na cvičiště, noční cvičiště; herna, servisní chodba, aréna, chodba k LEVELU 3, Spin zóna).
+  otevře stránku). Teď 14 stránek (kabinet, archiv, fotolaboratoř; sklad, bludiště, tělocvična, chodba
+  na cvičiště, noční cvičiště, stanoviště na kótě 680; herna, servisní chodba, aréna, chodba k LEVELU 3, Spin zóna).
 - **Diplom** (závěrečná obrazovka): hvězdičky 1–3 podle nápověd a chybných pokusů (meze `finish.stars`,
   výchozí 3★ = 0 nápověd a ≤ 3 chyby, 2★ = ≤ 2 nápovědy a ≤ 8 chyb), odznaky společné (`badges` v kořeni:
   Bez nápovědy, Pevná ruka) a světa (`finish.badges`: `when`, `maxHints`, `maxErrors`, `maxMinutes`),
@@ -172,7 +176,11 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (zatáčka: dráhy oválu, kola `compare` s otázkou a `grip` s třením μ), `gyro` (pirueta měřená
   gyroskopem zařízení – `devicemotion`, na iOS s dotazem na povolení; bez senzoru čas tří otáček),
   `strobo` (stroboskopická fotografie: `frames` [{t, s}], pásmo `ruler`, měřítko `calib`, předmět
-  `runner`|`ball`, cíl `speed`|`g`; ukazatele blízko značky přiskočí).
+  `runner`|`ball`, cíl `speed`|`g`; ukazatele blízko značky přiskočí), `sniper` (odstřelovací puška,
+  `js/strelnice.js`: `rifle` {v0, k, sight, zero}, `positions` {stoj|klek|leh: sway, breath, pulse, recoil, text},
+  `heart` {start, again, rest, tau}, `breath` {rate, steady, max}, `targets` [{id, d, az, size, board, label}],
+  `rounds` [{target, label, task, spot, wind {speed, from}, range {ask, tolerance}, hint, done, why}], `texts` =
+  hlášky pozorovatele; viz Brána IV).
   Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
@@ -214,6 +222,14 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `throws`, `need` (výhra), `hintAfter` + `hint` (nápověda po neúspěšných kolech); výsledek `kose`
   (nejlepší kolo), `kos_uhel`, `kos_rychlost`. Po hodu: kde míč prošel výškou obroučky a pod jakým
   úhlem (otvor = 45 cm · sin úhlu; pod 32° menší než míč). Funguje třeba 55° a 7,2 m/s.
+- **Průhledy do vedlejších místností** (od verze 0.31, bez změny enginu): objekt s účinkem `{ "view": "<id>" }`
+  vede do pohledu s `back` (tlačítko Zpět, šipka dolů) a `enter` = `{ "set": "nahled_<místnost>" }` jednou;
+  otvor v pohledu místnosti od autora je vrstva bez podmínky (dveře, okno, závěs, stan). Odznak **Zvědavec**
+  v každém světě, když jsou všechny příznaky `nahled_*` daného světa. Seznam v „Světy a místnosti“.
+- Kontrola `validate` hlídá i oblasti objektů: `[x, y, šířka, výška]` v % obrázku, kladná velikost, uvnitř obrázku
+  (23. 10. 2026: omylem zadané [x0, y0, x1, y1] daly zápornou šířku a objekt nešel kliknout).
+- **Dohraný svět, do kterého přibyla místnost** (např. Brána IV za cvičištěm): uložená hra se při načtení vrátí
+  z diplomu do nové místnosti (`loadSave`), jinak by ji hráč, který svět dohrál dřív, neviděl.
 - Aktivita `skeleton` (skládání kostry): `image` (kostra s mezerami), `slots` [{ `id`, `item`, `name`,
   `image` (vyříznutá kost), `box` (její poloha v % obrázku), `marker` (otazník v %), `where`, `hint` }];
   vrácená kost = příznak `kostra_<id>`, chyby `kostra_chybne`, po poslední kosti `done`.
@@ -428,7 +444,59 @@ zadání pro autora `docs/zadani-obrazku-cviciste.md`.
   těžiště uprostřed); přilba = rovnováha momentů m₁·d₁ = m₂·d₂ (g se vykrátí), protizávaží dál od osy
   = lehčí, ale každý gram nese krční páteř; svah = W = m·g·Δh nezávisí na cestě, P = W/t, síla podél
   svahu m·g·sin α; nejvyšší tempo klesá se sklonem (realistické meze, ne vzorec).
-- **Zbývá:** obrázky od autora; případně stanoviště na kopci jako další místnost.
+- Od verze 0.31 vede Brána III na **stanoviště na kótě 680** (Brána IV); noktovizor hráč při otevření Brány III vrátí
+  do bedny (`remove`). Průhled: **polní kuchyně** (stan v dálce vlevo u stolu).
+- **Zbývá:** obrázky od autora.
+
+### Vojenská tělovýchova – Brána IV: Stanoviště na kótě 680 (`strelnice`)
+Autor 23. 10. 2026: „střelba s odstřelovací puškou, kde je možné zaměřit přes dalekohled na zbrani, jako ve hrách
+s tematikou odstřelovačů“ (výjimka ze zákazu zbraní – viz Rozhodnutí autora). Postaveno ve verzi 0.31 za nočním
+cvičištěm: svítání na kótě 680 (kam vedl výstup z mapy se svahem), rtn. Doubek s rukou v šátku je pozorovatel.
+Čtyři pohledy: palebné postavení (sem hráč přijde) → stan správce střelnice → Brána IV → pozorovací věž (+ průhled
+do **pozorovatelny** pootevřenými dveřmi) a z postavení přiblížený **výhled do údolí** (obrázek kreslí `js/strelnice.js`,
+stejná krajina jako v dalekohledu). Řetěz: kufr s puškou (kód = **úsťová rychlost 820 m/s** z krabice s náboji ve stanu,
+cílené rady 343 = zvuk, 2952 = km/h) → chrániče sluchu (bez nich Doubek k pušce nepustí; „Proč?“ decibely) →
+balistická karta (kniha s tabulkou, je vidět i v dalekohledu) a Příručka střelce → **střelba** (aktivita `sniper`) →
+Brána IV. Podkres `strelnice` (vítr, skřivan, vrána, vzdálený zvon), bouřka `venku`.
+- **Puška (`js/strelnice.js`)**: výhled do údolí → klepnutí na cíl zvedne dalekohled (zvětšení 4–16×, kříž v první
+  ohniskové rovině s dělením po 0,5 mil, takže jím jde měřit). Tah prstem/myší posouvá krajinu, šipky jemně,
+  kolečko a + − zvětšení, klávesy 1–3 polohy, Shift / tlačítko = zadržet dech, F / mezerník / Enter = výstřel, V = výhled.
+  **Tělo střelce:** houpání podle polohy (vstoje 2,2 mil, vkleče 1,0, vleže na dvojnožce 0,22 – opěrná plocha a výška
+  těžiště), dech zvedá pušku (cyklus nádech–výdech–**dechová pauza**, ukazatel v dalekohledu), zadržení dechu zklidní,
+  po 5 s se ruce začnou třást a po 8 s si tělo vynutí nádech; každý tep cukne křížem, tep po výstupu 130/min klesá
+  k 68 (τ = 40 s), změna polohy ho zvedne. **Střela:** v0 = 820 m/s, odpor vzduchu k = 0,00076 1/m (v = v0·e^(−kx),
+  t = (e^(kx) − 1)/(k·v0)), pokles ½·g·t², dalekohled 5 cm nad hlavní, nastřelení na 100 m; boční vítr w·(t − x/v0);
+  rozptyl asi 1 úhlová minuta. Karta: 300 m 1,6 mil, 400 m 2,8, 500 m 4,2 (vítr 0,26 mil na 1 m/s), 600 m 5,8.
+  Dopad: gong se rozhoupe a zabliká, jinak prach na valu/zemi; stopa střely v dalekohledu; zvuk gongu přijde se
+  zpožděním d/343 (jen atmosféra). Pozorovatel hlásí odchylku v mil (nízko/vysoko, vlevo/vpravo) a jednou za okno
+  radí polohu, tep a dech; po 3 chybách nápověda úkolu.
+- **Čtyři úkoly:** gong 100 m (40 cm, míří se přímo; vyzkoušet polohy), gong 300 m (karta: 1,6 mil výš), gong pod
+  tabulí neznámé vzdálenosti (sady čísel; nejdřív změřit křížem a zapsat vzdálenost = velikost × 1 000 : mil, ±8 %),
+  gong 500 m ve větru zprava (karta: 4,2 mil výš a vítr × 0,26 mil doprava). Každý úkol má „Proč?“ (posturální
+  výkyvy, pád střely, podobné trojúhelníky, vítr po celou dobu letu). Výsledky: `strelba_strely`, `strelba_zasahy`,
+  `strelba_vzdalenost`, `strelba_dech`, `strelba_vleze`; průběh se ukládá (`sn_kolo`…), zavřené okno pokračuje.
+- **Brána IV** (5 kroků): vzdálenost kontejneru 6 m podle mil (sady), pokles bez vzduchu ½·g·(d/820)² v cm (sady),
+  volby: vystřelená a upuštěná kulka dopadnou současně, proč je poloha vleže nejstabilnější, kdy stisknout spoušť
+  (dechová pauza). Deník „Dechová pauza“ (kniha střelnice v pozorovatelně má zápis D.), závěr vojenského světa „Brána IV
+  je otevřená“ (pět bran zbývá), řádky diplomu, odznaky **Odstřelovač** (≤ 8 výstřelů) a **Klidný dech** (všechny gongy
+  se zadrženým dechem); Rychlík vojenského světa zvednut na 110 minut. Zkratka `?mistnost=strelnice`.
+  Zástupné kresby (pozadí postavení z modulu pušky), `docs/zadani-obrazku-strelnice.md`. Bez kamery.
+
+### Průhledy do vedlejších místností (všechny světy)
+Autor 23. 10. 2026: „aby se v místnostech dalo nakouknout i do další místnosti, aby to nebyly jenom 4 stěny“.
+Ve verzi 0.31 má každá místnost s pohledy jeden průhled se 4–6 věcmi a „Proč?“ (k bráně se nepotřebují):
+- kabinet → **preparátorna** škvírou po zelené knize (model kolena a čéška jako kladka, trámečky kosti – Wolffův
+  zákon, hmotnost kostry, páteř, věšák s prachem ve tvaru klobouku – narážka na konec příběhu),
+- fotolaboratoř → **ateliér** za černým závěsem (mřížka jako měřítko, Marey, Muybridge, blesk 1/10 000 s, kolmý záběr),
+- sklad → **sušárna** větrací mřížkou (kilogram na botách ≈ pět na zádech, mokrá blůza a výparné teplo, teploměr, batohy),
+- tělocvična → **kabinet tělocvikářů** oknem (Ruffierův test, ruční stopky a reakční čas +0,24 s, spirometr, poháry),
+- noční cvičiště → **polní kuchyně** (ohřev vody Q = m·c·ΔT, denní dávka 15 MJ, účinnost svalů ~25 %, pitný režim),
+- stanoviště na kótě → **pozorovatelna** (průzor, dvojitý dalekohled, tabulka větru, kniha střelnice),
+- herna → **streamovací koutek** (tlak na ploténky vsedě, hlava v předklonu ~27 kg, pauzy, myš a zápěstí, křeslo),
+- aréna → **měřicí kabina** (silová plošina a impulz, křivka skoku, vysokorychlostní kamera, EMG),
+- Spin zóna → **vestibulární koutek** (polokruhovité kanálky, točení hlavy po rotaci, pohled do bodu, rovnováha).
+Otvory v obrázcích od autora (dveře v herně a aréně, okno v tělocvičně) jsou zatím zástupné vrstvy od AI asistenta,
+ve skladu jsou mřížky a v kabinetu mezera po knize už v autorových obrázcích. Zadání: `docs/zadani-obrazku-nahledy.md`.
 
 ### Laboratoře – Sklep: Sklepní archiv (`archiv`) a GSPORT – Sklep: Servisní chodba (`servis`)
 Autor 22. 10. 2026: **chodby mezi místnostmi mají být stejně ve všech světech**. Obě bludiště jsou
@@ -539,6 +607,9 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   se dají v Menu vypnout. Puška zůstává ve sklepě (u mříže ji hráč vrátí do stojanu).
   Druhá výjimka (19. 10. 2026, autor odsouhlasil boj laserem): 3D chodba na cvičiště se svalovcem –
   zase jen cvičný laser, výukový smysl funkce svalů; puška leží ve stojanu v chodbě.
+  Třetí výjimka (23. 10. 2026, autor sám chtěl): **odstřelovací puška s dalekohledem** na střelnici na kótě 680 –
+  střílí se **jen na ocelové gongy a tabule** (nic živého, žádná krev), s chrániči sluchu a pozorovatelem; výukový
+  smysl balistika (pád střely, mil, vítr) a biomechanika střelce (stabilita polohy, dech, tep). Puška zůstává na stanovišti.
 - **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična,
   **od 19. 10. 2026 ještě → 3D chodba na cvičiště** (svalovec; dveře na cvičiště = konec světa).
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
@@ -561,7 +632,8 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   energie) ve verzi 0.29. **Chodby mezi místnostmi stejně ve všech světech** (autor 22. 10. 2026): od
   verze 0.29 má každý svět mezi branami chodby – Laboratoře sklepní archiv (bludiště), GSPORT servisní
   chodbu (bludiště) a 3D chodbu k LEVELU 3; odvozené z vojenských chodeb (stejné enginy a textury, jiné
-  mapy, jména, zámky). **Zbývá:** další brány (IV a výš v každém světě), střecha s devátou branou a koncem
+  mapy, jména, zámky). **Vojenská IV Stanoviště na kótě 680** (odstřelovací puška) a **průhledy do vedlejších místností** ve všech
+  světech ve verzi 0.31. **Zbývá:** další brány (IV a výš v Laboratořích a GSPORT, V a výš ve vojenském), střecha s devátou branou a koncem
   příběhu (až bude svět dohraný), případně
   obrázky stránek od autora (`docs/zadani-obrazku-denik.md`) a zmínka o učiteli D. na fotografii
   katedry (zvrat až na posledních stránkách). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
@@ -599,5 +671,9 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
 - **Senzor piruety (Spin zóna):** gyroskop jde v prohlížeči zkoušet jen na tabletu nebo telefonu
   (na iOS se prohlížeč zeptá na povolení pohybových senzorů, tlačítko musí stisknout hráč). V testech
   se posílají umělé události `devicemotion`; cesta bez senzoru (čas tří otáček) je vždy k dispozici.
+- **Puška:** test `strelnice_test.js` prochází celou Bránu IV; v okně pušky je ovladač na `canvas.__sniper`
+  (`test.noSway`, `test.noDispersion` = deterministická střelba, `targetInfo(id)`, `aimAt(az, el)`); fyzika je
+  v exportech `holdMil`, `windMil`, `flightTime`, `ballisticCard` (karta v game.json musí sedět s nimi).
+  `peek_test.js` projde průhledy ve všech osmi místnostech.
 - Zrcadlená bludiště (archiv, servisní chodba) procházejí stejnou cestou jako sklep, jen s prohozenými
   zatáčkami vlevo/vpravo; kódy zámků si testy počítají z uložených proměnných (sady čísel).

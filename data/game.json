@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.30 – ukázka",
+    "version": "0.31 – ukázka",
     "totalGates": 9
   },
 
@@ -99,6 +99,15 @@
         "text": "Vzdálenost od osy. Páku jsem učil v kabinetu na bicepsu, ale pochopil jsem ji v noci na cvičišti. Kdo je blíž těžišti raněného, nese víc. Noktovizor před čelem vyváží na zadku přilby půl kila – když ho dáš dost daleko. A kopec nikoho neošidí: zvedáš sám sebe o celé převýšení, ať jdeš kudykoli; strmá cesta chce tu samou práci, jen rychleji.\nJednou jsme v noci nesli kolegu z kopce dolů. Šel jsem vzadu, u hlavy. Do rána jsem věděl v každém prstu, kde má člověk těžiště – a proč se nosiči střídají."
       },
       {
+        "id": "strelnice",
+        "room": "strelnice",
+        "short": "Kóta 680",
+        "track": "vojenska",
+        "gate": "Brána IV",
+        "title": "Dechová pauza",
+        "text": "Dechová pauza. Tělo nikdy nestojí – i vleže se puška zvedá s každým nádechem a cuká s každým tepem. Střelec se to nesnaží zastavit, jen počká na chvíli, kdy je klid: po výdechu, než se tělo zase nadechne. A kulka? Padá od první setiny sekundy, stejně jako kámen z ruky. Rychlost ji pádu neušetří, jen zkrátí čas, kdy padá.\nNa kótě jsem kdysi střílel s pozorovatelem, který měl tep jako hodinky. Mně po výstupu bušilo srdce jako zvon. Řekl mi: „Nespěchej. Gong počká, ty se uklidni.“ Od té doby čekám na pauzu – i u zkoušek."
+      },
+      {
         "id": "herna",
         "room": "herna",
         "short": "Stará herna",
@@ -174,7 +183,8 @@
           { "id": "fotograf", "label": "Fotograf", "desc": "g z fotky mezi 9,5 a 10,1 m/s².", "when": { "vars": ["pad_g"], "exprs": ["pad_g >= 9.5", "pad_g <= 10.1"] } },
           { "id": "anatom", "label": "Anatom", "desc": "V archivu každá kost napoprvé.", "when": { "vars": ["kosti_spravne", "kosti_chybne"], "exprs": ["kosti_chybne == 0"] } },
           { "id": "skladac", "label": "Skladač kostí", "desc": "Kostra z kabinetu složená bez chyby.", "when": { "vars": ["kostra_chybne"], "exprs": ["kostra_chybne == 0"] } },
-          { "id": "nezlomny", "label": "Nezlomný", "desc": "Archiv bez jediného pádu.", "when": { "flags": ["mriz_otevrena"], "vars": ["padnuti"], "exprs": ["padnuti == 0"] } }
+          { "id": "nezlomny", "label": "Nezlomný", "desc": "Archiv bez jediného pádu.", "when": { "flags": ["mriz_otevrena"], "vars": ["padnuti"], "exprs": ["padnuti == 0"] } },
+          { "id": "zvedavec", "label": "Zvědavec", "desc": "Nakoukl do obou vedlejších místností.", "when": { "flags": ["nahled_kabinet", "nahled_fotolab"] } }
         ]
       }
     },
@@ -182,12 +192,12 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad", "chodba", "telocvicna", "prekazky", "cviciste"],
+      "rooms": ["sklad", "chodba", "telocvicna", "prekazky", "cviciste", "strelnice"],
       "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
       "roomsBefore": ["sklad", "telocvicna"],
       "finish": {
-        "title": "Brána III je otevřená",
-        "text": "Noční cvičiště je za tebou. Brána u plotu je otevřená, cesta stoupá ke stanovišti a reflektor ti svítí do zad. Na sloupku visí píšťalka komisaře a lísteček: „Normy znáš, páku taky – a víš i proč. Šest bran zbývá. – D.“",
+        "title": "Brána IV je otevřená",
+        "text": "Stanoviště na kótě 680 je za tebou. Brána u střelnice je otevřená, nad údolím vychází slunce a gongy ještě tiše doznívají. Na sloupku visí na provázku prázdná nábojnice a lísteček: „Dýchat umíš, mířit taky – a víš, proč kulka padá. Pět bran zbývá. – D.“",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "cameraLabel": "Zkouška stability ověřená kamerou",
         "stats": [
@@ -203,10 +213,12 @@
           { "label": "Chodba na cvičiště", "value": "přeskočená – prohlížeč neuměl 3D grafiku", "requires": ["prekazky_preskoceno"] },
           { "label": "Nosítka – Doubek vzadu", "value": "přední nosič {nositka_predni} N, zadní {nositka_zadni} N", "requires": ["nositka_predni"] },
           { "label": "Protizávaží noktovizoru", "value": "{prilba_kg:2} kg na {prilba_cm} cm (bez něj šíje {prilba_f0} N)", "requires": ["prilba_kg"] },
-          { "label": "Výstup na stanoviště", "value": "{svah_trasa}: {svah_t:1} min, {svah_P} W (práce {svah_W:1} kJ)", "requires": ["svah_t"] }
+          { "label": "Výstup na stanoviště", "value": "{svah_trasa}: {svah_t:1} min, {svah_P} W (práce {svah_W:1} kJ)", "requires": ["svah_t"] },
+          { "label": "Odstřelovací puška – gongy", "value": "4 gongy (100–500 m) na {strelba_strely} výstřelů, se zadrženým dechem {strelba_dech}×, vleže {strelba_vleze}×", "requires": ["strelba_strely"] },
+          { "label": "Vzdálenost změřená křížem", "value": "{strelba_vzdalenost} m", "requires": ["strelba_vzdalenost"] }
         ],
         "badges": [
-          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 90 minut.", "maxMinutes": 90 },
+          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 110 minut.", "maxMinutes": 110 },
           { "id": "kamera", "label": "Kamera nelže", "desc": "Zkouška stability změřená kamerou.", "when": { "vars": ["zed_panev"] } },
           { "id": "silak", "label": "Silák", "desc": "Aspoň 30 platných goblet dřepů za 90 s.", "when": { "vars": ["goblet_n"], "exprs": ["goblet_n >= 30"] } },
           { "id": "anatom", "label": "Anatom", "desc": "V bludišti každá kost napoprvé.", "when": { "vars": ["kosti_spravne", "kosti_chybne"], "exprs": ["kosti_chybne == 0"] } },
@@ -215,7 +227,10 @@
           { "id": "pruzina", "label": "Pružina", "desc": "Výskok aspoň 0,6 m.", "when": { "vars": ["skok_max"], "exprs": ["skok_max >= 0.6"] } },
           { "id": "doskok", "label": "Měkký doskok", "desc": "Každý seskok do podřepu.", "when": { "vars": ["doskoky_mekke", "doskoky_tvrde"], "exprs": ["doskoky_mekke >= 1", "doskoky_tvrde == 0"] } },
           { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } },
-          { "id": "hlidka", "label": "Rychlá hlídka", "desc": "Na stanovišti do 15 minut – a bojeschopní.", "when": { "vars": ["svah_t"], "exprs": ["svah_t <= 15"] } }
+          { "id": "hlidka", "label": "Rychlá hlídka", "desc": "Na stanovišti do 15 minut – a bojeschopní.", "when": { "vars": ["svah_t"], "exprs": ["svah_t <= 15"] } },
+          { "id": "odstrelovac", "label": "Odstřelovač", "desc": "Čtyři gongy nejvýš na 8 výstřelů.", "when": { "vars": ["strelba_strely"], "exprs": ["strelba_strely <= 8"] } },
+          { "id": "klidny_dech", "label": "Klidný dech", "desc": "Každý gong se zadrženým dechem.", "when": { "vars": ["strelba_dech"], "exprs": ["strelba_dech >= 4"] } },
+          { "id": "zvedavec", "label": "Zvědavec", "desc": "Nakoukl do všech čtyř vedlejších místností.", "when": { "flags": ["nahled_sklad", "nahled_telocvicna", "nahled_cviciste", "nahled_strelnice"] } }
         ]
       }
     },
@@ -262,7 +277,8 @@
           { "id": "nezlomny", "label": "Nezlomný", "desc": "Obě chodby bez jediného pádu.", "when": { "flags": ["svalovec_l3_porazen"], "vars": ["padnuti"], "exprs": ["padnuti == 0"] } },
           { "id": "pruzina", "label": "Pružina", "desc": "Výskok aspoň 0,6 m.", "when": { "vars": ["skok_max"], "exprs": ["skok_max >= 0.6"] } },
           { "id": "doskok", "label": "Měkký doskok", "desc": "Každý seskok do podřepu.", "when": { "vars": ["doskoky_mekke", "doskoky_tvrde"], "exprs": ["doskoky_mekke >= 1", "doskoky_tvrde == 0"] } },
-          { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_l3_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } }
+          { "id": "ostrostrelec", "label": "Ostrostřelec", "desc": "Svalovec: každý sval napoprvé.", "when": { "flags": ["svalovec_l3_porazen"], "vars": ["svaly_chybne"], "exprs": ["svaly_chybne == 0"] } },
+          { "id": "zvedavec", "label": "Zvědavec", "desc": "Nakoukl do všech tří vedlejších místností.", "when": { "flags": ["nahled_herna", "nahled_arena", "nahled_spin"] } }
         ]
       }
     }
@@ -1253,6 +1269,288 @@
       "name": "Noktovizor",
       "icon": "assets/items/noktovizor.svg",
       "description": "Noktovizor s držákem na přilbu, 0,7 kg. Na přilbě sedí asi 12 cm před osou otáčení hlavy – a celou noc ji táhne dopředu."
+    },
+    "chranice": {
+      "name": "Chrániče sluchu",
+      "icon": "assets/items/chranice.svg",
+      "description": "Mušlové chrániče sluchu ze stanu správce. Ztlumí výstřel asi o 30 dB. Bez nich tě Doubek k pušce nepustí."
+    },
+    "balisticka_karta": {
+      "name": "Balistická karta",
+      "icon": "assets/items/balisticka_karta.svg",
+      "description": "Zalaminovaná karta k odstřelovací pušce: o kolik mil mířit výš a o kolik stranou na každý 1 m/s větru. Je vidět i v dalekohledu vlevo.",
+      "book": {
+        "title": "Balistická karta",
+        "pages": [
+          {
+            "blocks": [
+              {
+                "heading": "BALISTICKÁ KARTA"
+              },
+              {
+                "p": "Puška nastřelená na 100 m, úsťová rychlost 820 m/s, dalekohled 5 cm nad hlavní."
+              },
+              {
+                "table": {
+                  "caption": "O kolik mířit",
+                  "head": [
+                    "Vzdálenost",
+                    "Mířit výš",
+                    "Pod osou dalekohledu",
+                    "Vítr 1 m/s",
+                    "Doba letu"
+                  ],
+                  "rows": [
+                    [
+                      "100 m",
+                      "0,0 mil",
+                      "0 cm",
+                      "0,05 mil",
+                      "0,13 s"
+                    ],
+                    [
+                      "150 m",
+                      "0,3 mil",
+                      "4 cm",
+                      "0,07 mil",
+                      "0,19 s"
+                    ],
+                    [
+                      "200 m",
+                      "0,7 mil",
+                      "13 cm",
+                      "0,10 mil",
+                      "0,26 s"
+                    ],
+                    [
+                      "250 m",
+                      "1,1 mil",
+                      "28 cm",
+                      "0,12 mil",
+                      "0,34 s"
+                    ],
+                    [
+                      "300 m",
+                      "1,6 mil",
+                      "49 cm",
+                      "0,15 mil",
+                      "0,41 s"
+                    ],
+                    [
+                      "350 m",
+                      "2,2 mil",
+                      "77 cm",
+                      "0,18 mil",
+                      "0,49 s"
+                    ],
+                    [
+                      "400 m",
+                      "2,8 mil",
+                      "113 cm",
+                      "0,21 mil",
+                      "0,57 s"
+                    ],
+                    [
+                      "450 m",
+                      "3,5 mil",
+                      "157 cm",
+                      "0,23 mil",
+                      "0,65 s"
+                    ],
+                    [
+                      "500 m",
+                      "4,2 mil",
+                      "211 cm",
+                      "0,26 mil",
+                      "0,74 s"
+                    ],
+                    [
+                      "550 m",
+                      "5,0 mil",
+                      "274 cm",
+                      "0,29 mil",
+                      "0,83 s"
+                    ],
+                    [
+                      "600 m",
+                      "5,8 mil",
+                      "349 cm",
+                      "0,33 mil",
+                      "0,93 s"
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "Jak s kartou"
+              },
+              {
+                "p": "Mířit výš: o tolik mil nad cíl. Cíl dej na značku POD středem kříže (třeba 1,6 dílku pod středem pro 300 m)."
+              },
+              {
+                "p": "Vítr: číslo ve sloupci vynásob rychlostí větru v m/s a miř o tolik proti větru. Vítr zprava → miř doprava."
+              },
+              {
+                "formula": "1 mil = 1 m na 1 000 m"
+              },
+              {
+                "note": "Neznámá vzdálenost? Nejdřív ji změř křížem: vzdálenost = velikost × 1 000 : mil."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "prirucka_strelce": {
+      "name": "Příručka střelce",
+      "icon": "assets/items/prirucka_strelce.svg",
+      "description": "Ohmataná příručka ze stanu správce střelnice. Mil, pád kulky, poloha těla, dech a vítr.",
+      "examine": [
+        {
+          "when": {
+            "notFlags": [
+              "prirucka_prectena"
+            ]
+          },
+          "do": [
+            {
+              "set": "prirucka_prectena"
+            },
+            {
+              "note": "Příručka střelce: vzdálenost = velikost × 1 000 : mil; pokles h = ½ · g · t² (bez vzduchu t = d : v); vodorovný a svislý pohyb jsou nezávislé; stabilita = velká opěrná plocha + nízké těžiště; spoušť v dechové pauze po výdechu, dech zadržet nejvýš 4–6 s; posun větrem roste s dobou letu.",
+              "noteKey": "prirucka_strelce"
+            }
+          ]
+        }
+      ],
+      "book": {
+        "title": "Příručka střelce",
+        "pages": [
+          {
+            "type": "title",
+            "blocks": [
+              {
+                "heading": "PŘÍRUČKA STŘELCE"
+              },
+              {
+                "p": "stanoviště na kótě 680"
+              },
+              {
+                "note": "Gong je ocel. Na nic živého se nemíří. – D."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "1  Mil – úhel jako pravítko"
+              },
+              {
+                "p": "Kříž v dalekohledu je dělený v milech (miliradiánech). 1 mil je tisícina radiánu: ve vzdálenosti 1 000 m zakryje 1 m, na 100 m 10 cm."
+              },
+              {
+                "formula": "vzdálenost = velikost × 1 000 : mil"
+              },
+              {
+                "p": "Příklad: auto dlouhé 4 m zabírá 8 mil → 4 × 1 000 : 8 = 500 m."
+              },
+              {
+                "note": "Armádní dílec (1/6 400 kruhu) je skoro stejný: asi 0,98 mil."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "2  Kulka padá"
+              },
+              {
+                "p": "Jakmile kulka opustí hlaveň, padá stejně jako upuštěný kámen. Za čas t klesne o"
+              },
+              {
+                "formula": "h = ½ · g · t²"
+              },
+              {
+                "p": "Bez vzduchu by letěla pořád stejně rychle: t = d : v. Příklad: 200 m při 800 m/s → t = 0,25 s → h = ½ · 9,81 · 0,25² ≈ 0,31 m = 31 cm."
+              },
+              {
+                "note": "Vzduch kulku brzdí, takže letí déle – ve skutečnosti klesne víc. Proto hlaveň míří o kousek nahoru a puška se „nastřeluje“ na určitou vzdálenost."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "3  Dva pohyby najednou"
+              },
+              {
+                "p": "Vodorovný a svislý pohyb kulky si nepřekážejí (Galileo): vodorovně letí rychlostí z hlavně, svisle padá jako každé jiné těleso – se zrychlením g."
+              },
+              {
+                "p": "Míček skutálený ze stolu a míček upuštěný ze stejné výšky ve stejnou chvíli dopadnou na zem současně – ten skutálený jen dál od stolu."
+              },
+              {
+                "note": "Rychlost vpřed pád nezpomalí ani nezrychlí. Jen zkrátí čas, než kulka doletí k cíli – a tím i pokles."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "4  Poloha těla"
+              },
+              {
+                "p": "Puška se houpe tolik, kolik se houpe tělo. Stabilní je tělo s velkou opěrnou plochou a nízko položeným těžištěm, které nemusí vyrovnávat mnoho kloubů."
+              },
+              {
+                "p": "Vstoje – opěrná plocha jen pod chodidly, těžiště asi metr nad zemí.\nVkleče – trojúhelník chodidlo–koleno–špička, loket opřený o koleno.\nVleže na dvojnožce – na zemi skoro celé tělo, puška opřená."
+              },
+              {
+                "note": "Vleže jsou výkyvy nejmenší – asi desetkrát menší než vstoje."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "5  Dech a tep"
+              },
+              {
+                "p": "S nádechem se hrudník zvedne a s ním puška. Nejklidnější je chvíle po výdechu – přirozená dechová pauza. Dech jde zadržet na 4–6 s; potom se začnou třást svaly a srdce zrychlí."
+              },
+              {
+                "p": "Každý tep srdce pušce cukne. Po námaze (třeba po výstupu na kótu) je tep vysoký – chvíli odpočinout a klidně dýchat."
+              },
+              {
+                "note": "Spoušť se mačká plynule, v dechové pauze."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "6  Vítr"
+              },
+              {
+                "p": "Boční vítr tlačí kulku po celou dobu letu. Posun roste s rychlostí větru a s tím, o kolik déle kulka letí, než by letěla bez brzdění vzduchem."
+              },
+              {
+                "formula": "posun = w · (t − d : v₀)"
+              },
+              {
+                "p": "Na 500 m asi 13 cm na každý 1 m/s větru (0,26 mil)."
+              },
+              {
+                "note": "Vítr zprava → miř doprava. Praporky ukazují, kam vítr fouká."
+              }
+            ]
+          }
+        ]
+      }
     },
     "cinky": {
       "name": "Činky 2 × 2 kg",
@@ -2359,7 +2657,7 @@
                   { "give": "kniha" },
                   { "openItem": "kniha" }
                 ] },
-                { "do": [ { "text": "Na místě zelené knihy zeje mezera. Kniha je v inventáři." } ] }
+                { "do": [ { "text": "Na místě zelené knihy zeje mezera a táhne z ní studený vzduch…" }, { "view": "preparatorna" } ] }
               ]
             },
             {
@@ -2573,6 +2871,160 @@
               "area": [89.4, 33.6, 9.2, 23.3],
               "click": [
                 { "do": [ { "text": "Anatomický plakát: svaly celého těla zezadu. Někdo k němu tužkou připsal: „Biceps je vpředu – tady ho nehledej.“" } ] }
+              ]
+            }
+          ]
+        },
+        "preparatorna": {
+          "name": "Preparátorna za knihovnou",
+          "background": "assets/rooms/kabinet_preparatorna.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "knihovna",
+          "darkness": 0.6,
+          "lights": [
+            {
+              "x": 50,
+              "y": 32,
+              "radius": 34,
+              "strength": 0.55
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_kabinet"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_kabinet"
+                }
+              ]
+            }
+          ],
+          "enterText": "Přiložíš oko ke škvíře po knize. Knihovna nemá zadní stěnu – za ní je stará preparátorna: police se sklenicemi, model kolena, řez kostí, páteř na stojanu a váhy s kostí.",
+          "hotspots": [
+            {
+              "id": "sklenice",
+              "name": "Sklenice s preparáty",
+              "area": [
+                19.7,
+                6.4,
+                61.0,
+                30.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Sklenice s vybledlými popisky: RUKA – ŠLACHY, CHODIDLO – KLENBA. Kdysi se tu připravovaly preparáty pro hodiny anatomie."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kloub",
+              "name": "Model kolena",
+              "area": [
+                29.6,
+                38.8,
+                8.4,
+                38.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Model kolenního kloubu s vazy a čéškou.",
+                      "more": "Čéška leží ve šlaše čtyřhlavého svalu stehenního a oddálí ji od osy kolena. Rameno síly se zvětší, takže sval natáhne koleno menší silou – čéška je kladka i páka zároveň.",
+                      "moreLabel": "K čemu čéška?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rez",
+              "name": "Řez kostí",
+              "area": [
+                45.5,
+                40.9,
+                12.0,
+                15.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Podélný řez hlavicí stehenní kosti v rámečku. Uvnitř není plná kost, ale síť drobných trámečků.",
+                      "more": "Trámečky rostou ve směru, ve kterém kost nejvíc namáháme (Wolffův zákon): kost se přestavuje podle zatížení. Proto zátěž kosti posiluje a dlouhé ležení ji oslabuje.",
+                      "moreLabel": "Proč trámečky?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vahy",
+              "name": "Váhy s kostí",
+              "area": [
+                43.7,
+                56.9,
+                13.2,
+                15.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Mosazné váhy, na misce stehenní kost.",
+                      "more": "Kostra tvoří asi 15 % hmotnosti těla – u 70kg člověka kolem 10 kg. Lehká a pevná zároveň: dutá trubka unese v ohybu skoro stejně jako plná tyč, a váží mnohem méně.",
+                      "moreLabel": "Kolik váží kostra?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "patere",
+              "name": "Páteř na stojanu",
+              "area": [
+                63.4,
+                26.6,
+                7.8,
+                49.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Model páteře z jednotlivých obratlů, mezi nimi modré ploténky.",
+                      "more": "Obratle směrem dolů mohutní – bederní nesou tíhu celého trupu, hlavy a paží. Ploténky tlumí nárazy; vsedě v předklonu je na nich tlak skoro dvakrát větší než vestoje.",
+                      "moreLabel": "Proč dole větší?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vesak",
+              "name": "Věšák u dveří",
+              "area": [
+                74.2,
+                17.0,
+                6.6,
+                9.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Věšák u dveří preparátorny. Na jednom háčku zůstal jen prach – ve tvaru klobouku."
+                    }
+                  ]
+                }
               ]
             }
           ]
@@ -3144,7 +3596,10 @@
             { "image": "assets/rooms/herna_stanice_proud.svg", "when": { "flags": ["stanice_proud"] } },
             { "image": "assets/rooms/herna_stanice_karta.webp", "when": { "flags": ["karta_vlozena"] } },
             { "image": "assets/rooms/herna_stanice_pripraveno.svg", "when": { "flags": ["karta_vlozena", "stanice_proud"] } },
-            { "image": "assets/rooms/herna_stanice_hotovo.svg", "when": { "flags": ["drepy_hotovo", "stanice_proud"] } }
+            { "image": "assets/rooms/herna_stanice_hotovo.svg", "when": { "flags": ["drepy_hotovo", "stanice_proud"] } },
+            {
+              "image": "assets/rooms/herna_stanice_dvere.webp"
+            }
           ],
           "hotspots": [
             {
@@ -3201,6 +3656,25 @@
                   { "text": "Na displeji svítí: VLOŽ HRÁČSKOU KARTU. Vyber kartu v inventáři a klikni na stanici." }
                 ] },
                 { "do": [ { "text": "Displej stanice svítí: VLOŽ HRÁČSKOU KARTU. Kartu ale zatím nemáš." } ] }
+              ]
+            },
+            {
+              "id": "dvere_stream",
+              "name": "Pootevřené dveře",
+              "area": [
+                37.2,
+                14.0,
+                15.8,
+                65.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "streamovna"
+                    }
+                  ]
+                }
               ]
             }
           ]
@@ -3363,6 +3837,140 @@
                   { "set": "stanice_proud" }, { "sound": "powerOn" },
                   { "text": "Páčka cvakla nahoru – a jistič vydržel. Od kostry se ozvalo pípnutí: měřicí stanice má proud." }
                 ] }
+              ]
+            }
+          ]
+        },
+        "streamovna": {
+          "name": "Streamovací koutek",
+          "background": "assets/rooms/herna_streamovna.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "stanice",
+          "darkness": 0.6,
+          "lights": [
+            {
+              "x": 50,
+              "y": 25,
+              "radius": 30,
+              "strength": 0.4
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_herna"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_herna"
+                }
+              ]
+            }
+          ],
+          "enterText": "Škvírou pootevřených dveří nakoukneš do streamovacího koutku: monitor na rameni, kamera v kruhovém světle, herní křeslo, na stole minutka a na stěně plakát SEDÍŠ SPRÁVNĚ?",
+          "hotspots": [
+            {
+              "id": "plakat_sed",
+              "name": "Plakát o sezení",
+              "area": [
+                14.4,
+                17.0,
+                17.3,
+                38.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plakát SEDÍŠ SPRÁVNĚ?: tlak na bederní ploténky – vestoje 100 %, vsedě vzpřímeně 140 %, vsedě v předklonu 185 %.",
+                      "more": "Čísla pocházejí z měření tlaku přímo v ploténce (Nachemson, 60. léta). Vsedě se pánev sklopí dozadu, bederní páteř se ohne a ploténky nesou víc. Pomáhá opěrka v bedrech – a vstát aspoň každých 30 minut.",
+                      "moreLabel": "Proč vsedě víc?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "monitor",
+              "name": "Monitor na rameni",
+              "area": [
+                39.2,
+                15.9,
+                22.1,
+                35.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Monitor na rameni, horní okraj ve výšce očí. Nad ním kamera v kruhovém světle.",
+                      "more": "Hlava váží asi 5 kg. Když se nad mobilem nebo nízkým monitorem předkloní o 60°, krk ji drží, jako by vážila kolem 27 kg – těžiště hlavy se vzdálí od osy krční páteře a roste moment, který musí šíje držet.",
+                      "moreLabel": "Proč ve výšce očí?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "minutka",
+              "name": "Minutka",
+              "area": [
+                35.0,
+                60.0,
+                3.9,
+                4.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Minutka na stole: 30:00 a pod ní fixou „5 dřepů!“.",
+                      "more": "Krátká pauza s pohybem každých 30 minut rozproudí krev v nohou, uleví ploténkám a protáhne zkrácené ohýbače kyčlí. Herní pauza je taky trénink."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mys",
+              "name": "Myš a podložka",
+              "area": [
+                59.5,
+                62.7,
+                9.6,
+                4.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Herní myš na velké podložce.",
+                      "more": "Kdo hýbe myší jen zápěstím, opakuje drobný pohyb tisíckrát za hodinu a šlachy v karpálním tunelu se dráždí. Pohyb celou paží rozloží práci na víc kloubů – zápěstí zůstane rovné."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kreslo",
+              "name": "Herní křeslo",
+              "area": [
+                71.2,
+                39.9,
+                11.1,
+                45.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Herní křeslo s bederní opěrkou.",
+                      "more": "Opěrka v bedrech drží bederní páteř v mírném prohnutí (lordóze), jako vestoje. Sedí se zády opřenými, chodidla na zemi, kolena asi v pravém úhlu."
+                    }
+                  ]
+                }
               ]
             }
           ]
@@ -4004,6 +4612,160 @@
               "name": "Zeď",
               "area": [77.5, 8, 22, 82],
               "click": [ { "do": [ { "text": "Betonová zeď s větracími mřížkami, po které stéká vlhkost. Dole u podlahy jsou šmouhy od pat, výš otisky zad. Jako by se tu někdo pořád dokola stavěl patami ke zdi." } ] } ]
+            },
+            {
+              "id": "mrizka",
+              "name": "Větrací mřížka",
+              "area": [
+                81.5,
+                25.5,
+                12.2,
+                11.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "susarna"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "susarna": {
+          "name": "Sušárna za mřížkou",
+          "background": "assets/rooms/sklad_susarna.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "dvere",
+          "darkness": 0.5,
+          "lights": [
+            {
+              "x": 50,
+              "y": 80,
+              "radius": 40,
+              "strength": 0.4
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_sklad"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_sklad"
+                }
+              ]
+            }
+          ],
+          "enterText": "Nakukuješ větrací mřížkou do vedlejší místnosti. Sušárna výstroje: topení, boty na stojanu, uniformy na šňůře, závěsná váha s mokrou blůzou a teploměr. Je tu teplo a voní to mokrou plachtou.",
+          "hotspots": [
+            {
+              "id": "topeni",
+              "name": "Topení",
+              "area": [
+                17.9,
+                65.4,
+                64.0,
+                8.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Žebrované topení pod šňůrami.",
+                      "more": "Ohřátý vzduch stoupá a pojme víc vody. Když se voda z látky odpařuje, odnáší teplo – na každý kilogram vody asi 2,4 MJ. Proto mokré věci schnou nejrychleji v teple a v proudu vzduchu.",
+                      "moreLabel": "Proč teplo?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "boty",
+              "name": "Boty na stojanu",
+              "area": [
+                11.4,
+                46.8,
+                19.7,
+                36.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Vojenské boty na stojanu, pár asi 2 kg.",
+                      "more": "Kilogram na nohou stojí při chůzi zhruba tolik energie jako pět kilogramů na zádech: nohy se s každým krokem rozhoupou a zase zabrzdí, a čím dál od kyčle hmota je, tím víc práce. Proto se šetří gramy hlavně na botách.",
+                      "moreLabel": "Proč lehké boty?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "uniforma",
+              "name": "Váha s mokrou blůzou",
+              "area": [
+                46.1,
+                22.3,
+                7.8,
+                45.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Mokrá polní blůza na závěsné váze: 2,8 kg. Suchá váží 1,4 kg.",
+                      "more": "Voda v látce zdvojnásobí hmotnost – a když se z mokrého oblečení odpařuje, bere tělu teplo. Proto se v mokrém rychleji prochladne a voják v dešti spálí víc energie.",
+                      "moreLabel": "Co z toho?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "teplomer",
+              "name": "Teploměr",
+              "area": [
+                64.9,
+                23.9,
+                4.2,
+                25.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Teploměr na stěně ukazuje 32 °C.",
+                      "more": "Sušárna musí hřát, ale ne moc: kůže bot by vysušením zkřehla a popraskala. Proto se boty suší pomalu, ne na kamnech."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "batohy",
+              "name": "Batohy na hácích",
+              "area": [
+                71.5,
+                25.5,
+                17.9,
+                25.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Batohy pověšené za popruhy, rozepnuté.",
+                      "more": "Batoh suší rozepnutý, aby popruhy držely tvar ramen. A při balení platí to samé co ve skladu: těžké věci k zádům a nahoru – těžiště batohu blízko těžiště těla."
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -4988,6 +5750,9 @@
                   "kniha_skok_vzata"
                 ]
               }
+            },
+            {
+              "image": "assets/rooms/arena_stena_dvere.webp"
             }
           ],
           "hotspots": [
@@ -5159,6 +5924,25 @@
                     },
                     {
                       "activity": "kos"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dvere_kabina",
+              "name": "Dveře MĚŘENÍ",
+              "area": [
+                2.6,
+                5.1,
+                12.4,
+                80.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "kabina"
                     }
                   ]
                 }
@@ -5345,6 +6129,122 @@
                   "do": [
                     {
                       "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "kabina": {
+          "name": "Měřicí kabina",
+          "background": "assets/rooms/arena_kabina.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "stena",
+          "darkness": 0.6,
+          "lights": [
+            {
+              "x": 50,
+              "y": 30,
+              "radius": 34,
+              "strength": 0.4
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_arena"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_arena"
+                }
+              ]
+            }
+          ],
+          "enterText": "Pootevřenými dveřmi s nápisem MĚŘENÍ nakoukneš do měřicí kabiny: v podlaze silová plošina, na stojanu monitor s křivkou skoku, vysokorychlostní kamera a plakát EMG.",
+          "hotspots": [
+            {
+              "id": "emg",
+              "name": "Plakát EMG",
+              "area": [
+                38.3,
+                14.9,
+                20.3,
+                30.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plakát EMG – KDY SVAL PRACUJE: dvě křivky, lýtko a stehno.",
+                      "more": "Elektromyografie snímá z kůže drobné elektrické napětí svalových vláken. Ukáže, který sval se zapne první – třeba že stehno začne pracovat dřív než lýtko a odraz končí kotníkem.",
+                      "moreLabel": "Co měří?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plosina",
+              "name": "Silová plošina",
+              "area": [
+                34.1,
+                74.4,
+                32.3,
+                14.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Silová plošina v podlaze: měří, jakou silou tlačíš do země – tisíckrát za sekundu.",
+                      "more": "Při výskoku stoupne síla až na 2–3násobek tíhy. Plocha pod křivkou síly nad tíhou je impulz, a ten určuje vzletovou rychlost: J = m · v. Z ní výška skoku h = v² / 2g – stejně jako u skoku v 3D chodbě.",
+                      "moreLabel": "Jak z ní výška?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "graf",
+              "name": "Monitor s křivkou",
+              "area": [
+                67.0,
+                28.7,
+                20.3,
+                30.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Monitor s křivkou posledního skoku: pokles (podřep), vrchol odrazu, nula ve vzduchu a vysoký špičatý dopad.",
+                      "more": "Dopad bývá vyšší než odraz, protože se brzdí kratší dobu. Pokrčená kolena dobu brzdění prodlouží a sílu sníží – stejný impulz, delší čas, menší síla.",
+                      "moreLabel": "Proč vyšší dopad?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kamera",
+              "name": "Vysokorychlostní kamera",
+              "area": [
+                17.3,
+                42.0,
+                12.6,
+                44.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Vysokorychlostní kamera, 1 000 snímků za sekundu.",
+                      "more": "Mezi snímky uplyne 1 ms – i rychlý odraz (asi čtvrt sekundy) má 250 snímků. Tak se měří úhly v kolenou a kyčlích po milisekundách. Obyčejný mobil točí 30 snímků za sekundu.",
+                      "moreLabel": "Proč tolik snímků?"
                     }
                   ]
                 }
@@ -6028,6 +6928,9 @@
                   "hlaseni_hotovo"
                 ]
               }
+            },
+            {
+              "image": "assets/rooms/telocvicna_stul_okno.webp"
             }
           ],
           "hotspots": [
@@ -6437,6 +7340,25 @@
                   "do": [
                     {
                       "text": "Starý telefon na zdi. Sluchátko je studené a linka mlčí."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "okno_kabinetu",
+              "name": "Okno kabinetu",
+              "area": [
+                68.8,
+                6.6,
+                17.3,
+                30.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "kabinet_tv"
                     }
                   ]
                 }
@@ -7092,6 +8014,120 @@
                   "do": [
                     {
                       "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "kabinet_tv": {
+          "name": "Kabinet tělocvikářů",
+          "background": "assets/rooms/telocvicna_kabinet.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "stul",
+          "darkness": 0.45,
+          "lights": [
+            {
+              "x": 60,
+              "y": 55,
+              "radius": 30,
+              "strength": 0.5
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_telocvicna"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_telocvicna"
+                }
+              ]
+            }
+          ],
+          "enterText": "Okénkem ve zdi nahlédneš do kabinetu tělocvikářů: na stěně plakát Ruffierova testu, police s poháry, na stole ruční stopky a lampa, v rohu starý spirometr.",
+          "hotspots": [
+            {
+              "id": "ruffier",
+              "name": "Plakát Ruffierova testu",
+              "area": [
+                13.2,
+                17.5,
+                17.9,
+                36.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plakát: RUFFIERŮV TEST – 30 dřepů za 45 s; tep před, hned po a za minutu.",
+                      "more": "Čím rychleji se tep po zátěži vrací ke klidu, tím lepší kondice. Ruffierův index = (P1 + P2 + P3 − 200) / 10, kde P1 je tep v klidu, P2 hned po dřepech a P3 za minutu. Pod 3 je výborný.",
+                      "moreLabel": "Jak se počítá?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pohary",
+              "name": "Police s poháry",
+              "area": [
+                62.8,
+                17.0,
+                25.1,
+                28.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Poháry z přeborů. Na nejvyšším: „Hod granátem 2009 – vojín Doubek“."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "stopky",
+              "name": "Ruční stopky",
+              "area": [
+                40.1,
+                60.0,
+                15.6,
+                6.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Čtvery ruční stopky na stole.",
+                      "more": "Časoměřič stiskne stopky až když uvidí start a zastaví je, když běžec protne cíl – pokaždé s reakcí asi 0,1–0,2 s. Proto se ručně měřené časy v rekordech neuznávají a pro srovnání s elektronickými se k nim přičítá 0,24 s.",
+                      "moreLabel": "Proč nejsou přesné?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "spirometr",
+              "name": "Spirometr",
+              "area": [
+                15.0,
+                58.4,
+                16.7,
+                10.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Starý spirometr s náustkem a hadicí.",
+                      "more": "Měří, kolik vzduchu vydechneš po nejhlubším nádechu (vitální kapacita) – u dospělého muže asi 4–5 litrů. Trénink vytrvalosti ji zvětší jen málo; víc se zlepší, jak dobře svaly kyslík využijí.",
+                      "moreLabel": "Co měří?"
                     }
                   ]
                 }
@@ -9615,6 +10651,11 @@
         "stul": {
           "name": "Polní stůl s mapou",
           "background": "assets/rooms/cviciste_stul.webp",
+          "layers": [
+            {
+              "image": "assets/rooms/cviciste_stul_kuchyne.webp"
+            }
+          ],
           "_obrazek": "Zástupná kresba (SVG → WebP). Zadání pro autora: docs/zadani-obrazku-cviciste.md.",
           "darkness": 0.6,
           "left": "stan",
@@ -9742,6 +10783,25 @@
                     {
                       "note": "Rozkaz: na stanoviště do 20 min, výkon proti tíze nejvýš 300 W, trasu vybrat na mapě.",
                       "noteKey": "rozkaz"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kuchyne",
+              "name": "Stan polní kuchyně",
+              "area": [
+                3.6,
+                35.1,
+                15.6,
+                29.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "polni_kuchyne"
                     }
                   ]
                 }
@@ -10058,6 +11118,121 @@
               ]
             }
           ]
+        },
+        "polni_kuchyne": {
+          "name": "Polní kuchyně",
+          "background": "assets/rooms/cviciste_kuchyne.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "stul",
+          "darkness": 0.5,
+          "lights": [
+            {
+              "x": 50,
+              "y": 15,
+              "radius": 34,
+              "strength": 0.6
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_cviciste"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_cviciste"
+                }
+              ]
+            }
+          ],
+          "enterText": "Dojdeš ke stanu polní kuchyně a nakoukneš dovnitř: na vařiči kotel s čajem, v rohu kanystr s vodou, bedny s bojovými dávkami a na tabuli DENNÍ DÁVKA.",
+          "hotspots": [
+            {
+              "id": "kotel",
+              "name": "Kotel s čajem",
+              "area": [
+                32.6,
+                31.9,
+                15.3,
+                43.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Kotel s čajem na plynovém vařiči, asi 20 litrů.",
+                      "more": "Ohřát 20 litrů vody z 10 °C k varu stojí asi 7,5 MJ (Q = m · c · ΔT = 20 · 4 186 · 90 J). To je třicetkrát víc než práce proti tíze při výstupu na kótu (247 kJ) – a polovina denní dávky jídla jednoho vojáka.",
+                      "moreLabel": "Kolik energie?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tabule",
+              "name": "Tabule DENNÍ DÁVKA",
+              "area": [
+                52.3,
+                26.0,
+                18.5,
+                22.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na tabuli křídou: DENNÍ DÁVKA 15 MJ (3 600 kcal). Nejdřív pít!",
+                      "more": "Svaly přemění na práci jen asi čtvrtinu energie z jídla, zbytek je teplo. Výstup na kótu (247 kJ práce) tak stojí kolem 1 000 kJ z jídla – jedna velká tyčinka. Zbylé teplo musí tělo vypotit.",
+                      "moreLabel": "Proč tolik?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "bedny",
+              "name": "Bedny s dávkami",
+              "area": [
+                57.1,
+                56.9,
+                19.1,
+                24.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Bedny s bojovými dávkami: jedna dávka na den asi 1,5 kg.",
+                      "more": "Na celodenní cvičení se počítá s energií 15 MJ a víc. Jídlo se nosí na zádech – i ono je zátěž: dávky na tři dny jsou 4,5 kg navíc v batohu."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kanystr",
+              "name": "Kanystr s vodou",
+              "area": [
+                23.6,
+                61.1,
+                7.2,
+                19.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Modrý kanystr s 20 litry vody.",
+                      "more": "Při námaze se vypotí až 1–1,5 litru za hodinu. Ztráta 2 % vody v těle zhorší výkon i soustředění – proto „nejdřív pít“, a to dřív, než přijde žízeň.",
+                      "moreLabel": "Proč nejdřív pít?"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       "gate": {
@@ -10205,11 +11380,1601 @@
             "sound": "levelUp"
           },
           {
-            "text": "Číselník zapípal, reflektor nad bránou zhasl a zase naskočil. Brána se odjistila – za ní stoupá cesta ke stanovišti."
+            "text": "Číselník zapípal, reflektor nad bránou zhasl a zase naskočil. Brána se odjistila – za ní stoupá cesta ke stanovišti. Noktovizor vracíš do bedny: nahoře na kótě už bude svítat."
+          },
+          {
+            "remove": "noktovizor"
           },
           {
             "note": "BRÁNA III: u páky rozhoduje vzdálenost od osy – kdo je blíž těžišti raněného, nese víc; protizávaží vyváží noktovizor, když má stejné m · d (dál od osy = lehčí); práce proti tíze W = m · g · Δh nezáleží na cestě – cesta mění čas a výkon.",
             "noteKey": "brana3"
+          }
+        ]
+      }
+    },
+
+    "strelnice": {
+      "name": "Stanoviště na kótě 680",
+      "gateNumber": "IV",
+      "tracks": [
+        "vojenska"
+      ],
+      "ambience": "strelnice",
+      "storm": {
+        "place": "venku",
+        "steps": [
+          "kufr_otevren",
+          "chranice_vzaty",
+          "karta_vzata",
+          "strelba_hotova"
+        ]
+      },
+      "_poznamka": "Brána IV vojenského světa (autor 23. 10. 2026 chtěl střelbu s odstřelovací puškou a mířením přes dalekohled jako ve hrách). Výjimka ze zákazu zbraní: střelnice, jen ocelové gongy a tabule, výukově balistika (pokles ½·g·t², mil, vítr), stabilita polohy těla, dech a tep. Aktivita „sniper“ = js/strelnice.js.",
+      "enterText": "Svítá. Cesta od brány cvičiště tě vyvedla na kótu 680 – stanoviště nad údolím. Za pytli s pískem leží rohož, vedle kufr s puškou a u pozorovacího dalekohledu sedí rtn. Doubek, ruku pořád v šátku. Srdce ti po výstupu buší.",
+      "enterMore": "Doubek: „Střílet budeš ty, já budu pozorovatel. Gongy na sto, tři sta a pět set metrů a jedna tabule, kterou si změříš sám. Kufr, chrániče, karta – a pak na rohož.“ Šipkami se otáčíš: palebné postavení, stan správce střelnice, brána a pozorovací věž.",
+      "enterMoreLabel": "Co tu dělat?",
+      "enter": [
+        {
+          "when": {
+            "notFlags": [
+              "strelnice_vstup"
+            ]
+          },
+          "do": [
+            {
+              "set": "strelnice_vstup"
+            }
+          ]
+        }
+      ],
+      "_shortcut": "Odkaz pro vyučující ?mistnost=strelnice: hra začne rovnou tady.",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš rovnou na stanovišti na kótě 680 (Brána IV). Kalkulačku máš u sebe."
+        }
+      ],
+      "startView": "postaveni",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "kufr_otevren"
+            ]
+          },
+          "text": "Kufr s puškou chce třímístný kód – rychlost, jakou kulka opouští hlaveň. Takové číslo se píše na krabici s náboji. Stan je hned vedle."
+        },
+        {
+          "when": {
+            "flags": [
+              "kufr_otevren"
+            ],
+            "notItems": [
+              "chranice"
+            ]
+          },
+          "text": "Bez chráničů sluchu tě Doubek k pušce nepustí. Visí ve stanu na sloupku."
+        },
+        {
+          "when": {
+            "flags": [
+              "kufr_otevren"
+            ],
+            "notItems": [
+              "balisticka_karta"
+            ]
+          },
+          "text": "Balistická karta leží ve stanu na stole. Bez ní nevíš, o kolik mířit nad cíl."
+        },
+        {
+          "when": {
+            "flags": [
+              "kufr_otevren"
+            ],
+            "items": [
+              "chranice",
+              "balisticka_karta"
+            ],
+            "notFlags": [
+              "strelba_hotova"
+            ]
+          },
+          "text": "Na rohož k pušce. Lehni si, dech zadrž po výdechu – a karta je v dalekohledu vlevo. Doubek hlásí, kam kulka šla."
+        },
+        {
+          "when": {
+            "flags": [
+              "strelba_hotova"
+            ],
+            "notFlags": [
+              "brana_strelnice_otevrena"
+            ]
+          },
+          "text": "Číselník u Brány IV se ptá na mil, na pád kulky a na to, proč ležíš. Příručka střelce ze stanu to má všechno."
+        },
+        {
+          "text": "Svítá a gongy počkají. Číselník u brány ne: kufr, chrániče, karta, střelba – pak brána."
+        }
+      ],
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_nez_d": 400,
+          "v_nez_tab": 1.0,
+          "v_vitr": 4,
+          "v_kont_mil": 12,
+          "v_pad_d": 300
+        },
+        {
+          "_sada": "B",
+          "v_nez_d": 450,
+          "v_nez_tab": 0.9,
+          "v_vitr": 3,
+          "v_kont_mil": 15,
+          "v_pad_d": 400
+        },
+        {
+          "_sada": "C",
+          "v_nez_d": 350,
+          "v_nez_tab": 1.4,
+          "v_vitr": 5,
+          "v_kont_mil": 20,
+          "v_pad_d": 250
+        }
+      ],
+      "locks": {
+        "kufr": {
+          "title": "Kufr s puškou",
+          "openFlag": "kufr_otevren",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Na kufru je třímístný číselník a štítek: „KÓD = ÚSŤOVÁ RYCHLOST NÁBOJE V m/s.“",
+              "unit": "m/s",
+              "answer": 820,
+              "tolerance": 0.5,
+              "feedback": {
+                "343": "343 m/s je rychlost zvuku. Kulka je rychlejší – její rychlost je na krabici s náboji.",
+                "2952": "To je 820 m/s v km/h. Číselník chce metry za sekundu."
+              },
+              "wrong": "Zámek ani necvakl.",
+              "hints": [
+                "Úsťová rychlost = rychlost kulky hned za hlavní.",
+                "Píše se na krabici s náboji – ve stanu na stole.",
+                "820."
+              ],
+              "success": "Cvak."
+            }
+          ],
+          "open": [
+            {
+              "text": "Kufr cvakl. Uvnitř v pěně leží odstřelovací puška s dalekohledem a dvojnožkou. Doubek: „Polož ji na rohož, ústím do údolí. A nikdy jinam.“ Pokládáš ji na rohož."
+            },
+            {
+              "sound": "unlockDrawer"
+            }
+          ]
+        }
+      },
+      "activities": {
+        "puska": {
+          "type": "sniper",
+          "title": "Odstřelovací puška – gongy v údolí",
+          "intro": "Ve výhledu klepni na cíl a zvedneš dalekohled k oku. V dalekohledu tahem prstu nebo myši posouváš krajinu (jemně šipkami), kolečkem nebo + a − měníš zvětšení. Vyber polohu, zadrž dech a stiskni Výstřel.",
+          "rifle": {
+            "v0": 820,
+            "k": 0.00076,
+            "sight": 0.05,
+            "zero": 100
+          },
+          "cardItem": "balisticka_karta",
+          "positions": {
+            "stoj": {
+              "name": "Vstoje",
+              "sway": 2.2,
+              "breath": 1.6,
+              "pulse": 0.25,
+              "recoil": 9,
+              "text": "Vstoje: opěrná plocha jen pod chodidly, těžiště asi metr nad zemí a pušku drží jen ruce – houpe se nejvíc."
+            },
+            "klek": {
+              "name": "Vkleče",
+              "sway": 1.0,
+              "breath": 1.1,
+              "pulse": 0.2,
+              "recoil": 6,
+              "text": "Vkleče: chodidlo, koleno a špička tvoří trojúhelník, loket se opírá o koleno a těžiště je níž – houpe se méně."
+            },
+            "leh": {
+              "name": "Vleže",
+              "sway": 0.22,
+              "breath": 0.9,
+              "pulse": 0.12,
+              "recoil": 3.5,
+              "text": "Vleže na dvojnožce: na zemi leží skoro celé tělo, těžiště je nízko a puška se opírá o dvojnožku – nejklidnější poloha."
+            }
+          },
+          "heart": {
+            "start": 130,
+            "again": 92,
+            "rest": 68,
+            "tau": 40
+          },
+          "breath": {
+            "rate": 12,
+            "steady": 5,
+            "max": 8
+          },
+          "targets": [
+            {
+              "id": "g100",
+              "d": 100,
+              "az": -140,
+              "size": 0.4,
+              "label": "100 m"
+            },
+            {
+              "id": "g300",
+              "d": 300,
+              "az": -40,
+              "size": 0.4,
+              "label": "300 m"
+            },
+            {
+              "id": "nez",
+              "d": "v_nez_d",
+              "az": 60,
+              "size": 0.5,
+              "board": "v_nez_tab",
+              "label": "? m"
+            },
+            {
+              "id": "g500",
+              "d": 500,
+              "az": 150,
+              "size": 0.6,
+              "label": "500 m"
+            }
+          ],
+          "rounds": [
+            {
+              "target": "g100",
+              "label": "Gong 100 m",
+              "task": "Gong na 100 m. Puška je nastřelená na sto metrů – míříš přímo na střed. Zkus všechny tři polohy a sleduj, jak se kříž houpe; vystřel, až bude kříž klidně na gongu.",
+              "spot": "Gong na sto. Klepni na něj ve výhledu, dalekohled k oku – a nejdřív se jen dívej, jak se kříž houpe. Vstoje, vkleče, vleže.",
+              "hint": "Lehni si (Vleže) a zadrž dech po výdechu – v dechové pauze je kříž nejklidnější.",
+              "done": "Gong zazvonil! Na 100 m se míří přímo – na tuhle vzdálenost je puška nastřelená.",
+              "why": "Tělo nikdy nestojí úplně v klidu: svaly pořád vyrovnávají těžiště nad opěrnou plochou (posturální výkyvy). Vstoje je opěrná plocha jen pod chodidly a těžiště asi metr nad zemí; vkleče je plocha větší a těžiště níž; vleže leží na zemi skoro celé tělo a puška se opírá o dvojnožku. A s každým nádechem se hrudník zvedne – i s puškou."
+            },
+            {
+              "target": "g300",
+              "label": "Gong 300 m",
+              "task": "Gong na 300 m. Kulka cestou klesá: podívej se do balistické karty (v dalekohledu vlevo), o kolik mil mířit výš, a dej gong na tu značku pod středem kříže.",
+              "spot": "Tři sta. Kartu máš vlevo. Výš, ne doprostřed!",
+              "hint": "Na 300 m karta říká 1,6 mil výš: gong musí být 1,6 dílku POD středem kříže – míříš nad něj.",
+              "done": "Zásah! Na 300 m kulka letí asi 0,4 s a za tu dobu klesne.",
+              "why": "Kulka padá od chvíle, kdy opustí hlaveň – stejně jako upuštěný kámen: pokles = ½ · g · t². Na 300 m letí asi 0,41 s, takže klesne o víc než 80 cm pod osu hlavně. Hlaveň proto míří o kousek nahoru (nastřelení na 100 m) a zbytek dorovnáš křížem: 1,6 mil na 300 m = 1,6 × 0,3 m, asi 49 cm nad cíl."
+            },
+            {
+              "target": "nez",
+              "label": "Gong pod tabulí ? m",
+              "task": "Gong pod tabulí – vzdálenost neznáš. Tabule je široká {v_nez_tab:1} m. Změř křížem, kolik mil zabírá, spočítej vzdálenost (velikost × 1 000 : mil), zapiš ji – a pak karta.",
+              "range": {
+                "ask": "Vzdálenost k tabuli (m):",
+                "tolerance": 0.08
+              },
+              "spot": "Tohle si změř sám. Tabule má {v_nez_tab:1} metru. Dílky na kříži jsou miliradiány – při každém zvětšení.",
+              "hint": "Polož levý okraj tabule na svislou čáru kříže a počítej dílky na vodorovné čáře k pravému okraji (krátké dílky = půl milu, při větším zvětšení se lépe čtou).",
+              "done": "Zásah! Vzdálenost jsi změřil úhlem – bez dálkoměru.",
+              "why": "1 mil je tisícina radiánu: ve vzdálenosti 1 000 m zakryje přesně 1 m, na 500 m půl metru. Podobné trojúhelníky: velikost / vzdálenost = mil / 1 000, takže vzdálenost = velikost × 1 000 : mil. Tabule {v_nez_tab:1} m zabrala {=v_nez_tab*1000/v_nez_d:1} mil, tedy {v_nez_d} m."
+            },
+            {
+              "target": "g500",
+              "label": "Gong 500 m, boční vítr",
+              "wind": {
+                "speed": "v_vitr",
+                "from": "right"
+              },
+              "task": "Gong na 500 m a zvedl se vítr. Karta má sloupec „vítr 1 m/s“: vynásob ho rychlostí větru a miř o tolik proti větru – a zároveň výš.",
+              "spot": "Fouká zprava, {v_vitr} m/s – praporky v údolí vlají doleva. Kulka letí skoro tři čtvrtě sekundy a vítr ji celou dobu tlačí.",
+              "hint": "Vítr zprava tlačí kulku doleva, takže miř doprava (gong bude vlevo od středu kříže). Na 500 m: 4,2 mil výš a {v_vitr} × 0,26 ≈ {=v_vitr*0.264:1} mil doprava.",
+              "done": "Zásah na 500 m ve větru! Doubek: „Tohle bych s jednou rukou nedal. Ani se dvěma.“",
+              "why": "Boční vítr na kulku působí po celou dobu letu a kulka cestou zpomaluje (vzduch ji brzdí), takže letí déle, než by letěla stálou rychlostí. Posun je úměrný rychlosti větru a tomuto „zpoždění“: na 500 m asi 13 cm na každý 1 m/s větru, tedy 0,26 mil."
+            }
+          ],
+          "texts": {
+            "spotter": "rtn. Doubek",
+            "needScope": "Nejdřív dalekohled k oku – klepni ve výhledu na cíl.",
+            "lockedRange": "Nejdřív změř a zapiš vzdálenost k tabuli.",
+            "lockedDone": "Úkol splněn – pokračuj tlačítkem pod obrazem.",
+            "rangeEmpty": "Napiš vzdálenost v metrech.",
+            "rangeOk": "Souhlasí, {d} m. Teď karta: najdi řádek a miř o tolik výš.",
+            "rangeWrong": "To nesedí. Vzdálenost = velikost × 1 000 : mil. Tabule má {size:1} m – kolik mil zabírá v kříži?",
+            "rangeUnits": "{d} m? To je moc daleko, nebo moc blízko. Nezapomněl jsi vynásobit tisícem – nebo nedělíš obráceně?",
+            "hit": "Zásah! Gong na {d} m se rozhoupal.",
+            "hitOther": "Zásah – ale do gongu na {d} m. Teď je na řadě jiný cíl.",
+            "miss": "Vedle – kulka šla {where}.",
+            "high": "vysoko",
+            "low": "nízko",
+            "left": "vlevo",
+            "right": "vpravo",
+            "close": "těsně vedle gongu",
+            "over": "Přes – kulka přeletěla až do lesa. Miř níž.",
+            "far": "Ani nevím, kam to šlo. Podívej se znovu, na který cíl míříš.",
+            "tipStand": "Vstoje se puška houpe nejvíc – opěrná plocha jen pod chodidly a těžiště vysoko. Zkus vkleče nebo vleže.",
+            "tipHeart": "Srdce ti po výstupu buší – každý tep cukne křížem. Chvíli klidně dýchej, tep klesne.",
+            "tipBreath": "Zkus zadržet dech po výdechu (tlačítko Zadržet dech nebo Shift) – v dechové pauze se kříž skoro nehýbe.",
+            "breathOut": "Dech došel – po pár sekundách bez dechu se ruce začnou třást a tělo si vynutí nádech. Zadržuj jen na 4–6 sekund."
+          },
+          "done": [
+            {
+              "set": "strelba_hotova"
+            },
+            {
+              "text": "Čtyři gongy, {strelba_strely} výstřelů. Doubek: „Pozorovatel by ti dal jedničku. Teď brána – ptá se na to, co jsi tu dělal.“"
+            },
+            {
+              "note": "Střelnice: 1 mil = 1 m na 1 000 m; vzdálenost = velikost × 1 000 : mil (tabule {v_nez_tab:1} m = {v_nez_d} m). Kulka padá ½ · g · t² – na 300 m mířit 1,6 mil výš, na 500 m 4,2 mil. Boční vítr: na 500 m 0,26 mil na každý 1 m/s. Nejklidnější je poloha vleže a výstřel v dechové pauze po výdechu.",
+              "noteKey": "strelba"
+            }
+          ]
+        }
+      },
+      "views": {
+        "postaveni": {
+          "name": "Palebné postavení",
+          "background": "assets/rooms/strelnice_postaveni.webp",
+          "_obrazek": "Zástupná kresba: pozadí = výhled z js/strelnice.js, popředí SVG. Vrstvy: otevřený kufr a puška na rohoži. Zadání pro autora: docs/zadani-obrazku-strelnice.md.",
+          "left": "vez",
+          "right": "stan",
+          "enterText": "Palebné postavení na hraně kóty: pytle s pískem, rohož, kufr s puškou. Pod tebou údolí s gongy. U pozorovacího dalekohledu sedí rtn. Doubek.",
+          "layers": [
+            {
+              "image": "assets/rooms/strelnice_postaveni_kufr.webp",
+              "when": {
+                "flags": [
+                  "kufr_otevren"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/strelnice_postaveni_puska.webp",
+              "when": {
+                "flags": [
+                  "kufr_otevren"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "vyhled",
+              "name": "Výhled do údolí",
+              "area": [
+                28.7,
+                24.4,
+                43.1,
+                35.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "udoli"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "prapor",
+              "name": "Rudý prapor",
+              "area": [
+                2.4,
+                12.8,
+                9.6,
+                63.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Rudý prapor na stožáru: na střelnici se střílí.",
+                      "more": "Za svítání je skoro bezvětří – prapor visí. Až se zvedne vítr, začne vlát a poznáš podle něj směr i sílu větru. Kulku na 500 m posune i slabý vítr.",
+                      "moreLabel": "A vítr?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "cedule",
+              "name": "Cedule střelnice",
+              "area": [
+                14.4,
+                49.4,
+                14.4,
+                28.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "STŘELNICE KÓTA 680 – JEN NA GONGY. Pod tím tužkou: „Gong je ocel. Na nic živého se tu nemíří. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kufr",
+              "name": "Kufr s puškou",
+              "area": [
+                8.4,
+                78.6,
+                23.3,
+                18.6
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "kufr_otevren"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Prázdný kufr s výřezem v pěně. Puška leží na rohoži."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Pevný kufr na pušku se třímístným zámkem."
+                    },
+                    {
+                      "lock": "kufr"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rohoz",
+              "name": "Rohož a puška",
+              "area": [
+                26.1,
+                73.3,
+                48.1,
+                25.0
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "strelba_hotova"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Gongy máš sestřelené. Chceš si zastřílet znovu?"
+                    },
+                    {
+                      "activity": "puska"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notFlags": [
+                      "kufr_otevren"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Rohož na střelbu vleže, před ní pytle s pískem. Puška je ještě v kufru."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notItems": [
+                      "chranice"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek zvedne zdravou ruku: „Bez chráničů sluchu ne. Výstřel má u ucha přes 150 decibelů. Visí ve stanu na sloupku.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notItems": [
+                      "balisticka_karta"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „A karta? Bez balistické karty nevíš, o kolik mířit nad cíl. Leží ve stanu na stole.“"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Nasadíš chrániče sluchu a lehneš si k pušce. Doubek se nakloní k dalekohledu: „Hlásit ti budu v milech.“"
+                    },
+                    {
+                      "activity": "puska"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dalekohled",
+              "name": "Pozorovací dalekohled",
+              "area": [
+                70.9,
+                61.6,
+                9.6,
+                25.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Doubkův pozorovací dalekohled zvětšuje 20–60×. Pozorovatel vidí, kam kulka dopadla, a hlásí opravu v milech.",
+                      "more": "Střelec po výstřelu ucítí zpětný ráz a na chvíli ztratí cíl z kříže. Pozorovatel vedle se nehýbe – vidí prach po dopadu i stopu kulky ve vzduchu (chvění vzduchu za střelou).",
+                      "moreLabel": "Proč pozorovatel?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "doubek",
+              "name": "Rotný Doubek",
+              "area": [
+                80.7,
+                43.6,
+                15.6,
+                46.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_strelnice_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Brána je otevřená. Já tu ještě chvíli posedím – gongy dneska zvoní hezky.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "strelba_hotova"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Čtyři gongy. Brána je za stanem, na konci plotu. Ptá se na mil, na pád kulky a na to, proč ležíš – příručka ze stanu to má.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notFlags": [
+                      "kufr_otevren"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Rtn. Doubek, ruku pořád v šátku: „Střílet budeš ty, já budu pozorovatel. Kufr má zámek na kód – úsťovou rychlost. Najdeš ji na krabici s náboji ve stanu.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notItems": [
+                      "chranice"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Chrániče sluchu. Bez nich tě k pušce nepustím – visí ve stanu na sloupku.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notItems": [
+                      "balisticka_karta"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „A balistickou kartu. Leží ve stanu na stole – bez ní nevíš, o kolik mířit nad cíl.“"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Doubek: „Lehni si k pušce. Hlásit ti budu v milech: nízko, vysoko, vlevo, vpravo. A nespěchej – gong počká, ty se uklidni.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "udoli": {
+          "name": "Výhled do údolí",
+          "background": "assets/rooms/strelnice_udoli.webp",
+          "_obrazek": "Vykresleno z js/strelnice.js (drawPanorama), stejná krajina jako v dalekohledu (sada čísel 0).",
+          "back": "postaveni",
+          "enterText": "Údolí za svítání. Na louce stojí ocelové gongy na rámech, za každým val z hlíny: 100 m, 300 m, tabule s otazníkem a 500 m. Praporky u drah visí – zatím je bezvětří.",
+          "hotspots": [
+            {
+              "id": "hory",
+              "name": "Hory na obzoru",
+              "area": [
+                0,
+                14,
+                100,
+                16
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Hory na obzoru jsou modravé a bledé.",
+                      "more": "Čím dál věc je, tím víc vzduchu je mezi ní a tebou – a vzduch rozptyluje modré světlo. Vzdálené kopce proto vypadají modřejší a světlejší (vzdušná perspektiva). V čistém ranním vzduchu se zdají blíž, než jsou: odhad vzdálenosti od oka klame, proto se měří.",
+                      "moreLabel": "Proč modré?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "les",
+              "name": "Les na hřebeni",
+              "area": [
+                20,
+                30.5,
+                40,
+                5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Les na hřebeni, asi kilometr a půl daleko.",
+                      "more": "Za valy je ještě kus louky a les – kulka, která mine gong i val, dopadne do bezpečné dopadové plochy. Proto se tu smí střílet jen tímto směrem."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "praporky",
+              "name": "Praporek u dráhy",
+              "area": [
+                71.5,
+                34.5,
+                3.5,
+                6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Praporek u dráhy: teď visí.",
+                      "more": "Praporek vodorovně znamená silný vítr (asi 6 m/s a víc), napůl zvednutý asi 3 m/s. Podle praporků střelec odhaduje boční vítr – a podle něj, o kolik mířit stranou."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "g100",
+              "name": "Gong 100 m",
+              "area": [
+                10.5,
+                54,
+                9,
+                14
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Gong na 100 m: ocelový kotouč 40 cm na řetězech, vedle žlutá cedulka 100, za ním val z hlíny.",
+                      "more": "40 cm na 100 m zabere v dalekohledu 4 mil (1 mil = 10 cm na 100 m). Val za gongem zachytí kulky, které gong minou."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "g300",
+              "name": "Gong 300 m",
+              "area": [
+                37,
+                40,
+                6,
+                7.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Gong na 300 m, průměr 40 cm.",
+                      "more": "Na 300 m zabere 40 cm jen 1,3 mil – třikrát méně než na stovce. Kulka sem letí asi 0,4 s."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "nez",
+              "name": "Tabule s otazníkem",
+              "area": [
+                62,
+                36,
+                6,
+                8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Bílá tabule široká {v_nez_tab:1} m s otazníkem, pod ní gong 50 cm. Vzdálenost nikde.",
+                      "more": "Tu si změříš sám: kříž v dalekohledu je pravítko v milech. Vzdálenost = velikost × 1 000 : mil."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "g500",
+              "name": "Gong 500 m",
+              "area": [
+                85,
+                35,
+                5.5,
+                6.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Gong na 500 m, průměr 60 cm – odsud sotva tečka.",
+                      "more": "60 cm na 500 m = 1,2 mil. Kulka letí skoro 0,75 s a cestou zpomalí z 820 na asi 560 m/s."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "stan": {
+          "name": "Stan správce střelnice",
+          "background": "assets/rooms/strelnice_stan.webp",
+          "_obrazek": "Zástupná kresba. Vrstvy po sebrání chráničů, karty a příručky.",
+          "left": "postaveni",
+          "right": "brana",
+          "enterText": "Stan správce střelnice: skládací stůl, lucerna, na plachtě plánek střelnice. Vchodem dovnitř svítí ranní slunce.",
+          "layers": [
+            {
+              "image": "assets/rooms/strelnice_stan_bez_chranice.webp",
+              "when": {
+                "flags": [
+                  "chranice_vzaty"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/strelnice_stan_bez_karta.webp",
+              "when": {
+                "flags": [
+                  "karta_vzata"
+                ]
+              }
+            },
+            {
+              "image": "assets/rooms/strelnice_stan_bez_prirucka.webp",
+              "when": {
+                "flags": [
+                  "prirucka_vzata"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "vychod",
+              "name": "Vchod do stanu",
+              "area": [
+                79.5,
+                49.9,
+                15.6,
+                45.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Venku svítá. Na louce pod kótou se válí ranní mlha."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mapa_strelnice",
+              "name": "Plánek střelnice",
+              "area": [
+                36.2,
+                17.5,
+                25.7,
+                27.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plánek střelnice: gongy na 100, 300 a 500 m, mezi nimi tabule s otazníkem. Tužkou: „Vzdálenost k tabuli změř sám. Kříž je pravítko.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "chranice",
+              "name": "Chrániče sluchu",
+              "area": [
+                10.8,
+                30.8,
+                9.0,
+                12.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "chranice_vzaty"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Háček je prázdný – chrániče máš u sebe."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "set": "chranice_vzaty"
+                    },
+                    {
+                      "sound": "pickup"
+                    },
+                    {
+                      "text": "Bereš chrániče sluchu.",
+                      "more": "Výstřel z pušky má u ucha přes 150 dB. Sluch poškozuje už dlouhý hluk nad 85 dB – a každých 10 dB je desetkrát víc energie zvuku. Chrániče ztlumí asi o 30 dB: z „bolí“ na „bouchne“."
+                    },
+                    {
+                      "give": "chranice"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "termoska",
+              "name": "Termoska",
+              "area": [
+                24.5,
+                51.0,
+                4.5,
+                13.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Doubkova termoska s čajem. Lísteček: „Kafe před střelbou ne – zrychlí tep.“",
+                      "more": "Kofein zrychlí tep a zesílí jemný třes rukou. Každý tep se při míření projeví cuknutím kříže – proto se před střelbou nepije kafe ani energetické nápoje."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "karta",
+              "name": "Balistická karta",
+              "area": [
+                32.6,
+                61.6,
+                11.4,
+                6.4
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "karta_vzata"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Kartu máš u sebe – v inventáři ji otevřeš dvojklikem."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "set": "karta_vzata"
+                    },
+                    {
+                      "sound": "pickup"
+                    },
+                    {
+                      "text": "Zalaminovaná balistická karta k pušce. Bereš ji."
+                    },
+                    {
+                      "give": "balisticka_karta"
+                    },
+                    {
+                      "openItem": "balisticka_karta"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "prirucka",
+              "name": "Příručka střelce",
+              "area": [
+                44.6,
+                61.1,
+                10.2,
+                6.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "prirucka_vzata"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Příručku máš u sebe – v inventáři ji otevřeš dvojklikem."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "set": "prirucka_vzata"
+                    },
+                    {
+                      "sound": "pickup"
+                    },
+                    {
+                      "text": "Ohmataná Příručka střelce. Bereš ji."
+                    },
+                    {
+                      "give": "prirucka_strelce"
+                    },
+                    {
+                      "openItem": "prirucka_strelce"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "naboje",
+              "name": "Krabice s náboji",
+              "area": [
+                57.7,
+                51.5,
+                13.2,
+                13.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Krabice nábojů do odstřelovací pušky. Na víku: ÚSŤOVÁ RYCHLOST 820 m/s.",
+                      "more": "Úsťová rychlost = rychlost kulky hned za hlavní. 820 m/s je 2,4× víc než rychlost zvuku (343 m/s): ke gongu na 500 m doletí kulka za 0,74 s, zvuk výstřelu tam dorazí až za 1,46 s.",
+                      "moreLabel": "Jak rychle to je?"
+                    },
+                    {
+                      "note": "Krabice s náboji: úsťová rychlost 820 m/s (rychlost zvuku 343 m/s).",
+                      "noteKey": "naboje"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "radio",
+              "name": "Radiostanice",
+              "area": [
+                70.5,
+                35.1,
+                7.6,
+                29.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Radiostanice zachrastí: „Kóta 680, tady tábor. Střelnice je vaše do sedmi nula nula. A Doubkovi vyřiďte, ať se nehýbe.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "brana": {
+          "name": "Brána IV",
+          "background": "assets/rooms/strelnice_brana.webp",
+          "_obrazek": "Zástupná kresba; otevřená brána = vrstva strelnice_brana_otevrena.webp.",
+          "left": "stan",
+          "right": "vez",
+          "enterText": "Brána IV v plotu střelnice, za ní cesta po hřebeni. Na pravém sloupku číselník, vlevo řád střelnice, vpravo směrovka.",
+          "layers": [
+            {
+              "image": "assets/rooms/strelnice_brana_otevrena.webp",
+              "when": {
+                "flags": [
+                  "brana_strelnice_otevrena"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "rad",
+              "name": "Řád střelnice",
+              "area": [
+                8.7,
+                34.5,
+                17.9,
+                49.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "ŘÁD STŘELNICE: 1. Střílí se jen na ocelové gongy a tabule. 2. Jen s chrániči sluchu. 3. Jen na povel pozorovatele. 4. Zbraň míří vždy do údolí.",
+                      "more": "Proč gongy? Ocel po zásahu zazvoní a rozhoupe se, takže zásah je vidět i z dálky – a na nic živého se tu nemíří."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "brana_strelnice",
+              "name": "Brána IV",
+              "area": [
+                34.1,
+                27.1,
+                31.7,
+                57.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_strelnice_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Brána je otevřená. Cesta po hřebeni vede výš – k další bráně."
+                    },
+                    {
+                      "leave": true
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Brána IV z ocelových trubek, zamčená. Vedle na sloupku svítí číselník."
+                    },
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ciselnik",
+              "name": "Číselník",
+              "area": [
+                68.5,
+                49.4,
+                4.6,
+                13.3
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_strelnice_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Číselník svítí zeleně: BRÁNA IV OTEVŘENA."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "smerovka",
+              "name": "Směrovka",
+              "area": [
+                75.1,
+                30.3,
+                17.3,
+                54.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Směrovka: TÁBOR ↓ 400 m n. m. a druhá BRÁNA V →. Někdo připsal: „Každá brána je o kus výš. – D.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "vez": {
+          "name": "Pozorovací věž",
+          "background": "assets/rooms/strelnice_vez.webp",
+          "_obrazek": "Zástupná kresba. Pootevřené dveře přístavku vedou k průhledu do pozorovatelny.",
+          "left": "brana",
+          "right": "postaveni",
+          "enterText": "Dřevěná pozorovací věž. Nahoře se točí anemometr, vedle visí větrný rukáv a dole má věž přístavek – dveře jsou pootevřené.",
+          "hotspots": [
+            {
+              "id": "vez_budka",
+              "name": "Budka pozorovatele",
+              "area": [
+                41.9,
+                11.2,
+                23.9,
+                36.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Budka pozorovatele nahoře: odtud je vidět celé údolí. Dnes je prázdná – Doubek má ruku v šátku a po žebříku by nevylezl."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "anemometr",
+              "name": "Anemometr",
+              "area": [
+                50.5,
+                1.1,
+                7.2,
+                11.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Miskový anemometr: tři misky na ramenech, vítr je roztáčí.",
+                      "more": "Vypouklou stranu misky vítr obtéká snáz než dutou, proto se kříž točí vždy stejným směrem – a tím rychleji, čím silněji fouká. Z otáček se počítá rychlost větru v m/s.",
+                      "moreLabel": "Jak měří?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rukav",
+              "name": "Větrný rukáv",
+              "area": [
+                77.2,
+                10.6,
+                6.6,
+                61.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Větrný rukáv: teď skoro visí.",
+                      "more": "Rukáv se nafukuje a zvedá podle síly větru: vodorovně stojí asi při 8 m/s. Míří tam, kam vítr fouká – tedy opačně, než odkud vane."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "zebrik",
+              "name": "Žebřík",
+              "area": [
+                62.8,
+                45.7,
+                6.0,
+                46.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Žebřík na věž. Doubek z palebného postavení: „Tam nahoru dneska ne. Já s jednou rukou nevylezu a tobě by se rozbušilo srdce – a s ním kříž.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "lavice",
+              "name": "Lavice",
+              "area": [
+                11.1,
+                78.1,
+                19.7,
+                12.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Lavice pod věží. Sedí se na ní, když se nestřílí."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "lahev",
+              "name": "Polní láhev",
+              "area": [
+                17.3,
+                68.0,
+                4.8,
+                11.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Polní láhev s vodou.",
+                      "more": "Už ztráta asi 2 % vody v těle zhorší soustředění i jemnou koordinaci – a tep stoupne. Pít se má průběžně, ne až s žízní."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dvere_pozorovatelna",
+              "name": "Pootevřené dveře",
+              "area": [
+                49.4,
+                69.6,
+                8.5,
+                22.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "pozorovatelna"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "pozorovatelna": {
+          "name": "Pozorovatelna",
+          "background": "assets/rooms/strelnice_pozorovatelna.webp",
+          "_obrazek": "Průhled pootevřenými dveřmi (zástupná kresba, v průzoru výhled z js/strelnice.js).",
+          "back": "vez",
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_strelnice"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_strelnice"
+                }
+              ]
+            }
+          ],
+          "enterText": "Nakukuješ pootevřenými dveřmi do pozorovatelny: úzký průzor do údolí, velký dalekohled na stojanu, tabulka větru, plánek drah a na stolku kniha.",
+          "hotspots": [
+            {
+              "id": "okno",
+              "name": "Průzor do údolí",
+              "area": [
+                14.7,
+                15.4,
+                70.6,
+                19.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Průzor do údolí: celá střelnice jako na dlani.",
+                      "more": "Pozorovatelna je stranou od palebného postavení, aby pozorovatel viděl dopady z jiného úhlu – i to, co střelec za zpětným rázem nestihne."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dalekohled_vez",
+              "name": "Velký dalekohled",
+              "area": [
+                16.7,
+                42.5,
+                16.7,
+                43.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Velký dvojitý dalekohled na stojanu, zvětšení 25×.",
+                      "more": "Dvě oči vidí prostorově a unaví se méně než jedno – proto pozorovatel kouká oběma. Střelec kouká do dalekohledu jedním okem, druhé má mít ale otevřené, jinak se mu obličej i oko napínají."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tabulka_vetru",
+              "name": "Tabulka větru",
+              "area": [
+                36.8,
+                38.8,
+                20.3,
+                29.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Tabulka JAK SILNĚ FOUKÁ: praporek skoro svisle = do 1 m/s, šikmo = asi 2 m/s, napůl = asi 3–4 m/s, vodorovně = 6 m/s a víc.",
+                      "more": "Vítr se odhaduje i podle trávy, listí a chvění vzduchu nad loukou. Posun kulky roste s rychlostí větru i se vzdáleností – na 500 m asi o čtvrt milu na každý 1 m/s."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plan_drah",
+              "name": "Plánek drah",
+              "area": [
+                64.9,
+                39.9,
+                19.7,
+                18.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plánek drah: palebné postavení dole, čtyři cíle vějířem nahoře. Všechny dráhy míří do údolí, nikdy k věži."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kniha_strelby",
+              "name": "Kniha střelnice",
+              "area": [
+                64.6,
+                57.9,
+                11.7,
+                6.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Kniha střelnice. Mezi zápisy z dávných let jeden známým písmem: „D. – 5 gongů z 6, vleže, ráno po výstupu. Šestý jsem uspěchal.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "gate": {
+        "title": "Číselník u Brány IV",
+        "openFlag": "brana_strelnice_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku svítí: „Lodní kontejner je dlouhý 6 m. V dalekohledu zabírá {v_kont_mil} mil. Jak daleko je? Zadej v metrech.“",
+            "unit": "m",
+            "requiresVars": [
+              "strelba_zasahy"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV STŘELBA. Rohož je u pytlů s pískem.",
+            "answer": "6*1000/v_kont_mil",
+            "toleranceRel": 0.02,
+            "feedbackFormulas": [
+              {
+                "value": "6/v_kont_mil",
+                "text": "To jsou kilometry – 1 mil je 1 m na 1 000 m. Vynásob tisícem."
+              },
+              {
+                "value": "v_kont_mil*1000/6",
+                "text": "Obráceně: vzdálenost = velikost × 1 000 : mil, ne mil × 1 000 : velikost."
+              },
+              {
+                "value": "6*v_kont_mil",
+                "text": "Násobíš – čím víc milů kontejner zabírá, tím je BLÍŽ. Dělí se."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Stejně jako tabule s otazníkem v údolí.",
+              "Vzdálenost = velikost × 1 000 : mil.",
+              "6 × 1 000 : {v_kont_mil} = {=6000/v_kont_mil:0} m."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Kulka vyletí vodorovně rychlostí 820 m/s. O kolik centimetrů klesne na {v_pad_d} m, kdyby nebyl vzduch? Zadej v centimetrech.“",
+            "unit": "cm",
+            "answer": "0.5*9.81*(v_pad_d/820)^2*100",
+            "toleranceRel": 0.04,
+            "feedbackFormulas": [
+              {
+                "value": "0.5*9.81*(v_pad_d/820)^2",
+                "text": "Správně – ale v metrech. Číselník chce centimetry."
+              },
+              {
+                "value": "9.81*(v_pad_d/820)^2*100",
+                "text": "Chybí polovina: pokles je ½ · g · t²."
+              },
+              {
+                "value": "0.5*9.81*(v_pad_d/820)*100",
+                "text": "Čas musí být na druhou: ½ · g · t², t = d : v."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Bez vzduchu letí kulka pořád stejně rychle: t = d : v.",
+              "A za ten čas padá jako každé těleso: h = ½ · g · t².",
+              "t = {v_pad_d} : 820 ≈ {=v_pad_d/820:3} s → h ≈ {=0.5*9.81*(v_pad_d/820)^2*100:1} cm."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Ve stejnou chvíli vystřelíš kulku vodorovně a druhou upustíš z ruky ze stejné výšky. Která dopadne na rovnou zem dřív (bez vzduchu)?“",
+            "options": [
+              "Upuštěná – letí kratší cestu",
+              "Vystřelená – je rychlejší",
+              "Obě současně – svisle padají stejně",
+              "Záleží na hmotnosti kulky"
+            ],
+            "correct": 2,
+            "feedback": {
+              "0": "Kratší cesta neznamená kratší pád: svisle obě padají ze stejné výšky se stejným zrychlením.",
+              "1": "Rychlost vpřed na padání nic nemění – vodorovný a svislý pohyb si nepřekážejí.",
+              "3": "Všechna tělesa padají (bez vzduchu) se stejným zrychlením g, těžká i lehká."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Příručka střelce: dva pohyby najednou.",
+              "Vodorovný pohyb a svislý pád jsou na sobě nezávislé.",
+              "Svisle obě začínají z klidu ve stejné výšce."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Proč se puška vleže na dvojnožce houpe nejméně?“",
+            "options": [
+              "Velká opěrná plocha a těžiště nízko u země – tělo nemusí tolik vyrovnávat",
+              "Vleže se nedýchá",
+              "Vleže je hlaveň blíž zemi, takže kulka méně klesá",
+              "Vleže je střelec menší cíl"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "Dýchá se i vleže – a s nádechem se puška zvedá. Proto dechová pauza.",
+              "2": "Pokles kulky na výšce hlavně nad zemí nezávisí – jen na době letu.",
+              "3": "To je pravda pro boj, ale houpání pušky to nevysvětluje."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň, jak se kříž houpal vstoje, vkleče a vleže.",
+              "Stabilita: opěrná plocha a výška těžiště.",
+              "Vleže je opěrná plocha největší a těžiště nejníž."
+            ],
+            "success": "Zelená! Poslední otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Kdy střelec stiskne spoušť?“",
+            "options": [
+              "V přirozené dechové pauze po výdechu – dřív, než ho začne pálit dech",
+              "S plnými plícemi, na vrcholu nádechu",
+              "Po co nejdelším zadržení dechu, třeba 20 sekund",
+              "Nezáleží na tom – kulka je rychlá"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "S plnými plícemi jsou svaly hrudníku napjaté a kříž je zvednutý – klid je až po výdechu.",
+              "2": "Po pár sekundách bez dechu se začnou třást ruce a buší srdce. Zadržuje se jen na 4–6 s.",
+              "3": "Kulka je rychlá, ale houpání kříže o 1 mil znamená na 500 m chybu půl metru."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na ukazatel dechu v dalekohledu – kde byl zelený úsek?",
+              "Po výdechu chvíli nedýcháš a hrudník se nehýbe.",
+              "Dechová pauza po výdechu, krátce."
+            ],
+            "success": "Zelená!"
+          }
+        ],
+        "open": [
+          {
+            "denik": "strelnice"
+          },
+          {
+            "sound": "levelUp"
+          },
+          {
+            "text": "Číselník zapípal zeleně a brána se odjistila. Za ní vede cesta po hřebeni – výš, k další bráně."
+          },
+          {
+            "note": "BRÁNA IV: vzdálenost = velikost × 1 000 : mil; kulka padá ½ · g · t² (bez vzduchu t = d : v, se vzduchem letí déle a klesne víc); vodorovný pohyb a svislý pád jsou nezávislé; vleže = velká opěrná plocha a nízké těžiště; spoušť v dechové pauze po výdechu.",
+            "noteKey": "brana4"
           }
         ]
       }
@@ -11162,6 +13927,9 @@
                   "brana_spin_otevrena"
                 ]
               }
+            },
+            {
+              "image": "assets/rooms/spin_dvere_vestibul.webp"
             }
           ],
           "hotspots": [
@@ -11247,6 +14015,140 @@
                     },
                     {
                       "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "dvere_vestibul",
+              "name": "Dveře ROVNOVÁHA",
+              "area": [
+                75.2,
+                15.3,
+                19.6,
+                56.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "vestibul"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "vestibul": {
+          "name": "Vestibulární koutek",
+          "background": "assets/rooms/spin_vestibul.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "dvere",
+          "darkness": 0.6,
+          "lights": [
+            {
+              "x": 50,
+              "y": 30,
+              "radius": 34,
+              "strength": 0.4
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_spin"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_spin"
+                }
+              ]
+            }
+          ],
+          "enterText": "Za dveřmi ROVNOVÁHA je malá laboratoř: zvětšený model vnitřního ucha, otočné křeslo s opěrkou hlavy, balanční deska a plakát krasobruslařky.",
+          "hotspots": [
+            {
+              "id": "ucho",
+              "name": "Model vnitřního ucha",
+              "area": [
+                16.7,
+                40.4,
+                16.7,
+                46.8
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Zvětšený model vnitřního ucha: tři polokruhovité kanálky, každý v jiné rovině, a hlemýžď.",
+                      "more": "V kanálcích je tekutina. Když otočíš hlavou, tekutina se kvůli setrvačnosti opozdí a ohne citlivé vlásky – mozek tak pozná úhlové zrychlení ve všech třech rovinách.",
+                      "moreLabel": "Jak cítí otáčení?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "kreslo",
+              "name": "Otočné křeslo",
+              "area": [
+                38.9,
+                36.1,
+                17.9,
+                52.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Otočné křeslo s opěrkou hlavy na zkoušku rovnovážného ústrojí.",
+                      "more": "Po dlouhém točení tekutina v kanálcích pokračuje v pohybu i po zastavení – proto se točí hlava a oči cukají (nystagmus). Tělo stojí, ale ucho hlásí otáčení.",
+                      "moreLabel": "Proč se točí hlava?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plakat",
+              "name": "Plakát krasobruslařky",
+              "area": [
+                65.8,
+                15.9,
+                17.9,
+                39.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Plakát: DÍVEJ SE DO BODU. Postava v piruetě a od hlavy čáry k jednomu bodu.",
+                      "more": "Při piruetě tanečnice i krasobruslařky drží pohled na jednom místě a hlavu otočí rychle až na konci otáčky. Oči mají pevný bod a hlava se otáčí trhaně – proto se jí tolik netočí hlava.",
+                      "moreLabel": "Proč do bodu?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "deska",
+              "name": "Balanční deska",
+              "area": [
+                65.8,
+                76.5,
+                17.9,
+                11.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Balanční deska na válci.",
+                      "more": "Rovnováhu drží tři systémy naráz: oči, vnitřní ucho a čidla v kloubech a svalech (propriocepce). Zavři oči a stůj na jedné noze – hned poznáš, kolik práce dělaly oči."
                     }
                   ]
                 }
@@ -12151,6 +15053,9 @@
           ],
           "layers": [
             {
+              "image": "assets/rooms/fotolab_zvetsovak_zaves.webp"
+            },
+            {
               "image": "assets/rooms/fotolab_zvetsovak_svetlo.webp",
               "when": {
                 "flags": [
@@ -12339,6 +15244,25 @@
                   ]
                 }
               ]
+            },
+            {
+              "id": "zaves",
+              "name": "Černý závěs",
+              "area": [
+                84.8,
+                11.3,
+                14.0,
+                78.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "view": "atelier"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -12517,6 +15441,149 @@
                   "do": [
                     {
                       "openGate": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "atelier": {
+          "name": "Ateliér za závěsem",
+          "background": "assets/rooms/fotolab_atelier.webp",
+          "_obrazek": "Zástupná kresba průhledu do vedlejší místnosti (docs/zadani-obrazku-nahledy.md).",
+          "back": "zvetsovak",
+          "darkness": 0.5,
+          "lights": [
+            {
+              "x": 20,
+              "y": 26,
+              "radius": 30,
+              "strength": 0.5
+            },
+            {
+              "x": 80,
+              "y": 26,
+              "radius": 30,
+              "strength": 0.5
+            }
+          ],
+          "enter": [
+            {
+              "when": {
+                "notFlags": [
+                  "nahled_fotolab"
+                ]
+              },
+              "do": [
+                {
+                  "set": "nahled_fotolab"
+                }
+              ]
+            }
+          ],
+          "enterText": "Odhrneš černý závěs – za ním druhý, aby do temné komory nepronikl ani paprsek. Za oběma ateliér: bílé pozadí s mřížkou, dva blesky, fotoaparát na stativu a staré fotografie pohybu.",
+          "hotspots": [
+            {
+              "id": "mrizka",
+              "name": "Pozadí s mřížkou",
+              "area": [
+                25.1,
+                9.6,
+                49.6,
+                67.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Bílé pozadí s černou mřížkou po 10 cm.",
+                      "more": "Kdo se před mřížkou pohybuje, má na fotce vlastní pravítko: stačí počítat čtverečky. Je to totéž jako pásmo na fotce sprintu – měřítko, podle kterého se z obrázku počítá dráha a rychlost.",
+                      "moreLabel": "K čemu mřížka?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "chronofoto",
+              "name": "Chronofotografie",
+              "area": [
+                26.3,
+                13.8,
+                17.3,
+                17.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Stará chronofotografie: chůze rozložená do sedmi póz na jedné desce.",
+                      "more": "Étienne-Jules Marey v 80. letech 19. století fotografoval pohyb lidí a zvířat mnohokrát za sekundu na jednu desku. Z jeho snímků se zrodila biomechanika pohybu – i film.",
+                      "moreLabel": "Kdo to vymyslel?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "muybridge",
+              "name": "Série koně",
+              "area": [
+                59.8,
+                13.8,
+                13.2,
+                40.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Čtyři snímky koně v trysku za sebou.",
+                      "more": "Eadweard Muybridge v roce 1878 řadou fotoaparátů dokázal, že kůň v trysku má na okamžik všechny čtyři nohy ve vzduchu – letová fáze, stejně jako u běžce. Oko to nepostřehne, fotka ano.",
+                      "moreLabel": "Co dokázal?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "blesk",
+              "name": "Studiový blesk",
+              "area": [
+                16.1,
+                18.1,
+                9.0,
+                74.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Studiový blesk na stojanu.",
+                      "more": "Záblesk trvá asi 1/10 000 s. Běžec rychlostí 10 m/s se za tu dobu posune o 1 mm – pohyb na fotce zamrzne. O ostrosti rozhoduje délka záblesku, ne závěrka.",
+                      "moreLabel": "Proč je fotka ostrá?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "fotoaparat",
+              "name": "Fotoaparát na stativu",
+              "area": [
+                44.3,
+                63.8,
+                11.4,
+                36.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Fotoaparát na stativu míří kolmo na pozadí.",
+                      "more": "Kolmo proto, aby se mřížka nezkreslila perspektivou – měřit se dá jen v rovině, kterou fotoaparát vidí zpříma. Co je blíž k objektivu než pozadí, vypadá na fotce větší.",
+                      "moreLabel": "Proč kolmo?"
                     }
                   ]
                 }

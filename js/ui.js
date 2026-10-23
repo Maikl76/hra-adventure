@@ -900,7 +900,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.30');
+      const mod = await import('./chodba.js?v=0.31');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1134,7 +1134,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.30');
+        const mod = await import('./chodba3d.js?v=0.31');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1950,7 +1950,7 @@
         }
       };
 
-      import('./basket.js?v=0.30').then((mod) => {
+      import('./basket.js?v=0.31').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -1973,6 +1973,309 @@
             const btn = e.target && e.target.closest ? e.target.closest('button') : null;
             if (btn && $('modal').contains(btn) && !btn.classList.contains('basket-btn')) return false;
             if (!e.repeat && !throwBtn.disabled) ctl.throw();
+            return true;
+          }
+          return false;
+        };
+      });
+    });
+  }
+
+  /* ---------- Odstřelovací puška (střelnice na kótě 680) ----------
+     js/strelnice.js kreslí výhled do údolí a dalekohled s křížem v mil; tady jsou tlačítka, úkoly
+     a hlášení pozorovatele (rtn. Doubek). game.json: type „sniper“, rifle (v0, k, sight, zero),
+     positions { stoj | klek | leh: { name, sway, breath, pulse, recoil, text } }, heart { start,
+     again, rest, tau }, breath { rate, steady, max }, targets [{ id, d, az, size, board, label }]
+     (d a board smějí být proměnné ze sady čísel), rounds [{ target, label, task, wind { speed,
+     from: "left" | "right" }, range { ask, tolerance } (nejdřív změřit vzdálenost křížem), hint,
+     hintAfter, done, why }], texts (hlášky pozorovatele s {proměnnými}). Postup se ukládá
+     (sn_kolo, sn_strely…), takže zavřené okno pokračuje dalším úkolem. Výsledek do „done“:
+     strelba_strely, strelba_zasahy, strelba_vzdalenost, strelba_dech (zásahy se zadrženým dechem),
+     strelba_vleze (zásahy vleže). */
+  let sniperKey = null;
+
+  function openSniper(act) {
+    const vars = game.state.vars;
+    const T = act.texts || {};
+    const rounds = act.rounds || [];
+    const num = (v) => (typeof v === 'string' ? game.evaluate(v) : Number(v));
+    const fmt = (v, d = 1) => v.toFixed(d).replace('.', ',');
+    const say = (text, local) => game.fill(tplLocal(text || '', local || {}));
+    const targets = (act.targets || []).map((t) => ({ ...t, d: num(t.d), board: t.board ? num(t.board) : 0 }));
+    // úkoly a výstřely z minulého otevření okna (po dokončení všech úkolů se začíná znovu)
+    const again = (vars.sn_kolo || 0) >= rounds.length;
+    let ri = again ? 0 : vars.sn_kolo || 0;
+    const run = again
+      ? { shots: 0, breath: 0, prone: 0 }
+      : { shots: vars.sn_strely || 0, breath: vars.sn_dech || 0, prone: vars.sn_vleze || 0 };
+    let misses = 0, hinted = false, ranged = null;
+    const tips = {};
+    let ctl = null;
+    const timers = [];
+    let keyUp = null;
+
+    openModal((box) => {
+      box.classList.add('activity-box', 'sniper-box');
+      heading(box, act.title || 'Odstřelovací puška');
+      const intro = para(box, say(act.intro), 'question');
+      intro.hidden = ri > 0;
+      const canvas = document.createElement('canvas');
+      canvas.className = 'sniper-canvas';
+      canvas.setAttribute('aria-label', 'Výhled do údolí se střelnicí. Klepnutím na cíl zvedneš dalekohled; v dalekohledu tahem posuneš míření.');
+      box.appendChild(canvas);
+      const bar = document.createElement('div');
+      bar.className = 'sniper-bar';
+      box.appendChild(bar);
+      const ctrl = (label, title, fn, cls) => {
+        const b = button(bar, label, `btn sniper-btn ${cls || ''}`, () => { if (ctl) fn(); });
+        b.title = title;
+        b.setAttribute('aria-label', title);
+        return b;
+      };
+      const posIds = ['stoj', 'klek', 'leh'];
+      const posBtns = {};
+      posIds.forEach((id, i) => {
+        const p = (act.positions || {})[id] || {};
+        posBtns[id] = ctrl(p.name || id, `${p.name || id} (klávesa ${i + 1})`, () => setPos(id), 'sniper-pos');
+      });
+      ctrl('−', 'Menší zvětšení (klávesa −, kolečko myši)', () => ctl.zoomBy(-1), 'sniper-zoom');
+      ctrl('+', 'Větší zvětšení (klávesa +, kolečko myši)', () => ctl.zoomBy(1), 'sniper-zoom');
+      const breathBtn = ctrl('Zadržet dech', 'Zadržet dech / znovu dýchat (podrž Shift)', () => ctl.holdBreath(!ctl.breath.held), 'sniper-breath');
+      const fireBtn = ctrl('Výstřel', 'Výstřel (F, mezerník nebo Enter)', () => fire(), 'primary sniper-fire');
+      const viewBtn = ctrl('Výhled', 'Výhled bez dalekohledu / dalekohled (V)', () => toggleScope(), 'sniper-view');
+      const posInfo = para(box, '', 'sniper-posinfo');
+      const task = para(box, '', 'sniper-task');
+      const rangeRow = document.createElement('div');
+      rangeRow.className = 'sniper-range';
+      box.appendChild(rangeRow);
+      const spot = document.createElement('p');
+      spot.className = 'sniper-spot';
+      spot.setAttribute('aria-live', 'polite');
+      box.appendChild(spot);
+      const after = document.createElement('div');
+      after.className = 'sniper-after';
+      box.appendChild(after);
+
+      const spotSay = (text) => {
+        spot.innerHTML = '';
+        if (!text) return;
+        const who = document.createElement('strong');
+        who.textContent = `${T.spotter || 'Pozorovatel'}: `;
+        spot.append(who, document.createTextNode(text));
+      };
+      const save = () => game.setVars({ sn_kolo: ri, sn_strely: run.shots, sn_dech: run.breath, sn_vleze: run.prone });
+
+      function setPos(id) {
+        ctl.setPosition(id);
+        showPos();
+      }
+      function showPos() {
+        for (const id of posIds) posBtns[id].setAttribute('aria-pressed', String(ctl.posId === id));
+        const p = (act.positions || {})[ctl.posId] || {};
+        posInfo.textContent = p.text || '';
+      }
+      function showBreath() {
+        const held = ctl.breath.held;
+        breathBtn.textContent = held ? 'Dýchat' : 'Zadržet dech';
+        breathBtn.setAttribute('aria-pressed', String(held));
+      }
+      function toggleScope() {
+        if (ctl.scoped) ctl.setScope(false);
+        else {
+          const t = ctl.targetInfo(rounds[ri] && rounds[ri].target);
+          if (t) ctl.setScope(true, t.az, t.el); else ctl.setScope(true);
+        }
+        viewBtn.textContent = ctl.scoped ? 'Výhled' : 'Dalekohled';
+      }
+      function fire() {
+        const res = ctl.fire();
+        if (res.blocked === 'scope') spotSay(say(T.needScope || 'Nejdřív dalekohled k oku – klepni na cíl.'));
+        else if (res.blocked === 'locked') spotSay(res.reason);
+        else if (res.ok) {
+          run.shots += 1;
+          save();
+          fireBtn.disabled = true;
+          timers.push(setTimeout(() => { fireBtn.disabled = false; }, 1300));
+        }
+      }
+
+      function startRound(i) {
+        const r = rounds[i];
+        const tg = targets.find((t) => t.id === r.target) || {};
+        const speed = r.wind ? num(r.wind.speed) : 0;
+        const w = r.wind && r.wind.from === 'right' ? -speed : speed;
+        misses = 0;
+        hinted = false;
+        ranged = null;
+        after.innerHTML = '';
+        ctl.setRound({
+          target: r.target, label: say(r.label), index: i + 1, of: rounds.length, wind: w,
+          locked: r.range ? say(T.lockedRange || 'Nejdřív změř a zapiš vzdálenost.') : '',
+          cardMark: r.range ? null : tg.d,
+        });
+        task.textContent = say(r.task, { d: tg.d });
+        spotSay(say(r.spot || '', { d: tg.d, w: speed }));
+        rangeRow.innerHTML = '';
+        rangeRow.hidden = !r.range;
+        if (r.range) {
+          const label = document.createElement('label');
+          label.textContent = say(r.range.ask || 'Vzdálenost k tabuli (m):');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.inputMode = 'decimal';
+          input.className = 'sniper-input';
+          input.setAttribute('aria-label', label.textContent);
+          label.appendChild(input);
+          rangeRow.appendChild(label);
+          const ok = button(rangeRow, 'Zapsat', 'btn', () => {
+            const v = parseFloat(String(input.value).replace(',', '.'));
+            if (!Number.isFinite(v) || v <= 0) { spotSay(say(T.rangeEmpty || 'Napiš vzdálenost v metrech.')); return; }
+            const tol = r.range.tolerance || 0.08;
+            if (Math.abs(v - tg.d) <= tol * tg.d) {
+              ranged = v;
+              game.setVars({ strelba_vzdalenost: v });
+              ctl.setLocked('');
+              ctl.setCardMark(v);
+              input.disabled = true;
+              ok.disabled = true;
+              spotSay(say(T.rangeOk, { d: Math.round(v) }));
+            } else {
+              const mil = (tg.board / tg.d) * 1000;
+              const hint = v > tg.d * 5 || v < tg.d / 5 ? T.rangeUnits : T.rangeWrong;
+              const shown = v >= 10 ? String(Math.round(v)) : String(Math.round(v * 100) / 100).replace('.', ',');
+              spotSay(say(hint, { d: shown, size: tg.board, mil }));
+            }
+          });
+          input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ok.click(); } });
+        }
+      }
+
+      function roundDone(r) {
+        ctl.setLocked(say(T.lockedDone || 'Úkol splněn.'));
+        ri += 1;
+        save();
+        after.innerHTML = '';
+        after.appendChild(messageLine({ text: say(r.done), more: r.why ? say(r.why) : '' }));
+        const last = ri >= rounds.length;
+        const next = button(after, last ? 'Hotovo' : 'Další úkol', 'btn primary', () => {
+          if (last) {
+            const prev = vars.strelba_strely;
+            finishActivity(act, {
+              strelba_strely: prev ? Math.min(prev, run.shots) : run.shots,
+              strelba_zasahy: rounds.length,
+              strelba_vzdalenost: ranged || vars.strelba_vzdalenost || null,
+              strelba_dech: run.breath,
+              strelba_vleze: run.prone,
+              sn_kolo: rounds.length,
+            });
+            return;
+          }
+          startRound(ri);
+        });
+        next.focus();
+      }
+
+      function onShot(s) {
+        const r = rounds[ri];
+        if (!r) return;
+        const tg = targets.find((t) => t.id === r.target) || {};
+        if (s.hit && s.hit === r.target) {
+          if (s.held) run.breath += 1;
+          if (s.position === 'leh') run.prone += 1;
+          spotSay(say(T.hit || 'Zásah!', { d: Math.round(tg.d) }));
+          roundDone(r);
+          return;
+        }
+        if (s.hit) {
+          const other = targets.find((t) => t.id === s.hit) || {};
+          spotSay(say(T.hitOther, { d: Math.round(other.d) }));
+          return;
+        }
+        misses += 1;
+        const dv = Math.abs(s.dEl || 0), dh = Math.abs(s.dAz || 0);
+        let msg;
+        if (s.over) msg = say(T.over);
+        else if (Math.hypot(dv, dh) > 10) msg = say(T.far);
+        else {
+          const parts = [];
+          if (dv >= 0.15) parts.push(`${s.dEl > 0 ? T.high || 'vysoko' : T.low || 'nízko'} o ${fmt(dv)} mil`);
+          if (dh >= 0.15) parts.push(`${s.dAz > 0 ? T.right || 'vpravo' : T.left || 'vlevo'} o ${fmt(dh)} mil`);
+          msg = say(T.miss, { where: parts.join(' a ') || T.close || 'těsně vedle' });
+        }
+        // rady jednou za okno: poloha, tep, dech
+        const tip = s.position === 'stoj' && !tips.stoj ? 'stoj'
+          : s.hr > 100 && !tips.hr ? 'hr'
+            : !s.held && !tips.breath ? 'breath' : null;
+        if (tip) {
+          tips[tip] = true;
+          msg += ` ${say({ stoj: T.tipStand, hr: T.tipHeart, breath: T.tipBreath }[tip])}`;
+        }
+        if (!hinted && r.hint && misses >= (r.hintAfter || 3)) {
+          hinted = true;
+          msg += ` ${say(r.hint, { d: tg.d })}`;
+        }
+        spotSay(msg);
+      }
+
+      import('./strelnice.js?v=0.31').then((mod) => {
+        if (!canvas.isConnected) return;
+        const positions = {};
+        for (const [id, p] of Object.entries(act.positions || {})) positions[id] = p;
+        ctl = new mod.Sniper(canvas, {
+          rifle: act.rifle,
+          positions,
+          heart: { ...(act.heart || {}), start: ri > 0 && act.heart ? act.heart.again || act.heart.start : (act.heart || {}).start },
+          breath: act.breath,
+          targets,
+          card: game.hasItem(act.cardItem || 'balisticka_karta'),
+          reducedMotion: reducedMotion.matches,
+          position: 'stoj',
+          onShot,
+          onEvent: (name, d) => {
+            if (name === 'breath') {
+              showBreath();
+              if (d.forced) spotSay(say(T.breathOut));
+            }
+            if (name === 'scope') {
+              viewBtn.textContent = d.on ? 'Výhled' : 'Dalekohled';
+              if (d.on) intro.hidden = true;   // ovládání pak zůstane na tabletu vidět bez posouvání
+            }
+          },
+          onSound: (name, delay) => {
+            timers.push(setTimeout(() => sound.sfx(name), Math.max(0, delay) * 1000));
+          },
+        });
+        canvas.__sniper = ctl;   // pro testy (jako __corridor u chodby)
+        showPos();
+        showBreath();
+        startRound(ri);
+        keyUp = (e) => { if (e.key === 'Shift' && ctl) ctl.holdBreath(false); };
+        window.addEventListener('keyup', keyUp);
+        activityCleanup = () => {
+          ctl.destroy();
+          ctl = null;
+          sniperKey = null;
+          timers.forEach(clearTimeout);
+          window.removeEventListener('keyup', keyUp);
+        };
+        sniperKey = (e) => {
+          if (e.target && e.target.matches && e.target.matches('input, textarea')) return false;
+          const btn = e.target && e.target.closest ? e.target.closest('button') : null;
+          const modalBtn = btn && $('modal').contains(btn);   // fokus na objektu místnosti za oknem se nepočítá
+          if (e.key === 'Shift') { if (!e.repeat) ctl.holdBreath(true); return true; }
+          if (['1', '2', '3'].includes(e.key)) { setPos(posIds[Number(e.key) - 1]); return true; }
+          if (e.key === '+' || e.key === '=' || e.key === 'PageUp') { ctl.zoomBy(1); return true; }
+          if (e.key === '-' || e.key === 'PageDown') { ctl.zoomBy(-1); return true; }
+          if (e.key === 'v' || e.key === 'V') { toggleScope(); return true; }
+          const arrow = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+          if (arrow) { ctl.nudge(arrow[0], arrow[1]); return true; }
+          if (e.key === 'f' || e.key === 'F') {
+            if (!e.repeat && !fireBtn.disabled) fire();
+            return true;
+          }
+          if (e.key === ' ' || e.key === 'Enter') {
+            if (modalBtn) return false;   // tlačítko v okně s fokusem (Další úkol, Výhled, zavřít…) si klávesu vezme samo
+            if (!e.repeat && !fireBtn.disabled) fire();
             return true;
           }
           return false;
@@ -2430,6 +2733,7 @@
     else if (act.type === 'curve') openCurve(act);
     else if (act.type === 'gyro') openGyro(act);
     else if (act.type === 'strobo') openStrobo(act);
+    else if (act.type === 'sniper') openSniper(act);
   }
 
   function finishActivity(act, results) {
@@ -2580,7 +2884,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.30');
+          const mod = await import('./squats.js?v=0.31');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3442,7 +3746,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.30');
+          const mod = await import('./skok.js?v=0.31');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -3820,7 +4124,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.30');
+          const mod = await import('./goblet.js?v=0.31');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -5985,7 +6289,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.30');
+          const mod = await import('./predklon.js?v=0.31');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,
@@ -6550,6 +6854,11 @@
     const modalOpen = !$('modal').hidden;
     // basketbalový automat: šipky = úhel a rychlost, mezerník / Enter = hod
     if (modalOpen && basketKey && basketKey(e)) {
+      e.preventDefault();
+      return;
+    }
+    // odstřelovací puška: polohy 1–3, zvětšení ±, Shift = dech, F / mezerník = výstřel, V = výhled
+    if (modalOpen && sniperKey && sniperKey(e)) {
       e.preventDefault();
       return;
     }

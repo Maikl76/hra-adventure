@@ -709,6 +709,39 @@
       });
     },
 
+    /* Stanoviště na kótě 680 za svítání: vítr přes hranu kopce, tráva, skřivan nad loukou,
+       občas vrána v údolí a vzdálený zvon z vesnice. */
+    strelnice(group, h) {
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const pan = ctx.createStereoPanner();
+      pan.connect(group);
+      const wind = this.gain(0.045, pan);
+      const bp = this.filter('bandpass', 380, 0.6, wind);
+      h.sources.push(this.noiseSource(bp, t, 0, this.noise, true));
+      this.lfo(bp.frequency, 0.04, 180, t, h);
+      this.lfo(wind.gain, 0.07, 0.02, t, h);
+      this.lfo(pan.pan, 0.02, 0.6, t, h);
+      const grass = this.gain(0.008, group);
+      h.sources.push(this.noiseSource(this.filter('highpass', 2800, 0.5, grass), t, 0, this.noise, true));
+      this.lfo(grass.gain, 0.09, 0.005, t, h);
+      // skřivan: rychlé trylky vysoko
+      this.every(h, 2.5, 6, (when) => {
+        const n = 6 + Math.floor(Math.random() * 10);
+        let dt = 0;
+        for (let i = 0; i < n; i++) {
+          this.ping(group, 3000 + Math.random() * 1800, when + dt, 0.006, 0.06);
+          dt += 0.05 + Math.random() * 0.06;
+        }
+      });
+      // vrána v údolí: dvě chraplavá zakrákání
+      this.every(h, 18, 40, (when) => {
+        for (let i = 0; i < 2; i++) this.noiseBurst(group, when + i * 0.42, 0.22, 'bandpass', 900, 0.02);
+      });
+      // vzdálený zvon z vesnice
+      this.every(h, 40, 80, (when) => this.bell(group, pick([NOTE.D5, NOTE.A4]), when, 0.012, 5));
+    },
+
     /* Fotografická laboratoř (temná komora): ventilace, kapání vody do dřezu, tikání časovače,
        občas zabublá ustalovač. Tiché a pravidelné. */
     fotolab(group, h) {
@@ -937,6 +970,31 @@
       const o = this.osc('square', 1800, this.filter('lowpass', 3200, 0.8, g), t, t + 0.2);
       o.frequency.setValueAtTime(1800, t);
       o.frequency.exponentialRampToValueAtTime(380, t + 0.18);
+    },
+
+    /* Odstřelovací puška přes chrániče sluchu: tupá rána, krátký šum a ozvěna z údolí. */
+    shot(dest, t) {
+      this.thump(dest, t, 0.4, 62);
+      this.noiseBurst(dest, t, 0.16, 'lowpass', 900, 0.22);
+      this.noiseBurst(dest, t + 0.02, 0.5, 'lowpass', 320, 0.12);
+      // ozvěna od protějšího svahu
+      this.noiseBurst(dest, t + 0.9, 0.7, 'lowpass', 260, 0.035);
+    },
+
+    /* Přebití závěru: otevřít a zavřít – dvakrát dvojí kovové cvaknutí. */
+    bolt(dest, t) {
+      this.click(dest, 2600, t, 0.12);
+      this.click(dest, 1700, t + 0.09, 0.1);
+      this.click(dest, 2100, t + 0.32, 0.11);
+      this.click(dest, 3000, t + 0.4, 0.09);
+    },
+
+    /* Zásah ocelového gongu v dálce: zvonivý tón s nehudebními alikvotami. */
+    gong(dest, t) {
+      this.ping(dest, 610, t, 0.07, 1.6);
+      this.ping(dest, 1473, t, 0.035, 1.1);
+      this.ping(dest, 2290, t, 0.018, 0.7);
+      this.thump(dest, t, 0.05, 180);
     },
 
     /* Chrastění kostí (kostlivec se probudil). */

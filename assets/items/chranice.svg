@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: chrániče sluchu -->
+  <path d="M14,34 C14,10 50,10 50,34" fill="none" stroke="#2a2d2f" stroke-width="6" stroke-linecap="round"/>
+  <rect x="6" y="30" width="16" height="26" rx="7" fill="#3e5a2c" stroke="#1a2412" stroke-width="2"/>
+  <rect x="42" y="30" width="16" height="26" rx="7" fill="#3e5a2c" stroke="#1a2412" stroke-width="2"/>
+  <rect x="10" y="35" width="8" height="16" rx="4" fill="#2b3f1f"/><rect x="46" y="35" width="8" height="16" rx="4" fill="#2b3f1f"/>
+</svg>
