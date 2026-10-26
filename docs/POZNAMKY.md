@@ -41,7 +41,9 @@ Soukromé údaje sem nepatří (e-maily, hesla, nevydané texty) – repozitář
 - **Verze souborů:** skripty a styl mají v `index.html` parametr `?v=…`; kamerové moduly se
   importují s `?v=` v `js/ui.js` (`squats.js`, `skok.js`, `predklon.js`, `goblet.js`) a `skok.js`,
   `predklon.js` i `goblet.js` importují `squats.js` také s `?v=` (všude stejné číslo; také `chodba.js`,
-  `chodba3d.js`, `basket.js` a `strelnice.js` v `js/ui.js` a `svalovec.js` v `js/chodba3d.js`). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
+  `chodba3d.js`, `basket.js` a `strelnice.js` v `js/ui.js` a `svalovec.js` v `js/chodba3d.js`; kresby a výklady
+  importují `postava.js`, `kresba.js`, `hod.js`, `strelnice.js` a `vyklad.js` a `vyklad.js` načítá `vyklad-<typ>.js` –
+  nejjistější je nahradit všechna `?v=<stará>` najednou). Při každém nahrání změněného JS/CSS zvýšit spolu s `meta.version`, jinak
   prohlížeče hráčů míchají starý a nový kód. **První slovo `meta.version` musí být stejné jako `?v=`
   u `ui.js`**: když se liší (stará stránka z mezipaměti – GitHub Pages ji drží až 10 minut, autor tak
   17. 10. 2026 neotevřel basketbalový automat), hra se jednou sama znovu načte s `?v=<verze>`.
@@ -73,7 +75,11 @@ js/svalovec.js      svalovec – kostra se svaly z tvarů v kódu, pózy a chov�
 js/strelnice.js     odstřelovací puška – výhled do údolí, dalekohled s křížem v mil, dech, tep, let kulky, vítr
 js/postava.js       postava člověka z boku (proporce a hmotnosti podle Wintera, póza z úhlů, těžiště, oblečení)
 js/zvedani.js       kresba ke zvedání bedny (sklad): postava drží bednu, síly, ramena, moment v bedrech
-js/vyklad.js        výklady („videa“): animace s titulky a hlasem – zatím „Skok vypráví“ (aréna)
+js/vyklad.js        výklady („videa“) – společný základ: rozvržení (na šířku, telefon na výšku), rámy, hlas, přehrávač
+js/vyklad-skok.js   výklad „Skok vypráví“ (aréna): odraz, let, dopad, silová plošina
+js/vyklad-paka.js   výklad „Biceps a páka“ (kabinet): páka 3. druhu, momenty, úhel v lokti
+js/vyklad-vrh.js    výklad „Šikmý vrh“ (tělocvična): rozklad rychlosti, dolet, úhly z výšky
+js/vyklad-kulka.js  výklad „Pád kulky“ (střelnice): kulka padá jako upuštěná, pokles, mil, vzduch
 js/kresba.js        společné kreslení scén s postavou: ostré plátno, pozadí místností, popisky, šipky, kóty, těžiště
 js/batoh.js         kresba k balení batohu (sklad): voják s batohem, předklon podle těžiště, batoh v řezu
 js/kliky.js         kresba ke klikům na decimální váze (tělocvična): voják v kliku, vahadlo se závažím
@@ -217,15 +223,23 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   a `boxBetweenLegs` (bedna mezi koleny – podřep). Kreslí `js/zvedani.js`: šipky tíhy trupu a bedny (délka podle
   síly), ramena od beder jako kóty, oblouk momentu, zádové svaly; po úspěchu se postava s bednou narovná.
 - **Výklady („videa“)** (`explainers` v kořeni, `js/vyklad.js`, od verze 0.32): animace, která sama vypráví,
-  co se při pohybu děje a jak se to spočítá. `type` (zatím `jump`), `title`, `subtitle`, `jumper`, `flightTime`,
-  `mass`, `height`, `steps` [{ `scene`, `text` = titulek, `say` = co čte hlas (jinak `text`) }]. Scény skoku:
-  `intro`, `weight`, `squat`, `push`, `impulse`, `takeoff`, `rise`, `apex`, `fall`, `land`, `measure`, `derive`,
-  `height`, `speed`, `outro` (co se přehraje a co je v obraze, určuje kód). Čísla do textu: `{t}`, `{th}`, `{v}`,
-  `{kmh}`, `{h}`, `{hm}`, `{m}`, `{G}`, `{fmax}`, `{flmax}`, `{tp}`, `{jumper}`. **Titulky jsou vždy**, hlas je
+  co se při pohybu děje a jak se to spočítá. Společné: `type`, `title`, `subtitle`, `steps` [{ `scene`, `text` =
+  titulek, `say` = co čte hlas (jinak `text`) }]; čísla do textu `{…}` a seznam scén má každý výklad v `_pozn`
+  (co se ve scéně přehraje a co je v obraze, určuje kód). Typy (od 0.33; modul se načte, až je potřeba):
+  `jump` = Skok vypráví (`js/vyklad-skok.js`; `jumper`, `flightTime`, `mass`, `height`; scény `intro`, `weight`,
+  `squat`, `push`, `impulse`, `takeoff`, `rise`, `apex`, `fall`, `land`, `measure`, `derive`, `height`, `speed`,
+  `outro`; čísla `{t}`, `{th}`, `{v}`, `{kmh}`, `{h}`, `{hm}`, `{m}`, `{G}`, `{fmax}`, `{flmax}`, `{tp}`, `{jumper}`),
+  `lever` = Biceps a páka (`js/vyklad-paka.js`; `mass`, `muscleArm`), `projectile` = Šikmý vrh (`js/vyklad-vrh.js`;
+  `speed`, `releaseHeight`), `bullet` = Pád kulky (`js/vyklad-kulka.js`; `speed`, `distance`). Bez `type` je to skok.
+  **Rozvržení:** na šířku 960 × 540 (scéna vlevo, monitor s grafem a tabule vpravo); na telefonu na výšku
+  (okno užší než 640 px a vyšší než široké) 480 × 660 – scéna nahoře, graf a tabule pod ní, větší písmo; při
+  otočení telefonu se přepne samo. **Titulky jsou vždy**, hlas je
   syntetický hlas prohlížeče (čeština, `speechSynthesis`); bez českého hlasu je tlačítko Hlas vypnuté s vysvětlením.
   Hlas je zapnutý, když má hra zapnutý zvuk; volba se pamatuje (nastavení `vykladHlas`). Při hlasu se ztlumí
   podkres. Ovládání: přehrát/pauza (mezerník), krok zpět/dál (šipky), Zpomalit (animace 0,5×), Od začátku.
-  Kontrola `validate` hlídá odkazy na výklady (účinky, `video` u textů a v knihách) a kroky bez scény či textu.
+  Kontrola `validate` hlídá odkazy na výklady (účinky, `video` u textů a v knihách), kroky bez scény či textu
+  a neznámý `type`. **Výklad nesmí prozradit odpověď zámku** – počítá s ukázkovými čísly (jinými než brána),
+  a když vysvětluje přímo to, na co se brána ptá, nabízí se až po příslušné aktivitě (šikmý vrh až po hodech).
 - **Chodba „z vlastních očí“** (`"type": "corridor"`, kreslí `js/chodba.js`): místo pohledů má
   `corridor` – `map` (řádky; `.` = chodba, jiné znaky = zdi), `start` {x, y, dir N/E/S/W}, `legend`
   (znak → textura, nebo seznam variant s `when`), `textures` (obrázky 512 × 512), `floor`, `ceiling`,
@@ -293,6 +307,10 @@ Moment síly a páky. Šuplík zamčený klíčkem z kapsy docentova pláště �
 (závaží 50 N) → měření na modelu paže tahem (závaží 30 cm, úpon bicepsu 3 cm od lokte) → kniha
 Základy biomechaniky (řešený příklad na jiných číslech) → zámek **500 N** + druh páky (3. druh).
 Kalkulačka je opřená o židli. Grafika od autora.
+Výklad **Biceps a páka** (verze 0.33): tlačítko u tabule (pohled s kostrou) a v knize na straně „3 Páky v lidském
+těle“. Ukázková čísla: činka 3 kg (29 N), úpon 4 cm, ruka 32 cm od lokte → moment 9,4 N·m, biceps asi 236 N (8×
+víc než tíha činky); za to se ruka pohne 8× dál než úpon (při 40°: 2,8 cm úpon, 22 cm ruka). Moment činky podle
+úhlu v lokti (největší při vodorovném předloktí) – graf. Jiná čísla než zámek i řešený příklad v knize.
 
 ### Vojenská tělovýchova – Brána I: Výstrojní sklad (`sklad`)
 Těžiště a stabilita se zátěží (voják 70 kg, batoh 30 kg): měření metrem na figuríně, balení
@@ -409,6 +427,10 @@ zůstaly jen ikony předmětů
   nebo plavání 300 m. Doubek zvolil běh a leh-sed + kliky, proto v hlášení shyby nejsou.
 - Normy přesně podle Excelu; opravena jen zřejmá chyba (plavání ženy VII 8:04 / 9:10 / 10:18)
   a desetinná opakování v kategoriích BI a C zaokrouhlena nahoru (autor schválil).
+- Výklad **Šikmý vrh** (verze 0.33): nabízí se **až po hodech** (komisař po hodu, pásmo s metry při `hod_hotovo`),
+  protože brána se ptá, proč z výšky letí nejdál pod menším úhlem než 45°. Ukázkový míček 10 m/s z výšky 2 m (jiná
+  čísla než medicinbal i granát): rozklad na vx a vy, vrchol, doba letu, dolet; 30°, 45°, 60°; na rovině nejdál 45°,
+  z výšky asi 40° (12,0 m); vrhač je stejný jako v aktivitě hodu (`Thrower` z `js/hod.js`).
 
 ### Vojenská tělovýchova – Chodba na cvičiště, 3D (`prekazky`)
 Autor chtěl chodbu, kde se dá skákat, někam vylézt a bojovat s kostrou pokrytou svaly, která se
@@ -524,6 +546,11 @@ Brána IV. Podkres `strelnice` (vítr, skřivan, vrána, vzdálený zvon), bouř
   je otevřená“ (pět bran zbývá), řádky diplomu, odznaky **Odstřelovač** (≤ 8 výstřelů) a **Klidný dech** (všechny gongy
   se zadrženým dechem); Rychlík vojenského světa zvednut na 110 minut. Zkratka `?mistnost=strelnice`.
   Zástupné kresby (pozadí postavení z modulu pušky), `docs/zadani-obrazku-strelnice.md`. Bez kamery.
+- Výklad **Pád kulky** (verze 0.33): tlačítko v Příručce střelce (strana „2 Kulka padá“) a u gongu na 300 m (výhled
+  do údolí). Čísla z příkladu v příručce – kulka **800 m/s**, gong 40 cm na **200 m** (brána má 820 m/s a 300, 400
+  nebo 250 m): puška míří vodorovně a gong mine (31 cm pod středem), upuštěná kulka padá stejně, t = d : v = 0,25 s,
+  h = ½·g·t² = 31 cm, na 100 m 7,7 cm (2× dál → 4× víc), zvednout hlaveň o 1,5 mil (ve skutečnosti 0,09°) → zásah,
+  se vzduchem (stejný odpor jako puška) 36 cm, na 500 m 2,8 m místo 1,9 m. Pohled z boku je svisle zvětšený 200×.
 
 ### Průhledy do vedlejších místností (všechny světy)
 Autor 23. 10. 2026: „aby se v místnostech dalo nakouknout i do další místnosti, aby to nebyly jenom 4 stěny“.
@@ -698,7 +725,9 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   Po ukázce autor napsal „Pokračuj“: novou kresbu mají i batoh, kliky, goblet simulace, hod (s animací odhodu),
   nosítka a přilba. Navrženo dál: výklady „biceps a páka“ (kabinet), „šikmý vrh“ (hod), „pád kulky“ (střelnice)
   a větší výklad na telefonu. Autor schválil: u přilby řádek „Zbývá na krční svaly“ (dřív „šíjové“ – když hlava
-  padá dozadu, táhnou svaly vpředu na krku; kresba to ukazuje) a verzi 0.32 bez „– ukázka“.
+  padá dozadu, táhnou svaly vpředu na krku; kresba to ukazuje) a verzi 0.32 bez „– ukázka“. Na další „Pokračuj“
+  přibyly ve verzi 0.33 výklad na telefonu na výšku a výklady „Biceps a páka“, „Šikmý vrh“ a „Pád kulky“
+  (všechny s ukázkovými čísly, jinými než brány).
 
 ## Obrázky od autora – postup
 
@@ -742,6 +771,11 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   (Chrome a Edge na Windows mají český hlas, Safari na iPadu také). Fyzika výkladu: impulz odrazu = m·v₀,
   rychlost při vzletu i dopadu v₀ (kontrola v Node). Zkušební stránky `zkousky/postava.html` (pózy postavy)
   a `zkousky/vyklad.html?scene=…&t=…` (snímek scény) – složka `zkousky/` se nenahrává.
+- **Výklady (0.33):** `vyklad_scenes.js <typ> <wide|tall> "scéna[:čas],…"` (snímky scén na šířku i na výšku přes
+  `zkousky/vyklad.html?type=…&scene=…&t=…`), `vyklad_hra.js <místnost> <hotspot> <předpona> [390 844 touch]`
+  (tlačítko u hotspotu, projde kroky a dohraje konec; `FLAGS=hod_hotovo` nastaví příznaky, `VIA=vyhled` projde
+  nejdřív jiný hotspot – výhled do údolí) a `vyklad_kniha.js <místnost> <předmět> <předpona>` (dá knihu do
+  inventáře, nalistuje tlačítko výkladu, „‹ Zpět do knihy“ vrátí na tutéž stranu).
 - **Překreslené aktivity:** `pack2.js` (batoh: tažení na kresbě), `telo_test.js kliky|goblet|hod` (tělocvična; hod
   fotí i švih a let), `cviciste_test.js` (nosítka se táhnou na plátně `canvas.stretcher-canvas`, přilba). Zkušební
   stránky `zkousky/hod.html?k=…&a=…&el=…` (snímky odhodu v čase) a `zkousky/cviciste.html?scene=prilba|nositka`.

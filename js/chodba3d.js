@@ -10,7 +10,7 @@
  * Rozvržení a texty jsou v game.json (místnost → „world“); hra jen hlásí události (on.message…).
  */
 import * as THREE from '../vendor/three/three.module.min.js';
-import { Svalovec } from './svalovec.js?v=0.32';
+import { Svalovec } from './svalovec.js?v=0.33';
 
 const G = 9.81;
 const EYE = 1.65, EYE_CROUCH = 1.12, R = 0.3, HEIGHT = 1.8;

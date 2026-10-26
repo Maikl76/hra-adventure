@@ -825,6 +825,8 @@
       walkVideo(d.rooms, 'Místnosti');
       walkVideo(d.items, 'Předměty');
       for (const [id, ex] of Object.entries(explainers)) {
+        // typy výkladů a jejich moduly jsou v js/vyklad.js (TYPES); bez typu je to skok
+        if (ex.type && !['jump', 'lever', 'projectile', 'bullet'].includes(ex.type)) problems.push(`Výklad „${id}“: neznámý typ „${ex.type}“ (jump, lever, projectile, bullet).`);
         if (!(ex.steps || []).length) problems.push(`Výklad „${id}“ nemá kroky.`);
         for (const st of ex.steps || []) if (!st.scene || !st.text) problems.push(`Výklad „${id}“: krok bez scény nebo textu.`);
       }

@@ -8,8 +8,8 @@
  * batohem – do jeho tří částí se věci přetahují (ve skutečném měřítku by byly moc úzké). Výpočet
  * posunu dělá ui.js stejně jako dřív. Plátno 600 × 440 (logicky).
  */
-import { makeBody, pose, drawBody, centerOfMass } from './postava.js?v=0.32';
-import { rrect, fmt, setupCanvas, label, dash, comMark, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody, centerOfMass } from './postava.js?v=0.33';
+import { rrect, fmt, setupCanvas, label, dash, comMark, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 440;

@@ -8,8 +8,8 @@
  * jen kreslí. Plátno 600 × 420 (logicky); kamera je u shrbené postavy blíž a při narovnání
  * s bednou se oddálí.
  */
-import { makeBody, pose, drawBody, lerpPose, armReach, centerOfMass } from './postava.js?v=0.32';
-import { rrect, fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody, lerpPose, armReach, centerOfMass } from './postava.js?v=0.33';
+import { rrect, fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 420;

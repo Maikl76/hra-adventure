@@ -7,8 +7,8 @@
  * proto je vpravo nahoře detail odhodu. Dolety a vyhodnocení počítá ui.js stejně jako dřív –
  * scéna dostane hotový hod (rychlosti, čas letu) a jen ho nakreslí a přehraje. Plátno 600 × 320.
  */
-import { makeBody, pose, drawBody, lerpPose } from './postava.js?v=0.32';
-import { rrect, fmt, setupCanvas, label, arrow, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody, lerpPose } from './postava.js?v=0.33';
+import { rrect, fmt, setupCanvas, label, arrow, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 320;
@@ -68,6 +68,59 @@ function armTo(shoulder, target, L1, L2, bend) {
   const elbow = add(shoulder, e, L1);
   const end = add(shoulder, u, d);
   return { uarm: angDown(e), farm: angDown([end[0] - elbow[0], end[1] - elbow[1]]) };
+}
+
+/* Vrhač nad hlavou (pravák, levá noha vpředu): nápřah, švih do odhodu a dokončení švihu. Postaví se
+   tak, aby sevřená ruka při odhodu byla přesně v bodě tgt [x, výška] (m). Používá ho i výklad
+   „Šikmý vrh“ (js/vyklad-vrh.js). */
+export class Thrower {
+  constructor(body, tgt) {
+    this.body = body;
+    const reach = body.L.uarm + body.L.farm + 0.06 * body.k;
+    const sk = pose(body, RELEASE, { ground: 0, x: 0 });
+    const dy = tgt[1] - sk.shoulder[1];
+    const rho = Math.min(0.97 * reach, Math.max(Math.abs(dy), 0.3));
+    const dx = Math.sqrt(Math.max(0, rho * rho - dy * dy)) || 0.04;
+    this.standX = tgt[0] - dx - sk.shoulder[0];
+    this.relHand = { th: Math.atan2(dx, dy) / DEG, r: Math.hypot(dx, dy) };
+    this.cockHand = { th: Math.atan2(COCK_HAND[0], COCK_HAND[1]) / DEG, r: Math.hypot(COCK_HAND[0], COCK_HAND[1]) };
+  }
+
+  /* Póza base, ruka v hand = { th (° od svislice nahoru), r (m) } od ramene → { sk, grip }. */
+  at(base, hand) {
+    const b = this.body;
+    const place = { ground: 0, x: this.standX };
+    const sh = pose(b, base, place).shoulder;
+    const grip = add(sh, [hand.r * Math.sin(hand.th * DEG), hand.r * Math.cos(hand.th * DEG)]);
+    const a = armTo(sh, grip, b.L.uarm, b.L.farm + 0.06 * b.k, 1);
+    return { sk: pose(b, { ...base, uarm: a.uarm, farm: a.farm, hand: a.farm, grip: 'fist' }, place), grip };
+  }
+
+  /* Nápřah – předmět za hlavou. */
+  ready() {
+    return this.at(COCK, this.cockHand);
+  }
+
+  /* Švih: f = 0 nápřah … 1 odhod (ruka zrychluje až do odhodu). */
+  swing(f) {
+    const e = f * f;
+    const hand = { th: lerp(this.cockHand.th, this.relHand.th, e), r: lerp(this.cockHand.r, this.relHand.r, e) };
+    return this.at(lerpPose(COCK, RELEASE, smooth(f)), hand);
+  }
+
+  /* Dokončení švihu po odhodu: g = 0 … 1. */
+  follow(g) {
+    const e = 1 - (1 - g) * (1 - g);
+    const hand = { th: lerp(this.relHand.th, FOLLOW_HAND.th, e), r: lerp(this.relHand.r, FOLLOW_HAND.r, e) };
+    return this.at(lerpPose(RELEASE, FOLLOW, smooth(g)), hand);
+  }
+
+  /* Návrat z dokončení švihu do nápřahu (s dalším předmětem v ruce): f = 0 … 1. */
+  recover(f) {
+    const e = smooth(f);
+    const hand = { th: lerp(FOLLOW_HAND.th, this.cockHand.th, e), r: lerp(FOLLOW_HAND.r, this.cockHand.r, e) };
+    return this.at(lerpPose(FOLLOW, COCK, e), hand);
+  }
 }
 
 /* Medicinbal: kůže se švy, „spin“ = pootočení (rad). */
@@ -223,18 +276,7 @@ export class ThrowScene {
       const sk2 = pose(b, SEAT, { hip: this.hip });
       this.shoulder = sk2.shoulder;
       this.chest = add(sk2.T(0.74, 0.14), [BALL_R + 0.012, -0.02]);   // míč u hrudníku
-    } else {
-      const b = this.thrower;
-      const reach = b.L.uarm + b.L.farm + 0.06 * b.k;
-      const sk = pose(b, RELEASE, { ground: 0, x: 0 });
-      const tgt = [r.x0 || 0, r.h0];
-      const dy = tgt[1] - sk.shoulder[1];
-      const rho = Math.min(0.97 * reach, Math.max(Math.abs(dy), 0.3));
-      const dx = Math.sqrt(Math.max(0, rho * rho - dy * dy)) || 0.04;
-      this.standX = tgt[0] - dx - sk.shoulder[0];
-      this.relHand = { th: Math.atan2(dx, dy) / DEG, r: Math.hypot(dx, dy) };
-      this.cockHand = { th: Math.atan2(COCK_HAND[0], COCK_HAND[1]) / DEG, r: Math.hypot(COCK_HAND[0], COCK_HAND[1]) };
-    }
+    } else this.thr = new Thrower(this.thrower, [r.x0 || 0, r.h0]);
   }
 
   /* Sedící s míčem se středem v c; ruce za míčem, prsty po směru tlaku dir. */
@@ -260,34 +302,18 @@ export class ThrowScene {
     };
   }
 
-  /* Vrhač v póze base, ruka s granátem v hand = { th (° od svislice), r (m) } od ramene. */
-  throwerAt(base, hand) {
-    const b = this.thrower;
-    const place = { ground: 0, x: this.standX };
-    const sh = pose(b, base, place).shoulder;
-    const grip = add(sh, [hand.r * Math.sin(hand.th * DEG), hand.r * Math.cos(hand.th * DEG)]);
-    const a = armTo(sh, grip, b.L.uarm, b.L.farm + 0.06 * b.k, 1);
-    return { sk: pose(b, { ...base, uarm: a.uarm, farm: a.farm, hand: a.farm, grip: 'fist' }, place), grip };
-  }
-
   /* Fáze odhodu granátu: klid (nápřah), švih do odhodu, dokončení švihu za letu. */
   throwerStage() {
     const a = this.anim;
     if (!a) {
-      const st = this.throwerAt(COCK, this.cockHand);
+      const st = this.thr.ready();
       return { sk: st.sk, held: st.grip };
     }
     if (a.el < a.push) {
-      const f = a.el / a.push;
-      const e = f * f;                     // ruka zrychluje až do odhodu
-      const hand = { th: lerp(this.cockHand.th, this.relHand.th, e), r: lerp(this.cockHand.r, this.relHand.r, e) };
-      const st = this.throwerAt(lerpPose(COCK, RELEASE, smooth(f)), hand);
+      const st = this.thr.swing(a.el / a.push);
       return { sk: st.sk, held: st.grip };
     }
-    const g = Math.min(1, (a.el - a.push) / FOLLOW_MS);
-    const e = 1 - (1 - g) * (1 - g);
-    const hand = { th: lerp(this.relHand.th, FOLLOW_HAND.th, e), r: lerp(this.relHand.r, FOLLOW_HAND.r, e) };
-    return { sk: this.throwerAt(lerpPose(RELEASE, FOLLOW, smooth(g)), hand).sk, held: null };
+    return { sk: this.thr.follow(Math.min(1, (a.el - a.push) / FOLLOW_MS)).sk, held: null };
   }
 
   render() {

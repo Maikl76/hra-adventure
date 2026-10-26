@@ -1084,6 +1084,9 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .modal-box.vyklad-box { width: min(100%, 1000px); }
 .vyklad-subtitle { margin: -4px 0 8px; }
 .vyklad-canvas { display: block; width: min(100%, calc(58vh * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; border-radius: 8px; background: #0b1220; }
+/* telefon na výšku: výklad se kreslí na výšku (scéna nahoře, graf a čísla pod ní) */
+.vyklad-canvas.vyklad-tall { width: min(100%, calc(60vh * 480 / 660)); aspect-ratio: 480 / 660; }
+@media (max-width: 640px) { .vyklad-sub { font-size: 16px; min-height: 4.4em; margin-top: 8px; } .vyklad-btn { padding: 6px 10px; } }
 .vyklad-sub { min-height: 3em; max-width: 880px; margin: 10px auto 0; font-size: 18px; line-height: 1.45; text-align: center; color: var(--ink); }
 .vyklad-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
 .vyklad-btn { padding: 6px 12px; font-size: 15px; }
@@ -1093,7 +1096,9 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .vyklad-note { margin: 6px 0 0; text-align: center; }
 .message .why.video { color: var(--gold-bright); border-color: var(--gold); }
 .book-video { margin: 14px 0 4px; text-align: center; }
-.book-video .btn { font-size: 15px; padding: 6px 14px; }
+/* tmavé tlačítko – na světlé stránce knihy by světlý text bez pozadí zanikl */
+.book-video .btn { font-size: 15px; padding: 6px 14px; background: #2a2117; color: var(--gold-bright); border-color: var(--gold-dim); }
+.book-video .btn:hover { background: #3a2d1d; color: #fff1c8; }
 /* Skládání kostry (bludiště) */
 .modal-box.skel-box { width: min(100%, 760px); }
 .skel-wrap { display: flex; gap: 16px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }

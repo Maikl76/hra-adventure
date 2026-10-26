@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.32",
+    "version": "0.33",
     "totalGates": 9
   },
 
@@ -430,7 +430,8 @@
             { "p": "Kost je páka, kloub je osa otáčení. Podle toho, kde leží osa, síla a břemeno, rozlišujeme tři druhy pák:" },
             { "p": "1. druh – osa leží mezi silou a břemenem (např. kývání hlavou)." },
             { "p": "2. druh – břemeno leží mezi osou a silou." },
-            { "p": "3. druh – síla leží mezi osou a břemenem. Sval se upíná blízko kloubu, břemeno je daleko. V lidském těle nejčastější, např. ohyb v lokti." }
+            { "p": "3. druh – síla leží mezi osou a břemenem. Sval se upíná blízko kloubu, břemeno je daleko. V lidském těle nejčastější, např. ohyb v lokti." },
+            { "video": "biceps", "label": "Biceps a páka – animace s výkladem" }
           ] },
           { "blocks": [
             { "heading": "4  Rovnováha momentů" },
@@ -1483,6 +1484,10 @@
               },
               {
                 "note": "Vzduch kulku brzdí, takže letí déle – ve skutečnosti klesne víc. Proto hlaveň míří o kousek nahoru a puška se „nastřeluje“ na určitou vzdálenost."
+              },
+              {
+                "video": "kulka",
+                "label": "Pád kulky – animace s výkladem"
               }
             ]
           },
@@ -2276,7 +2281,7 @@
 
   "explainers": {
     "skok": {
-      "_pozn": "Výklad „Skok vypráví“ (js/vyklad.js). Skáče ukázkový hráč ze žebříčku, ne hráč sám – jinak by výklad prozradil kód u dveří. Scény kroků: intro, weight, squat, push, impulse, takeoff, rise, apex, fall, land, measure, derive, height, speed, outro. Čísla v textu: {t} doba letu, {th} polovina, {v} rychlost odrazu, {kmh}, {h} výška v cm, {hm} v m, {m} hmotnost, {G} tíha, {fmax} a {flmax} špička síly při odrazu a dopadu (× tíha), {tp} doba odrazu, {jumper}. „say“ = co čte hlas (jinak titulky).",
+      "_pozn": "Výklad „Skok vypráví“ (js/vyklad-skok.js). Skáče ukázkový hráč ze žebříčku, ne hráč sám – jinak by výklad prozradil kód u dveří. Scény kroků: intro, weight, squat, push, impulse, takeoff, rise, apex, fall, land, measure, derive, height, speed, outro. Čísla v textu: {t} doba letu, {th} polovina, {v} rychlost odrazu, {kmh}, {h} výška v cm, {hm} v m, {m} hmotnost, {G} tíha, {fmax} a {flmax} špička síly při odrazu a dopadu (× tíha), {tp} doba odrazu, {jumper}. „say“ = co čte hlas (jinak titulky).",
       "type": "jump",
       "title": "Skok vypráví",
       "subtitle": "Záznam z měřicí kabiny: výskok z podřepu hráče NEONFOX (doba letu 0,58 s)",
@@ -2300,6 +2305,72 @@
         { "scene": "height", "text": "Dosadím: h = 9,81 · {t}² / 8 = {hm} m. Vyskočil jsem {h} centimetrů.", "say": "Dosadím: devět celých osmdesát jedna krát {t} na druhou, děleno osmi. To je {hm} metru. Vyskočil jsem {h} centimetrů." },
         { "scene": "speed", "text": "A rychlost odrazu? v = g · t / 2 = 9,81 · {t} / 2 = {v} m/s. Přesně tolik ukázala šipka při vzletu.", "say": "A rychlost odrazu? Rychlost se rovná g krát t děleno dvěma. Devět celých osmdesát jedna krát {t} děleno dvěma je {v} metru za sekundu. Přesně tolik ukázala šipka při vzletu." },
         { "scene": "outro", "text": "Teď ty. Změř si dobu letu u automatu JUMP a spočítej, jak vysoko jsi vyskočil. Pozor: čas na druhou – a výsledek vyjde v metrech.", "say": "Teď ty. Změř si dobu letu u automatu džamp a spočítej, jak vysoko jsi vyskočil. Pozor: čas na druhou. A výsledek vyjde v metrech." }
+      ]
+    },
+    "biceps": {
+      "_pozn": "Výklad „Biceps a páka“ (js/vyklad-paka.js). Ukázková čísla: činka 3 kg, úpon bicepsu 4 cm od lokte, ruka asi 32 cm od lokte (z proporcí postavy) – jiná než v zámku brány I i v řešeném příkladu v knize. Scény kroků: intro, lever, load, moment, muscle, balance, force, classes, why, ratio, angle, hardest, outro. Čísla v textu: {m} hmotnost činky, {W} její tíha (N), {r} rameno činky v cm, {rm} v m, {d} úpon v cm, {dm} v m, {M} moment činky (N·m), {F} síla bicepsu (N), {k} kolikrát víc než tíha činky, {du} a {dh} dráha úponu a ruky (cm) při zvednutí předloktí o 40°. „say“ = co čte hlas (jinak titulky).",
+      "type": "lever",
+      "title": "Biceps a páka",
+      "subtitle": "Proč musí sval táhnout tak velkou silou – a co za to dostane",
+      "mass": 3,
+      "muscleArm": 0.04,
+      "steps": [
+        { "scene": "intro", "text": "Držím činku {m} kg, loket mám v pravém úhlu. Vypadá to jako maličkost. Podívej se ale, co přitom musí dělat biceps.", "say": "Držím činku {m} kilogramy, loket mám v pravém úhlu. Vypadá to jako maličkost. Podívej se ale, co přitom musí dělat biceps." },
+        { "scene": "lever", "text": "Předloktí je tuhá kost, která se otáčí kolem loketního kloubu. Je to páka – osa otáčení je v lokti." },
+        { "scene": "load", "text": "Činka táhne ruku dolů svou tíhou: {m} kg × 9,81 ≈ {W} N. Působí daleko od osy – {r} cm od lokte.", "say": "Činka táhne ruku dolů svou tíhou: {m} kilogramy krát devět celých osmdesát jedna, to je asi {W} newtonů. Působí daleko od osy, {r} centimetrů od lokte." },
+        { "scene": "moment", "text": "Otáčivý účinek síly je moment: síla × rameno, tedy kolmá vzdálenost od osy. Činka: {W} N · {rm} m = {M} N·m. Otáčí předloktím dolů.", "say": "Otáčivý účinek síly je moment: síla krát rameno, tedy kolmá vzdálenost od osy. Činka: {W} newtonů krát {rm} metru, to je {M} newtonmetru. Otáčí předloktím dolů." },
+        { "scene": "muscle", "text": "Proti ní táhne biceps. Šlachou se upíná na předloktí jen {d} cm od lokte – kousek od osy.", "say": "Proti ní táhne biceps. Šlachou se upíná na předloktí jen {d} centimetry od lokte, kousek od osy." },
+        { "scene": "balance", "text": "Aby předloktí zůstalo v klidu, musí mít sval stejný moment jako činka: F · {dm} m = {W} N · {rm} m.", "say": "Aby předloktí zůstalo v klidu, musí mít sval stejný moment jako činka: síla svalu krát {dm} metru se rovná {W} newtonů krát {rm} metru." },
+        { "scene": "force", "text": "Takže F = {W} · {rm} / {dm} ≈ {F} N. Biceps táhne asi {k}× větší silou, než je tíha činky!", "say": "Takže síla svalu je {W} krát {rm} děleno {dm}, to je asi {F} newtonů. Biceps táhne asi {k}krát větší silou, než je tíha činky!" },
+        { "scene": "classes", "text": "Osa je na kraji, sval táhne mezi osou a činkou, břemeno je nejdál. Taková páka je třetího druhu – v lidském těle nejčastější." },
+        { "scene": "why", "text": "Proč tak nevýhodně? Sleduj dráhy, když předloktí zvednu: úpon svalu se posune jen o kousek…" },
+        { "scene": "ratio", "text": "…ale ruka urazí {k}× delší dráhu ({du} cm proti {dh} cm), a za stejný čas – tedy {k}× rychleji. Sval platí silou, ruka dostává rychlost a rozsah pohybu.", "say": "…ale ruka urazí {k}krát delší dráhu, a za stejný čas, tedy {k}krát rychleji. Sval platí silou, ruka dostává rychlost a rozsah pohybu." },
+        { "scene": "angle", "text": "Teď měním úhel v lokti. Sleduj rameno činky – vodorovnou vzdálenost od lokte k čáře, ve které tíha působí." },
+        { "scene": "hardest", "text": "Rameno je nejdelší s předloktím vodorovně, tedy s loktem v pravém úhlu. Tam je činka „nejtěžší“, výš i níž se drží snáz." },
+        { "scene": "outro", "text": "Shrnutí: moment = síla × rameno. V klidu se momenty vyrovnají – a sval blízko kloubu musí táhnout mnohem větší silou než břemeno daleko od něj.", "say": "Shrnutí: moment je síla krát rameno. V klidu se momenty vyrovnají. A sval blízko kloubu musí táhnout mnohem větší silou než břemeno daleko od něj." }
+      ]
+    },
+    "vrh": {
+      "_pozn": "Výklad „Šikmý vrh“ (js/vyklad-vrh.js). Ukázkový míček: 10 m/s z výšky 2 m – jiná čísla než v kolech hodu (medicinbal 5,5 m/s z 0,9 m, granát 20 m/s z 2 m). Nabízí se až po hodech (komisař, pásmo), protože brána se ptá, proč z výšky letí nejdál pod menším úhlem než 45°. Scény kroků: intro, throw, split, horizontal, vertical, apex, time, range, angles, flat, height, speed, outro. Čísla v textu: {v} rychlost, {h} výška odhodu, {vx} a {vy} složky při 45°, {t1} čas do vrcholu, {dH} výstup nad odhod, {H} výška vrcholu nad zemí, {t} doba letu, {d} dolet pod 45°, {d30}, {d60}, {best} nejlepší úhel, {dbest} jeho dolet, {flat45} a {flat30} dolet na rovině. „say“ = co čte hlas (jinak titulky).",
+      "type": "projectile",
+      "title": "Šikmý vrh",
+      "subtitle": "Proč letí míček po oblouku a pod jakým úhlem doletí nejdál",
+      "speed": 10,
+      "releaseHeight": 2,
+      "steps": [
+        { "scene": "intro", "text": "Hodím míček rychlostí {v} m/s pod úhlem 45°. Ruka ho pustí {h} m nad zemí. Kam dopadne – a proč letí po oblouku?", "say": "Hodím míček rychlostí {v} metrů za sekundu pod úhlem 45 stupňů. Ruka ho pustí {h} metry nad zemí. Kam dopadne, a proč letí po oblouku?" },
+        { "scene": "throw", "text": "Míček letí po oblouku – po parabole. Tíha ho celou dobu táhne dolů, ale dopředu ho nic nebrzdí (odpor vzduchu zanedbáme)." },
+        { "scene": "split", "text": "Rychlost odhodu rozložím na dvě složky: vodorovnou vx = {vx} m/s a svislou vy = {vy} m/s. Každá se chová jinak.", "say": "Rychlost odhodu rozložím na dvě složky: vodorovnou, {vx} metru za sekundu, a svislou, {vy} metru za sekundu. Každá se chová jinak." },
+        { "scene": "horizontal", "text": "Vodorovně se míček pohybuje pořád stejně rychle. Body po každé desetině sekundy jsou od sebe vodorovně stále stejně daleko." },
+        { "scene": "vertical", "text": "Svisle je to jako vrh vzhůru: tíha zmenšuje svislou rychlost o 9,81 m/s každou sekundu. Míček stoupá čím dál pomaleji, zastaví se a padá čím dál rychleji.", "say": "Svisle je to jako vrh vzhůru: tíha zmenšuje svislou rychlost o devět celých osmdesát jedna metru za sekundu každou sekundu. Míček stoupá čím dál pomaleji, zastaví se a padá čím dál rychleji." },
+        { "scene": "apex", "text": "Ve vrcholu je svislá rychlost nulová – po {t1} s. Míček je {dH} m nad místem odhodu, tedy {H} m nad zemí. Vodorovně letí dál stejně rychle.", "say": "Ve vrcholu je svislá rychlost nulová, po {t1} sekundy. Míček je {dH} metru nad místem odhodu, tedy {H} metru nad zemí. Vodorovně letí dál stejně rychle." },
+        { "scene": "time", "text": "Nahoru letí {t1} s, dolů déle – padá z větší výšky, než vyletěl. Celkem je ve vzduchu {t} s.", "say": "Nahoru letí {t1} sekundy, dolů déle, protože padá z větší výšky, než vyletěl. Celkem je ve vzduchu {t} sekundy." },
+        { "scene": "range", "text": "Dolet je vodorovná rychlost krát doba letu: d = {vx} · {t} ≈ {d} m.", "say": "Dolet je vodorovná rychlost krát doba letu: {vx} krát {t}, to je asi {d} metru." },
+        { "scene": "angles", "text": "Teď stejnou rychlostí pod 30° a pod 60°. Plochý hod letí rychle dopředu, ale brzy dopadne. Strmý letí dlouho, ale dopředu pomalu.", "say": "Teď stejnou rychlostí pod 30 a pod 60 stupni. Plochý hod letí rychle dopředu, ale brzy dopadne. Strmý letí dlouho, ale dopředu pomalu." },
+        { "scene": "flat", "text": "Kdyby míček startoval i dopadal ve stejné výšce, doletěl by nejdál pod 45° a 30° i 60° by dopadly stejně daleko – v grafu čárkovaná křivka.", "say": "Kdyby míček startoval i dopadal ve stejné výšce, doletěl by nejdál pod 45 stupni a 30 i 60 stupňů by dopadly stejně daleko. V grafu je to čárkovaná křivka." },
+        { "scene": "height", "text": "Míček ale startuje {h} m nad zemí a dopadá níž, než vyletěl. Pak se vyplatí hodit o něco plošeji: nejdál doletí asi pod {best}° – {dbest} m.", "say": "Míček ale startuje {h} metry nad zemí a dopadá níž, než vyletěl. Pak se vyplatí hodit o něco plošeji: nejdál doletí asi pod {best} stupni, {dbest} metru." },
+        { "scene": "speed", "text": "A rychlost? Ta je ještě důležitější než úhel: dolet roste s její druhou mocninou. Dvakrát rychlejší hod doletí skoro čtyřikrát dál." },
+        { "scene": "outro", "text": "Shrnutí: rychlost se rozloží na vodorovnou (ta se nemění) a svislou (jako vrh vzhůru). Dolet = vodorovná rychlost × doba letu. Na rovině je nejlepší 45°, z výšky o něco méně.", "say": "Shrnutí: rychlost se rozloží na vodorovnou, ta se nemění, a svislou, ta se chová jako vrh vzhůru. Dolet je vodorovná rychlost krát doba letu. Na rovině je nejlepší 45 stupňů, z výšky o něco méně." }
+      ]
+    },
+    "kulka": {
+      "_pozn": "Výklad „Pád kulky“ (js/vyklad-kulka.js). Ukázková kulka 800 m/s a vzdálenosti 100 a 200 m jako v Příručce střelce – jiná čísla než na číselníku Brány IV (820 m/s; 300, 400 nebo 250 m). Odpor vzduchu je stejný jako u pušky na střelnici (js/strelnice.js). Nabízí se v Příručce střelce (strana Kulka padá) a u gongu na 300 m. Scény kroků: intro, shot, drop, same, time, fall, double, mil, air, outro. Čísla v textu: {v} rychlost, {d} vzdálenost gongu, {r} poloměr gongu v cm, {t} doba letu, {hm} pokles v m, {h} pokles v cm, {t100} a {h100} totéž na 100 m, {mil} zvednutí hlavně v milech, {deg} totéž ve stupních, {tAir} a {hAir} na {d} m se vzduchem, {h500} a {h500Air} pokles v m na 500 m bez vzduchu a se vzduchem. „say“ = co čte hlas (jinak titulky).",
+      "type": "bullet",
+      "title": "Pád kulky",
+      "subtitle": "Proč kulka cestou klesá a jak se to spočítá",
+      "speed": 800,
+      "distance": 200,
+      "steps": [
+        { "scene": "intro", "text": "Puška míří přesně vodorovně na střed gongu {d} m daleko. Kulka vyletí rychlostí {v} m/s. Trefí se doprostřed?", "say": "Puška míří přesně vodorovně na střed gongu {d} metrů daleko. Kulka vyletí rychlostí {v} metrů za sekundu. Trefí se doprostřed?" },
+        { "scene": "shot", "text": "Výstřel – desetkrát zpomaleně. Kulka gong mine: proletí asi {h} cm pod středem, a gong má poloměr jen {r} cm. Obrázek je svisle zvětšený, jinak by pokles nebyl vidět.", "say": "Výstřel, desetkrát zpomaleně. Kulka gong mine: proletí asi {h} centimetrů pod středem, a gong má poloměr jen {r} centimetrů. Obrázek je svisle zvětšený, jinak by pokles nebyl vidět." },
+        { "scene": "drop", "text": "Ještě jednou – a ve chvíli výstřelu pustím z výšky hlavně druhou kulku. Ta nikam neletí, jen padá." },
+        { "scene": "same", "text": "Obě kulky jsou v každé chvíli stejně nízko – čárkované čáry spojují jejich polohy ve stejných okamžicích. Vystřelená kulka padá úplně stejně jako upuštěná, rychlost dopředu na pádu nic nemění.", "say": "Obě kulky jsou v každé chvíli stejně nízko. Čárkované čáry spojují jejich polohy ve stejných okamžicích. Vystřelená kulka padá úplně stejně jako upuštěná, rychlost dopředu na pádu nic nemění." },
+        { "scene": "time", "text": "Jak dlouho kulka k gongu letí? Bez vzduchu pořád stejně rychle, takže t = d : v = {d} : {v} = {t} s.", "say": "Jak dlouho kulka k gongu letí? Bez vzduchu pořád stejně rychle, takže čas je vzdálenost děleno rychlostí: {d} děleno {v}, to je {t} sekundy." },
+        { "scene": "fall", "text": "Za tu dobu spadne jako každé těleso: h = ½ · g · t² = ½ · 9,81 · {t}² ≈ {hm} m, tedy asi {h} cm.", "say": "Za tu dobu spadne jako každé těleso: pokles je polovina g krát čas na druhou. Polovina z devíti celých osmdesáti jedné krát {t} na druhou je asi {hm} metru, tedy asi {h} centimetrů." },
+        { "scene": "double", "text": "Na 100 m letí kulka jen polovinu času – {t100} s – a klesne jen o {h100} cm. Dvakrát dál znamená dvakrát déle a čtyřikrát větší pokles.", "say": "Na sto metrů letí kulka jen polovinu času, {t100} sekundy, a klesne jen o {h100} centimetru. Dvakrát dál znamená dvakrát déle a čtyřikrát větší pokles." },
+        { "scene": "mil", "text": "Proto střelec míří výš: {h} cm na {d} m je asi {mil} mil. Zvednu hlaveň o {mil} mil (ve skutečnosti jen o {deg}°) – kulka vyletí mírně vzhůru, cestou spadne a trefí střed.", "say": "Proto střelec míří výš: {h} centimetrů na {d} metrů je asi {mil} mil. Zvednu hlaveň o {mil} mil, ve skutečnosti jen o {deg} stupně. Kulka vyletí mírně vzhůru, cestou spadne a trefí střed." },
+        { "scene": "air", "text": "A vzduch? Kulku brzdí, takže letí déle – a za delší čas spadne víc: na {d} m asi {hAir} cm místo {h}. Na 500 m už je to {h500Air} m místo {h500} m. Proto má střelec balistickou kartu.", "say": "A vzduch? Kulku brzdí, takže letí déle, a za delší čas spadne víc: na {d} metrů asi {hAir} centimetrů místo {h}. Na pět set metrů už je to {h500Air} metru místo {h500}. Proto má střelec balistickou kartu." },
+        { "scene": "outro", "text": "Shrnutí: kulka padá od chvíle, kdy opustí hlaveň – stejně jako upuštěná. Čas letu t = d : v, pokles h = ½ · g · t². Dvakrát dál – čtyřikrát větší pokles. Vzduch ho ještě zvětší.", "say": "Shrnutí: kulka padá od chvíle, kdy opustí hlaveň, stejně jako upuštěná. Čas letu je vzdálenost děleno rychlostí, pokles je polovina g krát čas na druhou. Dvakrát dál, čtyřikrát větší pokles. Vzduch ho ještě zvětší." }
       ]
     }
   },
@@ -2859,7 +2930,7 @@
               "name": "Tabule",
               "area": [29.3, 8.7, 45.8, 46],
               "click": [
-                { "do": [ { "text": "Na tabuli je nákres páky, slovo ROVNOVÁHA, vzorec M = F · r a pod ním „r = ?“. Někdo tu přemýšlel o stejné úloze jako ty." } ] }
+                { "do": [ { "text": "Na tabuli je nákres páky, slovo ROVNOVÁHA, vzorec M = F · r a pod ním „r = ?“. Někdo tu přemýšlel o stejné úloze jako ty.", "video": "biceps", "videoLabel": "Pustit výklad Biceps a páka" } ] }
               ]
             },
             {
@@ -6663,7 +6734,9 @@
               "set": "hod_hotovo"
             },
             {
-              "text": "Komisař: „Jednička. A pozor na hodiny – Doubek loni trefil přesně dvanáctku.“"
+              "text": "Komisař: „Jednička. A pozor na hodiny – Doubek loni trefil přesně dvanáctku.“",
+              "video": "vrh",
+              "videoLabel": "Pustit výklad Šikmý vrh"
             },
             {
               "note": "Hod: medicinbal vsedě u stěny (5,5 m/s z výšky 0,9 m, půl metru před stěnou) doletí nejdál asi pod 38°, granát (20 m/s z 2 m) asi pod 44°. Čím vyšší odhod proti doletu, tím víc pod 45°. Dolet roste s druhou mocninou rychlosti.",
@@ -7730,6 +7803,16 @@
                 4.3
               ],
               "click": [
+                {
+                  "when": { "flags": ["hod_hotovo"] },
+                  "do": [
+                    {
+                      "text": "Pásmo s metry. Hody máš za sebou – proč předmět letí po oblouku a kdy doletí nejdál, ukáže výklad.",
+                      "video": "vrh",
+                      "videoLabel": "Pustit výklad Šikmý vrh"
+                    }
+                  ]
+                },
                 {
                   "do": [
                     {
@@ -12155,7 +12238,9 @@
                   "do": [
                     {
                       "text": "Gong na 300 m, průměr 40 cm.",
-                      "more": "Na 300 m zabere 40 cm jen 1,3 mil – třikrát méně než na stovce. Kulka sem letí asi 0,4 s."
+                      "more": "Na 300 m zabere 40 cm jen 1,3 mil – třikrát méně než na stovce. Kulka sem letí asi 0,4 s.",
+                      "video": "kulka",
+                      "videoLabel": "Pustit výklad Pád kulky"
                     }
                   ]
                 }

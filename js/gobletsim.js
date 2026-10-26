@@ -8,8 +8,8 @@
  * hráč vidí, sedí s tím, co se kontroluje. Výpočty (těžiště, momenty, pravidla) dělá ui.js
  * beze změny. Plátno 600 × 440 (logicky).
  */
-import { makeBody, pose, drawBody } from './postava.js?v=0.32';
-import { rrect, fmt, setupCanvas, label, dash, dim, comMark, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody } from './postava.js?v=0.33';
+import { rrect, fmt, setupCanvas, label, dash, dim, comMark, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 440;

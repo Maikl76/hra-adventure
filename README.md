@@ -149,6 +149,12 @@ Každý svět bude mít vlastních devět bran.
   h = g · t² / 8. Vedle animace graf síly ze silové plošiny a čísla. **Titulky jsou vždy**, k tomu
   volitelně syntetický český hlas prohlížeče. Skáče ukázkový hráč ze žebříčku, takže výklad
   neprozradí odpověď u dveří. Spouští se z knihy Fyzika skoku a z monitoru v měřicí kabině.
+- **Další výklady (od verze 0.33):** **Biceps a páka** (kabinet – tabule a kniha: páka 3. druhu, proč sval
+  táhne mnohem větší silou, než je tíha činky, a kdy je činka nejtěžší), **Šikmý vrh** (tělocvična – až po
+  hodech: rozklad rychlosti, dolet a proč z výšky letí nejdál pod menším úhlem než 45°) a **Pád kulky**
+  (střelnice – Příručka střelce a gong na 300 m: kulka padá stejně jako upuštěná, pokles ½ · g · t², mířit výš
+  v milech, vliv vzduchu). Všechny počítají s ukázkovými čísly, jinými než brány. Na telefonu na výšku má výklad
+  vlastní rozvržení – scéna nahoře, graf a čísla pod ní, větší písmo.
 - **Postoj a opěrná plocha (sklad, boty):** pohled shora na chodidla vojáka s batohem; čtyři nárazy
   z různých směrů (i šikmo), před každým je potřeba upravit rozkročení, výpad (kterou nohou vpřed)
   a případně pokrčit kolena (aktivita `"stance"`). Odměnou je lepicí páska na slepení známky.

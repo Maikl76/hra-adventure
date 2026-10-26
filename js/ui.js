@@ -900,7 +900,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.32');
+      const mod = await import('./chodba.js?v=0.33');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1134,7 +1134,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.32');
+        const mod = await import('./chodba3d.js?v=0.33');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1965,7 +1965,7 @@
         }
       };
 
-      import('./basket.js?v=0.32').then((mod) => {
+      import('./basket.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2232,7 +2232,7 @@
         spotSay(msg);
       }
 
-      import('./strelnice.js?v=0.32').then((mod) => {
+      import('./strelnice.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         const positions = {};
         for (const [id, p] of Object.entries(act.positions || {})) positions[id] = p;
@@ -2818,11 +2818,12 @@
         if (player) sound.duck(player.playing && player.voice && ok);
       };
 
-      import('./vyklad.js?v=0.32').then((mod) => {
+      import('./vyklad.js?v=0.33').then(async (mod) => {
+        const Kind = await mod.load(def.type);   // skok, páka, vrh, kulka – každý výklad má svůj modul
         if (!canvas.isConnected) return;
         narrator = new mod.Narrator();
         const want = Game.getSetting('vykladHlas', sound.enabled);
-        player = new mod.Player(canvas, def, {
+        player = new mod.Player(new Kind(canvas, def), def, {
           narrator,
           voice: want && narrator.ok,
           onStep: (i, text) => {
@@ -3048,7 +3049,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.32');
+          const mod = await import('./squats.js?v=0.33');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3424,7 +3425,7 @@
       };
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
-      import('./batoh.js?v=0.32').then((mod) => {
+      import('./batoh.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.PackScene(canvas, {
           bodyKg: act.bodyKg, packKg: act.packKg, packCm: act.packCm, comHeightCm: act.comHeightCm,
@@ -3561,7 +3562,7 @@
           render();
         }
       });
-      import('./zvedani.js?v=0.32').then((mod) => {
+      import('./zvedani.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.LiftScene(canvas, {
           loadKg: act.loadKg,
@@ -3844,7 +3845,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.32');
+          const mod = await import('./skok.js?v=0.33');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -4222,7 +4223,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.32');
+          const mod = await import('./goblet.js?v=0.33');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4466,7 +4467,7 @@
           status.className = 'feedback bad';
         }
       }
-      import('./gobletsim.js?v=0.32').then((mod) => {
+      import('./gobletsim.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.GobletSimScene(canvas, { TOE, ANK, SHANK, THIGH, TRUNK, bench: { x0: -0.62, x1: -0.1, h: 0.51 } });
         render();
@@ -4591,7 +4592,7 @@
           status.className = 'feedback';
         }
       }
-      import('./kliky.js?v=0.32').then((mod) => {
+      import('./kliky.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.PushupScene(canvas);
         render();
@@ -4765,7 +4766,7 @@
       };
       roundText.textContent = round().text || '';
       render();
-      import('./nositka.js?v=0.32').then((mod) => {
+      import('./nositka.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.StretcherScene(canvas, { L, H, comFrac, mp, names });
         render();
@@ -4925,7 +4926,7 @@
       };
       roundText.textContent = round().text || '';
       render();
-      import('./prilba.js?v=0.32').then((mod) => {
+      import('./prilba.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.HelmetScene(canvas, { nvgKg, nvgCm, armCm });
         render();
@@ -6097,7 +6098,7 @@
       };
       status.textContent = round().text || '';
       drawScene();
-      import('./hod.js?v=0.32').then((mod) => {
+      import('./hod.js?v=0.33').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.ThrowScene(canvas, { reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches });
         drawScene();
@@ -6182,7 +6183,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.32');
+          const mod = await import('./predklon.js?v=0.33');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

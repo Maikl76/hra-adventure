@@ -7,8 +7,8 @@
  * nakloní (jako by ji svaly nedržely) a šipka ukáže, kolik musí táhnout svaly krku. Momenty počítá
  * ui.js stejně jako dřív; váček jde táhnout – ui.js se ptá scény, kde je. Plátno 420 × 340.
  */
-import { makeBody, pose, drawBody } from './postava.js?v=0.32';
-import { fmt, setupCanvas, label, arrow, dash, dim } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody } from './postava.js?v=0.33';
+import { fmt, setupCanvas, label, arrow, dash, dim } from './kresba.js?v=0.33';
 
 const W = 420;
 const H = 340;

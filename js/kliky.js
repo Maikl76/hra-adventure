@@ -6,8 +6,8 @@
  * Ve druhém kole má voják na zádech batoh. Kóty od špiček: těžiště, batoh, ruce. Rovnováhu
  * momentů počítá ui.js stejně jako dřív; po vyrovnání se ukáže síla v rukou. Plátno 600 × 340.
  */
-import { makeBody, pose, drawBody, centerOfMass } from './postava.js?v=0.32';
-import { rrect, fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody, centerOfMass } from './postava.js?v=0.33';
+import { rrect, fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 340;

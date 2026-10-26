@@ -7,8 +7,8 @@
  * scéna; momenty počítá ui.js stejně jako dřív. Raněného jde táhnout – ui.js se ptá scény, jestli
  * ukazatel míří na něj a kolik metrů od osy to je. Plátno 600 × 340.
  */
-import { makeBody, pose, drawBody } from './postava.js?v=0.32';
-import { fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.32';
+import { makeBody, pose, drawBody } from './postava.js?v=0.33';
+import { fmt, setupCanvas, label, arrow, dash, dim, comMark, background } from './kresba.js?v=0.33';
 
 const W = 600;
 const H = 340;
