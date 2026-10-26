@@ -152,6 +152,12 @@
       this.music.gain.setTargetAtTime(0.55, this.ctx.currentTime + 0.6, 1.2);
     }
 
+    /* Ztlumení podkresu, když mluví hlas výkladu (duck(true)), a návrat (duck(false)). */
+    duck(on) {
+      if (!this.ctx) return;
+      this.music.gain.setTargetAtTime(on ? 0.16 : 0.55, this.ctx.currentTime, on ? 0.25 : 0.8);
+    }
+
     /* ---------- Bouřka venku (vrstva pod podkresem místnosti) ----------
        storm({ place, level }) zapne nebo upraví vzdálené dunění, storm(null) ho vypne. Déšť záměrně
        není (autorovi šumění vadilo). place: „okno“, „budova“, „sklep“ (ve sklepě dunění silnější

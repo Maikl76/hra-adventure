@@ -71,6 +71,16 @@ js/chodba.js        chodba „z vlastních očí“ – chůze po krocích, kres
 js/chodba3d.js      3D chodba (ukázka) – volný pohyb, skok s impulzem, doskok, lezení, laser (three.js)
 js/svalovec.js      svalovec – kostra se svaly z tvarů v kódu, pózy a chování (three.js)
 js/strelnice.js     odstřelovací puška – výhled do údolí, dalekohled s křížem v mil, dech, tep, let kulky, vítr
+js/postava.js       postava člověka z boku (proporce a hmotnosti podle Wintera, póza z úhlů, těžiště, oblečení)
+js/zvedani.js       kresba ke zvedání bedny (sklad): postava drží bednu, síly, ramena, moment v bedrech
+js/vyklad.js        výklady („videa“): animace s titulky a hlasem – zatím „Skok vypráví“ (aréna)
+js/kresba.js        společné kreslení scén s postavou: ostré plátno, pozadí místností, popisky, šipky, kóty, těžiště
+js/batoh.js         kresba k balení batohu (sklad): voják s batohem, předklon podle těžiště, batoh v řezu
+js/kliky.js         kresba ke klikům na decimální váze (tělocvična): voják v kliku, vahadlo se závažím
+js/gobletsim.js     kresba k simulaci goblet dřepu (tělocvična): postava prochází body simulace
+js/hod.js           kresba a animace hodu (tělocvična): medicinbal vsedě u stěny, granát s detailem odhodu
+js/nositka.js       kresba k nosítkům (noční cvičiště): dva nosiči a raněný na zádech, síly v rukou
+js/prilba.js        kresba k přilbě s noktovizorem (noční cvičiště): hlava zblízka, lišta s protizávažím
 vendor/mediapipe/   MediaPipe Tasks Vision 0.10.14 + model pose_landmarker_lite (Apache 2.0)
 vendor/three/       three.js 0.186.1, zmenšené (MIT) – jen pro 3D chodbu, načte se až v ní
 data/game.json      VEŠKERÝ obsah hry
@@ -158,7 +168,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `doskoky_tvrde`; příznak `puska_cviciste`.
 - Účinky: `text`, `give`, `remove`, `set`/`unset`, `note` (+ `noteKey` = nahradí starší zápis),
   `closeup` (`image`, nebo `note` + `font` `"type"`/`"terminal"`), `sound`, `view`, `openItem`,
-  `openGate`, `lock`, `activity`, `fx` (`"blackout"`), `scare`, `hint`, `leave`.
+  `openGate`, `lock`, `activity`, `explainer` (otevře výklad), `fx` (`"blackout"`), `scare`, `hint`, `leave`.
+  Účinek `text` může mít `video` (+ `videoLabel`) = tlačítko „▶ …“ u zprávy, které otevře výklad.
 - Proměnné hráče `vars` (naměřené hodnoty) v textech: `{n}`, `{t:1}` (1 desetinné místo),
   `{=výraz:0}`. Zámek (`type` `code`/`choice`): `answer` může být vzorec, `toleranceRel`,
   `answerMin`/`answerMax`, `requiresVars` + `missingText`, `feedbackFormulas` (cílená rada podle
@@ -167,7 +178,8 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   (balení batohu), `lift` (zvedání bedny), `stance` (postoj), `lean` (zkouška stability), `jump`
   (výskok), `targets` (NEON AIM), `pushup` (kliky na decimální váze), `throw` (šikmý vrh –
   medicinbal, granát; kolo má `speed`, `h0` = výška odhodu, `target`, volitelně `pose: "sed"`
-  = postava sedí u stěny a `x0` = jak daleko před stěnou míč opouští ruku, dolet se měří od stěny), `gobletsim` (panáček v dolní poloze goblet dřepu), `goblet` (goblet dřep
+  = postava sedí u stěny a `x0` = jak daleko před stěnou míč opouští ruku, dolet se měří od stěny; kolo vestoje
+  má vpravo nahoře detail odhodu, protože na 50m poli je postava malá), `gobletsim` (postava v dolní poloze goblet dřepu), `goblet` (goblet dřep
   90 s), `stretcher` (nosítka: dva nosiči, raněný se táhne po nosítkách, momenty kolem rukou zadního
   nosiče; kola `goal` = `equal` | `rearMax`), `helmet` (přilba s noktovizorem: hmotnost a vzdálenost
   protizávaží, moment a síla šíje; kola `goal` = `balance` | `lightest`), `slope` (mapa se svahem:
@@ -185,6 +197,35 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
   a `table` (`caption`, `head`, `rows`; první buňka řádku je záhlaví) – tabulky norem v brožuře.
+  Blok `video` (+ `label`) = tlačítko výkladu; ve výkladu je pak „‹ Zpět do knihy“ (vrátí na tutéž stranu).
+- **Postava** (`js/postava.js`, od verze 0.32): člověk z boku jako kresba s obrysem a stínováním, oblečení
+  `uniforma` nebo `sport`. Délky, hmotnosti a těžiště segmentů podle Wintera (díl výšky / hmotnosti těla),
+  póza = úhly ve stupních (`trunk` předklon trupu, `bend` kulatá záda, `neck`, `head`, `thigh`, `shin`, `foot`,
+  `toeFlat`, `uarm`, `farm`, `hand`, `grip`; `far` = jiná póza vzdálenější ruky a nohy), `hips: true` = ruce v bok,
+  `reach: [x, y]` = obě ruce drží bod (bedna). Postaví se na zem (`ground`, `x`, `anchor` kotník/bříško/špička/pata)
+  nebo těžištěm do bodu (`com`). `centerOfMass(sk)` počítá těžiště ze segmentů (`upper` = hlava, trup a paže).
+  Kreslí `drawBody` s háčky pro věci mezi končetinami (bedna mezi koleny: `armBehindLeg`). `makeBody` umí vlastní
+  délky segmentů (`lengths`) a délku boty (`footLength`), když je má aktivita spočítané (goblet); `view.flip` =
+  zrcadlo (raněný na nosítkách leží hlavou dopředu), `ow` = tloušťka obrysu u velkých detailů (hlava u přilby).
+- **Kresby aktivit s postavou** (od verze 0.32, výpočty, texty a ovládání beze změny): každá aktivita má modul se
+  scénou na plátně – `zvedani.js`, `batoh.js`, `kliky.js`, `gobletsim.js`, `hod.js`, `nositka.js`, `prilba.js`;
+  společné věci (pozadí sklad / tělocvična / noční cvičiště / venkovní hřiště, popisky s tmavým podkladem, šipky,
+  kóty, značka těžiště) jsou v `kresba.js`. `ui.js` počítá jako dřív, scéně jen předá stav (`set`) a u tažení se
+  jí ptá, na co hráč ukazuje (raněný, váček, předmět batohu). Na telefonu se popisky zvětší (až 1,7×).
+- Aktivita `lift` (zvedání bedny): fyzika beze změny (`trunkKg`, `loadKg`, `muscleArmCm`, `goalMax`, u držení těla
+  `trunkArmCm`, `rMin`, `rMax`); od verze 0.32 má držení těla místo bodů panáčka `pose` (úhly postavy)
+  a `boxBetweenLegs` (bedna mezi koleny – podřep). Kreslí `js/zvedani.js`: šipky tíhy trupu a bedny (délka podle
+  síly), ramena od beder jako kóty, oblouk momentu, zádové svaly; po úspěchu se postava s bednou narovná.
+- **Výklady („videa“)** (`explainers` v kořeni, `js/vyklad.js`, od verze 0.32): animace, která sama vypráví,
+  co se při pohybu děje a jak se to spočítá. `type` (zatím `jump`), `title`, `subtitle`, `jumper`, `flightTime`,
+  `mass`, `height`, `steps` [{ `scene`, `text` = titulek, `say` = co čte hlas (jinak `text`) }]. Scény skoku:
+  `intro`, `weight`, `squat`, `push`, `impulse`, `takeoff`, `rise`, `apex`, `fall`, `land`, `measure`, `derive`,
+  `height`, `speed`, `outro` (co se přehraje a co je v obraze, určuje kód). Čísla do textu: `{t}`, `{th}`, `{v}`,
+  `{kmh}`, `{h}`, `{hm}`, `{m}`, `{G}`, `{fmax}`, `{flmax}`, `{tp}`, `{jumper}`. **Titulky jsou vždy**, hlas je
+  syntetický hlas prohlížeče (čeština, `speechSynthesis`); bez českého hlasu je tlačítko Hlas vypnuté s vysvětlením.
+  Hlas je zapnutý, když má hra zapnutý zvuk; volba se pamatuje (nastavení `vykladHlas`). Při hlasu se ztlumí
+  podkres. Ovládání: přehrát/pauza (mezerník), krok zpět/dál (šipky), Zpomalit (animace 0,5×), Od začátku.
+  Kontrola `validate` hlídá odkazy na výklady (účinky, `video` u textů a v knihách) a kroky bez scény či textu.
 - **Chodba „z vlastních očí“** (`"type": "corridor"`, kreslí `js/chodba.js`): místo pohledů má
   `corridor` – `map` (řádky; `.` = chodba, jiné znaky = zdi), `start` {x, y, dir N/E/S/W}, `legend`
   (znak → textura, nebo seznam variant s `when`), `textures` (obrázky 512 × 512), `floor`, `ceiling`,
@@ -260,6 +301,8 @@ plocha, slepení přelomené psí známky (kód skříňky), polní telefon s n�
 stability před kamerou. Zámek: posun těžiště **6 cm**, co s tím udělat, kam patří těžké věci.
 Všechny čtyři pohledy a otevřené dveře jsou od autora; zástupné zůstaly jen ikony klíčů, půlek
 známky a pásky (`docs/zadani-obrazku-sklad.md`). Podrobnosti v `game.json`.
+Zvedání bedny má od verze 0.32 novou kresbu (realistická postava, `js/zvedani.js`): voják
+v uniformě drží bednu za úchyt, v obraze jsou tíha trupu a bedny, jejich ramena od beder a moment.
 Nápady, které autor schválil pro další vojenské místnosti (protizávaží u přilby, mapa se svahem,
 nosítka), jsou od verze 0.28 v Nočním cvičišti (Brána III). Decimální váha a psací stroj jsou
 v tělocvičně (Brána II).
@@ -543,6 +586,12 @@ okénka NEON AIM, baterie ze skříňky s kódem = docentova výška výskoku ze
 trvá déle → **basketbalový automat** (trestný hod, povinně aspoň 3 koše z 10) → otázka, proč se hází
 vysokým obloukem → skok na Měsíci (**6×**). Zkratka pro vyučující `?mistnost=arena` (hráč dostane věci
 z herny). Grafika od autora (`docs/zadani-obrazku-arena.md`).
+Výklad **Skok vypráví** (verze 0.32): tlačítko na titulní straně knihy Fyzika skoku a u monitoru v měřicí
+kabině („▶ Pustit záznam NEONFOX“). Skáče **ukázkový hráč ze žebříčku (NEONFOX 0,58 s → 41 cm, 2,8 m/s)**,
+ne hráč sám – výklad tak neprozradí kód dveří ani skříňky (docentových 31 cm). Fyzika: podřep (koleno ~98°),
+odraz 0,25 s se špičkou 2,8× tíha a impulzem m·v₀ = 199 N·s (tvar křivky dopočítaný tak, aby těžiště na dráze
+odrazu 0,39 m dosáhlo v₀), let jako volný pád (výstup i pád t/2), dopad brzděný pokrčenými koleny (0,41 s, špička
+3,4× tíha); síla při spouštění a narovnání z pohybu těžiště F = m·(g + a).
 
 ### GSPORT – LEVEL 3: Spin zóna (`spin`)
 Rotace (námět autor schválil 21. 10. 2026, postaveno 22. 10. 2026 ve verzi 0.29). Bývalá laboratoř
@@ -641,6 +690,15 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   (Bohouš, Leopold, Vendelín, Hugo, Kazimír, Ferda, Cyril, Metoděj), komisař a rtn. Doubek v tělocvičně
   (hodiny zastavil Doubkův medicinbal, „bazén je studenej“), D. je ve vzkazech uštěpačný, ale laskavý.
 - Grafika nemusí být z fotek fakulty. Obrázky dodává autor sám (generátor obrázků).
+- **Hezčí kreslené aktivity a „videa“** (26. 10. 2026): autorovi se nelíbila grafika kreslených aktivit (batoh,
+  zvedání, hod…) a chtěl výklady, kde pohyb sám vypráví, co se děje a jak se to spočítá. Rozhodl:
+  **realističtější postava**, **titulky a syntetický hlas**, začít **ukázkou** – ve verzi 0.32 nová postava ve
+  zvedání bedny a výklad „Skok vypráví“ v aréně. Podle ukázky se rozhodne o dalších aktivitách (batoh, hod, kliky,
+  postoj, nosítka, přilba…) a dalších výkladech. Výklad nesmí prozradit odpověď zámku – počítá s ukázkovými čísly.
+  Po ukázce autor napsal „Pokračuj“: novou kresbu mají i batoh, kliky, goblet simulace, hod (s animací odhodu),
+  nosítka a přilba. Navrženo dál: výklady „biceps a páka“ (kabinet), „šikmý vrh“ (hod), „pád kulky“ (střelnice)
+  a větší výklad na telefonu. Autor schválil: u přilby řádek „Zbývá na krční svaly“ (dřív „šíjové“ – když hlava
+  padá dozadu, táhnou svaly vpředu na krku; kresba to ukazuje) a verzi 0.32 bez „– ukázka“.
 
 ## Obrázky od autora – postup
 
@@ -677,3 +735,13 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   `peek_test.js` projde průhledy ve všech osmi místnostech.
 - Zrcadlená bludiště (archiv, servisní chodba) procházejí stejnou cestou jako sklep, jen s prohozenými
   zatáčkami vlevo/vpravo; kódy zámků si testy počítají z uložených proměnných (sady čísel).
+- **Zvedání a výklady (0.32):** `lift_test.js` (předklon neprojde, podřep daleko neprojde, bednu přitáhnout myší
+  nebo prstem – kresba je na `canvas.__lift` s `lastView`, `lastBox`), `vyklad_test.js` (z monitoru v kabině i z knihy,
+  návrat do knihy, klávesy). Testovací prohlížeč nemá český hlas – cesta hlasu se zkouší s podvrženým
+  `speechSynthesis` (`vyklad_hlas.js`: čte se `say`, pauza a zavření řeč zastaví). Skutečný hlas zkusí autor
+  (Chrome a Edge na Windows mají český hlas, Safari na iPadu také). Fyzika výkladu: impulz odrazu = m·v₀,
+  rychlost při vzletu i dopadu v₀ (kontrola v Node). Zkušební stránky `zkousky/postava.html` (pózy postavy)
+  a `zkousky/vyklad.html?scene=…&t=…` (snímek scény) – složka `zkousky/` se nenahrává.
+- **Překreslené aktivity:** `pack2.js` (batoh: tažení na kresbě), `telo_test.js kliky|goblet|hod` (tělocvična; hod
+  fotí i švih a let), `cviciste_test.js` (nosítka se táhnou na plátně `canvas.stretcher-canvas`, přilba). Zkušební
+  stránky `zkousky/hod.html?k=…&a=…&el=…` (snímky odhodu v čase) a `zkousky/cviciste.html?scene=prilba|nositka`.

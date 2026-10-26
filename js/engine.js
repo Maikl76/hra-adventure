@@ -501,7 +501,7 @@
       const events = [];
       const s = this.state;
       for (const effect of effects || []) {
-        if ('text' in effect) events.push({ type: 'text', text: this.fill(effect.text), more: effect.more ? this.fill(effect.more) : undefined, moreLabel: effect.moreLabel });
+        if ('text' in effect) events.push({ type: 'text', text: this.fill(effect.text), more: effect.more ? this.fill(effect.more) : undefined, moreLabel: effect.moreLabel, video: effect.video, videoLabel: effect.videoLabel });
         if ('set' in effect) s.flags[effect.set] = true;
         if ('unset' in effect) delete s.flags[effect.unset];
         if ('give' in effect && !s.inventory.includes(effect.give)) {
@@ -527,6 +527,7 @@
           }
         }
         if ('activity' in effect) events.push({ type: 'activity', activity: effect.activity });
+        if ('explainer' in effect) events.push({ type: 'explainer', id: effect.explainer });   // výklad („video“)
         if ('sound' in effect) events.push({ type: 'sound', name: effect.sound });
         if ('closeup' in effect) events.push({ type: 'closeup', closeup: effect.closeup });
         if ('openItem' in effect) events.push({ type: 'openItem', item: effect.openItem });
@@ -810,6 +811,23 @@
         }
       };
       walk(d.rooms);
+      // výklady („videa“): odkazy z účinků, z textů („video“) a z knih musí vést na existující výklad
+      const explainers = d.explainers || {};
+      const walkVideo = (x, where) => {
+        if (Array.isArray(x)) x.forEach((v) => walkVideo(v, where));
+        else if (x && typeof x === 'object') {
+          for (const key of ['explainer', 'video']) {
+            if (typeof x[key] === 'string' && !explainers[x[key]]) problems.push(`${where}: neexistující výklad „${x[key]}“.`);
+          }
+          Object.values(x).forEach((v) => walkVideo(v, where));
+        }
+      };
+      walkVideo(d.rooms, 'Místnosti');
+      walkVideo(d.items, 'Předměty');
+      for (const [id, ex] of Object.entries(explainers)) {
+        if (!(ex.steps || []).length) problems.push(`Výklad „${id}“ nemá kroky.`);
+        for (const st of ex.steps || []) if (!st.scene || !st.text) problems.push(`Výklad „${id}“: krok bez scény nebo textu.`);
+      }
       for (const [roomId, r] of Object.entries(d.rooms)) {
         for (const n of r.nudges || []) if (!n.text) problems.push(`Místnost „${roomId}“: vzkaz od D. bez textu.`);
         const keys = (r.variants || []).map((v) => Object.keys(v).sort().join(','));

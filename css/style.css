@@ -1031,10 +1031,13 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .pack-wrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; align-items: start; }
 @media (max-width: 700px) { .pack-wrap { grid-template-columns: 1fr; } }
 .pack-svg { width: 100%; height: auto; display: block; touch-action: none; user-select: none; -webkit-user-select: none; }
-.pack-zone { cursor: pointer; }
-.pack-zone:hover rect { fill: rgba(160, 145, 90, 0.45); }
-.pack-zone.full rect { stroke: #6b6250; }
-.pack-label { cursor: grab; }
+.pushup-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 340; border-radius: 8px; background: #2b2e2a; }
+.gsim-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 440; border-radius: 8px; background: #2b2e2a; }
+.throw-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 320; border-radius: 8px; background: #23251e; }
+.stretcher-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 340; border-radius: 8px; background: #0d1410; touch-action: none; user-select: none; -webkit-user-select: none; }
+.helmet-canvas { display: block; width: 100%; height: auto; aspect-ratio: 420 / 340; border-radius: 8px; background: #0b1018; touch-action: none; user-select: none; -webkit-user-select: none; }
+.stretcher-canvas:focus-visible, .helmet-canvas:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+.pack-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 440; border-radius: 8px; background: #23251e; touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
 .pack-tray { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
 .pack-item { padding: 6px 10px; border: 1px solid #6b6250; border-radius: 6px; background: #2a2a20; color: var(--ink); cursor: grab; touch-action: none; font-size: 14px; user-select: none; -webkit-user-select: none; }
 .pack-item.selected { border-color: var(--gold-bright); box-shadow: 0 0 0 2px rgba(255, 210, 138, 0.35); }
@@ -1077,6 +1080,20 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .sniper-spot strong { color: var(--gold-bright); font-weight: normal; }
 .sniper-after { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
 .sniper-after p { margin: 0; flex: 1 1 320px; color: var(--ok); }
+/* Výklad („video“): animace s titulky a hlasem */
+.modal-box.vyklad-box { width: min(100%, 1000px); }
+.vyklad-subtitle { margin: -4px 0 8px; }
+.vyklad-canvas { display: block; width: min(100%, calc(58vh * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; border-radius: 8px; background: #0b1220; }
+.vyklad-sub { min-height: 3em; max-width: 880px; margin: 10px auto 0; font-size: 18px; line-height: 1.45; text-align: center; color: var(--ink); }
+.vyklad-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
+.vyklad-btn { padding: 6px 12px; font-size: 15px; }
+.vyklad-btn[aria-pressed="true"] { color: #17120a; background: var(--gold-bright); border-color: var(--gold-bright); }
+.vyklad-play { min-width: 118px; }
+.vyklad-count { min-width: 56px; text-align: center; color: var(--muted); font-family: var(--digits); }
+.vyklad-note { margin: 6px 0 0; text-align: center; }
+.message .why.video { color: var(--gold-bright); border-color: var(--gold); }
+.book-video { margin: 14px 0 4px; text-align: center; }
+.book-video .btn { font-size: 15px; padding: 6px 14px; }
 /* Skládání kostry (bludiště) */
 .modal-box.skel-box { width: min(100%, 760px); }
 .skel-wrap { display: flex; gap: 16px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
@@ -1097,7 +1114,8 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .skel-feedback { min-height: 2.6em; margin-top: 10px; }
 .lift-side { display: flex; flex-direction: column; gap: 8px; }
 .lift-posture.selected { border-color: var(--gold-bright); color: var(--gold-bright); box-shadow: 0 0 0 2px rgba(255, 210, 138, 0.25); }
-.lift-case { cursor: grab; }
+.lift-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 420; border-radius: 8px; background: #23251e; touch-action: none; user-select: none; -webkit-user-select: none; }
+.lift-canvas:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
 .stance-slider { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--ink); }
 .stance-slider input { width: 100%; accent-color: var(--gold); }
 .stance-push { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1270,8 +1288,7 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .scene-storm { display: none; }
 }
-/* Noční cvičiště: nosítka, přilba s protizávažím, mapa se svahem */
-.stretcher-patient, .helmet-pouch { cursor: grab; }
+/* Noční cvičiště: mapa se svahem (nosítka a přilba kreslí na plátno – .stretcher-canvas, .helmet-canvas) */
 .slope-map { border-radius: 8px; }
 .slope-route { fill: none; stroke-width: 3; opacity: 0.55; pointer-events: none; }
 .slope-route.selected { opacity: 1; stroke-width: 5; }

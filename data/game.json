@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.31 – ukázka",
+    "version": "0.32",
     "totalGates": 9
   },
 
@@ -538,6 +538,10 @@
               },
               {
                 "note": "Kdo létá, ať počítá. – D."
+              },
+              {
+                "video": "skok",
+                "label": "Skok vypráví – animace s výkladem"
               }
             ]
           },
@@ -2269,6 +2273,36 @@
       "do": [ { "text": "Přelepit jednu půlku páskou nemá smysl. Horní půlka asi pořád visí tam, kde známka byla – na figuríně." } ]
     }
   ],
+
+  "explainers": {
+    "skok": {
+      "_pozn": "Výklad „Skok vypráví“ (js/vyklad.js). Skáče ukázkový hráč ze žebříčku, ne hráč sám – jinak by výklad prozradil kód u dveří. Scény kroků: intro, weight, squat, push, impulse, takeoff, rise, apex, fall, land, measure, derive, height, speed, outro. Čísla v textu: {t} doba letu, {th} polovina, {v} rychlost odrazu, {kmh}, {h} výška v cm, {hm} v m, {m} hmotnost, {G} tíha, {fmax} a {flmax} špička síly při odrazu a dopadu (× tíha), {tp} doba odrazu, {jumper}. „say“ = co čte hlas (jinak titulky).",
+      "type": "jump",
+      "title": "Skok vypráví",
+      "subtitle": "Záznam z měřicí kabiny: výskok z podřepu hráče NEONFOX (doba letu 0,58 s)",
+      "jumper": "NEONFOX",
+      "flightTime": 0.58,
+      "mass": 70,
+      "height": 1.78,
+      "steps": [
+        { "scene": "intro", "text": "Ahoj, já jsem skok – výskok z podřepu, kterým {jumper} vede žebříček automatu JUMP. Trvám necelou vteřinu, a přesto se ze mě dá spočítat skoro všechno.", "say": "Ahoj, já jsem skok. Výskok z podřepu, kterým hráč {jumper} vede žebříček automatu džamp. Trvám necelou vteřinu, a přesto se ze mě dá spočítat skoro všechno." },
+        { "scene": "weight", "text": "Stojím na silové plošině – ta měří, jak silně tlačím do země. V klidu je to přesně moje tíha: {m} kg × 9,81 ≈ {G} N. V grafu je to červená čárkovaná čára.", "say": "Stojím na silové plošině. Ta měří, jak silně tlačím do země. V klidu je to přesně moje tíha: {m} kilogramů krát devět celých osmdesát jedna, to je asi {G} newtonů. V grafu je to červená čárkovaná čára." },
+        { "scene": "squat", "text": "Nejdřív se spustím do podřepu – koleno zhruba v pravém úhlu – a chvilku vydržím. Ruce mám v bok, aby mi nepomáhaly. Žádné hupnutí dolů těsně před skokem!" },
+        { "scene": "push", "text": "A teď odraz! Nohy tlačí do země víc, než vážím – až {fmax}× víc. Síla nad čarou tíhy mě zrychluje nahoru. Celý odraz trvá jen {tp} s, proto ho pouštím zpomaleně.", "say": "A teď odraz! Nohy tlačí do země víc, než vážím. Až {fmax} krát víc. Síla nad čarou tíhy mě zrychluje nahoru. Celý odraz trvá jen {tp} sekundy, proto ho pouštím zpomaleně." },
+        { "scene": "impulse", "text": "Zelená plocha mezi křivkou a čarou tíhy je impulz. Čím je větší, tím rychleji opustím zem. Platí: impulz = hmotnost × rychlost odrazu.", "say": "Zelená plocha mezi křivkou a čarou tíhy se jmenuje impulz. Čím je větší, tím rychleji opustím zem. Platí: impulz se rovná hmotnost krát rychlost odrazu." },
+        { "scene": "takeoff", "text": "Teď se mi odlepily špičky. Letím vzhůru rychlostí {v} m/s – asi {kmh} km/h. Od této chvíle mě už nic nepohání a plošina ukazuje nulu.", "say": "Teď se mi odlepily špičky. Letím vzhůru rychlostí {v} metru za sekundu, to je asi {kmh} kilometrů za hodinu. Od této chvíle mě už nic nepohání a plošina ukazuje nulu." },
+        { "scene": "rise", "text": "Gravitace mě brzdí: každou sekundu by mi ubrala 9,81 m/s. Proto stoupám čím dál pomaleji…", "say": "Gravitace mě brzdí. Každou sekundu by mi ubrala devět celých osmdesát jedna metru za sekundu. Proto stoupám čím dál pomaleji." },
+        { "scene": "apex", "text": "…až se ve vrcholu na okamžik zastavím. Rychlost je nula. Těžiště je teď o {h} cm výš než při odrazu – to je výška výskoku.", "say": "Až se ve vrcholu na okamžik zastavím. Rychlost je nula. Těžiště je teď o {h} centimetrů výš než při odrazu. To je výška výskoku." },
+        { "scene": "fall", "text": "Dolů zrychluji přesně tak, jak jsem nahoru zpomaloval. Výstup i pád proto trvají stejně dlouho – každý polovinu doby letu, {th} s.", "say": "Dolů zrychluji přesně tak, jak jsem nahoru zpomaloval. Výstup i pád proto trvají stejně dlouho. Každý polovinu doby letu, {th} sekundy." },
+        { "scene": "land", "text": "Dopad! Nohy musí můj pád zabrzdit. Pokrčím kolena, a tak brzdím déle – a proto menší silou. I tak má síla při dopadu špičku asi {flmax}× větší než moje tíha.", "say": "Dopad! Nohy musí můj pád zabrzdit. Pokrčím kolena, a tak brzdím déle. A proto menší silou. I tak má síla při dopadu špičku asi {flmax} krát větší než moje tíha." },
+        { "scene": "measure", "text": "Kontaktní deska u automatu z toho všeho změří jediné číslo: jak dlouho nohy nebyly na zemi. U mě t = {t} s.", "say": "Kontaktní deska u automatu z toho všeho změří jediné číslo: jak dlouho nohy nebyly na zemi. U mě je to {t} sekundy." },
+        { "scene": "derive", "text": "Pád z vrcholu trval polovinu doby letu, t/2. Volným pádem tělo za ten čas spadne o h = ½ · g · (t/2)². Po úpravě: h = g · t² / 8.", "say": "Pád z vrcholu trval polovinu doby letu. Volným pádem tělo za ten čas spadne o jednu polovinu krát g krát polovina t na druhou. Po úpravě: výška se rovná g krát t na druhou, děleno osmi." },
+        { "scene": "height", "text": "Dosadím: h = 9,81 · {t}² / 8 = {hm} m. Vyskočil jsem {h} centimetrů.", "say": "Dosadím: devět celých osmdesát jedna krát {t} na druhou, děleno osmi. To je {hm} metru. Vyskočil jsem {h} centimetrů." },
+        { "scene": "speed", "text": "A rychlost odrazu? v = g · t / 2 = 9,81 · {t} / 2 = {v} m/s. Přesně tolik ukázala šipka při vzletu.", "say": "A rychlost odrazu? Rychlost se rovná g krát t děleno dvěma. Devět celých osmdesát jedna krát {t} děleno dvěma je {v} metru za sekundu. Přesně tolik ukázala šipka při vzletu." },
+        { "scene": "outro", "text": "Teď ty. Změř si dobu letu u automatu JUMP a spočítej, jak vysoko jsi vyskočil. Pozor: čas na druhou – a výsledek vyjde v metrech.", "say": "Teď ty. Změř si dobu letu u automatu džamp a spočítej, jak vysoko jsi vyskočil. Pozor: čas na druhou. A výsledek vyjde v metrech." }
+      ]
+    }
+  },
 
   "rooms": {
     "kabinet": {
@@ -4132,10 +4166,10 @@
           "dragHint": "Bednu táhni myší nebo prstem blíž k tělu a dál (nebo šipkami ← →). Zvedne se, když je moment v bedrech nejvýš 100 N·m.",
           "liftLabel": "Zvednout",
           "postures": [
-            { "id": "predklon", "name": "Předklon s propnutými koleny", "trunkArmCm": 26, "rMin": 40, "rMax": 65, "handY": 222,
-              "figure": [[150, 282], [152, 218], [150, 160], [211, 125], [232, 110]] },
-            { "id": "drep", "name": "Podřep s rovnými zády", "trunkArmCm": 12, "rMin": 20, "rMax": 55, "handY": 246,
-              "figure": [[150, 282], [192, 238], [140, 218], [166, 152], [174, 128]] }
+            { "id": "predklon", "name": "Předklon s propnutými koleny", "trunkArmCm": 26, "rMin": 40, "rMax": 65,
+              "pose": { "trunk": 80, "bend": 26, "neck": -32, "head": -16, "thigh": 9, "shin": 2 } },
+            { "id": "drep", "name": "Podřep s rovnými zády", "trunkArmCm": 12, "rMin": 20, "rMax": 55,
+              "pose": { "trunk": 32, "bend": -4, "neck": -14, "head": -8, "thigh": 72, "shin": 32 }, "boxBetweenLegs": true }
           ],
           "badPosture": "V předklonu s propnutými koleny je trup daleko před bedry – už jeho vlastní tíha dává přes 100 N·m. Zkus jiné držení těla.",
           "tooFar": "Záda by to unesla, ale bedna je moc daleko od těla. Přitáhni ji blíž – kratší rameno, menší moment.",
@@ -6223,7 +6257,9 @@
                     {
                       "text": "Monitor s křivkou posledního skoku: pokles (podřep), vrchol odrazu, nula ve vzduchu a vysoký špičatý dopad.",
                       "more": "Dopad bývá vyšší než odraz, protože se brzdí kratší dobu. Pokrčená kolena dobu brzdění prodlouží a sílu sníží – stejný impulz, delší čas, menší síla.",
-                      "moreLabel": "Proč vyšší dopad?"
+                      "moreLabel": "Proč vyšší dopad?",
+                      "video": "skok",
+                      "videoLabel": "Pustit záznam NEONFOX"
                     }
                   ]
                 }

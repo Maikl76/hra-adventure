@@ -136,7 +136,19 @@ Každý svět bude mít vlastních devět bran.
   těžiště batohu a společné těžiště vojáka a jaký předklon je potřeba (aktivita `"pack"`).
 - **Zvedání bedny (sklad):** hráč volí držení těla a tahem posouvá bednu blíž k tělu; vidí moment
   v bedrech a sílu zádových svalů na krátkém rameni (aktivita `"lift"`). Bednu zvedne jen
-  s rovnými zády a blízko těla.
+  s rovnými zády a blízko těla. Od verze 0.32 je kreslený novou **realistickou postavou** (proporce
+  a hmotnosti částí těla podle biomechanických tabulek): voják drží bednu za úchyt, v obraze jsou
+  tíha trupu a bedny, jejich ramena od beder a moment; po úspěchu se s bednou narovná.
+- **Stejná postava i v dalších aktivitách** (výpočty beze změny): voják s batohem se předkloní podle
+  společného těžiště (sklad), voják v kliku na decimální váze, postava v simulaci goblet dřepu, hod
+  medicinbalem vsedě u stěny a hod granátem s animací odhodu a detailem vrhače (tělocvična), dva nosiči
+  s raněným na nosítkách a hlava s přilbou, noktovizorem a protizávažím (noční cvičiště). Raněného
+  i váček s protizávažím jde táhnout myší nebo prstem přímo na kresbě.
+- **Výklad „Skok vypráví“ (aréna):** krátké „video“, ve kterém skok sám vypráví, co se při něm děje
+  a jak se to spočítá – podřep, odraz (síla plošiny a impulz), let, vrchol, dopad, pak výpočet
+  h = g · t² / 8. Vedle animace graf síly ze silové plošiny a čísla. **Titulky jsou vždy**, k tomu
+  volitelně syntetický český hlas prohlížeče. Skáče ukázkový hráč ze žebříčku, takže výklad
+  neprozradí odpověď u dveří. Spouští se z knihy Fyzika skoku a z monitoru v měřicí kabině.
 - **Postoj a opěrná plocha (sklad, boty):** pohled shora na chodidla vojáka s batohem; čtyři nárazy
   z různých směrů (i šikmo), před každým je potřeba upravit rozkročení, výpad (kterou nohou vpřed)
   a případně pokrčit kolena (aktivita `"stance"`). Odměnou je lepicí páska na slepení známky.
