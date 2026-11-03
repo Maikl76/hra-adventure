@@ -1037,6 +1037,13 @@ body[data-world="gsport"] .modal-box { box-shadow: 0 0 40px rgba(63, 224, 255, 0
 .stretcher-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 340; border-radius: 8px; background: #0d1410; touch-action: none; user-select: none; -webkit-user-select: none; }
 .helmet-canvas { display: block; width: 100%; height: auto; aspect-ratio: 420 / 340; border-radius: 8px; background: #0b1018; touch-action: none; user-select: none; -webkit-user-select: none; }
 .stretcher-canvas:focus-visible, .helmet-canvas:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+.figurine-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 380; border-radius: 8px; background: #2a2a25; touch-action: none; user-select: none; -webkit-user-select: none; }
+/* Pěchotní srub: páka na loket, vychýlení a hod přes bok, pád vzad */
+.armlock-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 320; border-radius: 8px; background: #4e4d47; touch-action: none; user-select: none; -webkit-user-select: none; }
+.balance-canvas, .fall-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 340; border-radius: 8px; background: #2f5d7a; touch-action: none; user-select: none; -webkit-user-select: none; }
+.fall-toggles { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; }
+.fall-toggles[hidden] { display: none; }
+.fall-toggle[aria-pressed="true"] { border-color: var(--gold); color: var(--gold-bright); background: rgba(201, 162, 39, 0.14); }
 .pack-canvas { display: block; width: 100%; height: auto; aspect-ratio: 600 / 440; border-radius: 8px; background: #23251e; touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
 .pack-tray { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
 .pack-item { padding: 6px 10px; border: 1px solid #6b6250; border-radius: 6px; background: #2a2a20; color: var(--ink); cursor: grab; touch-action: none; font-size: 14px; user-select: none; -webkit-user-select: none; }

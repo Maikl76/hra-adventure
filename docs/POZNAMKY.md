@@ -199,6 +199,20 @@ docs/               tyto poznámky a zadání obrázků pro autora (zadani-obraz
   `heart` {start, again, rest, tau}, `breath` {rate, steady, max}, `targets` [{id, d, az, size, board, label}],
   `rounds` [{target, label, task, spot, wind {speed, from}, range {ask, tolerance}, hint, done, why}], `texts` =
   hlášky pozorovatele; viz Brána IV).
+  Od verze 0.34: `figurine` (kloubová figurína v podzemí tvrze, `js/figurina.js`: `pose` výchozí úhly, `joints`
+  posuvníky kloubů, `goal` {kloub: [od, do]}, `hamstrings` = zadní stehenní svaly omezí kyčel podle kolene
+  (kyčel − 0,8 · koleno ≤ 80°), `limits` {kloub: {min, max}} = vysvětlení zarážek, `hamstringText`, `success`,
+  `number`, `var`; kloub jde ohýbat i tahem končetiny na plátně), `armlock` (páka na loket, `js/pakaloket.js`:
+  `insertCm` úpon bicepsu od lokte, `rMinCm`, `rMaxCm`, `rStartCm`, kola [{name, text, moment (N·m), maxF (N),
+  rStartCm, var, success, fail}] – F = M : r, úchop se táhne po předloktí; výsledky `<var>_cm`, `<var>_F`,
+  `paka_hotovo`), `balance` (vychýlení z rovnováhy a hod přes bok, `js/vychyleni.js`: `mass`, `pullHeight`; kola
+  `kind: "top"` se `stance` `snozmo`|`vypad` a `tolCm` = pohled shora, projde jen nejslabší směr, F = m · g · d : h,
+  šipka tahu se otáčí tahem; `kind: "side"` s `minDiffCm` = bok musí být aspoň o tolik pod těžištěm soupeře;
+  výsledky `vych_<stance>_d`, `bok_cm`, `vychyleni_hotovo`), `fall` (pád vzad, `js/pady.js`: `physics` {mass,
+  hStand, hSquat, tStiff, tRoll, sBack, sSlap, handMass, tHand, sHand}, `maxF`, `maxP` (Pa); kola `kind: "back"`
+  s přepínači dřep / kulatá záda / plácnutí / brada a texty `failHead`, `failForceTime`, `failForceHeight`,
+  `failPressure`, `success`, a `kind: "hand"` = pád na nataženou ruku pro srovnání; výsledky `pady_F`, `pady_p`
+  (kPa), `pady_pokusy`, `pady_ruka_F`, `pady_hotovo`).
   Výsledky se uloží do `vars` a provedou se účinky `done` (`doneCases` = první platný
   případ s podmínkou).
 - Kniha (`book` u předmětu): stránky z bloků `heading`, `p`, `formula`, `note`, `image`
@@ -552,6 +566,46 @@ Brána IV. Podkres `strelnice` (vítr, skřivan, vrána, vzdálený zvon), bouř
   h = ½·g·t² = 31 cm, na 100 m 7,7 cm (2× dál → 4× víc), zvednout hlaveň o 1,5 mil (ve skutečnosti 0,09°) → zásah,
   se vzduchem (stejný odpor jako puška) 36 cm, na 500 m 2,8 m místo 1,9 m. Pohled z boku je svisle zvětšený 200×.
 
+### Vojenská tělovýchova – Chodba: Podzemí tvrze (`tvrz`)
+Autor 3. 11. 2026 chtěl další chodbu a místnost ve vojenském světě; zvolil chodbu „Podzemí staré tvrze“ a místnost
+„Boj zblízka a pády“, návrh schválil („Souhlasím“). Postaveno ve verzi 0.34 za střelnicí: bludiště z vlastních očí
+(`js/chodba.js`, mapa 21 × 14, buňka 2 m, bez kostlivců, podkres `tvrz` – hukot, kapky s ozvěnou, vrzání; bouřka
+`sklep`). Cestu zatarasilo **pět dřevěných kloubových figurín** (aktivita `figurine`): 1 loket (kladkový kloub,
+natažený se zarazí kost o kost), 2 koleno (jen dozadu, natažené zamknou zkřížené vazy), 3 krk (brada na hruď –
+příprava na pád), 4 rameno (kulovitý, nejpohyblivější; dozadu jen asi 50°), 5 kyčel s kolenem (zadní stehenní svaly
+přes dva klouby – s nataženým kolenem stehno jen do 80°). Každá zarážka má vysvětlení, po splnění figurína zajede
+do výklenku (`openWhen`). Boční chodby: nástěnka, plakát **PÁDY** (v = √(2 · g · h)), **šachta** s cedulí hloubky
+(sady 4,5 / 3,2 / 5,5 m), ubikace, filtrovna, polní telefon (Doubkova rada). **Pancéřové dveře do srubu**: rychlost
+dopadu z výšky šachty v = √(2 · g · h) v m/s (±3 %, rady pro v² a km/h) a volba „kladkový kloub = loket“; otevřením
+stránka deníku „Klouby“. Zkratka `?mistnost=tvrz`. Zástupné textury `assets/tvrz/` (figuríny kreslí stejný kód
+jako okno aktivity), zadání `docs/zadani-obrazku-tvrz.md`.
+
+### Vojenská tělovýchova – Brána V: Pěchotní srub (`srub`)
+Postaveno ve verzi 0.34 za tvrzí (schodiště z pancéřových dveří). Horní patro pěchotního srubu přestavěné na
+tělocvičnu boje zblízka; **nikdo se doopravdy nepere** – všechno je na obrazovce a s výpočtem. Postavy: rtn. Doubek
+(ruka v šátku od svalovce, radí), svob. Kratochvíl (páka), svob. Hanák (vychýlení, hod, pád). Čtyři pohledy:
+žíněnky (sem hráč přijde) → pádová žíněnka (měřítko výšky „těžiště?“) → stěna s policí (Příručka boje zblízka,
+plakát BEZPEČNOST NA ŽÍNĚNCE, tabule M = F · r, váha 80 kg = 785 N, lékárnička) → Brána V (periskop, schody do tvrze).
+Podkres `srub` (vítr ve střílně, občas plácnutí o žíněnku), bouřka `budova`.
+- **Páka na loket** (`armlock`): partner drží loket momentem 60 N·m, ruka zvládne 250 N → úchop aspoň 24 cm od lokte;
+  kolo 2: 72 N·m → až u zápěstí (28,8 cm). Biceps (úpon 4 cm) by musel táhnout 1 500 / 1 800 N.
+- **Vychýlení a hod přes bok** (`balance`): pohled shora, Hanák 80 kg, tah ve výšce 1,3 m. Snožmo nejslabší
+  dozadu (okraj 12 cm, 71 N; dopředu 17 cm), výpad kolmo na spojnici chodidel (9 cm, 53 N; dopředu 26 cm). Hod přes bok
+  z boku: osa = tvůj bok ve výšce opasku (zadní obrys pánve), ve stoji jen 2 cm pod Hanákovým těžištěm (1,04 m) →
+  neprojde; podsednout tak, aby byl bok aspoň **10 cm** pod těžištěm (asi 60 % podřepu), pak se Hanák převalí.
+- **Pád vzad** (`fall`): v = √(2 · g · h), F = m · v : t, p = F : S. Ze stoje h 0,9 m (4,2 m/s), z dřepu 0,5 m
+  (3,1 m/s); tvrdě t 0,06 s, s převalem 0,2 s; plocha 0,1 m², s plácnutím 0,3 m². Cíl F ≤ 1 500 N, p ≤ 10 kPa a brada
+  na hruď → projde jen dřep + převal + plácnutí + brada (1 253 N, 4,2 kPa). Kolo 2: pád na nataženou ruku (25 kg,
+  0,05 s, 0,01 m²) → 2 101 N a 210 kPa na zápěstí.
+- **Brána V** (5 kroků): síla páky F = M : r (sady 60/25, 54/18, 70/28 → 240, 300, 250 N; rady pro cm, násobení
+  a sílu bicepsu), volba nejslabšího směru u výpadu, volba proč podsednout, brzdná síla m · √(2 · g · h) : t (sady
+  80 kg/0,5 m/0,2 s, 75/0,45/0,25, 85/0,6/0,3 → 1 253, 891, 972 N; rady pro hybnost, chybějící odmocninu, tíhu,
+  chybějící dvojku), volba proč plácnout (tlak). Každý krok vyžaduje příslušnou aktivitu (`requiresVars`). Deník
+  „Plácnutí“, závěr vojenského světa „Brána V je otevřená“ (čtyři brány zbývají), řádky diplomu (páka, hod, pád),
+  odznaky **Měkký dopad** (správný pád napoprvé) a **Lehká ruka** (páka silou nejvýš 210 N); Rychlík 130 minut.
+  Proměnné sad mají předponu `v_pad_` (`v_hm` a `v_h` už používá cvičiště a fotolab – sady všech místností sdílejí
+  jeden jmenný prostor). Zkratka `?mistnost=srub`. Zástupné kresby, `docs/zadani-obrazku-srub.md`. Bez kamery.
+
 ### Průhledy do vedlejších místností (všechny světy)
 Autor 23. 10. 2026: „aby se v místnostech dalo nakouknout i do další místnosti, aby to nebyly jenom 4 stěny“.
 Ve verzi 0.31 má každá místnost s pohledy jeden průhled se 4–6 věcmi a „Proč?“ (k bráně se nepotřebují):
@@ -686,6 +740,9 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   Třetí výjimka (23. 10. 2026, autor sám chtěl): **odstřelovací puška s dalekohledem** na střelnici na kótě 680 –
   střílí se **jen na ocelové gongy a tabule** (nic živého, žádná krev), s chrániči sluchu a pozorovatelem; výukový
   smysl balistika (pád střely, mil, vítr) a biomechanika střelce (stabilita polohy, dech, tep). Puška zůstává na stanovišti.
+- **Boj zblízka** (3. 11. 2026, autor vybral téma „Boj zblízka a pády“): nikdo se doopravdy nepere ani nezraní –
+  páka se jen „nasadí“ a partner plácne (vzdává), hází se jen na žíněnku, všechno na obrazovce s výpočtem (moment,
+  opěrná plocha, těžiště, F = m · v : t, tlak). Hráč nic necvičí fyzicky (žádné pády doma).
 - **Sklepní bludiště je součást hry** (schváleno 17. 10. 2026): vojenska = sklad → bludiště → tělocvična,
   **od 19. 10. 2026 ještě → 3D chodba na cvičiště** (svalovec; dveře na cvičiště = konec světa).
   Z bludiště se dostane jen ten, kdo vrátí kosti po kostlivcích kostře z kabinetu.
@@ -709,7 +766,9 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   verze 0.29 má každý svět mezi branami chodby – Laboratoře sklepní archiv (bludiště), GSPORT servisní
   chodbu (bludiště) a 3D chodbu k LEVELU 3; odvozené z vojenských chodeb (stejné enginy a textury, jiné
   mapy, jména, zámky). **Vojenská IV Stanoviště na kótě 680** (odstřelovací puška) a **průhledy do vedlejších místností** ve všech
-  světech ve verzi 0.31. **Zbývá:** další brány (IV a výš v Laboratořích a GSPORT, V a výš ve vojenském), střecha s devátou branou a koncem
+  světech ve verzi 0.31. **Vojenská chodba Podzemí tvrze a Brána V Pěchotní srub** (boj zblízka a pády – autor vybral
+  téma i chodbu a schválil návrh 3. 11. 2026) ve verzi 0.34. **Zbývá:** další brány (III a výš v Laboratořích, IV a výš v GSPORT,
+  VI a výš ve vojenském), střecha s devátou branou a koncem
   příběhu (až bude svět dohraný), případně
   obrázky stránek od autora (`docs/zadani-obrazku-denik.md`) a zmínka o učiteli D. na fotografii
   katedry (zvrat až na posledních stránkách). **Docent D. = autor sám** (docent na FTVS), v příběhu zůstává
@@ -776,6 +835,11 @@ Laboratoří 45 minut. Podkres `fotolab` (ventilace, kapání, tikání časova�
   (tlačítko u hotspotu, projde kroky a dohraje konec; `FLAGS=hod_hotovo` nastaví příznaky, `VIA=vyhled` projde
   nejdřív jiný hotspot – výhled do údolí) a `vyklad_kniha.js <místnost> <předmět> <předpona>` (dá knihu do
   inventáře, nalistuje tlačítko výkladu, „‹ Zpět do knihy“ vrátí na tutéž stranu).
+- **Tvrz a srub (0.34):** `tvrz_test.js` (celá chodba klávesami: zarážky figurín, tah končetiny myší, zámek dveří,
+  deník, přechod do srubu; po uvolnění figuríny počkat, než odjede, jinak se ztratí krok) a `srub_test.js . <kód> [390 844
+  touch]` (páka posuvníkem i tažením ruky – scéna na `canvas.__armlock` s `along(r)`, vychýlení posuvníkem i tažením
+  šipky – `canvas.__balance`, hod přes bok, pád se všemi kombinacemi – `canvas.__fall`, příručka, brána s cílenými
+  radami, deník, závěr). Zkušební stránka `zkousky/srub.html?mod=…&cls=…&w=…&h=…&geo=…&st=…` (snímek scény).
 - **Překreslené aktivity:** `pack2.js` (batoh: tažení na kresbě), `telo_test.js kliky|goblet|hod` (tělocvična; hod
   fotí i švih a let), `cviciste_test.js` (nosítka se táhnou na plátně `canvas.stretcher-canvas`, přilba). Zkušební
   stránky `zkousky/hod.html?k=…&a=…&el=…` (snímky odhodu v čase) a `zkousky/cviciste.html?scene=prilba|nositka`.

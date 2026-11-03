@@ -7,8 +7,8 @@
  * čísla jsou ukázková (jiná než v zámku i v řešeném příkladu v knize). Postava z js/postava.js,
  * společný základ v js/vyklad.js, texty kroků v game.json „explainers“ (type „lever“).
  */
-import { makeBody, pose, drawBody } from './postava.js?v=0.33';
-import { G, Explainer, fmt, fmtN, smoother } from './vyklad.js?v=0.33';
+import { makeBody, pose, drawBody } from './postava.js?v=0.34';
+import { G, Explainer, fmt, fmtN, smoother } from './vyklad.js?v=0.34';
 
 const DEG = Math.PI / 180;
 const MASS = 3;           // činka (kg)

@@ -2,7 +2,7 @@
   "meta": {
     "title": "Devět bran k pochopení pohybu",
     "subtitle": "Výuková adventura z prostředí Fakulty tělesné výchovy a sportu",
-    "version": "0.33",
+    "version": "0.34",
     "totalGates": 9
   },
 
@@ -108,6 +108,24 @@
         "text": "Dechová pauza. Tělo nikdy nestojí – i vleže se puška zvedá s každým nádechem a cuká s každým tepem. Střelec se to nesnaží zastavit, jen počká na chvíli, kdy je klid: po výdechu, než se tělo zase nadechne. A kulka? Padá od první setiny sekundy, stejně jako kámen z ruky. Rychlost ji pádu neušetří, jen zkrátí čas, kdy padá.\nNa kótě jsem kdysi střílel s pozorovatelem, který měl tep jako hodinky. Mně po výstupu bušilo srdce jako zvon. Řekl mi: „Nespěchej. Gong počká, ty se uklidni.“ Od té doby čekám na pauzu – i u zkoušek."
       },
       {
+        "id": "tvrz",
+        "room": "tvrz",
+        "short": "Podzemí tvrze",
+        "track": "vojenska",
+        "gate": "Tvrz",
+        "title": "Klouby",
+        "text": "Klouby. Kost je páka, ale kloub rozhoduje, kam se ta páka smí otočit. Loket a koleno mají jeden směr, rameno a kyčel skoro všechny – a za tu volnost se platí: rameno se vykloubí nejsnáz ze všech. Kdo ví, kam kloub nejde, ví taky, kde je slabý. Na tom stojí každá páka v boji zblízka.\nFiguríny v tvrzi jsem kdysi ohýbal se studenty jednu zimu, kdy v kasárnách netopili. Jeden kadet chtěl ohnout koleno dopředu, protože „figurína to snese“. Nesnesla. Dvojka má od té doby nové koleno a já větu, kterou říkám každý rok: tělo není figurína."
+      },
+      {
+        "id": "srub",
+        "room": "srub",
+        "short": "Pěchotní srub",
+        "track": "vojenska",
+        "gate": "Brána V",
+        "title": "Plácnutí",
+        "text": "Plácnutí. Na žíněnce se dvě věci učí dřív než všechno ostatní: padat a vzdávat. Obojí se dělá stejně – plácnutím. Dlaň o žíněnku rozloží náraz, dlaň o partnera znamená stop. Kdo umí padat, nebojí se učit – a kdo umí vzdát, nemusí se bát páky.\nV srubu nás první měsíc nikdo nenechal nikoho hodit. Jen jsme padali – dozadu, do strany, přes rameno – stokrát denně, až nás pálily dlaně. O pár let později jsem uklouzl na zledovatělém chodníku. Než jsem si uvědomil, co se děje, ležel jsem s bradou na prsou a plácl jsem do sněhu. Paní, která šla kolem, se ptala, jestli to dělám schválně."
+      },
+      {
         "id": "herna",
         "room": "herna",
         "short": "Stará herna",
@@ -192,12 +210,12 @@
       "id": "vojenska",
       "name": "Vojenská tělovýchova",
       "description": "Výstroj, zátěž, překážky. Brány vojenské tělesné přípravy.",
-      "rooms": ["sklad", "chodba", "telocvicna", "prekazky", "cviciste", "strelnice"],
+      "rooms": ["sklad", "chodba", "telocvicna", "prekazky", "cviciste", "strelnice", "tvrz", "srub"],
       "_roomsBefore": "Pořadí místností před zařazením bludiště (17. 10. 2026) – podle něj se starší uložená hra vrátí do správné místnosti.",
       "roomsBefore": ["sklad", "telocvicna"],
       "finish": {
-        "title": "Brána IV je otevřená",
-        "text": "Stanoviště na kótě 680 je za tebou. Brána u střelnice je otevřená, nad údolím vychází slunce a gongy ještě tiše doznívají. Na sloupku visí na provázku prázdná nábojnice a lísteček: „Dýchat umíš, mířit taky – a víš, proč kulka padá. Pět bran zbývá. – D.“",
+        "title": "Brána V je otevřená",
+        "text": "Pěchotní srub je za tebou. Pancéřové dveře s velkým V jsou otevřené a schodiště stoupá k pozorovacímu zvonu. Na zábradlí visí obvaz smotaný do uzlíku a lísteček: „Páku umíš, okraj najdeš a padáš měkce – a víš proč. Čtyři brány zbývají. – D.“",
         "photoHint": "Vyfoťte tuto obrazovku a ukažte ji vyučujícímu.",
         "cameraLabel": "Zkouška stability ověřená kamerou",
         "stats": [
@@ -215,10 +233,13 @@
           { "label": "Protizávaží noktovizoru", "value": "{prilba_kg:2} kg na {prilba_cm} cm (bez něj šíje {prilba_f0} N)", "requires": ["prilba_kg"] },
           { "label": "Výstup na stanoviště", "value": "{svah_trasa}: {svah_t:1} min, {svah_P} W (práce {svah_W:1} kJ)", "requires": ["svah_t"] },
           { "label": "Odstřelovací puška – gongy", "value": "4 gongy (100–500 m) na {strelba_strely} výstřelů, se zadrženým dechem {strelba_dech}×, vleže {strelba_vleze}×", "requires": ["strelba_strely"] },
-          { "label": "Vzdálenost změřená křížem", "value": "{strelba_vzdalenost} m", "requires": ["strelba_vzdalenost"] }
+          { "label": "Vzdálenost změřená křížem", "value": "{strelba_vzdalenost} m", "requires": ["strelba_vzdalenost"] },
+          { "label": "Páka na loket", "value": "úchop {paka_cm} cm od lokte, síla {paka_F} N", "requires": ["paka_F"] },
+          { "label": "Hod přes bok", "value": "bok {bok_cm} cm pod těžištěm soupeře", "requires": ["bok_cm"] },
+          { "label": "Pád vzad", "value": "průměrná síla {pady_F} N, tlak {pady_p:1} kPa ({pady_pokusy}. pokus)", "requires": ["pady_F"] }
         ],
         "badges": [
-          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 110 minut.", "maxMinutes": 110 },
+          { "id": "rychlik", "label": "Rychlík", "desc": "Celý svět do 130 minut.", "maxMinutes": 130 },
           { "id": "kamera", "label": "Kamera nelže", "desc": "Zkouška stability změřená kamerou.", "when": { "vars": ["zed_panev"] } },
           { "id": "silak", "label": "Silák", "desc": "Aspoň 30 platných goblet dřepů za 90 s.", "when": { "vars": ["goblet_n"], "exprs": ["goblet_n >= 30"] } },
           { "id": "anatom", "label": "Anatom", "desc": "V bludišti každá kost napoprvé.", "when": { "vars": ["kosti_spravne", "kosti_chybne"], "exprs": ["kosti_chybne == 0"] } },
@@ -230,6 +251,8 @@
           { "id": "hlidka", "label": "Rychlá hlídka", "desc": "Na stanovišti do 15 minut – a bojeschopní.", "when": { "vars": ["svah_t"], "exprs": ["svah_t <= 15"] } },
           { "id": "odstrelovac", "label": "Odstřelovač", "desc": "Čtyři gongy nejvýš na 8 výstřelů.", "when": { "vars": ["strelba_strely"], "exprs": ["strelba_strely <= 8"] } },
           { "id": "klidny_dech", "label": "Klidný dech", "desc": "Každý gong se zadrženým dechem.", "when": { "vars": ["strelba_dech"], "exprs": ["strelba_dech >= 4"] } },
+          { "id": "mekky_dopad", "label": "Měkký dopad", "desc": "Správný pád vzad hned napoprvé.", "when": { "vars": ["pady_pokusy"], "exprs": ["pady_pokusy == 1"] } },
+          { "id": "lehka_ruka", "label": "Lehká ruka", "desc": "Páka na loket silou nejvýš 210 N.", "when": { "vars": ["paka_F"], "exprs": ["paka_F <= 210"] } },
           { "id": "zvedavec", "label": "Zvědavec", "desc": "Nakoukl do všech čtyř vedlejších místností.", "when": { "flags": ["nahled_sklad", "nahled_telocvicna", "nahled_cviciste", "nahled_strelnice"] } }
         ]
       }
@@ -1555,6 +1578,159 @@
               },
               {
                 "note": "Vítr zprava → miř doprava. Praporky ukazují, kam vítr fouká."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "prirucka_boje": {
+      "name": "Příručka boje zblízka",
+      "icon": "assets/items/prirucka_boje.svg",
+      "description": "Ohmataná příručka z police v pěchotním srubu. Páka, rovnováha, hod přes bok a pády.",
+      "examine": [
+        {
+          "when": {
+            "notFlags": [
+              "prirucka_boje_prectena"
+            ]
+          },
+          "do": [
+            {
+              "set": "prirucka_boje_prectena"
+            },
+            {
+              "note": "Příručka boje zblízka: moment M = F · r (sval se upíná blízko kloubu → velká síla); převrácení F · h = m · g · d, nejslabší směr kolmo na spojnici chodidel; hod přes bok = bok pod těžiště; pád v = √(2 · g · h), F = m · v : t, p = F : S; nikdy na nataženou ruku.",
+              "noteKey": "prirucka_boje"
+            }
+          ]
+        }
+      ],
+      "book": {
+        "title": "Příručka boje zblízka",
+        "pages": [
+          {
+            "type": "title",
+            "blocks": [
+              {
+                "heading": "PŘÍRUČKA BOJE ZBLÍZKA"
+              },
+              {
+                "p": "pěchotní srub – tělocvična"
+              },
+              {
+                "note": "Na žíněnce se nikdo nezraní. Plácnutí = stop. – D."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "1  Páka"
+              },
+              {
+                "p": "Kloub je osa, kost je páka. Jak silně síla kloubem otáčí, říká moment síly:"
+              },
+              {
+                "formula": "M = F · r"
+              },
+              {
+                "p": "r je rameno – vzdálenost od osy (v metrech). Stejný moment udělá velká síla blízko osy, nebo malá síla daleko. Příklad: soupeř drží 40 N·m, ty chytíš 20 cm od kloubu → F = 40 : 0,2 = 200 N."
+              },
+              {
+                "note": "Svaly se upínají blízko kloubů – biceps asi 4 cm od lokte. Mají krátké rameno, proto musí táhnout obrovskou silou. Kdo chytí daleko od kloubu, vyhraje i se slabší rukou."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "2  Rovnováha"
+              },
+              {
+                "p": "Člověk stojí, dokud je průmět jeho těžiště nad opěrnou plochou – nad chodidly a prostorem mezi nimi. Aby se převrátil, musí ho tah dostat přes okraj. Tah ve výšce h musí překonat moment tíhy:"
+              },
+              {
+                "formula": "F · h = m · g · d"
+              },
+              {
+                "p": "d je vzdálenost těžiště od okraje v tom směru. Nejmenší síla stačí tam, kde je okraj nejblíž."
+              },
+              {
+                "note": "Opěrná plocha je dlouhá ve směru, kterým jsou chodidla za sebou, a úzká kolmo na jejich spojnici. Tam je slabé místo každého postoje."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "3  Hod přes bok"
+              },
+              {
+                "p": "Nejdřív vychýlit – soupeř se opře o tebe. Pak podsednout: pokrčit kolena, aby tvůj bok sjel pod jeho těžiště. Bok je osa."
+              },
+              {
+                "p": "Těžiště nad osou → soupeř se přes bok převalí sám, ruce jen dotáhnou. Bok výš než těžiště → soupeř na tobě visí a musel bys ho zvednout celého: m · g ≈ 800 N."
+              },
+              {
+                "note": "Hází se jen na žíněnku a jen s partnerem, který umí padat."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "4  Pád – rychlost"
+              },
+              {
+                "p": "Při pádu padá těžiště jako každé těleso. Rychlost dopadu záleží na výšce, o kterou klesne:"
+              },
+              {
+                "formula": "v = √(2 · g · h)"
+              },
+              {
+                "p": "Ze stoje klesne těžiště asi o 0,9 m (v ≈ 4,2 m/s), z dřepu jen asi o 0,5 m (v ≈ 3,1 m/s)."
+              },
+              {
+                "note": "Proto se před pádem nejdřív dřepne – kratší pád, menší rychlost."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "5  Pád – síla a tlak"
+              },
+              {
+                "p": "Zastavit tělo z rychlosti v za čas t znamená průměrnou sílu"
+              },
+              {
+                "formula": "F = m · v : t"
+              },
+              {
+                "p": "Kulatá záda a převal prodlouží brzdění t – síla klesne. Příklad: 70 kg, 3 m/s, 0,15 s → F = 70 · 3 : 0,15 = 1 400 N. K tomu se přičte ještě tíha m · g, při krátkém brzdění je ale malá."
+              },
+              {
+                "formula": "p = F : S"
+              },
+              {
+                "p": "Plácnutí rukama a dopad na celá záda zvětší plochu S – tlak klesne. Brada na hruď: hlava se žíněnky nedotkne."
+              }
+            ]
+          },
+          {
+            "blocks": [
+              {
+                "heading": "6  Nikdy na nataženou ruku"
+              },
+              {
+                "p": "Na nataženou ruku připadne „jen“ horní část těla. Jenže ruka se zastaví za setiny sekundy a na malé ploše dlaně: síla je přes 2 000 N a tlak stovky kPa."
+              },
+              {
+                "p": "Výsledek: zlomené zápěstí, vykloubený loket nebo zlomená klíční kost – nejčastější úrazy při pádu."
+              },
+              {
+                "note": "Ruce plácají, nechytají."
               }
             ]
           }
@@ -13096,6 +13272,1992 @@
           {
             "note": "BRÁNA IV: vzdálenost = velikost × 1 000 : mil; kulka padá ½ · g · t² (bez vzduchu t = d : v, se vzduchem letí déle a klesne víc); vodorovný pohyb a svislý pád jsou nezávislé; vleže = velká opěrná plocha a nízké těžiště; spoušť v dechové pauze po výdechu.",
             "noteKey": "brana4"
+          }
+        ]
+      }
+    },
+
+    "tvrz": {
+      "name": "Podzemí tvrze",
+      "gateLabel": "Tvrz",
+      "tracks": [
+        "vojenska"
+      ],
+      "type": "corridor",
+      "_poznamka": "Bludiště „z vlastních očí“ (js/chodba.js) mezi Bránou IV (střelnice) a Bránou V (srub), postaveno 3. 11. 2026 (autor schválil námět „podzemí staré tvrze“ s vlastním úkolem). Místo kostlivců kloubové figuríny (aktivita „figurine“, js/figurina.js): klouby a jejich rozsahy. Samotné se dá spustit odkazem ?mistnost=tvrz.",
+      "ambience": "tvrz",
+      "storm": {
+        "place": "sklep",
+        "steps": [
+          "figurina1_uvolnena",
+          "figurina2_uvolnena",
+          "figurina3_uvolnena",
+          "figurina4_uvolnena",
+          "figurina5_uvolnena",
+          "dvere_srub_otevrene"
+        ]
+      },
+      "darkness": 0,
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_sachta": 4.5
+        },
+        {
+          "_sada": "B",
+          "v_sachta": 3.2
+        },
+        {
+          "_sada": "C",
+          "v_sachta": 5.5
+        }
+      ],
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "figurina1_uvolnena"
+            ]
+          },
+          "text": "Figurína není nepřítel, jen zaseknutý kloub. Loket se ohýbá jen jedním směrem – zkus ten druhý."
+        },
+        {
+          "when": {
+            "flags": [
+              "figurina1_uvolnena"
+            ],
+            "notFlags": [
+              "figurina2_uvolnena"
+            ]
+          },
+          "text": "Koleno jde jen dozadu. Kdo ohýbá figurínu jako člověka, projde."
+        },
+        {
+          "when": {
+            "flags": [
+              "figurina2_uvolnena"
+            ],
+            "notFlags": [
+              "figurina3_uvolnena"
+            ]
+          },
+          "text": "Pád vzad: kam s bradou? K hrudníku, ne ke stropu."
+        },
+        {
+          "when": {
+            "flags": [
+              "figurina3_uvolnena"
+            ],
+            "notFlags": [
+              "figurina4_uvolnena"
+            ]
+          },
+          "text": "Rameno je kulovitý kloub – vpředu a nahoře má spoustu místa."
+        },
+        {
+          "when": {
+            "flags": [
+              "figurina4_uvolnena"
+            ],
+            "notFlags": [
+              "figurina5_uvolnena"
+            ]
+          },
+          "text": "Stehno k hrudníku s nataženým kolenem nepůjde. Pomůže koleno."
+        },
+        {
+          "when": {
+            "flags": [
+              "figurina5_uvolnena"
+            ],
+            "notFlags": [
+              "dvere_srub_otevrene"
+            ]
+          },
+          "text": "Na dveře potřebuješ výšku šachty (cedule u žebříku) a vzorec z plakátu PÁDY. Obojí je v bočních chodbách na západě, kousek od vchodu."
+        }
+      ],
+      "enterText": "Cesta po hřebeni skončila u betonového vchodu do skály – stará tvrz. Pancéřové dveře jsou pootevřené. Uvnitř je chladno, odněkud kape voda a pod stropem bzučí pár žárovek. Někde nahoře je pěchotní srub – a v něm Brána V.",
+      "enterMore": "Chodí se jako ve sklepě: šipky ↑ ↓ krok, ← → otočení, nebo klikání do obrazu. Cestu zatarasily dřevěné kloubové figuríny – každou uvolníš, když jí ohneš správný kloub správným směrem.",
+      "enterMoreLabel": "Jak na to?",
+      "_shortcut": "Odkaz pro vyučující ?mistnost=tvrz: hra začne rovnou tady a hráč dostane kalkulačku ze skladu.",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš rovnou v podzemí tvrze za Bránou IV. Kalkulačku ze skladu máš u sebe."
+        }
+      ],
+      "corridor": {
+        "_poznamka": "Mapa: „.“ = chodba, ostatní znaky = zdi s texturou podle „legend“ (1–5 = kloubové figuríny: zeď, která se otevře, když hráč figurínu uvolní). Deska podlahy (políčko) měří 2 m. Objekty na zdech jsou v „hotspots“ s „cell“ [x, y].",
+        "map": [
+          "#####################",
+          "######C##############",
+          "###U.......2...######",
+          "######1#######.######",
+          "#P.....#######...3.##",
+          "######.#######.###.##",
+          "######.#######.###.##",
+          "######.#######F###4##",
+          "#S.....###########.##",
+          "######.######T.....##",
+          "#####N.###########.##",
+          "######V###########5##",
+          "##################..D",
+          "#####################"
+        ],
+        "start": {
+          "x": 6,
+          "y": 10,
+          "dir": "N"
+        },
+        "cellMeters": 2,
+        "wall": "beton",
+        "floor": "podlaha",
+        "ceiling": "strop",
+        "legend": {
+          "#": "beton",
+          "V": "vchod",
+          "N": "nastenka",
+          "P": "plakat_pady",
+          "S": "sachta",
+          "U": "ubikace",
+          "F": "filtrovna",
+          "T": "telefon",
+          "C": "cedule",
+          "D": [
+            {
+              "when": {
+                "flags": [
+                  "dvere_srub_otevrene"
+                ]
+              },
+              "texture": "dvere_srub_otevrene"
+            },
+            {
+              "texture": "dvere_srub"
+            }
+          ],
+          "1": {
+            "texture": "figurina1",
+            "openWhen": {
+              "flags": [
+                "figurina1_uvolnena"
+              ]
+            }
+          },
+          "2": {
+            "texture": "figurina2",
+            "openWhen": {
+              "flags": [
+                "figurina2_uvolnena"
+              ]
+            }
+          },
+          "3": {
+            "texture": "figurina3",
+            "openWhen": {
+              "flags": [
+                "figurina3_uvolnena"
+              ]
+            }
+          },
+          "4": {
+            "texture": "figurina4",
+            "openWhen": {
+              "flags": [
+                "figurina4_uvolnena"
+              ]
+            }
+          },
+          "5": {
+            "texture": "figurina5",
+            "openWhen": {
+              "flags": [
+                "figurina5_uvolnena"
+              ]
+            }
+          }
+        },
+        "textures": {
+          "beton": "assets/tvrz/beton.webp",
+          "podlaha": "assets/tvrz/podlaha.webp",
+          "strop": "assets/tvrz/strop.webp",
+          "vchod": "assets/tvrz/vchod.webp",
+          "nastenka": "assets/tvrz/nastenka.webp",
+          "plakat_pady": "assets/tvrz/plakat_pady.webp",
+          "sachta": "assets/tvrz/sachta.webp",
+          "ubikace": "assets/tvrz/ubikace.webp",
+          "filtrovna": "assets/tvrz/filtrovna.webp",
+          "telefon": "assets/tvrz/telefon.webp",
+          "cedule": "assets/tvrz/cedule.webp",
+          "dvere_srub": "assets/tvrz/dvere_srub.webp",
+          "dvere_srub_otevrene": "assets/tvrz/dvere_srub_otevrene.webp",
+          "figurina1": "assets/tvrz/figurina1.webp",
+          "figurina2": "assets/tvrz/figurina2.webp",
+          "figurina3": "assets/tvrz/figurina3.webp",
+          "figurina4": "assets/tvrz/figurina4.webp",
+          "figurina5": "assets/tvrz/figurina5.webp"
+        },
+        "lamps": [
+          {
+            "x": 6,
+            "y": 9,
+            "strength": 0.8
+          },
+          {
+            "x": 6,
+            "y": 6,
+            "strength": 0.65
+          },
+          {
+            "x": 3,
+            "y": 8,
+            "strength": 0.5,
+            "flicker": true
+          },
+          {
+            "x": 3,
+            "y": 4,
+            "strength": 0.6
+          },
+          {
+            "x": 6,
+            "y": 2,
+            "strength": 0.8
+          },
+          {
+            "x": 9,
+            "y": 2,
+            "strength": 0.55
+          },
+          {
+            "x": 13,
+            "y": 2,
+            "strength": 0.7,
+            "flicker": true
+          },
+          {
+            "x": 14,
+            "y": 5,
+            "strength": 0.5
+          },
+          {
+            "x": 16,
+            "y": 4,
+            "strength": 0.7
+          },
+          {
+            "x": 18,
+            "y": 5,
+            "strength": 0.6
+          },
+          {
+            "x": 18,
+            "y": 9,
+            "strength": 0.7
+          },
+          {
+            "x": 15,
+            "y": 9,
+            "strength": 0.45,
+            "flicker": true
+          },
+          {
+            "x": 19,
+            "y": 12,
+            "strength": 0.9
+          }
+        ],
+        "_textury": "Zástupné textury 1024 × 1024 (SVG → WebP, figuríny kreslí js/figurina.js). Zadání pro autora: docs/zadani-obrazku-tvrz.md."
+      },
+      "hotspots": [
+        {
+          "id": "vchod",
+          "name": "Vstupní dveře tvrze",
+          "cell": [
+            6,
+            11
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Vstupní pancéřové dveře tvrze – tudy jsi přišel z hřebene. Venku svítá, dovnitř dopadá jen úzký proužek světla."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "nastenka",
+          "name": "Nástěnka",
+          "cell": [
+            5,
+            10
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "sound": "paper"
+                },
+                {
+                  "closeup": {
+                    "note": "TVRZ – PODZEMÍ\n\nV tvrzi kdysi cvičila jednotka boje zblízka.\nDřevěné kloubové figuríny zůstaly stát v chodbách,\njak je naposledy někdo ohnul – a zasekly se.\n\nUvolní se jen tomu, kdo ví, kam se kloub ohnout dá\na kam ne. Silou nic nezlomíš – figurína má klouby\njako člověk.\n\nNahoře v pěchotním srubu čeká Doubek.\nNa pancéřové dveře budeš potřebovat výšku šachty\na plakát o pádech.\n– D.",
+                    "caption": "Vzkaz na nástěnce u vchodu"
+                  }
+                },
+                {
+                  "note": "Tvrz: figuríny se uvolní, když jim hráč ohne kloub tam, kam se kloub opravdu ohýbá. Na pancéřové dveře do srubu: výška šachty a plakát PÁDY.",
+                  "noteKey": "tvrz_nastenka"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cedule",
+          "name": "Směrová cedule",
+          "cell": [
+            6,
+            1
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Šablonou na zdi: ↑ SRUB – BOJ ZBLÍZKA, ← UBIKACE, STROJOVNA →. Šipka nahoru míří do betonu – do srubu se jde oklikou."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "plakat_pady",
+          "name": "Plakát PÁDY",
+          "cell": [
+            1,
+            4
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "sound": "paper"
+                },
+                {
+                  "closeup": {
+                    "note": "PÁDY – výcviková tabule\n\nRychlost dopadu z výšky h (bez odporu vzduchu):\n    v = √(2 · g · h)          g = 9,81 m/s²\n\nZ 1 m: 4,4 m/s. Ze 4 m jen dvojnásobek: 8,9 m/s\n– rychlost roste s odmocninou výšky.\n\nPád vzad z postoje: těžiště klesne asi o 1 m.\nKdo si nejdřív dřepne, padá z poloviny.\n\nPÁD VZAD: brada na hruď · kulatá záda ·\nplácnout rukama do žíněnky.\nNIKDY na nataženou ruku.",
+                    "font": "type",
+                    "caption": "Výcviková tabule ve slepé chodbě"
+                  }
+                },
+                {
+                  "note": "Plakát PÁDY: rychlost dopadu z výšky h: v = √(2 · g · h), g = 9,81 m/s². Pád vzad: brada na hruď, kulatá záda, plácnout rukama, nikdy na nataženou ruku.",
+                  "noteKey": "tvrz_pady"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sachta",
+          "name": "Šachta se žebříkem",
+          "cell": [
+            1,
+            8
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "closeup": {
+                    "note": "ŠACHTA – SPOJOVACÍ CHODBA\n\nHLOUBKA {v_sachta} m\n\nNA ŽEBŘÍKU SE JISTIT!",
+                    "font": "type",
+                    "caption": "Smaltovaná cedule u žebříku"
+                  }
+                },
+                {
+                  "note": "Šachta se žebříkem v tvrzi: hloubka {v_sachta} m.",
+                  "noteKey": "tvrz_sachta"
+                },
+                {
+                  "text": "Žebřík mizí ve tmě. Příčle jsou kluzké od vlhka – kdo tu spadne, dopadne rychle."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ubikace",
+          "name": "Ubikace",
+          "cell": [
+            3,
+            2
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Ubikace s palandami. Na zdi vyškrábané čárky – někdo tu počítal dny do civilu. Na palandě leží zapomenuté chrániče loktů a kolen: chrání přesně ty klouby, na které se při pádu dopadá."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "filtrovna",
+          "name": "Filtrovna",
+          "cell": [
+            14,
+            7
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "text": "Filtrovna vzduchu: ruční ventilátor s dlouhou klikou. Za plynového poplachu ho točili vojáci ručně – za konec kliky, daleko od osy, protože tam stačí nejmenší síla."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "telefon",
+          "name": "Polní telefon",
+          "cell": [
+            13,
+            9
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "sound": "phoneRing"
+                },
+                {
+                  "text": "Zvedneš sluchátko. „Tady Doubek, srub. Figuríny ohýbej, jak se ohýbá člověk – loket a koleno jen jedním směrem. Na dveře nahoře budeš potřebovat výšku šachty a plakát o pádech. A pospěš si, Hanák se už těší, až bude padat.“"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dvere_srub",
+          "name": "Pancéřové dveře do srubu",
+          "cell": [
+            20,
+            12
+          ],
+          "click": [
+            {
+              "when": {
+                "flags": [
+                  "dvere_srub_otevrene"
+                ]
+              },
+              "do": [
+                {
+                  "text": "Stoupáš po strmém schodišti vzhůru. Shora je slyšet plesknutí žíněnky a Doubkův hlas: „Hanáku, ještě jednou – a bradu na hruď!“"
+                },
+                {
+                  "leave": true
+                }
+              ]
+            },
+            {
+              "do": [
+                {
+                  "sound": "locked"
+                },
+                {
+                  "lock": "dvere_srub"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "figurina1",
+          "name": "Kloubová figurína 1",
+          "cell": [
+            6,
+            3
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "activity": "figurina1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "figurina2",
+          "name": "Kloubová figurína 2",
+          "cell": [
+            11,
+            2
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "activity": "figurina2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "figurina3",
+          "name": "Kloubová figurína 3",
+          "cell": [
+            17,
+            4
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "activity": "figurina3"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "figurina4",
+          "name": "Kloubová figurína 4",
+          "cell": [
+            18,
+            7
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "activity": "figurina4"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "figurina5",
+          "name": "Kloubová figurína 5",
+          "cell": [
+            18,
+            11
+          ],
+          "click": [
+            {
+              "do": [
+                {
+                  "activity": "figurina5"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "locks": {
+        "dvere_srub": {
+          "title": "Pancéřové dveře do srubu",
+          "openFlag": "dvere_srub_otevrene",
+          "steps": [
+            {
+              "type": "code",
+              "question": "Na dveřích je číselník a vyrytý vzkaz: „Kdo spadne ze žebříku v šachtě až ze samého vrchu, dopadne na dno rychlostí v. Spočítej ji – zadej v m/s, odpor vzduchu zanedbej. – D.“",
+              "unit": "m/s",
+              "answer": "sqrt(2*9.81*v_sachta)",
+              "toleranceRel": 0.03,
+              "feedbackFormulas": [
+                {
+                  "value": "2*9.81*v_sachta",
+                  "text": "To je v² (rychlost na druhou). Ještě odmocnit: v = √(2 · g · h)."
+                },
+                {
+                  "value": "sqrt(9.81*v_sachta)",
+                  "text": "Chybí dvojka pod odmocninou: v = √(2 · g · h)."
+                },
+                {
+                  "value": "sqrt(2*v_sachta)",
+                  "text": "Chybí tíhové zrychlení g = 9,81 m/s²."
+                },
+                {
+                  "value": "3.6*sqrt(2*9.81*v_sachta)",
+                  "text": "To je rychlost v km/h. Číselník chce m/s."
+                }
+              ],
+              "wrong": "Číselník zablikal červeně.",
+              "hints": [
+                "Výšku šachty najdeš na ceduli u žebříku, vzorec na plakátu PÁDY ve slepé chodbě.",
+                "v = √(2 · g · h), h = {v_sachta} m.",
+                "√(2 · 9,81 · {v_sachta}) ≈ {=sqrt(2*9.81*v_sachta):1} m/s."
+              ],
+              "success": "Zelená! Ještě jedna otázka…"
+            },
+            {
+              "type": "choice",
+              "question": "„Který kloub se ohne jen jedním směrem – a natažený se zarazí kost o kost?“",
+              "options": [
+                "Loket",
+                "Rameno",
+                "Kyčel",
+                "Krk"
+              ],
+              "correct": 0,
+              "feedback": {
+                "1": "Rameno je kulovitý kloub – hýbe se skoro všemi směry.",
+                "2": "Kyčel je také kulovitý kloub: dopředu, dozadu, do stran i otáčení.",
+                "3": "Krk se ohne dopředu, dozadu, do stran i otočí – je to sedm obratlů a mezi nimi klouby."
+              },
+              "wrong": "Číselník zablikal červeně.",
+              "hints": [
+                "Vzpomeň na první figurínu.",
+                "Kladkový kloub se ohýbá jen jako pant.",
+                "Natažený se zarazil loket – výběžek loketní kosti zapadl do jamky na pažní kosti."
+              ],
+              "success": "Zelená! Dveře se odjišťují…"
+            }
+          ],
+          "open": [
+            {
+              "denik": "tvrz"
+            },
+            {
+              "sound": "unlock"
+            },
+            {
+              "text": "Pancéřové dveře se s hlubokým hukotem odsunuly. Za nimi stoupá strmé schodiště – do pěchotního srubu."
+            },
+            {
+              "note": "TVRZ: loket a koleno jsou kladkové klouby – ohnou se jen jedním směrem a natažené se zarazí; rameno a kyčel jsou kulovité (rameno nejpohyblivější, kyčel stabilnější); zadní stehenní svaly vedou přes kyčel i koleno. Rychlost dopadu z výšky: v = √(2 · g · h).",
+              "noteKey": "tvrz"
+            }
+          ]
+        }
+      },
+      "activities": {
+        "figurina1": {
+          "type": "figurine",
+          "number": 1,
+          "var": "figurina1",
+          "title": "Figurína 1 – loket",
+          "intro": "Dřevěná figurína stojí uprostřed chodby a drží nataženou paži přes celou šířku. Klouby má jako člověk – a zasekla se tak, jak ji kdosi naposledy nechal.",
+          "task": "Ohni figuríně loket aspoň o 90°, ať paže uvolní chodbu. Zkus ho klidně ohnout i na druhou stranu.",
+          "joints": [
+            "elbow"
+          ],
+          "pose": {
+            "shoulder": 90,
+            "elbow": 0
+          },
+          "goal": {
+            "elbow": [
+              90,
+              145
+            ]
+          },
+          "limits": {
+            "elbow": {
+              "min": "Dál ne! Natažený loket se zarazí: výběžek loketní kosti zapadne do jamky na pažní kosti – kost narazí na kost. Loket je kladkový kloub, ohýbá se jen jedním směrem. Na tom stojí páka na loket: tlak proti nataženému lokti jde rovnou do kostí a vazů.",
+              "max": "Víc už loket nepovolí – asi 145°: předloktí narazí na svaly paže."
+            }
+          },
+          "success": "Paže je ohnutá a figurína uvolnila chodbu. Loket je kladkový kloub: jen ohnout a natáhnout. (Otáčení dlaně dělá jiný kloub – mezi kostmi předloktí.)",
+          "done": [
+            {
+              "set": "figurina1_uvolnena"
+            },
+            {
+              "sound": "creakSoft"
+            },
+            {
+              "text": "Figurína s cvaknutím složila paži a zajela do výklenku ve zdi. Chodba vede dál na sever."
+            }
+          ]
+        },
+        "figurina2": {
+          "type": "figurine",
+          "number": 2,
+          "var": "figurina2",
+          "title": "Figurína 2 – koleno",
+          "intro": "Druhá figurína zvedá nataženou nohu napříč chodbou jako závoru.",
+          "task": "Pokrč figuríně koleno aspoň o 90° – bérec spadne dolů a chodba bude volná.",
+          "joints": [
+            "knee"
+          ],
+          "pose": {
+            "hip": 80,
+            "knee": 0
+          },
+          "goal": {
+            "knee": [
+              90,
+              140
+            ]
+          },
+          "limits": {
+            "knee": {
+              "min": "Natažené koleno dopředu neprohneš – zamknou ho vazy (hlavně zkřížené vazy uprostřed kolena). Koleno se ohýbá jen dozadu.",
+              "max": "Víc to nejde – asi 140°: lýtko narazí na zadní stranu stehna."
+            }
+          },
+          "success": "Koleno pokrčené. Ohýbá se jen jedním směrem; jen v pokrčení se bérec může trochu natočit – proto je koleno nejzranitelnější při otočce na pokrčené noze.",
+          "done": [
+            {
+              "set": "figurina2_uvolnena"
+            },
+            {
+              "sound": "creakSoft"
+            },
+            {
+              "text": "Noha figuríny klesla a figurína odjela po kolejničce stranou. Cesta je volná."
+            }
+          ]
+        },
+        "figurina3": {
+          "type": "figurine",
+          "number": 3,
+          "var": "figurina3",
+          "title": "Figurína 3 – krk",
+          "intro": "Třetí figurína zaklání hlavu a zírá do stropu. Na cedulce pod ní stojí: POLOHA PRO PÁD VZAD.",
+          "task": "Nastav figuríně hlavu pro pád vzad: brada k hrudníku – krk předkloněný aspoň o 30°.",
+          "joints": [
+            "neck"
+          ],
+          "pose": {
+            "neck": -60
+          },
+          "goal": {
+            "neck": [
+              30,
+              45
+            ]
+          },
+          "limits": {
+            "neck": {
+              "min": "Dál dozadu to nejde – krk se zakloní asi o 70°. Při pádu vzad je záklon to nejhorší: hlava by dopadla jako první.",
+              "max": "Víc už ne – brada leží na hrudní kosti (asi 45°)."
+            }
+          },
+          "success": "Brada na hrudi: při pádu vzad hlava nenarazí, dopadnou kulatá záda. Krční páteř tvoří sedm obratlů a každý kloub mezi nimi přidá kousek pohybu.",
+          "done": [
+            {
+              "set": "figurina3_uvolnena"
+            },
+            {
+              "sound": "creakSoft"
+            },
+            {
+              "text": "Figurína kývla bradou a s vrzáním uhnula ke zdi."
+            }
+          ]
+        },
+        "figurina4": {
+          "type": "figurine",
+          "number": 4,
+          "var": "figurina4",
+          "title": "Figurína 4 – rameno",
+          "intro": "Čtvrtá figurína má paži vytočenou dozadu, jako by se chystala k hodu, a zasekla se tak.",
+          "task": "Zvedni figuríně paži předpažením až nad hlavu – aspoň o 160°.",
+          "joints": [
+            "shoulder"
+          ],
+          "pose": {
+            "shoulder": -30,
+            "elbow": 10
+          },
+          "goal": {
+            "shoulder": [
+              160,
+              180
+            ]
+          },
+          "limits": {
+            "shoulder": {
+              "min": "Dozadu paže dál nejde – asi 50°: vzadu ji drží kloubní pouzdro a vazy.",
+              "max": "Paže je nahoře – asi 180°. U člověka pomáhá i lopatka, která se po hrudníku natočí."
+            }
+          },
+          "success": "Rameno je kulovitý kloub – nejpohyblivější v těle: dopředu, dozadu, do stran i otáčení. Za volnost platí stabilitou: jamka je mělká, a proto se rameno vykloubí nejsnáz ze všech kloubů – třeba při pádu na nataženou ruku.",
+          "done": [
+            {
+              "set": "figurina4_uvolnena"
+            },
+            {
+              "sound": "creakSoft"
+            },
+            {
+              "text": "Figurína se zvednutou paží zajela do výklenku jako voják, který se hlásí."
+            }
+          ]
+        },
+        "figurina5": {
+          "type": "figurine",
+          "number": 5,
+          "var": "figurina5",
+          "title": "Figurína 5 – kyčel a koleno",
+          "intro": "Poslední figurína stojí v pozoru a zahradila chodbu ke dveřím. Na cedulce: KOLENO K HRUDNÍKU.",
+          "task": "Zvedni figuríně stehno k hrudníku – kyčel ohnutá aspoň o 110°. Hýbat můžeš stehnem i bércem.",
+          "joints": [
+            "hip",
+            "knee"
+          ],
+          "pose": {},
+          "goal": {
+            "hip": [
+              110,
+              120
+            ]
+          },
+          "hamstrings": true,
+          "hamstringText": "Dál to nejde – zadní stehenní svaly vedou přes kyčel i přes koleno. S nataženým kolenem jsou napnuté už asi při 80° v kyčli. Pokrč koleno a stehno půjde výš.",
+          "limits": {
+            "hip": {
+              "min": "Dozadu kyčel dál nejde – asi 15°: vpředu ji drží silný kyčelní vaz.",
+              "max": "Stehno je u hrudníku – víc kyčel nedovolí (asi 120°)."
+            },
+            "knee": {
+              "min": "Natažené koleno dopředu neprohneš – koleno se ohýbá jen dozadu.",
+              "max": "Víc to nejde – lýtko narazí na stehno."
+            }
+          },
+          "success": "Stehno u hrudníku – ale jen s pokrčeným kolenem. Kyčel je kulovitý kloub jako rameno, jen má hlubokou jamku: je stabilnější a méně pohyblivá. A zadní stehenní svaly jsou dvoukloubové – kolik pustí, záleží na obou kloubech.",
+          "done": [
+            {
+              "set": "figurina5_uvolnena"
+            },
+            {
+              "sound": "creakSoft"
+            },
+            {
+              "text": "Figurína zvedla koleno k hrudníku a uvolnila poslední kus chodby. Vpředu svítí lampa nad pancéřovými dveřmi."
+            }
+          ]
+        }
+      }
+    },
+
+    "srub": {
+      "name": "Pěchotní srub",
+      "gateNumber": "V",
+      "tracks": [
+        "vojenska"
+      ],
+      "ambience": "srub",
+      "storm": {
+        "place": "budova",
+        "steps": [
+          "prirucka_boje_vzata",
+          "paka_nasazena",
+          "vychyleni_zvladnuto",
+          "pad_zvladnut"
+        ]
+      },
+      "_poznamka": "Brána V vojenského světa (autor 3. 11. 2026 zvolil téma „Boj zblízka a pády“). Nikdo se doopravdy nepere – všechno je na obrazovce a výukově: páka na loket (M = F · r, sval se upíná blízko kloubu), vychýlení z rovnováhy (F · h = m · g · d, nejslabší směr kolmo na spojnici chodidel), hod přes bok (bok pod těžištěm soupeře) a pádová technika (v = √(2 · g · h), F = m · v : t, p = F : S). Aktivity armlock, balance, fall = js/pakaloket.js, js/vychyleni.js, js/pady.js.",
+      "enterText": "Strmé schodiště z tvrze tě vyvedlo do pěchotního srubu. Kulomety odsud dávno zmizely – na betonové podlaze leží modré žíněnky a pod stropem bzučí žárovky v mřížkách. Na lavici sedí rtn. Doubek, ruku pořád v šátku, a na žíněnce klečí svob. Kratochvíl s nataženou rukou.",
+      "enterMore": "Doubek: „Boj zblízka. Nikdo se tu doopravdy nepere – ukážeš mi, že víš, kde je páka, kde je okraj a jak se padá. Kratochvíl, Hanák, žíněnky. A příručka na polici.“ Šipkami se otáčíš: žíněnky, pádová žíněnka, stěna s policí a Brána V.",
+      "enterMoreLabel": "Co tu dělat?",
+      "enter": [
+        {
+          "when": {
+            "notFlags": [
+              "srub_vstup"
+            ]
+          },
+          "do": [
+            {
+              "set": "srub_vstup"
+            }
+          ]
+        }
+      ],
+      "_shortcut": "Odkaz pro vyučující ?mistnost=srub: hra začne rovnou tady.",
+      "shortcut": [
+        {
+          "give": "kalkulacka"
+        },
+        {
+          "text": "Začínáš rovnou v pěchotním srubu (Brána V). Kalkulačku máš u sebe."
+        }
+      ],
+      "startView": "zinenky",
+      "nudges": [
+        {
+          "when": {
+            "notFlags": [
+              "paka_nasazena"
+            ]
+          },
+          "text": "Kratochvíl na žíněnce drží ruku nataženou. Loket je osa – a čím dál od osy chytíš, tím menší sílu potřebuješ."
+        },
+        {
+          "when": {
+            "flags": [
+              "paka_nasazena"
+            ],
+            "notFlags": [
+              "vychyleni_zvladnuto"
+            ]
+          },
+          "text": "Hanák stojí na pádové žíněnce. Netahej tam, kde stojí pevně – hledej směr, kde má okraj opěrné plochy nejblíž."
+        },
+        {
+          "when": {
+            "flags": [
+              "vychyleni_zvladnuto"
+            ],
+            "notFlags": [
+              "pad_zvladnut"
+            ]
+          },
+          "text": "Pádová žíněnka: dřep, kulatá záda, plácnutí, brada na hruď. Každé z nich mění jiné číslo – zkus je zapínat po jednom."
+        },
+        {
+          "when": {
+            "flags": [
+              "pad_zvladnut"
+            ],
+            "notFlags": [
+              "brana_srub_otevrena"
+            ]
+          },
+          "text": "Číselník u Brány V se ptá na páku, rovnováhu a pád. Příručka boje zblízka z police to má všechno."
+        },
+        {
+          "text": "Páka, okraj, pád. Kratochvíl, Hanák, pádová žíněnka – a pak Brána V."
+        }
+      ],
+      "variants": [
+        {
+          "_sada": "původní čísla",
+          "v_moment": 60,
+          "v_uchop": 25,
+          "v_pad_m": 80,
+          "v_pad_h": 0.5,
+          "v_pad_t": 0.2
+        },
+        {
+          "_sada": "B",
+          "v_moment": 54,
+          "v_uchop": 18,
+          "v_pad_m": 75,
+          "v_pad_h": 0.45,
+          "v_pad_t": 0.25
+        },
+        {
+          "_sada": "C",
+          "v_moment": 70,
+          "v_uchop": 28,
+          "v_pad_m": 85,
+          "v_pad_h": 0.6,
+          "v_pad_t": 0.3
+        }
+      ],
+      "activities": {
+        "paka": {
+          "type": "armlock",
+          "title": "Páka na loket",
+          "intro": "Svob. Kratochvíl natáhl ruku dlaní vzhůru. Tvoje předloktí je pod jeho loktem – to je opěrný bod, osa otáčení je v lokti. Druhou rukou tlačíš na jeho předloktí a on drží svaly proti. Páka se jen nasadí, pomalu – nic se neláme.",
+          "insertCm": 4,
+          "rMinCm": 4,
+          "rMaxCm": 30,
+          "rStartCm": 8,
+          "sliderLabel": "Úchop od lokte",
+          "equation": "Rovnováha momentů kolem lokte: F · r = F_svalu · d (d = 4 cm). Jednou rukou zatlačíš asi {maxF} N.",
+          "rounds": [
+            {
+              "name": "Kratochvíl drží",
+              "var": "paka",
+              "moment": 60,
+              "maxF": 250,
+              "text": "Kratochvíl drží loket svaly momentem 60 N·m. Ty jednou rukou zatlačíš nejvýš asi 250 N. Posuň úchop (posuvníkem nebo tažením ruky) a zkus Nasadit páku.",
+              "fail": "Potřebuješ {F} N – jednou rukou dáš jen {maxF} N. Chyť dál od lokte: stačí asi {need} cm.",
+              "success": "Páka sedí na {r} cm: stačí {F} N. Kratochvíl plácne dlaní do žíněnky – vzdává. Jeho biceps by proti tomu musel táhnout {Fm} N: upíná se jen 4 cm od lokte, takže má krátké rameno."
+            },
+            {
+              "name": "Kratochvíl zabere naplno",
+              "var": "paka2",
+              "moment": 72,
+              "maxF": 250,
+              "rStartCm": 20,
+              "text": "Teď Kratochvíl zatne svaly naplno: 72 N·m. Síla tvé ruky zůstává stejná – co s tím?",
+              "fail": "{F} N je moc. Moment je větší, takže rameno musí být delší – aspoň {need:1} cm. Až k zápěstí.",
+              "success": "U zápěstí ({r} cm) to vyšlo: {F} N. Kratochvíl plácne. Větší moment soupeře = delší rameno, nebo větší síla – nic jiného."
+            }
+          ],
+          "done": [
+            {
+              "set": "paka_nasazena"
+            },
+            {
+              "text": "Kratochvíl si protřepe ruku: „Na čtyřech centimetrech proti tvým pětadvaceti nemám šanci. To je fyzika, ne síla.“"
+            },
+            {
+              "note": "Páka na loket: F · r = M (moment soupeřových svalů). Úchop {paka_cm} cm od lokte → {paka_F} N. Biceps se upíná asi 4 cm od lokte, proto musí táhnout mnohem větší silou, než jakou tlačíš ty.",
+              "noteKey": "paka"
+            }
+          ]
+        },
+        "vychyleni": {
+          "type": "balance",
+          "title": "Vychýlení z rovnováhy a hod přes bok",
+          "intro": "Svob. Hanák (80 kg) stojí na pádové žíněnce a ty ho držíš za ramena, asi 1,3 m nad zemí. Shora vidíš jeho chodidla, opěrnou plochu (obrys kolem nich) a průmět těžiště. Najdi směr, kde je okraj nejblíž – tam stačí nejmenší síla.",
+          "mass": 80,
+          "pullHeight": 1.3,
+          "rounds": [
+            {
+              "kind": "top",
+              "stance": "snozmo",
+              "name": "Chodidla vedle sebe",
+              "tolCm": 1.5,
+              "text": "Hanák stojí chodidla vedle sebe, na šířku ramen. Otáčej šipkou tahu a sleduj vzdálenost d a sílu F. Pak Zatáhnout.",
+              "fail": "Hanák stojí – v tomhle směru je okraj {d} cm daleko a potřeboval bys {F} N. Někde je okraj blíž (asi {dmin} cm).",
+              "success": "Hanák zavrávoral dozadu: okraj byl jen {d} cm od těžiště, stačilo {F} N. Chodidla vedle sebe = opěrná plocha široká do stran, ale krátká dopředu a dozadu. A dozadu nejvíc – pata je k těžišti blíž než špička."
+            },
+            {
+              "kind": "top",
+              "stance": "vypad",
+              "name": "Výpad",
+              "tolCm": 1.5,
+              "text": "Hanák se poučil a postavil se do výpadu: levá noha vpředu, pravá vzadu. Dopředu a dozadu je teď opěrná plocha dlouhá. Kde je okraj nejblíž teď?",
+              "fail": "Okraj je tu {d} cm daleko ({F} N). Ve výpadu je opěrná plocha dlouhá ve směru chodidel – hledej jinde.",
+              "success": "Hanák ztratil rovnováhu do strany: {d} cm, {F} N. Výpad drží ve směru chodidel, ale kolmo na jejich spojnici je opěrná plocha úzká."
+            },
+            {
+              "kind": "side",
+              "name": "Hod přes bok",
+              "minDiffCm": 10,
+              "text": "Hanák je vychýlený dopředu a opírá se o tvůj bok. Teď podsednout: pokrč kolena, aby tvůj bok (osa hodu) byl pod jeho těžištěm. Pak Hodit.",
+              "fail": "Tvůj bok je {diff} cm {rel} jeho těžištěm – Hanák na tobě visí a musel bys zvednout celých {W} N. Pokrč kolena víc.",
+              "success": "Hanák se převalil přes tvůj bok jako přes kladku a dopadl na žíněnku. Bok byl {diff} cm pod jeho těžištěm – těžiště přepadlo přes osu samo, stačilo dotáhnout."
+            }
+          ],
+          "done": [
+            {
+              "set": "vychyleni_zvladnuto"
+            },
+            {
+              "text": "Hanák vstává z žíněnky a otřepe se: „Ani jsem nevěděl, kdy jsem letěl.“ Doubek z lavice: „Tak to má být. Kdo tahá silou, tahá zbytečně.“"
+            },
+            {
+              "note": "Rovnováha: člověk se převrátí, když tah dostane těžiště přes okraj opěrné plochy: F · h = m · g · d. Nejmenší síla tam, kde je okraj nejblíž – kolmo na spojnici chodidel. Hod přes bok: bok (osa) pod těžištěm soupeře, tentokrát o {bok_cm} cm.",
+              "noteKey": "vychyleni"
+            }
+          ]
+        },
+        "pad": {
+          "type": "fall",
+          "title": "Pád vzad",
+          "intro": "Svob. Hanák se postaví zády k pádové žíněnce: „Řekni mi, jak mám padat.“ Zapni prvky techniky a pusť pád. Hra spočítá rychlost dopadu, průměrnou sílu a tlak na záda.",
+          "physics": {
+            "mass": 80,
+            "hStand": 0.9,
+            "hSquat": 0.5,
+            "tStiff": 0.06,
+            "tRoll": 0.2,
+            "sBack": 0.1,
+            "sSlap": 0.3,
+            "handMass": 25,
+            "tHand": 0.05,
+            "sHand": 0.01
+          },
+          "maxF": 1500,
+          "maxP": 10000,
+          "rounds": [
+            {
+              "kind": "back",
+              "name": "Měkký pád vzad",
+              "text": "Cíl: průměrná síla nejvýš 1 500 N (necelé dvě tíhy), tlak nejvýš 10 kPa a hlava v bezpečí.",
+              "failHead": "Hlava! Brada zůstala nahoře a hlava ťukla do žíněnky. Při pádu vzad patří brada na hruď.",
+              "failForceTime": "{F} N – to je {x:1}× tíha. Tělo se zastavilo za {t:2} s jako prkno. Kulatá záda a převal brzdí déle – a delší brzdění znamená menší sílu.",
+              "failForceHeight": "{F} N – pořád moc. Brzdíš dobře, ale padáš z plné výšky rychlostí {v:1} m/s. Nejdřív dřep – těžiště pak padá z menší výšky.",
+              "failPressure": "Síla je v pořádku ({F} N), ale soustředí se na malou plochu: {p:1} kPa. Plácni rukama – náraz se rozloží na větší plochu.",
+              "success": "Měkký dopad: {F} N a {p:1} kPa. Dřep zmenšil rychlost na {v:1} m/s, převal prodloužil brzdění na {t:2} s, plácnutí rozložilo sílu a brada chránila hlavu. Hanák vstává: „Ještě jednou?“"
+            },
+            {
+              "kind": "hand",
+              "name": "Proč ne na ruku",
+              "text": "Pro srovnání: co když se Hanák zachytí nataženou rukou? Na ruku připadne jen horní část těla, asi 25 kg – zní to málo.",
+              "success": "Na zápěstí {F} N a {p} kPa! Ruka se zastaví za {t:2} s na malé ploše dlaně – proto se při pádu na nataženou ruku láme zápěstí, loket nebo klíční kost. Ruce plácají, nechytají."
+            }
+          ],
+          "done": [
+            {
+              "set": "pad_zvladnut"
+            },
+            {
+              "text": "Doubek kývne zdravou rukou: „Padat se učí dřív než házet. Kdo umí padat, nebojí se učit.“"
+            },
+            {
+              "note": "Pád vzad: v = √(2 · g · h) – dřep zmenší výšku a rychlost; F = m · v : t – převal prodlouží brzdění a zmenší sílu ({pady_F} N); p = F : S – plácnutí zvětší plochu a zmenší tlak; brada na hruď chrání hlavu. Na nataženou ruku: {pady_ruka_F} N na zápěstí.",
+              "noteKey": "pady"
+            }
+          ]
+        }
+      },
+      "views": {
+        "zinenky": {
+          "name": "Žíněnky",
+          "background": "assets/rooms/srub_zinenky.webp",
+          "_obrazek": "Zástupná kresba (SVG → WebP). Zadání pro autora: docs/zadani-obrazku-srub.md.",
+          "left": "brana",
+          "right": "pady",
+          "enterText": "Tělocvična v pěchotním srubu: modré žíněnky na betonu, zavřená střílna, rozpis výcviku na zdi. Svob. Kratochvíl klečí na žíněnce s nataženou rukou, rtn. Doubek sedí na lavici.",
+          "hotspots": [
+            {
+              "id": "kratochvil",
+              "name": "Svob. Kratochvíl",
+              "area": [
+                28.1,
+                48.9,
+                25.7,
+                40.4
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "paka_nasazena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Kratochvíl znovu natáhne ruku: „Ještě jednou? Klidně – stejně vím, jak to dopadne.“"
+                    },
+                    {
+                      "activity": "paka"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Svob. Kratochvíl natáhne ruku dlaní vzhůru: „Zkus mi nasadit páku na loket. Já budu držet. A až plácnu, pustíš – hned.“"
+                    },
+                    {
+                      "activity": "paka"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "doubek",
+              "name": "Rotný Doubek",
+              "area": [
+                72.4,
+                31.9,
+                20.9,
+                41.4
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_srub_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Brána je otevřená. Nahoře je zvon – a za ním další brána. Já tu počkám, s jednou rukou po žebříku nelezu.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "pad_zvladnut"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Páka, okraj, pád. Číselník u Brány V se ptá přesně na tohle. Kdybys tápal, příručka je na polici.“"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notFlags": [
+                      "paka_nasazena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Rtn. Doubek, ruku pořád v šátku: „Boj zblízka. Nikdo se tu doopravdy nepere – ukážeš mi, že víš, kde je páka, kde je okraj a jak se padá. Začni u Kratochvíla.“",
+                      "more": "Doubek poklepe na šátek: „Tohle mi udělal svalovec v chodbě. Kdybych ho tehdy uměl vychýlit z rovnováhy, nosil bych dneska obě ruce. Tak se uč, ať nemusíš nosit šátek.“",
+                      "moreLabel": "A ta ruka?"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "notFlags": [
+                      "vychyleni_zvladnuto"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Doubek: „Hanák stojí u pádové žíněnky. Dostaň ho z rovnováhy – chytře, ne silou. Hledej, kde má okraj nejblíž.“"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Doubek: „A teď to nejdůležitější: pád. Kdo umí padat, nebojí se učit. Pádová žíněnka, Hanák už čeká.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "strilna",
+              "name": "Střílna",
+              "area": [
+                41.3,
+                24.4,
+                17.9,
+                15.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Střílna je zavřená pancéřovou deskou. Kdysi tudy mířil kulomet, dnes tudy nefouká na žíněnky.",
+                      "more": "Stěny srubu mají metr i víc betonu s ocelovou výztuží. Beton snese velký tlak, ale málo tahu – proto ho vyztužují ocelové pruty. Podobně kost: odolá tlaku víc než ohybu.",
+                      "moreLabel": "Proč tak silné?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rozpis",
+              "name": "Rozpis výcviku",
+              "area": [
+                64.6,
+                25.5,
+                9.6,
+                20.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "ROZPIS VÝCVIKU – BOJ ZBLÍZKA: 1. týden pády. 2. týden pády. 3. týden pády a vychýlení. 4. týden páky. Pod tím tužkou: „Házet až v pátém. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "zinenky_mat",
+              "name": "Žíněnky",
+              "area": [
+                56.8,
+                74.4,
+                38.9,
+                24.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Modré žíněnky, každá 5 cm silná.",
+                      "more": "Žíněnka se pod tělem stlačí, a tím prodlouží dobu, za kterou se tělo zastaví. Stejná změna rychlosti za delší čas = menší síla: F = m · v : t. Beton se nestlačí skoro vůbec – proto se na něm nepadá.",
+                      "moreLabel": "K čemu jsou?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vak",
+              "name": "Vak s výstrojí",
+              "area": [
+                6.0,
+                69.1,
+                12.0,
+                14.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Vak s chrániči na zuby a holeně. Doubek: „Dneska nepotřebuješ. Nikdo se nepere – všechno je na obrazovce.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "pady": {
+          "name": "Pádová žíněnka",
+          "background": "assets/rooms/srub_pady.webp",
+          "_obrazek": "Zástupná kresba; svob. Hanák stojí na tlusté pádové žíněnce, vedle měřítko výšky.",
+          "left": "zinenky",
+          "right": "stena",
+          "enterText": "Tlustá pádová žíněnka pod nápisem NEJDŘÍV SE NAUČ PADAT. Stojí na ní svob. Hanák, vedle na zdi je namalované měřítko výšky.",
+          "hotspots": [
+            {
+              "id": "pad_zinenka",
+              "name": "Pádová žíněnka",
+              "area": [
+                21.5,
+                68.0,
+                53.2,
+                22.3
+              ],
+              "click": [
+                {
+                  "when": {
+                    "notFlags": [
+                      "vychyleni_zvladnuto"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Hanák: „Padat budu rád – ale nejdřív mě musíš dostat z rovnováhy. Zkus to.“"
+                    },
+                    {
+                      "activity": "vychyleni"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "flags": [
+                      "pad_zvladnut"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Hanák se znovu postaví zády k žíněnce: „Ještě jednou? Klidně.“"
+                    },
+                    {
+                      "activity": "pad"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Hanák se postaví zády k pádové žíněnce: „Řekni mi, jak mám padat. Ale ať to nebolí.“"
+                    },
+                    {
+                      "activity": "pad"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hanak",
+              "name": "Svob. Hanák",
+              "area": [
+                43.1,
+                27.1,
+                10.2,
+                49.9
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "vychyleni_zvladnuto"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Hanák: „Chceš mě hodit znovu? Dobře – ale pak se konečně učíme padat.“"
+                    },
+                    {
+                      "activity": "vychyleni"
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Svob. Hanák se rozkročí na žíněnce: „Tak mě vychyl. Mám osmdesát kilo a stojím pevně – uvidíme, jestli to půjde bez síly.“"
+                    },
+                    {
+                      "activity": "vychyleni"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "meritko",
+              "name": "Měřítko výšky",
+              "area": [
+                71.8,
+                14.9,
+                7.8,
+                45.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Měřítko výšky 0–2 m. U jednoho metru je červená čárka a otazník „těžiště?“.",
+                      "more": "Těžiště stojícího člověka je asi v 55 % jeho výšky, kousek pod pupkem. U Hanáka (180 cm) asi 1 m nad zemí. Při pádu ze stoje klesne o 0,9 m, z dřepu jen asi o 0,5 m – a rychlost dopadu roste s odmocninou výšky: v = √(2 · g · h).",
+                      "moreLabel": "Kde je těžiště?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "napis",
+              "name": "Nápis na zdi",
+              "area": [
+                9.0,
+                21.3,
+                38.3,
+                5.3
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "NEJDŘÍV SE NAUČ PADAT. Někdo pod to fixou připsal: „…a pak teprve házej. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hasicak",
+              "name": "Hasicí přístroj",
+              "area": [
+                87.3,
+                42.5,
+                4.2,
+                17.5
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Hasicí přístroj. Revize platná. Doubek: „Ten tu visí, protože musí. Hořet tu nemá co – leda ostuda, když někdo padá na ruku.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "stena": {
+          "name": "Stěna s policí",
+          "background": "assets/rooms/srub_stena.webp",
+          "_obrazek": "Zástupná kresba. Vrstva srub_stena_bez_prirucky.webp po sebrání příručky.",
+          "left": "pady",
+          "right": "brana",
+          "enterText": "Stěna s policí plnou knih, plakát BEZPEČNOST NA ŽÍNĚNCE, tabule s náčrtkem páky a lékárnička. Pod lavicí stojí osobní váha.",
+          "layers": [
+            {
+              "image": "assets/rooms/srub_stena_bez_prirucky.webp",
+              "when": {
+                "flags": [
+                  "prirucka_boje_vzata"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "prirucka_boje",
+              "name": "Příručka boje zblízka",
+              "area": [
+                29.1,
+                23.6,
+                4.3,
+                11.7
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "prirucka_boje_vzata"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Příručku máš u sebe – v inventáři ji otevřeš dvojklikem."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "set": "prirucka_boje_vzata"
+                    },
+                    {
+                      "sound": "pickup"
+                    },
+                    {
+                      "text": "Zelená Příručka boje zblízka, ohmataná od mnoha rukou. Bereš ji."
+                    },
+                    {
+                      "give": "prirucka_boje"
+                    },
+                    {
+                      "openItem": "prirucka_boje"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "knihy",
+              "name": "Police s knihami",
+              "area": [
+                17.0,
+                23.9,
+                12.0,
+                11.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Řád tělesné přípravy, Zdravověda pro vojáky, Kniha o uzlech a jedna bez obalu. Na hřbetu té bez obalu tužkou: „Fyzika – vrátit D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "lekarnicka",
+              "name": "Lékárnička",
+              "area": [
+                9.0,
+                44.6,
+                7.8,
+                10.6
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Lékárnička: obvazy, elastické obinadlo, chladivý sáček, šátek na ruku.",
+                      "more": "Po úrazu kloubu se nejdřív chladí, stáhne obinadlem a končetina se zvedne – otok je pak menší. A šátek na ruku? Doubek ví.",
+                      "moreLabel": "Co dělat po úrazu?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "plakat",
+              "name": "Plakát Bezpečnost na žíněnce",
+              "area": [
+                50.8,
+                19.1,
+                16.7,
+                37.2
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "BEZPEČNOST NA ŽÍNĚNCE: 1. Plácnutí = STOP – povol hned. 2. Páka jen pomalu. 3. Hází se jen na žíněnku. 4. Při pádu brada na hruď.",
+                      "more": "Páka působí na kloub velkou silou i při malém pohybu ruky – na konci rozsahu stačí pár stupňů navíc a vazy se natrhnou. Proto se nasazuje pomalu a po plácnutí se hned povolí.",
+                      "moreLabel": "Proč pomalu?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tabule",
+              "name": "Tabule s náčrtkem",
+              "area": [
+                70.6,
+                21.3,
+                23.9,
+                31.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Na tabuli je křídou páka: trojúhelník jako osa, šipka F na konci a pod tím M = F · r.",
+                      "more": "Moment síly M říká, jak silně síla otáčí kolem osy. Záleží na síle i na rameni r – vzdálenosti od osy. Stejný moment udělá velká síla blízko osy, nebo malá síla daleko od ní.",
+                      "moreLabel": "Co je moment?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "vaha",
+              "name": "Osobní váha",
+              "area": [
+                62.8,
+                78.6,
+                13.2,
+                6.4
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Osobní váha ukazuje 80,0 – Hanák se ráno vážil.",
+                      "more": "Váha ukazuje kilogramy, ale ve skutečnosti měří sílu, kterou na ni člověk tlačí: tíhu m · g = 80 · 9,81 ≈ 785 N. Kdybys na ní poskočil, číslo by vyskočilo – při dopadu tlačíš víc než svou tíhou.",
+                      "moreLabel": "Co měří?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "lavice",
+              "name": "Lavice",
+              "area": [
+                17.9,
+                69.1,
+                33.5,
+                11.7
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Lavice u zdi. Někdo do ní kdysi vyřezal: „Plácl jsem – a pustil. Díky.“"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "brana": {
+          "name": "Brána V",
+          "background": "assets/rooms/srub_brana.webp",
+          "_obrazek": "Zástupná kresba; otevřená brána = vrstva srub_brana_otevrena.webp.",
+          "left": "stena",
+          "right": "zinenky",
+          "enterText": "Pancéřové dveře s velkým V, za nimi schodiště nahoru k pozorovacímu zvonu. Vedle číselník, vlevo periskop a dole schody zpátky do tvrze.",
+          "layers": [
+            {
+              "image": "assets/rooms/srub_brana_otevrena.webp",
+              "when": {
+                "flags": [
+                  "brana_srub_otevrena"
+                ]
+              }
+            }
+          ],
+          "hotspots": [
+            {
+              "id": "brana_srub",
+              "name": "Brána V",
+              "area": [
+                35.9,
+                14.9,
+                28.7,
+                46.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_srub_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Brána je otevřená. Schodiště vede nahoru k pozorovacímu zvonu – a dál k další bráně."
+                    },
+                    {
+                      "leave": true
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "text": "Pancéřové dveře s velkým V. Zamčené. Vedle svítí číselník."
+                    },
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ciselnik",
+              "name": "Číselník",
+              "area": [
+                66.4,
+                31.9,
+                5.4,
+                13.8
+              ],
+              "click": [
+                {
+                  "when": {
+                    "flags": [
+                      "brana_srub_otevrena"
+                    ]
+                  },
+                  "do": [
+                    {
+                      "text": "Číselník svítí zeleně: BRÁNA V OTEVŘENA."
+                    }
+                  ]
+                },
+                {
+                  "do": [
+                    {
+                      "openGate": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "smerovka",
+              "name": "Směrovka",
+              "area": [
+                74.8,
+                21.3,
+                16.1,
+                18.1
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Směrovka: ↑ ZVON · BRÁNA VI a ↓ TVRZ. Pod tím: „Pátá brána – víc než půlka. – D.“"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "periskop",
+              "name": "Periskop",
+              "area": [
+                16.1,
+                0.0,
+                7.8,
+                51.0
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Periskop prochází stropem až nad srub. Díváš se dovnitř: louka, hřeben a nad ním šedivé mraky.",
+                      "more": "Periskop má dvě zrcadla (nebo hranoly) skloněná o 45°: horní odrazí světlo dolů trubicí, dolní ho odrazí do oka. Úhel dopadu se rovná úhlu odrazu, takže obraz zůstane rovný – jen „posunutý“ o délku trubice.",
+                      "moreLabel": "Jak funguje?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "schody_tvrz",
+              "name": "Schody do tvrze",
+              "area": [
+                3.6,
+                70.1,
+                10.8,
+                29.9
+              ],
+              "click": [
+                {
+                  "do": [
+                    {
+                      "text": "Schody dolů do tvrze. Figuríny tam stojí, jak jsi je nechal – ohnuté správně."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "gate": {
+        "title": "Číselník u Brány V",
+        "openFlag": "brana_srub_otevrena",
+        "steps": [
+          {
+            "type": "code",
+            "question": "Na číselníku svítí: „Soupeř drží loket svaly momentem {v_moment} N·m. Tlačíš na jeho předloktí {v_uchop} cm od lokte. Jakou silou musíš tlačit, aby se páka pohnula? Zadej v newtonech.“",
+            "unit": "N",
+            "requiresVars": [
+              "paka_F"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV PÁKA. Kratochvíl čeká na žíněnce.",
+            "answer": "v_moment/(v_uchop/100)",
+            "toleranceRel": 0.02,
+            "feedbackFormulas": [
+              {
+                "value": "v_moment/v_uchop",
+                "text": "Centimetry! Rameno musí být v metrech: {v_uchop} cm = {=v_uchop/100:2} m."
+              },
+              {
+                "value": "v_moment*v_uchop/100",
+                "text": "Násobíš – ale čím delší rameno, tím MENŠÍ síla stačí. Dělí se: F = M : r."
+              },
+              {
+                "value": "v_moment/0.04",
+                "text": "To je síla jeho bicepsu (úpon 4 cm od lokte). Ty tlačíš {v_uchop} cm od lokte."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Stejně jako u Kratochvíla: moment = síla × rameno.",
+              "F = M : r, rameno v metrech.",
+              "{v_moment} : {=v_uchop/100:2} = {=v_moment/(v_uchop/100):0} N."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Soupeř stojí ve výpadu – jedna noha vpředu, druhá vzadu. Kterým směrem ho vychýlíš z rovnováhy nejmenší silou?“",
+            "requiresVars": [
+              "vychyleni_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV VYCHÝLENÍ. Hanák stojí u pádové žíněnky.",
+            "options": [
+              "Dopředu – tam, kam hledí",
+              "Dozadu – přes zadní nohu",
+              "Kolmo na spojnici chodidel – do strany",
+              "Dolů – tlakem na ramena"
+            ],
+            "correct": 2,
+            "feedback": {
+              "0": "Dopředu je ve výpadu opěrná plocha nejdelší – přední noha ho podepře.",
+              "1": "Dozadu ho podepře zadní noha – i tam je okraj daleko.",
+              "3": "Tlak dolů těžiště nad opěrnou plochou nepřesune – jen ho přitlačí k zemi."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na Hanáka ve výpadu – kde byl okraj nejblíž?",
+              "Nejmenší síla tam, kde je těžiště nejblíž okraji opěrné plochy.",
+              "Ve výpadu je plocha dlouhá ve směru chodidel a úzká napříč."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Proč se při hodu přes bok podsedá – pokrčí kolena?“",
+            "requiresVars": [
+              "vychyleni_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV HOD PŘES BOK. Hanák stojí u pádové žíněnky.",
+            "options": [
+              "Aby byl tvůj bok níž než soupeřovo těžiště – soupeř se přes něj převalí jako přes osu",
+              "Aby ses zmenšil a soupeř tě neviděl",
+              "Aby ses mohl odrazit a vyskočit",
+              "Aby sis zkrátil páku a měl víc síly v rukou"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "Soupeř o tobě ví – opírá se o tebe. Jde o to, kde je osa vůči jeho těžišti.",
+              "2": "Hod přes bok se neskáče. Kolena se pokrčí, aby bok sjel pod těžiště soupeře.",
+              "3": "Ruce soupeře jen dotáhnou. Celou práci udělá jeho tíha, když je těžiště nad osou."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na hod přes bok: kdy Hanák přeletěl a kdy na tobě visel?",
+              "Tvůj bok je osa, kolem které se soupeř otáčí.",
+              "Když je těžiště nad osou, převalí se samo."
+            ],
+            "success": "Zelená! Další otázka…"
+          },
+          {
+            "type": "code",
+            "question": "„Voják o hmotnosti {v_pad_m} kg padá vzad. Jeho těžiště klesne o {v_pad_h:2} m a žíněnka ho zabrzdí za {v_pad_t:2} s. Jaká je průměrná brzdná síla? Zadej v newtonech.“",
+            "unit": "N",
+            "requiresVars": [
+              "pady_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV PÁD. Pádová žíněnka je u měřítka.",
+            "answer": "v_pad_m*sqrt(2*9.81*v_pad_h)/v_pad_t",
+            "toleranceRel": 0.03,
+            "feedbackFormulas": [
+              {
+                "value": "v_pad_m*sqrt(2*9.81*v_pad_h)",
+                "text": "To je hybnost m · v v kg·m/s. Ještě vyděl časem brzdění: F = m · v : t."
+              },
+              {
+                "value": "v_pad_m*2*9.81*v_pad_h/v_pad_t",
+                "text": "Zapomněl jsi odmocninu: v = √(2 · g · h)."
+              },
+              {
+                "value": "v_pad_m*9.81",
+                "text": "To je jen jeho tíha. Při dopadu se zastavuje z rychlosti v – F = m · v : t."
+              },
+              {
+                "value": "v_pad_m*sqrt(9.81*v_pad_h)/v_pad_t",
+                "text": "Pod odmocninou chybí dvojka: v = √(2 · g · h)."
+              }
+            ],
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Nejdřív rychlost dopadu: v = √(2 · g · h).",
+              "Pak síla: F = m · v : t.",
+              "v = √(2 · 9,81 · {v_pad_h:2}) ≈ {=sqrt(2*9.81*v_pad_h):2} m/s → F ≈ {=v_pad_m*sqrt(2*9.81*v_pad_h)/v_pad_t:0} N."
+            ],
+            "success": "Zelená! Poslední otázka…"
+          },
+          {
+            "type": "choice",
+            "question": "„Proč se při pádu vzad plácne rukama o žíněnku?“",
+            "requiresVars": [
+              "pady_hotovo"
+            ],
+            "missingText": "Číselník bliká: NEJDŘÍV PÁD. Pádová žíněnka je u měřítka.",
+            "options": [
+              "Náraz se rozloží na větší plochu – tlak p = F : S je menší",
+              "Plácnutím se odrazíš zpátky na nohy",
+              "Je to jen pozdrav soupeři",
+              "Ruce zachytí celou váhu těla, záda pak nic necítí"
+            ],
+            "correct": 0,
+            "feedback": {
+              "1": "Plácnutí tě nezvedne – brzdí a rozkládá náraz.",
+              "2": "Plácnutí do žíněnky není pozdrav. Plácnutí po partnerovi znamená „stop“ – ale tady jde o pád.",
+              "3": "Zachytit celou váhu rukama je pád na nataženou ruku – zápěstí to odnese."
+            },
+            "wrong": "Číselník zablikal červeně.",
+            "hints": [
+              "Vzpomeň na tlak při pádu bez plácnutí a s ním.",
+              "Tlak = síla : plocha.",
+              "Ruce a celá záda = větší plocha."
+            ],
+            "success": "Zelená!"
+          }
+        ],
+        "open": [
+          {
+            "denik": "srub"
+          },
+          {
+            "sound": "levelUp"
+          },
+          {
+            "text": "Číselník zapípal zeleně a pancéřové dveře se s hukotem odsunuly. Za nimi stoupá schodiště k pozorovacímu zvonu – výš, k další bráně."
+          },
+          {
+            "note": "BRÁNA V: páka F = M : r (rameno v metrech); nejmenší síla na vychýlení kolmo na spojnici chodidel; hod přes bok = bok pod těžištěm soupeře; pád: v = √(2 · g · h), F = m · v : t; plácnutí zvětší plochu a zmenší tlak p = F : S.",
+            "noteKey": "brana5"
           }
         ]
       }

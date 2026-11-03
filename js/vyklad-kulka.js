@@ -8,8 +8,8 @@
  * jinak by pokles nebyl vidět. Společný základ v js/vyklad.js, texty kroků v game.json „explainers“
  * (type „bullet“).
  */
-import { RIFLE, flightTime } from './strelnice.js?v=0.33';
-import { G, Explainer, fmt, smoother, rrect } from './vyklad.js?v=0.33';
+import { RIFLE, flightTime } from './strelnice.js?v=0.34';
+import { G, Explainer, fmt, smoother, rrect } from './vyklad.js?v=0.34';
 
 const VIEWS = {
   wide: { ox: 160, oy: 250, sx: 1.7, ground: 440, rs: 0.82 },

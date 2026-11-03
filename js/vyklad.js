@@ -69,7 +69,7 @@ export const EXPLAINER_TYPES = Object.keys(TYPES);
 /* Načte třídu výkladu daného typu (výchozí je skok). */
 export async function load(type) {
   const name = TYPES[type] || TYPES.jump;
-  const mod = await import(`./vyklad-${name}.js?v=0.33`);
+  const mod = await import(`./vyklad-${name}.js?v=0.34`);
   return mod.default;
 }
 

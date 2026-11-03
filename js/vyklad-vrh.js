@@ -7,10 +7,10 @@
  * zanedbáváme. Čísla jsou ukázková – jiná než v kolech hodu. Vrhač je stejný jako v aktivitě hodu
  * (js/hod.js), společný základ v js/vyklad.js, texty kroků v game.json „explainers“ (type „projectile“).
  */
-import { makeBody, drawBody } from './postava.js?v=0.33';
-import { background } from './kresba.js?v=0.33';
-import { Thrower } from './hod.js?v=0.33';
-import { G, Explainer, fmt } from './vyklad.js?v=0.33';
+import { makeBody, drawBody } from './postava.js?v=0.34';
+import { background } from './kresba.js?v=0.34';
+import { Thrower } from './hod.js?v=0.34';
+import { G, Explainer, fmt } from './vyklad.js?v=0.34';
 
 const DEG = Math.PI / 180;
 const VIEWS = { wide: { s: 38, ox: 70, oy: 470, kv: 9 }, tall: { s: 33, ox: 46, oy: 318, kv: 7.5 } };   // kv = px šipky na 1 m/s

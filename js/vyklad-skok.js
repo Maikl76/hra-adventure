@@ -5,8 +5,8 @@
  * graf síly jako v kabině, na tabuli čísla a vzorce. Společný základ (rozvržení na šířku i na výšku,
  * hlas, přehrávač) je v js/vyklad.js, texty kroků v game.json „explainers“ (type „jump“).
  */
-import { makeBody, pose, drawBody, lerpPose, centerOfMass } from './postava.js?v=0.33';
-import { G, Explainer, fmt, fmtN, smoother } from './vyklad.js?v=0.33';
+import { makeBody, pose, drawBody, lerpPose, centerOfMass } from './postava.js?v=0.34';
+import { G, Explainer, fmt, fmtN, smoother } from './vyklad.js?v=0.34';
 
 const VIEWS = {                                    // svět → plátno (x = 0 bříško chodidla na plošině)
   wide: { s: 158, ox: 292, oy: 478 },

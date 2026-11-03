@@ -766,6 +766,35 @@
       this.every(h, 12, 28, (when) => this.ping(group, 300 + Math.random() * 120, when, 0.02, 0.2));
     },
 
+    /* Podzemí tvrze: hluboké hučení větrání v betonu, nepravidelné kapání s dozvukem chodby,
+       občas vzdálené zavrzání kovu (figurína na kolejničce, dveře). */
+    tvrz(group, h) {
+      const t = this.ctx.currentTime;
+      AMBIENCE.room.call(this, group, h);
+      const hum = this.gain(0.035, group);
+      const lp = this.filter('lowpass', 140, 0.8, hum);
+      h.sources.push(this.noiseSource(lp, t, 0, this.brown, true));
+      this.lfo(hum.gain, 0.05, 0.012, t, h);
+      this.every(h, 1.2, 3.4, (when) => {
+        const f = 1300 + Math.random() * 700;
+        this.ping(group, f, when, 0.022, 0.6);
+        this.ping(group, f * 0.995, when + 0.11, 0.008, 0.9);   // ozvěna chodby
+      });
+      this.every(h, 20, 45, (when) => this.noiseBurst(group, when, 0.5, 'bandpass', 520 + Math.random() * 300, 0.012));
+    },
+
+    /* Pěchotní srub (tělocvična boje zblízka): vítr venku za střílnou, ozvěna betonu, občas
+       vzdálené plesknutí žíněnky. */
+    srub(group, h) {
+      const t = this.ctx.currentTime;
+      AMBIENCE.room.call(this, group, h);
+      const wind = this.gain(0.03, group);
+      const bp = this.filter('bandpass', 420, 0.7, wind);
+      h.sources.push(this.noiseSource(bp, t, 0, this.brown, true));
+      this.lfo(wind.gain, 0.07, 0.02, t, h);
+      this.every(h, 14, 30, (when) => this.noiseBurst(group, when, 0.09, 'lowpass', 700, 0.03));
+    },
+
     /* Závěrečná obrazovka: klidnější tón. */
     finish(group, h) {
       AMBIENCE.intro.call(this, group, h, { level: 0.5, bells: false });

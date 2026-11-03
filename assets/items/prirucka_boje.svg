@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ikona: příručka boje zblízka -->
+  <rect x="12" y="8" width="40" height="48" rx="3" fill="#4a5634" stroke="#20251a" stroke-width="2"/>
+  <rect x="16" y="8" width="4" height="48" fill="#363f26"/>
+  <path d="M26,40 L46,32" stroke="#e9dfc2" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M30,39 l-4,7 h8 z" fill="none" stroke="#e9dfc2" stroke-width="1.8"/>
+  <path d="M43,18 v11 M40,26 l3,4 l3,-4" stroke="#e9dfc2" stroke-width="1.8" fill="none"/>
+</svg>

@@ -46,6 +46,20 @@ Každý svět bude mít vlastních devět bran.
   (výstřel v dechové pauze) a cuká s každým tepem srdce, který po výstupu na kótu postupně klesá.
   Pozorovatel hlásí odchylku v milech. Zatím se zástupnou grafikou (zadání obrázků:
   [`docs/zadani-obrazku-strelnice.md`](docs/zadani-obrazku-strelnice.md)).
+- **Vojenská tělovýchova – Podzemí tvrze** (chodba z vlastních očí, klouby): cestu zatarasilo pět
+  dřevěných kloubových figurín a každá se uvolní, když jí hráč ohne správný kloub správným směrem
+  v rozsahu, jaký má člověk – loket a koleno jsou kladkové klouby (jen jedním směrem), rameno a kyčel
+  kulovité, krk (brada na hruď) a zadní stehenní svaly přes dva klouby. Každá zarážka má vysvětlení.
+  Pancéřové dveře nahoru otevře rychlost dopadu z výšky šachty v = √(2 · g · h). Zástupná grafika
+  ([`docs/zadani-obrazku-tvrz.md`](docs/zadani-obrazku-tvrz.md)).
+- **Vojenská tělovýchova – Brána V: Pěchotní srub** (boj zblízka a pády – momenty, rovnováha, síla
+  a tlak při dopadu): tělocvična v bunkru, kde se **nikdo doopravdy nepere** – všechno je na obrazovce
+  a s výpočtem. Páka na loket (F = M : r – chytit daleko od lokte; biceps se upíná jen 4 cm od lokte),
+  vychýlení z rovnováhy pohledem shora na chodidla (nejmenší síla tam, kde je okraj opěrné plochy
+  nejblíž), hod přes bok (podsednout – bok pod těžištěm soupeře) a pád vzad: dřep zmenší rychlost
+  v = √(2 · g · h), kulatá záda prodlouží brzdění (F = m · v : t), plácnutí zvětší plochu (p = F : S)
+  a brada chrání hlavu; pro srovnání pád na nataženou ruku. Zástupná grafika
+  ([`docs/zadani-obrazku-srub.md`](docs/zadani-obrazku-srub.md)).
 - **Laboratoře – Brána II: Fotografická laboratoř** (rychlost, zrychlení, energie): temná komora
   s červeným světlem, stroboskopické fotografie sprintu a padajícího míče – měřítko z pásma na fotce,
   polohy snímků → rychlost → zrychlení, z pádu tíhové zrychlení a přeměna polohové energie
@@ -188,6 +202,8 @@ Každý svět bude mít vlastních devět bran.
   - Vojenská tělovýchova – Chodba na cvičiště (3D: skok, lezení, svalovec): <https://maikl76.github.io/hra-adventure/?mistnost=prekazky>
   - Vojenská tělovýchova – Brána III (Noční cvičiště): <https://maikl76.github.io/hra-adventure/?mistnost=cviciste>
   - Vojenská tělovýchova – Brána IV (Stanoviště na kótě 680, odstřelovací puška): <https://maikl76.github.io/hra-adventure/?mistnost=strelnice>
+  - Vojenská tělovýchova – Podzemí tvrze (chodba s kloubovými figurínami): <https://maikl76.github.io/hra-adventure/?mistnost=tvrz>
+  - Vojenská tělovýchova – Brána V (Pěchotní srub, boj zblízka a pády): <https://maikl76.github.io/hra-adventure/?mistnost=srub>
   - Laboratoře – Sklepní archiv (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=archiv>
   - Laboratoře – Brána II (Fotografická laboratoř): <https://maikl76.github.io/hra-adventure/?mistnost=fotolab>
   - GSPORT – Servisní chodba (bludiště): <https://maikl76.github.io/hra-adventure/?mistnost=servis>

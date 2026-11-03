@@ -900,7 +900,7 @@
     if (!corridor || corridorRoom !== roomId) {
       if (corridor) corridor.destroy();
       corridor = null;
-      const mod = await import('./chodba.js?v=0.33');
+      const mod = await import('./chodba.js?v=0.34');
       const def = room.corridor;
       const c = new mod.Corridor(canvas, def, {
         check: (w) => game.check(w),
@@ -1134,7 +1134,7 @@
       const save = game.state;
       let w;
       try {
-        const mod = await import('./chodba3d.js?v=0.33');
+        const mod = await import('./chodba3d.js?v=0.34');
         w = new mod.World3D(box, room.world, {
           reducedMotion: reducedMotion.matches,
           attacks: Game.getSetting('kostlivciUtoci', true),
@@ -1965,7 +1965,7 @@
         }
       };
 
-      import('./basket.js?v=0.33').then((mod) => {
+      import('./basket.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         ctl = new mod.Basket(canvas, {
           throws: act.throws || 10,
@@ -2232,7 +2232,7 @@
         spotSay(msg);
       }
 
-      import('./strelnice.js?v=0.33').then((mod) => {
+      import('./strelnice.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         const positions = {};
         for (const [id, p] of Object.entries(act.positions || {})) positions[id] = p;
@@ -2818,7 +2818,7 @@
         if (player) sound.duck(player.playing && player.voice && ok);
       };
 
-      import('./vyklad.js?v=0.33').then(async (mod) => {
+      import('./vyklad.js?v=0.34').then(async (mod) => {
         const Kind = await mod.load(def.type);   // skok, páka, vrh, kulka – každý výklad má svůj modul
         if (!canvas.isConnected) return;
         narrator = new mod.Narrator();
@@ -2899,6 +2899,10 @@
     else if (act.type === 'gyro') openGyro(act);
     else if (act.type === 'strobo') openStrobo(act);
     else if (act.type === 'sniper') openSniper(act);
+    else if (act.type === 'figurine') openFigurine(act);
+    else if (act.type === 'armlock') openArmlock(act);
+    else if (act.type === 'balance') openBalance(act);
+    else if (act.type === 'fall') openFall(act);
   }
 
   function finishActivity(act, results) {
@@ -3049,7 +3053,7 @@
         let cancelled = false;
         activityCleanup = () => { cancelled = true; };
         try {
-          const mod = await import('./squats.js?v=0.33');
+          const mod = await import('./squats.js?v=0.34');
           const ctrl = await mod.startSquats({
             canvas, target, threshold,
             onStatus: setStatus,
@@ -3425,7 +3429,7 @@
       };
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
-      import('./batoh.js?v=0.33').then((mod) => {
+      import('./batoh.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.PackScene(canvas, {
           bodyKg: act.bodyKg, packKg: act.packKg, packCm: act.packCm, comHeightCm: act.comHeightCm,
@@ -3562,7 +3566,7 @@
           render();
         }
       });
-      import('./zvedani.js?v=0.33').then((mod) => {
+      import('./zvedani.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.LiftScene(canvas, {
           loadKg: act.loadKg,
@@ -3845,7 +3849,7 @@
         const times = [];
         const max = act.attempts || 3;
         try {
-          const mod = await import('./skok.js?v=0.33');
+          const mod = await import('./skok.js?v=0.34');
           let ctrl = null;
           const list = document.createElement('ol');
           list.className = 'reflex-list';
@@ -4223,7 +4227,7 @@
         let timer = 0;
         activityCleanup = () => { cancelled = true; clearInterval(timer); };
         try {
-          const mod = await import('./goblet.js?v=0.33');
+          const mod = await import('./goblet.js?v=0.34');
           let ctrl = null;
           const end = () => {
             clearInterval(timer);
@@ -4467,7 +4471,7 @@
           status.className = 'feedback bad';
         }
       }
-      import('./gobletsim.js?v=0.33').then((mod) => {
+      import('./gobletsim.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.GobletSimScene(canvas, { TOE, ANK, SHANK, THIGH, TRUNK, bench: { x0: -0.62, x1: -0.1, h: 0.51 } });
         render();
@@ -4592,7 +4596,7 @@
           status.className = 'feedback';
         }
       }
-      import('./kliky.js?v=0.33').then((mod) => {
+      import('./kliky.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.PushupScene(canvas);
         render();
@@ -4766,7 +4770,7 @@
       };
       roundText.textContent = round().text || '';
       render();
-      import('./nositka.js?v=0.33').then((mod) => {
+      import('./nositka.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.StretcherScene(canvas, { L, H, comFrac, mp, names });
         render();
@@ -4926,9 +4930,634 @@
       };
       roundText.textContent = round().text || '';
       render();
-      import('./prilba.js?v=0.33').then((mod) => {
+      import('./prilba.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.HelmetScene(canvas, { nvgKg, nvgCm, armCm });
+        render();
+      });
+    });
+  }
+
+  /* Kloubová figurína (podzemí tvrze): figurína zatarasí chodbu a uvolní se, když hráč ohne zadaný
+     kloub do cílového rozsahu – tahem na plátně nebo posuvníkem, ale jen v rozsahu skutečného kloubu
+     (kresba a zarážky v js/figurina.js). V game.json: „joints“ (aktivní klouby), „pose“ (výchozí úhly),
+     „goal“ { kloub: [od, do] }, „ranges“ (jiné rozsahy), „hamstrings“ (kyčel s kolenem), „number“,
+     „task“, texty „limits“ { kloub: { min, max } }, „hamstringText“, „success“. Posuvník jde kousek
+     za rozsah kloubu – kdo tlačí za zarážku, dočte se proč. Proměnné: <var> = 1, <var>_zarazky. */
+  function openFigurine(act) {
+    const joints = act.joints || [];
+    const v = act.var || 'figurina';
+    const names = { shoulder: 'Rameno', elbow: 'Loket', hip: 'Kyčel', knee: 'Koleno', neck: 'Krk' };
+    let scene = null, done = false, stops = 0, lastLimit = '';
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Kloubová figurína');
+      para(box, act.intro || '', 'question');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const canvas = document.createElement('canvas');
+      canvas.className = 'figurine-canvas';
+      canvas.width = 600;
+      canvas.height = 380;
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', act.aria || 'Dřevěná kloubová figurína z boku');
+      wrap.appendChild(canvas);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      para(side, act.task || '', 'muted');
+      const sliders = {};
+      for (const j of joints) {
+        const l = document.createElement('label');
+        l.className = 'stance-slider';
+        const t = document.createElement('span');
+        const r = document.createElement('input');
+        r.type = 'range';
+        r.step = 1;
+        r.addEventListener('input', () => { if (scene && !done) scene.setAngle(j, Number(r.value)); });
+        r.addEventListener('change', () => { if (scene) sync(scene.a); });
+        l.append(t, r);
+        side.appendChild(l);
+        sliders[j] = { t, r };
+      }
+      para(side, act.dragHint || 'Ohýbej tahem myší nebo prstem za zlatý kroužek – nebo posuvníkem.', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+
+      // posuvníky ukazují skutečný úhel (po zarážce se vrátí na ni)
+      const sync = (angles) => {
+        for (const j of joints) {
+          const s = sliders[j];
+          const a = Math.round(angles[j]);
+          s.t.textContent = `${(act.sliderLabels || {})[j] || names[j]}: ${a}°`;
+          if (document.activeElement !== s.r || done) s.r.value = a;
+        }
+      };
+      const inGoal = (angles) => Object.entries(act.goal || {}).every(([j, [lo, hi]]) => angles[j] >= lo - 0.5 && angles[j] <= hi + 0.5);
+      const onChange = (st) => {
+        sync(st.angles);
+        if (done) return;
+        if (st.limit) {
+          const key = `${st.joint}:${st.limit}`;
+          if (key !== lastLimit) {
+            stops += 1;
+            sound.sfx('wrong');
+            const t = st.limit === 'hamstring' ? act.hamstringText : ((act.limits || {})[st.joint] || {})[st.limit];
+            if (t) {
+              status.textContent = t;
+              status.className = 'feedback bad';
+            }
+          }
+          lastLimit = key;
+        } else if (st.joint) lastLimit = '';
+        if (inGoal(st.angles)) {
+          done = true;
+          scene.setDone(true);
+          sound.sfx('unlock');
+          status.textContent = act.success || 'Figurína povolila.';
+          status.className = 'feedback good';
+          for (const j of joints) sliders[j].r.disabled = true;
+          button(actions, 'Pokračovat ›', 'btn activity-next', () => finishActivity(act, { [v]: 1, [`${v}_zarazky`]: stops }));
+        }
+      };
+      activityCleanup = () => {
+        if (scene) scene.destroy();
+      };
+      import('./figurina.js?v=0.34').then((mod) => {
+        if (!canvas.isConnected) return;
+        scene = new mod.FigurineScene(canvas, {
+          pose: act.pose, joints, goal: act.goal, ranges: act.ranges, hamstrings: Boolean(act.hamstrings), number: act.number, onChange,
+        });
+        canvas.__figurine = scene;   // pro automatické testy
+        for (const j of joints) {
+          const r = scene.ranges[j];
+          sliders[j].r.min = r.min - (act.overshoot ?? 25);
+          sliders[j].r.max = r.max + (act.overshoot ?? 25);
+        }
+        sync(scene.a);
+      });
+    });
+  }
+
+  /* Páka na loket (pěchotní srub): partner drží loket svaly s momentem M; hráč posouvá úchop po jeho
+     předloktí (r od lokte) a hledá místo, kde stačí síla jedné ruky. F = M : r; partnerův biceps
+     (úpon d od lokte) by musel táhnout F_svalu = M : d. Kola „rounds“: { name, text, moment (N·m),
+     maxF (N), success, fail, var }. Proměnné: <var>_cm, <var>_F, paka_hotovo. Kresba v js/pakaloket.js. */
+  function openArmlock(act) {
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const ins = act.insertCm || 4;
+    const rMin = act.rMinCm || 4, rMax = act.rMaxCm || 30;
+    let idx = 0, r = act.rStartCm || 8, done = false, scene = null;
+    const out = { paka_hotovo: 1 };
+    const round = () => act.rounds[idx];
+    const calc = () => {
+      const M = round().moment;
+      return { M, F: M / (r / 100), Fm: M / (ins / 100), maxF: round().maxF };
+    };
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Páka na loket');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const canvas = document.createElement('canvas');
+      canvas.className = 'armlock-canvas';
+      canvas.width = 600;
+      canvas.height = 320;
+      canvas.setAttribute('role', 'img');
+      wrap.appendChild(canvas);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const roundText = para(side, '', 'muted');
+      const l = document.createElement('label');
+      l.className = 'stance-slider';
+      const lt = document.createElement('span');
+      const sl = document.createElement('input');
+      sl.type = 'range';
+      sl.min = rMin;
+      sl.max = rMax;
+      sl.step = 1;
+      sl.value = r;
+      sl.addEventListener('input', () => { if (done) return; r = Number(sl.value); render(); });
+      l.append(lt, sl);
+      side.appendChild(l);
+      para(side, act.dragHint || 'Ruku s úchopem můžeš táhnout po předloktí myší nebo prstem.', 'muted small');
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const eq = para(box, '', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const go = button(actions, act.goLabel || 'Nasadit páku', 'btn primary', () => tryLock());
+
+      function render() {
+        const c = calc();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${round().name}`;
+        lt.textContent = `${act.sliderLabel || 'Úchop od lokte'}: ${r} cm`;
+        sl.value = r;
+        sl.disabled = done;
+        readoutRows(readout, [
+          [act.momentLabel || 'Moment, kterým drží partner svaly', `${fmt(c.M)} N·m`],
+          ['Rameno tvé síly r', `${r} cm = ${fmt(r / 100, 2)} m`],
+          ['Potřebná síla F = M : r', `${fmt(c.F)} N`],
+          [`Jeho biceps (úpon ${ins} cm od lokte): M : ${fmt(ins / 100, 2)} m`, `${fmt(c.Fm)} N`],
+        ]);
+        eq.textContent = tplLocal(act.equation || 'Rovnováha momentů kolem lokte: F · r = F_svalu · d. Jednou rukou zatlačíš asi {maxF} N.', { maxF: c.maxF });
+        go.disabled = done;
+        if (scene) scene.set({ r: r / 100, F: c.F, Fm: c.Fm, M: c.M, maxF: c.maxF, done });
+      }
+
+      function tryLock() {
+        const c = calc();
+        const vals = { F: c.F, M: c.M, maxF: c.maxF, r, need: (c.M / c.maxF) * 100, Fm: c.Fm };
+        if (c.F > c.maxF + 0.5) {
+          sound.sfx('wrong');
+          status.textContent = tplLocal(round().fail || 'Potřebuješ {F} N – to jednou rukou nezvládneš. Chyť dál od lokte.', vals);
+          status.className = 'feedback bad';
+          return;
+        }
+        done = true;
+        sound.sfx('unlock');
+        const v = round().var || 'paka';
+        out[`${v}_cm`] = r;
+        out[`${v}_F`] = Math.round(c.F);
+        status.textContent = tplLocal(round().success || 'Páka sedí.', vals);
+        status.className = 'feedback good';
+        const last = idx + 1 >= act.rounds.length;
+        go.hidden = true;
+        button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+          if (last) { finishActivity(act, out); return; }
+          actions.lastChild.remove();
+          idx += 1;
+          done = false;
+          go.hidden = false;
+          r = round().rStartCm || r;
+          roundText.textContent = round().text || '';
+          status.textContent = '';
+          status.className = 'feedback';
+          render();
+        });
+        render();
+      }
+
+      // tažení ruky s úchopem po předloktí
+      let dragging = false;
+      canvas.addEventListener('pointerdown', (e) => {
+        if (done || !scene || !scene.gripAt(e.clientX, e.clientY)) return;
+        e.preventDefault();
+        dragging = true;
+        canvas.setPointerCapture(e.pointerId);
+        canvas.style.cursor = 'grabbing';
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (dragging) {
+          r = Math.max(rMin, Math.min(rMax, Math.round(scene.rAt(e.clientX) * 100)));
+          render();
+          return;
+        }
+        canvas.style.cursor = !done && scene && scene.gripAt(e.clientX, e.clientY) ? 'grab' : '';
+      });
+      const up = () => { dragging = false; canvas.style.cursor = ''; };
+      canvas.addEventListener('pointerup', up);
+      canvas.addEventListener('pointercancel', up);
+      activityCleanup = () => {
+        if (scene) scene.destroy();
+      };
+      roundText.textContent = round().text || '';
+      render();
+      import('./pakaloket.js?v=0.34').then((mod) => {
+        if (!canvas.isConnected) return;
+        scene = new mod.ArmlockScene(canvas, { insertCm: ins });
+        canvas.__armlock = scene;   // pro automatické testy
+        render();
+      });
+    });
+  }
+
+  /* Vychýlení z rovnováhy a hod přes bok (pěchotní srub). Kola „rounds“: { kind: "top", stance
+     (snozmo | vypad), … } = pohled shora: hráč volí směr tahu, hra spočítá vzdálenost těžiště od
+     okraje opěrné plochy d a sílu F = m · g · d : h; projde jen nejslabší směr (nejkratší d, s
+     tolerancí „tolCm“). { kind: "side", minDiffCm, … } = z boku: podsazení – bok hráče musí být
+     aspoň o minDiffCm pod Hanákovým těžištěm. Texty name, text, success, fail. Proměnné: vych_<stance>_d
+     (cm), bok_cm (o kolik byl bok pod těžištěm), vychyleni_hotovo. Kresby v js/vychyleni.js. */
+  function openBalance(act) {
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const g = 9.81;
+    const mass = act.mass || 80, hPull = act.pullHeight || 1.3;
+    let idx = 0, ang = 0, s = 0, done = false, scene = null, mod = null, raf = 0;
+    const out = { vychyleni_hotovo: 1 };
+    const round = () => act.rounds[idx];
+    const dirName = (a) => {
+      const n = ((Math.round(a / 45) % 8) + 8) % 8;
+      return ['dopředu', 'šikmo dopředu doprava', 'doprava', 'šikmo dozadu doprava', 'dozadu', 'šikmo dozadu doleva', 'doleva', 'šikmo dopředu doleva'][n];
+    };
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Vychýlení z rovnováhy');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const canvas = document.createElement('canvas');
+      canvas.className = 'balance-canvas';
+      canvas.width = 600;
+      canvas.height = 340;
+      canvas.setAttribute('role', 'img');
+      wrap.appendChild(canvas);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const roundText = para(side, '', 'muted');
+      const l = document.createElement('label');
+      l.className = 'stance-slider';
+      const lt = document.createElement('span');
+      const sl = document.createElement('input');
+      sl.type = 'range';
+      sl.step = 1;
+      sl.addEventListener('input', () => {
+        if (done) return;
+        if (round().kind === 'side') s = Number(sl.value) / 100;
+        else ang = Number(sl.value) > 180 ? Number(sl.value) - 360 : Number(sl.value);
+        render();
+      });
+      l.append(lt, sl);
+      side.appendChild(l);
+      const hint = para(side, '', 'muted small');
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const eq = para(box, '', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const go = button(actions, '', 'btn primary', () => tryIt());
+
+      const geom = () => mod.stanceGeom(round().stance);
+      function render() {
+        const rd = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${rd.name}`;
+        sl.disabled = done;
+        go.disabled = done || !mod;
+        if (rd.kind === 'side') {
+          sl.min = 0;
+          sl.max = 100;
+          sl.value = Math.round(s * 100);
+          lt.textContent = `${act.squatLabel || 'Podsazení – pokrčení kolen'}: ${Math.round(s * 100)} %`;
+          go.textContent = act.throwLabel || 'Hodit přes bok';
+          hint.textContent = act.squatHint || 'Pokrč kolena tak, aby tvůj bok (osa) byl níž než Hanákovo těžiště.';
+          if (!mod || !scene) return;
+          const hh = scene.heights(s);
+          const diff = hh.com - hh.pivot;
+          readoutRows(readout, [
+            ['Hanákovo těžiště nad žíněnkou', `${fmt(hh.com, 2)} m`],
+            ['Tvůj bok – osa hodu', `${fmt(hh.pivot, 2)} m`],
+            [diff >= 0 ? 'Bok je pod těžištěm o' : 'Bok je NAD těžištěm o', `${fmt(Math.abs(diff) * 100)} cm`],
+          ]);
+          eq.textContent = act.sideEquation || 'Když je osa (tvůj bok) pod těžištěm, převalí se Hanák přes ni jako přes kladku. Když je výš, visí na tobě – musel bys ho zvednout celého.';
+          scene.set({ s });
+          return;
+        }
+        sl.min = 0;
+        sl.max = 359;
+        sl.value = Math.round(((ang % 360) + 360) % 360);
+        lt.textContent = `${act.dirLabel || 'Směr tahu'}: ${dirName(ang)} (${Math.round(((ang % 360) + 360) % 360)}°)`;
+        go.textContent = act.pullLabel || 'Zatáhnout';
+        hint.textContent = act.dragHint || 'Šipku tahu můžeš otáčet tahem myší nebo prstem kolem těžiště.';
+        if (!mod) return;
+        const d = mod.edgeDist(geom(), ang);
+        const F = (mass * g * d) / hPull;
+        readoutRows(readout, [
+          ['Směr tahu', dirName(ang)],
+          ['Těžiště od okraje opěrné plochy d', `${fmt(d * 100)} cm`],
+          [`Síla na vychýlení F = m · g · d : h (h = ${fmt(hPull, 1)} m)`, `${fmt(F)} N`],
+        ]);
+        eq.textContent = tplLocal(act.topEquation || 'Hanák ({m} kg) se převrátí přes okraj opěrné plochy, až tah ve výšce ramen překoná moment tíhy: F · h = m · g · d. Čím blíž okraj, tím menší síla.', { m: mass });
+        if (scene) scene.set({ stance: round().stance, ang, F, done });
+      }
+
+      const animate = (ms, step, end) => {
+        const t0 = performance.now();
+        const tick = (now) => {
+          const u = Math.min(1, (now - t0) / ms);
+          step(u);
+          if (u < 1) raf = requestAnimationFrame(tick);
+          else end();
+        };
+        raf = requestAnimationFrame(tick);
+      };
+
+      function tryIt() {
+        const rd = round();
+        if (rd.kind === 'side') {
+          const hh = scene.heights(s);
+          const diff = hh.com - hh.pivot;
+          const vals = { diff: Math.abs(diff) * 100, rel: diff >= 0 ? 'pod' : 'nad', com: hh.com, pivot: hh.pivot, W: mass * g };
+          if (diff * 100 < (rd.minDiffCm || 8) - 0.5) {
+            sound.sfx('wrong');
+            status.textContent = tplLocal(rd.fail || 'Hanák se nepřevalil – osa je moc vysoko.', vals);
+            status.className = 'feedback bad';
+            go.disabled = true;
+            animate(700, (u) => scene.set({ lift: u }), () => { scene.set({ lift: 0 }); go.disabled = false; });
+            return;
+          }
+          done = true;
+          sound.sfx('swish');
+          out.bok_cm = Math.round(diff * 100);
+          go.disabled = true;
+          animate(1300, (u) => scene.set({ throwT: u }), () => {
+            sound.sfx('step');
+            success(tplLocal(rd.success || 'Hanák přeletěl přes bok.', vals));
+          });
+          return;
+        }
+        const gm = geom();
+        const d = mod.edgeDist(gm, ang);
+        const wk = mod.weakest(gm);
+        const vals = { d: d * 100, F: (mass * g * d) / hPull, dmin: wk.d * 100 };
+        if (d > wk.d + (rd.tolCm || 1.5) / 100) {
+          sound.sfx('wrong');
+          status.textContent = tplLocal(rd.fail || 'Hanák stojí – v tomhle směru je okraj daleko (d = {d} cm). Hledej, kde je nejblíž.', vals);
+          status.className = 'feedback bad';
+          return;
+        }
+        done = true;
+        sound.sfx('swish');
+        out[`vych_${rd.stance}_d`] = Math.round(d * 100);
+        animate(700, (u) => scene.set({ fall: u, done: u >= 1 }), () => success(tplLocal(rd.success || 'Hanák ztratil rovnováhu.', vals)));
+      }
+
+      function success(text) {
+        sound.sfx('unlock');
+        status.textContent = text;
+        status.className = 'feedback good';
+        const last = idx + 1 >= act.rounds.length;
+        go.hidden = true;
+        button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+          if (last) { finishActivity(act, out); return; }
+          actions.lastChild.remove();
+          idx += 1;
+          done = false;
+          go.hidden = false;
+          ang = 0;
+          status.textContent = '';
+          status.className = 'feedback';
+          roundText.textContent = round().text || '';
+          makeScene();
+        });
+        render();
+      }
+
+      function makeScene() {
+        if (scene) scene.destroy();
+        scene = round().kind === 'side' ? new mod.HipThrowScene(canvas) : new mod.BalanceScene(canvas, { stance: round().stance });
+        canvas.__balance = scene;   // pro automatické testy
+        render();
+      }
+
+      // tah šipkou na plátně (pohled shora)
+      let dragging = false;
+      canvas.addEventListener('pointerdown', (e) => {
+        if (done || !scene || round().kind === 'side') return;
+        e.preventDefault();
+        dragging = true;
+        canvas.setPointerCapture(e.pointerId);
+        ang = scene.angAt(e.clientX, e.clientY);
+        render();
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        ang = scene.angAt(e.clientX, e.clientY);
+        render();
+      });
+      const up = () => { dragging = false; };
+      canvas.addEventListener('pointerup', up);
+      canvas.addEventListener('pointercancel', up);
+      activityCleanup = () => {
+        cancelAnimationFrame(raf);
+        if (scene) scene.destroy();
+      };
+      roundText.textContent = round().text || '';
+      render();
+      import('./vychyleni.js?v=0.34').then((m) => {
+        if (!canvas.isConnected) return;
+        mod = m;
+        makeScene();
+      });
+    });
+  }
+
+  /* Pádová technika (pěchotní srub): Hanák padá vzad; hráč zapíná prvky techniky (dřep, kulatá
+     záda a převal, plácnutí rukama, brada na hruď) a pustí pád. v = √(2 · g · h), F = m · v : t,
+     p = F : S (čísla „physics“ přepíší výchozí v js/pady.js). Kolo 1: síla nejvýš maxF a tlak
+     nejvýš maxP, hlava v bezpečí. Kolo 2: pro srovnání pád na nataženou ruku. Proměnné: pady_F,
+     pady_p, pady_pokusy, pady_ruka_F, pady_hotovo. Kresba v js/pady.js. */
+  function openFall(act) {
+    const fmt = (v, d = 0) => v.toFixed(d).replace('.', ',');
+    const BW = (act.physics && act.physics.mass ? act.physics.mass : 80) * 9.81;
+    const opts = { squat: false, roll: false, slap: false, chin: false };
+    let idx = 0, done = false, busy = false, scene = null, mod = null, raf = 0, tries = 0, res = null;
+    const out = { pady_hotovo: 1 };
+    const round = () => act.rounds[idx];
+    openModal((box) => {
+      box.classList.add('activity-box', 'pack-box');
+      heading(box, act.title || 'Pád vzad');
+      para(box, act.intro || '', 'question');
+      const info = para(box, '', 'lean-step');
+      const wrap = document.createElement('div');
+      wrap.className = 'pack-wrap';
+      box.appendChild(wrap);
+      const canvas = document.createElement('canvas');
+      canvas.className = 'fall-canvas';
+      canvas.width = 600;
+      canvas.height = 340;
+      canvas.setAttribute('role', 'img');
+      wrap.appendChild(canvas);
+      const side = document.createElement('div');
+      side.className = 'lift-side';
+      wrap.appendChild(side);
+      const roundText = para(side, '', 'muted');
+      const toggles = document.createElement('div');
+      toggles.className = 'fall-toggles';
+      side.appendChild(toggles);
+      const labels = act.toggleLabels || { squat: 'Nejdřív dřep', roll: 'Kulatá záda – převal', slap: 'Plácnout rukama', chin: 'Brada na hruď' };
+      const tbtn = {};
+      for (const k of ['squat', 'roll', 'slap', 'chin']) {
+        const b = button(toggles, labels[k], 'btn fall-toggle', () => {
+          if (busy || done) return;
+          opts[k] = !opts[k];
+          b.setAttribute('aria-pressed', String(opts[k]));
+          res = null;
+          if (scene) scene.set({ o: { ...opts }, t: 0, res: null });
+          render();
+        });
+        b.setAttribute('aria-pressed', 'false');
+        tbtn[k] = b;
+      }
+      const readout = document.createElement('div');
+      readout.className = 'pack-readout';
+      box.appendChild(readout);
+      const eq = para(box, act.equation || 'v = √(2 · g · h)  ·  F = m · v : t  ·  p = F : S', 'muted small');
+      const status = para(box, '', 'feedback');
+      const actions = document.createElement('div');
+      actions.className = 'squat-buttons';
+      box.appendChild(actions);
+      const go = button(actions, '', 'btn primary', () => fall());
+
+      function render() {
+        const rd = round();
+        info.textContent = `Kolo ${idx + 1}/${act.rounds.length}: ${rd.name}`;
+        const hand = rd.kind === 'hand';
+        toggles.hidden = hand;
+        go.textContent = hand ? (act.handLabel || 'Zachytit se nataženou rukou') : (act.fallLabel || 'Spadnout!');
+        go.disabled = busy || done || !mod;
+        if (!res) {
+          readoutRows(readout, [['Výsledek', hand ? 'zkus pád na ruku' : 'vyber techniku a pusť pád']]);
+          return;
+        }
+        const rows = [
+          [hand ? 'Na ruku připadne (horní část těla)' : 'Hmotnost', `${fmt(res.m)} kg`],
+          ['Pokles těžiště h', `${fmt(res.h, 1)} m`],
+          ['Rychlost dopadu v = √(2 · g · h)', `${fmt(res.v, 1)} m/s`],
+          ['Brzdění t', `${fmt(res.t, 2)} s`],
+          ['Průměrná síla F = m · v : t', `${fmt(res.F)} N (${fmt(res.F / BW, 1)}× tíha)`],
+          ['Plocha dopadu S', `${fmt(res.S, 2)} m²`],
+          ['Tlak p = F : S', `${fmt(res.p / 1000, 1)} kPa`],
+        ];
+        readoutRows(readout, rows);
+      }
+
+      function fall() {
+        if (busy || done || !mod) return;
+        const rd = round();
+        const hand = rd.kind === 'hand';
+        const o = hand ? { hand: true } : { ...opts };
+        busy = true;
+        res = null;
+        render();
+        const r = mod.fallResult(o, { ...mod.FALL, ...(act.physics || {}) });
+        const t0 = performance.now();
+        const tick = (now) => {
+          const u = Math.min(1, (now - t0) / 1400);
+          scene.set({ o, t: u, res: u >= 1 ? r : null });
+          if (u < 1) { raf = requestAnimationFrame(tick); return; }
+          busy = false;
+          res = r;
+          sound.sfx(o.slap ? 'swish' : 'step');
+          evaluate(r);
+        };
+        raf = requestAnimationFrame(tick);
+      }
+
+      function evaluate(r) {
+        const rd = round();
+        const vals = { F: r.F, p: r.p / 1000, v: r.v, t: r.t, S: r.S, x: r.F / BW, maxF: act.maxF || 1500, maxP: (act.maxP || 10000) / 1000 };
+        if (rd.kind === 'hand') {
+          out.pady_ruka_F = Math.round(r.F);
+          return success(tplLocal(rd.success || 'Na zápěstí {F} N.', vals));
+        }
+        tries += 1;
+        let msg = null;
+        if (!r.head) msg = rd.failHead;
+        else if (r.F > (act.maxF || 1500)) msg = opts.roll ? rd.failForceHeight : rd.failForceTime;
+        else if (r.p > (act.maxP || 10000)) msg = rd.failPressure;
+        if (msg) {
+          sound.sfx('wrong');
+          status.textContent = tplLocal(msg, vals);
+          status.className = 'feedback bad';
+          render();
+          return;
+        }
+        out.pady_F = Math.round(r.F);
+        out.pady_p = Math.round(r.p / 100) / 10;
+        out.pady_pokusy = tries;
+        success(tplLocal(rd.success || 'Měkký dopad.', vals));
+      }
+
+      function success(text) {
+        done = true;
+        sound.sfx('unlock');
+        status.textContent = text;
+        status.className = 'feedback good';
+        for (const k of Object.keys(tbtn)) tbtn[k].disabled = true;
+        const last = idx + 1 >= act.rounds.length;
+        go.hidden = true;
+        button(actions, last ? 'Pokračovat ›' : 'Další kolo ›', last ? 'btn activity-next' : 'btn primary', () => {
+          if (last) { finishActivity(act, out); return; }
+          actions.lastChild.remove();
+          idx += 1;
+          done = false;
+          res = null;
+          go.hidden = false;
+          status.textContent = '';
+          status.className = 'feedback';
+          roundText.textContent = round().text || '';
+          scene.set({ o: round().kind === 'hand' ? { hand: true } : { ...opts }, t: 0, res: null });
+          render();
+        });
+        render();
+      }
+
+      activityCleanup = () => {
+        cancelAnimationFrame(raf);
+        if (scene) scene.destroy();
+      };
+      roundText.textContent = round().text || '';
+      render();
+      import('./pady.js?v=0.34').then((m) => {
+        if (!canvas.isConnected) return;
+        mod = m;
+        scene = new m.FallScene(canvas);
+        canvas.__fall = scene;   // pro automatické testy
         render();
       });
     });
@@ -6098,7 +6727,7 @@
       };
       status.textContent = round().text || '';
       drawScene();
-      import('./hod.js?v=0.33').then((mod) => {
+      import('./hod.js?v=0.34').then((mod) => {
         if (!canvas.isConnected) return;
         scene = new mod.ThrowScene(canvas, { reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches });
         drawScene();
@@ -6183,7 +6812,7 @@
         activityCleanup = () => { cancelled = true; };
         let free = null;
         try {
-          const mod = await import('./predklon.js?v=0.33');
+          const mod = await import('./predklon.js?v=0.34');
           const ctrl = await mod.startLean({
             canvas,
             onStatus: setStatus,

@@ -7,8 +7,8 @@
  * proto je vpravo nahoře detail odhodu. Dolety a vyhodnocení počítá ui.js stejně jako dřív –
  * scéna dostane hotový hod (rychlosti, čas letu) a jen ho nakreslí a přehraje. Plátno 600 × 320.
  */
-import { makeBody, pose, drawBody, lerpPose } from './postava.js?v=0.33';
-import { rrect, fmt, setupCanvas, label, arrow, background } from './kresba.js?v=0.33';
+import { makeBody, pose, drawBody, lerpPose } from './postava.js?v=0.34';
+import { rrect, fmt, setupCanvas, label, arrow, background } from './kresba.js?v=0.34';
 
 const W = 600;
 const H = 320;
